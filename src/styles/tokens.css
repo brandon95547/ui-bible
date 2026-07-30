@@ -1,0 +1,606 @@
+/* ============================================================================
+   UI BIBLE — TOKEN LAYER
+   ----------------------------------------------------------------------------
+   Three tiers, in strict order. Never skip a tier.
+
+     1. PRIMITIVE   --p-*    Raw values. No meaning. Never used in components.
+     2. SEMANTIC    --ds-*   Meaning, not appearance. Theme-swappable.
+     3. COMPONENT   --c-*    Per-component overrides. Reference semantics only.
+
+   A component that reaches past the semantic tier is a bug. It will look
+   correct in one theme and break in the other.
+   ========================================================================= */
+
+/* ---------------------------------------------------------------------------
+   TIER 1 — PRIMITIVES
+   Perceptually even ramps. Authored in hex for portability; the lightness
+   steps were spaced in OKLCH so each step is a visually equal jump.
+   ------------------------------------------------------------------------ */
+:root {
+  /* Neutral — very slightly cool. A pure gray reads "dead" on screens. */
+  --p-neutral-0: #ffffff;
+  --p-neutral-25: #fafbfc;
+  --p-neutral-50: #f4f6f8;
+  --p-neutral-100: #e9ecf1;
+  --p-neutral-200: #d6dae3;
+  --p-neutral-300: #b9bfcc;
+  --p-neutral-400: #949cad;
+  --p-neutral-500: #6e7686;
+  --p-neutral-600: #545c6b;
+  --p-neutral-700: #3d444f;
+  --p-neutral-800: #2a2f38;
+  --p-neutral-850: #21252c;
+  --p-neutral-900: #171a20;
+  --p-neutral-925: #131519;
+  --p-neutral-950: #0e1014;
+  --p-neutral-975: #0a0b0e;
+  --p-neutral-1000: #000000;
+
+  /* Brand — iris. Hue 265. Chosen for high chroma at both ends of the ramp
+     so it survives on white and on near-black without a second brand color. */
+  --p-brand-50: #f2f0ff;
+  --p-brand-100: #e6e2ff;
+  --p-brand-200: #cfc8ff;
+  --p-brand-300: #b0a4ff;
+  --p-brand-400: #937fff;
+  --p-brand-500: #7c6cff;
+  --p-brand-600: #6a55f2;
+  --p-brand-700: #5942d6;
+  --p-brand-800: #4835a8;
+  --p-brand-900: #322663;
+  --p-brand-950: #1e1740;
+
+  /* Success — emerald */
+  --p-success-50: #e8fbf2;
+  --p-success-100: #cdf5e3;
+  --p-success-200: #9cebc8;
+  --p-success-300: #62dca7;
+  --p-success-400: #35c98a;
+  --p-success-500: #16b375;
+  --p-success-600: #0e9260;
+  --p-success-700: #0c744e;
+  --p-success-800: #0b5b3e;
+  --p-success-900: #0a3a2a;
+  --p-success-950: #04231a;
+
+  /* Warning — amber */
+  --p-warning-50: #fff8e6;
+  --p-warning-100: #ffedbf;
+  --p-warning-200: #ffdd8a;
+  --p-warning-300: #ffc94d;
+  --p-warning-400: #f7b222;
+  --p-warning-500: #e29508;
+  --p-warning-600: #bc7605;
+  --p-warning-700: #955a08;
+  --p-warning-800: #74470d;
+  --p-warning-900: #452b0b;
+  --p-warning-950: #2a1a06;
+
+  /* Danger — rose */
+  --p-danger-50: #fff0f1;
+  --p-danger-100: #ffdde0;
+  --p-danger-200: #ffbec4;
+  --p-danger-300: #ff929b;
+  --p-danger-400: #fa6470;
+  --p-danger-500: #ee4351;
+  --p-danger-600: #d62838;
+  --p-danger-700: #b21c2b;
+  --p-danger-800: #8c1925;
+  --p-danger-900: #551119;
+  --p-danger-950: #33090f;
+
+  /* Info — blue */
+  --p-info-50: #edf5ff;
+  --p-info-100: #d9eaff;
+  --p-info-200: #b5d5ff;
+  --p-info-300: #85b9ff;
+  --p-info-400: #529aff;
+  --p-info-500: #2e7df6;
+  --p-info-600: #1b62db;
+  --p-info-700: #164eb0;
+  --p-info-800: #163f8a;
+  --p-info-900: #122850;
+  --p-info-950: #0a1830;
+
+  /* Categorical — data viz, tags, avatars. Ordered for maximum adjacent
+     separation, including for deuteranopia. Never used for status. */
+  --p-viz-1: #7c6cff;
+  --p-viz-2: #35c98a;
+  --p-viz-3: #f7b222;
+  --p-viz-4: #529aff;
+  --p-viz-5: #ff7ac6;
+  --p-viz-6: #2ed3d3;
+  --p-viz-7: #ff9556;
+  --p-viz-8: #b0a4ff;
+}
+
+/* ---------------------------------------------------------------------------
+   TIER 2 — SEMANTICS · DARK (the default)
+   ------------------------------------------------------------------------ */
+:root,
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  /* Surfaces. In dark UI, elevation is communicated by getting *lighter*,
+     not by casting a bigger shadow — a shadow on black is invisible. */
+  --ds-canvas: #0a0b0e;
+  --ds-sunken: #07080a;
+  --ds-surface: #101216;
+  --ds-surface-raised: #171a20;
+  --ds-surface-overlay: #1d212a;
+  --ds-surface-inset: #0d0f13;
+
+  /* Interaction layers — always alpha so they compose over any surface. */
+  --ds-layer-hover: rgb(255 255 255 / 0.045);
+  --ds-layer-active: rgb(255 255 255 / 0.075);
+  --ds-layer-selected: rgb(124 108 255 / 0.16);
+  --ds-layer-scrim: rgb(4 5 7 / 0.72);
+
+  /* Foreground */
+  --ds-fg: #edeff4;
+  --ds-fg-secondary: #a8b0c0;
+  --ds-fg-muted: #737c8d;
+  --ds-fg-disabled: #4e5665;
+  --ds-fg-on-accent: #ffffff;
+  --ds-fg-inverse: #171a20;
+
+  /* Borders */
+  --ds-border-subtle: rgb(255 255 255 / 0.06);
+  --ds-border: rgb(255 255 255 / 0.11);
+  --ds-border-strong: rgb(255 255 255 / 0.19);
+  --ds-border-interactive: rgb(255 255 255 / 0.14);
+
+  /* Brand */
+  --ds-accent: #7c6cff;
+  --ds-accent-hover: #8f81ff;
+  --ds-accent-active: #6a55f2;
+  --ds-accent-fg: #ffffff;
+  --ds-accent-subtle: rgb(124 108 255 / 0.15);
+  --ds-accent-subtle-hover: rgb(124 108 255 / 0.22);
+  --ds-accent-border: rgb(124 108 255 / 0.38);
+  --ds-accent-text: #b0a4ff;
+
+  /* Status — `-text` is the pair certified for text on `-subtle`. */
+  --ds-success: #16b375;
+  --ds-success-hover: #1cc082;
+  --ds-success-fg: #04231a;
+  --ds-success-subtle: rgb(53 201 138 / 0.14);
+  --ds-success-border: rgb(53 201 138 / 0.34);
+  --ds-success-text: #62dca7;
+
+  --ds-warning: #f7b222;
+  --ds-warning-hover: #ffc142;
+  --ds-warning-fg: #2a1a06;
+  --ds-warning-subtle: rgb(247 178 34 / 0.14);
+  --ds-warning-border: rgb(247 178 34 / 0.34);
+  --ds-warning-text: #ffc94d;
+
+  --ds-danger: #ee4351;
+  --ds-danger-hover: #fa5b68;
+  --ds-danger-active: #d62838;
+  --ds-danger-fg: #ffffff;
+  --ds-danger-subtle: rgb(250 100 112 / 0.14);
+  --ds-danger-border: rgb(250 100 112 / 0.36);
+  --ds-danger-text: #ff929b;
+
+  --ds-info: #2e7df6;
+  --ds-info-hover: #4a90ff;
+  --ds-info-fg: #ffffff;
+  --ds-info-subtle: rgb(82 154 255 / 0.14);
+  --ds-info-border: rgb(82 154 255 / 0.34);
+  --ds-info-text: #85b9ff;
+
+  /* Focus — one ring for the whole system. Users learn it once. */
+  --ds-focus-ring: #937fff;
+  --ds-focus-ring-offset: #0a0b0e;
+
+  /* Elevation. Dark shadows are near-black and tighter than light shadows;
+     a soft gray shadow just fogs the surface. */
+  --ds-shadow-0: 0 0 #0000;
+  --ds-shadow-1: 0 1px 2px -1px rgb(0 0 0 / 0.6), 0 1px 1px rgb(0 0 0 / 0.32);
+  --ds-shadow-2: 0 2px 4px -2px rgb(0 0 0 / 0.6), 0 4px 8px -2px rgb(0 0 0 / 0.36);
+  --ds-shadow-3: 0 4px 8px -4px rgb(0 0 0 / 0.6), 0 12px 20px -6px rgb(0 0 0 / 0.44);
+  --ds-shadow-4: 0 8px 16px -6px rgb(0 0 0 / 0.62), 0 24px 40px -12px rgb(0 0 0 / 0.52);
+  --ds-shadow-5: 0 16px 32px -8px rgb(0 0 0 / 0.66), 0 40px 72px -16px rgb(0 0 0 / 0.6);
+  --ds-shadow-accent: 0 0 0 1px rgb(124 108 255 / 0.4), 0 8px 24px -8px rgb(124 108 255 / 0.45);
+}
+
+/* ---------------------------------------------------------------------------
+   TIER 2 — SEMANTICS · LIGHT
+   Not an inversion. Light UI carries elevation with shadow and hairlines;
+   dark UI carries it with surface lightness. The token *names* stay identical,
+   which is the entire point of the tier.
+   ------------------------------------------------------------------------ */
+[data-theme='light'] {
+  color-scheme: light;
+
+  --ds-canvas: #ffffff;
+  --ds-sunken: #f4f6f8;
+  --ds-surface: #ffffff;
+  --ds-surface-raised: #ffffff;
+  --ds-surface-overlay: #ffffff;
+  --ds-surface-inset: #f7f8fa;
+
+  --ds-layer-hover: rgb(16 18 22 / 0.04);
+  --ds-layer-active: rgb(16 18 22 / 0.075);
+  --ds-layer-selected: rgb(106 85 242 / 0.09);
+  --ds-layer-scrim: rgb(23 26 32 / 0.42);
+
+  --ds-fg: #171a20;
+  --ds-fg-secondary: #545c6b;
+  --ds-fg-muted: #6e7686;
+  --ds-fg-disabled: #b0b6c2;
+  --ds-fg-on-accent: #ffffff;
+  --ds-fg-inverse: #ffffff;
+
+  --ds-border-subtle: rgb(16 18 22 / 0.07);
+  --ds-border: rgb(16 18 22 / 0.13);
+  --ds-border-strong: rgb(16 18 22 / 0.24);
+  --ds-border-interactive: rgb(16 18 22 / 0.16);
+
+  --ds-accent: #6a55f2;
+  --ds-accent-hover: #5942d6;
+  --ds-accent-active: #4835a8;
+  --ds-accent-fg: #ffffff;
+  --ds-accent-subtle: rgb(106 85 242 / 0.09);
+  --ds-accent-subtle-hover: rgb(106 85 242 / 0.14);
+  --ds-accent-border: rgb(106 85 242 / 0.3);
+  --ds-accent-text: #5942d6;
+
+  --ds-success: #0e9260;
+  --ds-success-hover: #0c744e;
+  --ds-success-fg: #ffffff;
+  --ds-success-subtle: rgb(22 179 117 / 0.11);
+  --ds-success-border: rgb(14 146 96 / 0.28);
+  --ds-success-text: #0c744e;
+
+  --ds-warning: #e29508;
+  --ds-warning-hover: #bc7605;
+  --ds-warning-fg: #2a1a06;
+  --ds-warning-subtle: rgb(247 178 34 / 0.16);
+  --ds-warning-border: rgb(188 118 5 / 0.3);
+  --ds-warning-text: #955a08;
+
+  --ds-danger: #d62838;
+  --ds-danger-hover: #b21c2b;
+  --ds-danger-active: #8c1925;
+  --ds-danger-fg: #ffffff;
+  --ds-danger-subtle: rgb(238 67 81 / 0.1);
+  --ds-danger-border: rgb(214 40 56 / 0.28);
+  --ds-danger-text: #b21c2b;
+
+  --ds-info: #1b62db;
+  --ds-info-hover: #164eb0;
+  --ds-info-fg: #ffffff;
+  --ds-info-subtle: rgb(46 125 246 / 0.1);
+  --ds-info-border: rgb(27 98 219 / 0.28);
+  --ds-info-text: #164eb0;
+
+  --ds-focus-ring: #6a55f2;
+  --ds-focus-ring-offset: #ffffff;
+
+  --ds-shadow-0: 0 0 #0000;
+  --ds-shadow-1: 0 1px 2px rgb(16 18 22 / 0.06), 0 1px 3px rgb(16 18 22 / 0.05);
+  --ds-shadow-2: 0 2px 4px -2px rgb(16 18 22 / 0.08), 0 4px 10px -2px rgb(16 18 22 / 0.07);
+  --ds-shadow-3: 0 4px 8px -4px rgb(16 18 22 / 0.09), 0 12px 24px -6px rgb(16 18 22 / 0.09);
+  --ds-shadow-4: 0 8px 16px -6px rgb(16 18 22 / 0.1), 0 24px 44px -12px rgb(16 18 22 / 0.12);
+  --ds-shadow-5: 0 16px 32px -8px rgb(16 18 22 / 0.12), 0 40px 80px -16px rgb(16 18 22 / 0.16);
+  --ds-shadow-accent: 0 0 0 1px rgb(106 85 242 / 0.28), 0 8px 24px -8px rgb(106 85 242 / 0.4);
+}
+
+/* ---------------------------------------------------------------------------
+   TAILWIND THEME BINDING
+   `inline` keeps the var() reference in the generated utility instead of
+   resolving it at build time. That is what lets `[data-theme]` re-theme any
+   subtree at runtime — including a light-mode island inside the dark app.
+   ------------------------------------------------------------------------ */
+@theme inline {
+  /* --- Surfaces ------------------------------------------------------- */
+  --color-canvas: var(--ds-canvas);
+  --color-sunken: var(--ds-sunken);
+  --color-surface: var(--ds-surface);
+  --color-raised: var(--ds-surface-raised);
+  --color-overlay: var(--ds-surface-overlay);
+  --color-inset: var(--ds-surface-inset);
+
+  --color-layer-hover: var(--ds-layer-hover);
+  --color-layer-active: var(--ds-layer-active);
+  --color-layer-selected: var(--ds-layer-selected);
+  --color-scrim: var(--ds-layer-scrim);
+
+  /* --- Foreground ----------------------------------------------------- */
+  --color-fg: var(--ds-fg);
+  --color-fg-secondary: var(--ds-fg-secondary);
+  --color-fg-muted: var(--ds-fg-muted);
+  --color-fg-disabled: var(--ds-fg-disabled);
+  --color-fg-inverse: var(--ds-fg-inverse);
+
+  /* --- Borders -------------------------------------------------------- */
+  --color-line-subtle: var(--ds-border-subtle);
+  --color-line: var(--ds-border);
+  --color-line-strong: var(--ds-border-strong);
+  --color-line-interactive: var(--ds-border-interactive);
+
+  /* --- Brand ---------------------------------------------------------- */
+  --color-accent: var(--ds-accent);
+  --color-accent-hover: var(--ds-accent-hover);
+  --color-accent-active: var(--ds-accent-active);
+  --color-accent-fg: var(--ds-accent-fg);
+  --color-accent-subtle: var(--ds-accent-subtle);
+  --color-accent-subtle-hover: var(--ds-accent-subtle-hover);
+  --color-accent-border: var(--ds-accent-border);
+  --color-accent-text: var(--ds-accent-text);
+
+  /* --- Status --------------------------------------------------------- */
+  --color-success: var(--ds-success);
+  --color-success-hover: var(--ds-success-hover);
+  --color-success-fg: var(--ds-success-fg);
+  --color-success-subtle: var(--ds-success-subtle);
+  --color-success-border: var(--ds-success-border);
+  --color-success-text: var(--ds-success-text);
+
+  --color-warning: var(--ds-warning);
+  --color-warning-hover: var(--ds-warning-hover);
+  --color-warning-fg: var(--ds-warning-fg);
+  --color-warning-subtle: var(--ds-warning-subtle);
+  --color-warning-border: var(--ds-warning-border);
+  --color-warning-text: var(--ds-warning-text);
+
+  --color-danger: var(--ds-danger);
+  --color-danger-hover: var(--ds-danger-hover);
+  --color-danger-active: var(--ds-danger-active);
+  --color-danger-fg: var(--ds-danger-fg);
+  --color-danger-subtle: var(--ds-danger-subtle);
+  --color-danger-border: var(--ds-danger-border);
+  --color-danger-text: var(--ds-danger-text);
+
+  --color-info: var(--ds-info);
+  --color-info-hover: var(--ds-info-hover);
+  --color-info-fg: var(--ds-info-fg);
+  --color-info-subtle: var(--ds-info-subtle);
+  --color-info-border: var(--ds-info-border);
+  --color-info-text: var(--ds-info-text);
+
+  --color-focus: var(--ds-focus-ring);
+
+  /* --- Data viz ------------------------------------------------------- */
+  --color-viz-1: var(--p-viz-1);
+  --color-viz-2: var(--p-viz-2);
+  --color-viz-3: var(--p-viz-3);
+  --color-viz-4: var(--p-viz-4);
+  --color-viz-5: var(--p-viz-5);
+  --color-viz-6: var(--p-viz-6);
+  --color-viz-7: var(--p-viz-7);
+  --color-viz-8: var(--p-viz-8);
+
+  /* --- Radius ---------------------------------------------------------
+     Nested radii must shrink inward or the corners visually "pinch".
+     Rule of thumb: inner = outer − padding.                             */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-3xl: 28px;
+
+  /* --- Elevation ------------------------------------------------------ */
+  --shadow-e0: var(--ds-shadow-0);
+  --shadow-e1: var(--ds-shadow-1);
+  --shadow-e2: var(--ds-shadow-2);
+  --shadow-e3: var(--ds-shadow-3);
+  --shadow-e4: var(--ds-shadow-4);
+  --shadow-e5: var(--ds-shadow-5);
+  --shadow-glow: var(--ds-shadow-accent);
+
+  /* --- Typography ------------------------------------------------------ */
+  --font-sans: 'Inter Variable', 'Inter', ui-sans-serif, system-ui, -apple-system,
+    'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, 'SF Mono',
+    Menlo, Consolas, monospace;
+
+  --text-display: 2.75rem; /* 44 */
+  --text-display--line-height: 1.08;
+  --text-display--letter-spacing: -0.028em;
+  --text-display--font-weight: 620;
+
+  --text-h1: 2rem; /* 32 */
+  --text-h1--line-height: 1.16;
+  --text-h1--letter-spacing: -0.022em;
+  --text-h1--font-weight: 620;
+
+  --text-h2: 1.5rem; /* 24 */
+  --text-h2--line-height: 1.25;
+  --text-h2--letter-spacing: -0.017em;
+  --text-h2--font-weight: 600;
+
+  --text-h3: 1.1875rem; /* 19 */
+  --text-h3--line-height: 1.35;
+  --text-h3--letter-spacing: -0.012em;
+  --text-h3--font-weight: 600;
+
+  --text-h4: 1rem; /* 16 */
+  --text-h4--line-height: 1.45;
+  --text-h4--letter-spacing: -0.006em;
+  --text-h4--font-weight: 600;
+
+  --text-body-lg: 1.0625rem; /* 17 */
+  --text-body-lg--line-height: 1.62;
+  --text-body-lg--letter-spacing: -0.004em;
+
+  --text-body: 0.9375rem; /* 15 */
+  --text-body--line-height: 1.66;
+  --text-body--letter-spacing: -0.002em;
+
+  --text-body-sm: 0.8125rem; /* 13 */
+  --text-body-sm--line-height: 1.6;
+  --text-body-sm--letter-spacing: 0;
+
+  --text-label: 0.8125rem; /* 13 */
+  --text-label--line-height: 1.2;
+  --text-label--letter-spacing: 0.001em;
+  --text-label--font-weight: 540;
+
+  --text-label-sm: 0.75rem; /* 12 */
+  --text-label-sm--line-height: 1.2;
+  --text-label-sm--letter-spacing: 0.004em;
+  --text-label-sm--font-weight: 540;
+
+  --text-caption: 0.75rem; /* 12 */
+  --text-caption--line-height: 1.45;
+  --text-caption--letter-spacing: 0.002em;
+
+  --text-overline: 0.6875rem; /* 11 */
+  --text-overline--line-height: 1.2;
+  --text-overline--letter-spacing: 0.09em;
+  --text-overline--font-weight: 600;
+
+  --text-code: 0.8125rem; /* 13 */
+  --text-code--line-height: 1.65;
+  --text-code--letter-spacing: -0.005em;
+
+  /* --- Motion ---------------------------------------------------------
+     Durations are perceptual, not arbitrary. Under ~100ms a change reads as
+     instant; over ~400ms the UI feels like it is deciding whether to obey.  */
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-emphasized: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-decelerate: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --ease-accelerate: cubic-bezier(0.3, 0, 0.8, 0.15);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --animate-fade-in: fade-in 160ms var(--ease-standard) both;
+  --animate-scale-in: scale-in 180ms var(--ease-emphasized) both;
+  --animate-slide-up: slide-up 220ms var(--ease-emphasized) both;
+  --animate-shimmer: shimmer 1.6s linear infinite;
+  --animate-spin-slow: spin 720ms linear infinite;
+  --animate-pulse-ring: pulse-ring 1.8s var(--ease-standard) infinite;
+  --animate-indeterminate: indeterminate 1.4s var(--ease-standard) infinite;
+}
+
+/* Duration tokens live outside @theme — Tailwind ships duration-* utilities
+   that take bare numbers, so these are for hand-written CSS and JS. */
+:root {
+  --duration-instant: 75ms;
+  --duration-fast: 120ms;
+  --duration-quick: 160ms;
+  --duration-normal: 220ms;
+  --duration-slow: 320ms;
+  --duration-slower: 480ms;
+  --duration-deliberate: 640ms;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes shimmer {
+  from {
+    background-position: -180% 0;
+  }
+  to {
+    background-position: 180% 0;
+  }
+}
+@keyframes pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 var(--ds-accent-subtle);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgb(124 108 255 / 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgb(124 108 255 / 0);
+  }
+}
+/* One-shot emphasis pulse. Never looped — see the Animation page. */
+@keyframes attention {
+  0% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(1.06);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes wiggle {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-9deg);
+  }
+  75% {
+    transform: rotate(9deg);
+  }
+}
+/* Used by the easing specimens on the Motion page. */
+@keyframes slide-x {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(100cqw - 100%));
+  }
+}
+@keyframes drawer-in-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes drawer-in-left {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes sheet-in {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+@keyframes indeterminate {
+  0% {
+    transform: translateX(-100%) scaleX(0.35);
+  }
+  50% {
+    transform: translateX(20%) scaleX(0.6);
+  }
+  100% {
+    transform: translateX(150%) scaleX(0.35);
+  }
+}

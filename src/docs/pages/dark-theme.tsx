@@ -1,0 +1,505 @@
+import { Button } from '@/ui/Button'
+import { Badge } from '@/ui/Display'
+import { Alert } from '@/ui/Feedback'
+import { Card, CardHeader } from '@/ui/Surface'
+import { Cell, PreviewStage, Row, Stack, Swatch, defineDoc } from '../framework/kit'
+
+function SurfaceLadder({ theme }: { theme: 'dark' | 'light' }) {
+  return (
+    <div
+      data-theme={theme}
+      className="rounded-[var(--radius-lg)] border border-[var(--ds-border)] bg-[var(--ds-canvas)] p-4"
+    >
+      <p className="mb-3 text-overline uppercase text-[var(--ds-fg-muted)]">{theme}</p>
+      <Stack gap="sm">
+        {[
+          ['canvas', '--ds-canvas'],
+          ['surface', '--ds-surface'],
+          ['raised', '--ds-surface-raised'],
+          ['overlay', '--ds-surface-overlay'],
+          ['inset', '--ds-surface-inset'],
+        ].map(([label, v]) => (
+          <div
+            key={label}
+            className="flex items-center justify-between rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] px-3 py-2"
+            style={{ background: `var(${v})` }}
+          >
+            <span className="text-caption text-[var(--ds-fg-secondary)]">{label}</span>
+            <code className="font-mono text-[10px] text-[var(--ds-fg-muted)]">{v}</code>
+          </div>
+        ))}
+      </Stack>
+    </div>
+  )
+}
+
+function SampleUI({ theme }: { theme: 'dark' | 'light' }) {
+  return (
+    <div
+      data-theme={theme}
+      className="flex flex-col gap-3 rounded-[var(--radius-lg)] border border-[var(--ds-border)] bg-[var(--ds-canvas)] p-4"
+    >
+      <Card padding="sm">
+        <CardHeader
+          title="api-gateway"
+          description="Healthy · 3 regions"
+          actions={<Badge tone="success" dot size="sm">Live</Badge>}
+        />
+      </Card>
+      <Alert tone="warning" title="Certificate expires in 6 days">
+        Renewal is automatic, but the DNS challenge record is missing.
+      </Alert>
+      <Row gap="sm">
+        <Button size="sm">Deploy</Button>
+        <Button size="sm" variant="outlined">Logs</Button>
+        <Button size="sm" variant="text">Cancel</Button>
+      </Row>
+    </div>
+  )
+}
+
+export default defineDoc({
+  meta: {
+    id: 'dark-theme',
+    title: 'Dark Theme',
+    group: 'Foundations',
+    tagline:
+      'The default theme. Depth comes from surfaces getting lighter, not from shadows getting bigger — and it is emphatically not an inversion of the light theme.',
+    keywords: ['dark mode', 'night', 'theme', 'oled', 'halation', 'surface'],
+  },
+
+  overview: {
+    purpose:
+      'Dark mode reduces eye strain in low light, saves power on OLED displays, and is what most developer-facing products default to. Done properly it also produces better hierarchy than a light theme, because surface lightness becomes an extra channel that light themes simply do not have.',
+    whenToUse: [
+      'As the default for developer tools, dashboards, editors and anything used for long sessions.',
+      'When the interface surrounds media — images, video and charts read better against a dark field.',
+      'When the user’s OS reports prefers-color-scheme: dark and they have expressed no preference.',
+      'Always alongside a light theme. Shipping only one is shipping half a product.',
+    ],
+    whenNotToUse: [
+      {
+        text: 'For long-form reading in a bright environment — light-on-dark measurably slows reading for most people in daylight.',
+        instead: 'the light theme',
+        to: '#/light-theme',
+      },
+      {
+        text: 'For content destined for print or export.',
+        instead: 'a light-themed export path',
+      },
+      {
+        text: 'When produced by inverting the light palette.',
+        instead: 'a purpose-built dark ramp',
+      },
+    ],
+    reasoning: (
+      <>
+        <p>
+          Three rules make or break a dark theme, and all three are counter-intuitive.
+        </p>
+        <p>
+          <strong>Never use pure black or pure white.</strong> #FFF text on #000 produces halation —
+          the light text visually bleeds into the dark field, which is uncomfortable for everyone and
+          genuinely difficult for readers with astigmatism. Our canvas is <code>#0A0B0E</code> and
+          our brightest foreground is <code>#EDEFF4</code>, giving 13.8:1: far above the requirement
+          and below the point where it starts to hurt.
+        </p>
+        <p>
+          <strong>Elevation lightens.</strong> A shadow on near-black has almost nothing to darken,
+          so depth has to come from the surface ramp — canvas, surface, raised, overlay, each about
+          4–6% lighter than the last. The shadow is still present, but it is defining an edge rather
+          than communicating height.
+        </p>
+        <p>
+          <strong>Saturated colours must be desaturated and lightened.</strong> A colour tuned for
+          white backgrounds vibrates against dark ones — the chromatic aberration in the eye cannot
+          focus both the background and a high-chroma foreground simultaneously. Our brand goes from{' '}
+          <code>#6A55F2</code> in light to <code>#7C6CFF</code> in dark: lighter, slightly less
+          saturated, and far more comfortable.
+        </p>
+      </>
+    ),
+  },
+
+  preview: {
+    render: (
+      <PreviewStage label="Surface ladder" center={false} minHeight={0} allowResize={false}>
+        <div className="grid w-full gap-4 sm:grid-cols-2">
+          <SurfaceLadder theme="dark" />
+          <SurfaceLadder theme="light" />
+        </div>
+      </PreviewStage>
+    ),
+    examples: [
+      {
+        id: 'side-by-side',
+        title: 'The same UI in both themes',
+        description:
+          'Identical markup and identical component code. Only the tier-2 tokens change — and note that the dark version is not the light version with the colours flipped.',
+        render: (
+          <PreviewStage center={false} minHeight={0} allowResize={false}>
+            <div className="grid w-full gap-4 lg:grid-cols-2">
+              <SampleUI theme="dark" />
+              <SampleUI theme="light" />
+            </div>
+          </PreviewStage>
+        ),
+      },
+      {
+        id: 'halation',
+        title: 'Why not pure black',
+        description:
+          'Both blocks pass contrast comfortably. The left is what we ship; the right is what maximum contrast actually feels like after two minutes of reading.',
+        render: (
+          <PreviewStage center={false} minHeight={0} allowResize={false}>
+            <div className="grid w-full gap-4 sm:grid-cols-2">
+              <Cell label="#0A0B0E on #EDEFF4 — 13.8:1" tone="good">
+                <div className="rounded-[var(--radius-md)] bg-[#0A0B0E] p-4">
+                  <p className="text-body-sm leading-relaxed text-[#EDEFF4]">
+                    Deployment finished in 42 seconds across three regions. Every request is retried
+                    twice before the circuit opens.
+                  </p>
+                </div>
+              </Cell>
+              <Cell label="#000 on #FFF — 21:1" tone="bad">
+                <div className="rounded-[var(--radius-md)] bg-black p-4">
+                  <p className="text-body-sm leading-relaxed text-white">
+                    Deployment finished in 42 seconds across three regions. Every request is retried
+                    twice before the circuit opens.
+                  </p>
+                </div>
+              </Cell>
+            </div>
+          </PreviewStage>
+        ),
+      },
+      {
+        id: 'chroma',
+        title: 'Colour has to move',
+        description:
+          'The top row is the light-theme value shown on a dark canvas. The bottom row is the dark-theme value. Same role, different step of the ramp.',
+        render: (
+          <PreviewStage center={false} minHeight={0} allowResize={false}>
+            <Stack gap="md" className="w-full">
+              <div>
+                <p className="mb-2 text-overline uppercase text-[var(--ds-fg-muted)]">
+                  Light-theme values on a dark canvas — too dark, too saturated
+                </p>
+                <Row gap="sm">
+                  <Swatch name="brand-600" value="#6a55f2" size="sm" />
+                  <Swatch name="success-600" value="#0e9260" size="sm" />
+                  <Swatch name="danger-600" value="#d62838" size="sm" />
+                  <Swatch name="info-600" value="#1b62db" size="sm" />
+                </Row>
+              </div>
+              <div>
+                <p className="mb-2 text-overline uppercase text-[var(--ds-fg-muted)]">
+                  Dark-theme values — lighter, calmer, readable
+                </p>
+                <Row gap="sm">
+                  <Swatch name="brand-500" value="#7c6cff" size="sm" />
+                  <Swatch name="success-500" value="#16b375" size="sm" />
+                  <Swatch name="danger-500" value="#ee4351" size="sm" />
+                  <Swatch name="info-500" value="#2e7df6" size="sm" />
+                </Row>
+              </div>
+            </Stack>
+          </PreviewStage>
+        ),
+      },
+    ],
+    states: [
+      { label: 'Canvas', note: '#0A0B0E', render: <span className="block h-10 w-16 rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-canvas)]" /> },
+      { label: 'Surface', note: '#101216', render: <span className="block h-10 w-16 rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface)]" /> },
+      { label: 'Raised', note: '#171A20', render: <span className="block h-10 w-16 rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface-raised)]" /> },
+      { label: 'Overlay', note: '#1D212A', render: <span className="block h-10 w-16 rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface-overlay)]" /> },
+      { label: 'Inset', note: '#0D0F13', render: <span className="block h-10 w-16 rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface-inset)]" /> },
+      { label: 'Hover', note: 'white 4.5%', render: <span className="block h-10 w-16 rounded-[var(--radius-md)] bg-[var(--ds-surface)] ring-1 ring-inset ring-[var(--ds-border-subtle)]"><span className="block h-full w-full rounded-[var(--radius-md)] bg-[var(--ds-layer-hover)]" /></span> },
+      { label: 'Border', note: 'white 11%', render: <span className="block h-10 w-16 rounded-[var(--radius-md)] border border-[var(--ds-border)]" /> },
+      { label: 'Scrim', note: 'black 72%', render: <span className="block h-10 w-16 rounded-[var(--radius-md)] bg-[var(--ds-layer-scrim)]" /> },
+    ],
+  },
+
+  anatomy: {
+    render: (
+      <div className="w-full max-w-md rounded-[var(--radius-xl)] bg-[var(--ds-canvas)] p-4">
+        <div className="rounded-[var(--radius-lg)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] p-4 shadow-e1">
+          <div className="rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface-raised)] p-3 shadow-e2">
+            <div className="rounded-[var(--radius-sm)] bg-[var(--ds-surface-inset)] px-3 py-2">
+              <span className="text-caption text-[var(--ds-fg-muted)]">inset · a well, not a lift</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    ),
+    caption:
+      'Four surfaces, each a measured step apart. The shadow contributes almost nothing here — remove it and the hierarchy still reads.',
+    parts: [
+      {
+        n: 1,
+        label: 'Canvas',
+        value: '#0A0B0E',
+        kind: 'color',
+        note: 'Not #000. Pure black causes halation with light text and removes the ability to render anything darker than the page.',
+      },
+      {
+        n: 2,
+        label: 'Surface step',
+        value: '≈4–6% lightness per level',
+        kind: 'color',
+        note: 'Below 3% the levels are indistinguishable; above 8% the top surface starts reading as a different colour rather than a higher one.',
+      },
+      {
+        n: 3,
+        label: 'Inset',
+        value: '#0D0F13 — darker than surface',
+        kind: 'color',
+        note: 'Wells go the other way. An input darker than its card reads as a hole you can pour text into; lighter reads as a button.',
+      },
+      {
+        n: 4,
+        label: 'Border',
+        value: 'white at 6–19% alpha',
+        kind: 'color',
+        note: 'Alpha, so it composes over any surface. A solid grey border only matches one background and looks wrong on the other three.',
+      },
+      {
+        n: 5,
+        label: 'Foreground ceiling',
+        value: '#EDEFF4, not #FFFFFF',
+        kind: 'color',
+        note: '13.8:1 rather than 21:1. Well past AAA, and specifically below the point where light text starts to bloom against a dark field.',
+      },
+    ],
+  },
+
+  tokens: [
+    { category: 'color', token: '--ds-canvas', value: '#0a0b0e', usedFor: 'Page background' },
+    { category: 'color', token: '--ds-surface', value: '#101216', usedFor: 'Cards, panels' },
+    { category: 'color', token: '--ds-surface-raised', value: '#171a20', usedFor: 'Elevated cards, active segments' },
+    { category: 'color', token: '--ds-surface-overlay', value: '#1d212a', usedFor: 'Dialogs, menus, toasts' },
+    { category: 'color', token: '--ds-surface-inset', value: '#0d0f13', usedFor: 'Inputs, code blocks, table headers' },
+    { category: 'color', token: '--ds-fg', value: '#edeff4', usedFor: 'Primary text — 13.8:1 on canvas' },
+    { category: 'color', token: '--ds-fg-secondary', value: '#a8b0c0', usedFor: 'Body text — 7.6:1' },
+    { category: 'color', token: '--ds-fg-muted', value: '#737c8d', usedFor: 'Captions — 4.6:1' },
+    { category: 'color', token: '--ds-border-subtle', value: 'white 6%', usedFor: 'Dividers, card edges' },
+    { category: 'color', token: '--ds-layer-hover', value: 'white 4.5%', usedFor: 'Hover wash over any surface' },
+    { category: 'color', token: '--ds-accent', value: '#7c6cff', usedFor: 'Brand — lighter than the light-theme value' },
+    { category: 'color', token: '--ds-layer-scrim', value: 'black 72%', usedFor: 'Behind modal surfaces' },
+    { category: 'shadow', token: '--shadow-e1 … e5', usedFor: 'Tighter and darker than their light-theme counterparts' },
+  ],
+
+  do: [
+    {
+      title: 'Lighten to elevate',
+      why: 'Surface lightness is the primary depth channel in dark mode. It survives greyscale, high-contrast mode and a phone in sunlight; a shadow on near-black does none of those.',
+      render: (
+        <Stack gap="xs" className="w-full">
+          {['--ds-canvas', '--ds-surface', '--ds-surface-raised', '--ds-surface-overlay'].map((v) => (
+            <div
+              key={v}
+              className="rounded-[var(--radius-sm)] border border-[var(--ds-border-subtle)] px-2.5 py-1.5 text-caption text-[var(--ds-fg-muted)]"
+              style={{ background: `var(${v})` }}
+            >
+              {v}
+            </div>
+          ))}
+        </Stack>
+      ),
+    },
+    {
+      title: 'Use alpha for overlays and borders',
+      why: 'A 6% white border composes correctly over the canvas, a card, a menu and a coloured banner. A solid grey border is correct on exactly one of them.',
+      render: (
+        <Stack gap="xs" className="w-full">
+          {['var(--ds-surface)', 'var(--ds-accent-subtle)', 'var(--ds-danger-subtle)'].map((bg) => (
+            <div key={bg} className="rounded-[var(--radius-sm)] border border-[var(--ds-border)] p-2" style={{ background: bg }}>
+              <span className="text-caption text-[var(--ds-fg-secondary)]">same border token</span>
+            </div>
+          ))}
+        </Stack>
+      ),
+    },
+    {
+      title: 'Set color-scheme',
+      why: 'It tells the browser to render native scrollbars, the text caret, form controls and autofill backgrounds in dark. Without it you get white scrollbars and a blinding autofill.',
+      render: (
+        <code className="font-mono text-[11px] text-[var(--ds-success-text)]">
+          :root {'{'} color-scheme: dark; {'}'}
+        </code>
+      ),
+    },
+    {
+      title: 'Dim images and illustrations slightly',
+      why: 'A photograph at full brightness against a dark UI is a light source. A small brightness reduction on non-critical imagery keeps the page comfortable without altering content.',
+      render: (
+        <Row gap="sm">
+          <span className="block h-12 w-20 rounded-[var(--radius-md)] bg-gradient-to-br from-[#fff] to-[#ddd]" />
+          <span className="block h-12 w-20 rounded-[var(--radius-md)] bg-gradient-to-br from-[#fff] to-[#ddd] brightness-[0.86]" />
+        </Row>
+      ),
+    },
+  ],
+
+  dont: [
+    {
+      title: 'Do not invert the light theme',
+      why: 'Inversion produces mid-greys with no meaningful lightness steps, a brand colour that vibrates, and shadows that are invisible. Dark mode is a separate design, not a filter.',
+      render: (
+        <div className="w-full rounded-[var(--radius-md)] p-3" style={{ filter: 'invert(1)' }}>
+          <div className="rounded-[var(--radius-sm)] bg-white p-3">
+            <p className="text-body-sm text-black">Inverted — and now the brand colour is green.</p>
+          </div>
+        </div>
+      ),
+    },
+    {
+      title: 'Do not use pure black or pure white',
+      why: 'Maximum contrast causes halation, and #000 leaves nowhere to go for anything that needs to be darker than the page — like an inset input.',
+      render: (
+        <div className="w-full rounded-[var(--radius-md)] bg-black p-3">
+          <p className="text-body-sm text-white">#FFFFFF on #000000 — 21:1 and unpleasant.</p>
+        </div>
+      ),
+    },
+    {
+      title: 'Do not reuse light-theme shadows',
+      why: 'A soft grey shadow on a dark surface fogs the edge instead of defining it. Dark shadows are darker, tighter, and always paired with a hairline border.',
+      render: (
+        <div className="h-14 w-40 rounded-[var(--radius-lg)] bg-[var(--ds-surface-raised)]" style={{ boxShadow: '0 8px 24px rgb(140 140 150 / 0.4)' }} />
+      ),
+    },
+    {
+      title: 'Do not keep light-theme saturation',
+      why: 'High-chroma colours on dark backgrounds vibrate — the eye cannot focus both planes at once. Lighten the value and pull a little chroma out of it.',
+      render: (
+        <Row gap="sm">
+          <span className="grid h-10 w-24 place-items-center rounded-[var(--radius-md)] text-caption text-white" style={{ background: '#4835a8' }}>
+            too dark
+          </span>
+          <span className="grid h-10 w-24 place-items-center rounded-[var(--radius-md)] text-caption text-black" style={{ background: '#a78bfa', filter: 'saturate(2)' }}>
+            too hot
+          </span>
+        </Row>
+      ),
+    },
+  ],
+
+  a11y: {
+    criteria: [
+      { id: '1.4.3', name: 'Contrast (Minimum)', level: 'AA' },
+      { id: '1.4.8', name: 'Visual Presentation', level: 'AAA' },
+      { id: '1.4.11', name: 'Non-text Contrast', level: 'AA' },
+    ],
+    contrast: [
+      'Dark themes need contrast checked independently — a pair that passes on white frequently fails on near-black and vice versa.',
+      'Our primary text is 13.8:1, body 7.6:1 and captions 4.6:1 against the canvas. All comfortably above AA, all deliberately below 21:1.',
+      'Alpha borders and tints must be composited against their actual surface before measuring. A 6% white border over the canvas and the same border over an overlay are different colours.',
+    ],
+    keyboard: [
+      { keys: '⌘K → theme', does: 'The command palette exposes the theme switch, because a keyboard user should not have to hunt for it.' },
+    ],
+    aria: [
+      { attr: 'color-scheme: dark', on: ':root', note: 'Native scrollbars, caret, form controls, autofill and the browser UI all follow it.' },
+      { attr: 'prefers-color-scheme', on: 'Media query', note: 'The initial default only. An explicit user choice must always win and must persist.' },
+      { attr: 'forced-colors', on: 'Media query', note: 'High Contrast Mode replaces the palette entirely. Test that layout and semantics survive without any of your colours.' },
+    ],
+    focus:
+      'The focus ring uses #937FFF in dark — lighter than the accent, so it clears 3:1 against both the accent-filled button and the near-black canvas.',
+    screenReader: [
+      'Theme has no effect on assistive technology. Never use it as a signal — a "dark banner means danger" convention is invisible to a screen reader and to a light-theme user.',
+    ],
+    touch:
+      'Dark interfaces are typically used in low light, where pupils are dilated and glare is worse. Keep large bright surfaces to a minimum and avoid full-white modals.',
+  },
+
+  code: {
+    usage: {
+      lang: 'tsx',
+      code: `// The theme lives on <html> so a single attribute re-themes everything
+document.documentElement.dataset.theme = 'dark'
+
+// Respect the OS default, but let an explicit choice win and persist
+function initialTheme(): 'dark' | 'light' {
+  const saved = localStorage.getItem('theme')
+  if (saved === 'dark' || saved === 'light') return saved
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+}
+
+// Prevent the flash of the wrong theme: run this before first paint,
+// as an inline script in <head>, not in a React effect.
+;(function () {
+  const t = localStorage.getItem('theme') ||
+    (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+  document.documentElement.dataset.theme = t
+})()
+
+// A light island inside the dark app — used by every preview in this Bible
+<div data-theme="light">
+  <Card>Renders in light regardless of the app theme</Card>
+</div>`,
+    },
+    css: {
+      lang: 'css',
+      code: `:root, [data-theme='dark'] {
+  color-scheme: dark;
+
+  /* Surfaces climb in lightness. Never pure black. */
+  --ds-canvas:          #0a0b0e;
+  --ds-surface:         #101216;
+  --ds-surface-raised:  #171a20;
+  --ds-surface-overlay: #1d212a;
+  --ds-surface-inset:   #0d0f13;   /* darker: a well, not a lift */
+
+  /* Foreground stops short of pure white to avoid halation */
+  --ds-fg:           #edeff4;      /* 13.8:1 */
+  --ds-fg-secondary: #a8b0c0;      /*  7.6:1 */
+  --ds-fg-muted:     #737c8d;      /*  4.6:1 */
+
+  /* Alpha, so one token works over every surface */
+  --ds-border-subtle: rgb(255 255 255 / 0.06);
+  --ds-border:        rgb(255 255 255 / 0.11);
+  --ds-layer-hover:   rgb(255 255 255 / 0.045);
+
+  /* Brand lightens and loses a little chroma */
+  --ds-accent: #7c6cff;            /* light theme uses #6a55f2 */
+
+  /* Shadows are darker and tighter than in light mode */
+  --ds-shadow-3: 0 4px 8px -4px rgb(0 0 0 / 0.60),
+                 0 12px 20px -6px rgb(0 0 0 / 0.44);
+}
+
+/* Take the edge off bright media without altering content */
+[data-theme='dark'] img:not([data-no-dim]),
+[data-theme='dark'] video {
+  filter: brightness(0.92);
+}`,
+    },
+  },
+
+  notes: {
+    tips: [
+      'Design dark first if the product is developer-facing. Building light second exposes every place where surface lightness was doing structural work.',
+      'Put the theme attribute on <html> and set it from an inline script in <head>. Setting it in a React effect guarantees a visible flash on every load.',
+      'Test on an OLED phone at minimum brightness. Ramps that look smooth on a calibrated monitor often band badly there.',
+      'Keep code blocks and inputs darker than their container. Inverting that relationship makes an input look like a button and confuses people before they can say why.',
+    ],
+    performance: [
+      'Switching a data attribute on :root invalidates style for the whole document, which is one full style recalculation — imperceptible for a deliberate theme switch, far too expensive to animate.',
+      'Do not transition colours on a theme switch. A 300ms crossfade of every element on the page is one of the most expensive things a web app can do.',
+      'OLED screens use meaningfully less power on dark pixels. For a mobile-first product that matters more than most performance work.',
+    ],
+    mistakes: [
+      'Forgetting color-scheme, then getting white scrollbars, a white autofill background and a light date picker in an otherwise dark app.',
+      'Reusing light-theme shadow values, which look like grey fog on a dark surface.',
+      'Making the input the same colour as its card, so the field boundary disappears entirely.',
+      'Leaving one hard-coded #FFFFFF in a component. It is invisible in the light theme and glaring in the dark one.',
+    ],
+    realWorld: [
+      'Ship both themes from day one. Retrofitting a second theme means auditing every hard-coded colour in the product, and there are always more than anyone expects.',
+      'Give users three choices — dark, light, system — and remember the choice. "System" alone is not enough for people whose OS setting does not match their preference for your app.',
+      'Screenshot your product in both themes side by side and look at them for a minute. Inconsistencies that are invisible in isolation are obvious in comparison.',
+      'When a designer supplies only light-mode mockups, ask for the dark surface ramp before building. Deriving it during implementation always produces mid-greys with no hierarchy.',
+    ],
+  },
+})
