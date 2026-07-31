@@ -315,7 +315,7 @@ function NavGroupBlock({
         <span className="shrink-0 text-[var(--ds-fg-muted)]">
           <GroupIcon name={icon} size={13} />
         </span>
-        <span className="flex-1 truncate text-overline uppercase text-[var(--ds-fg-secondary)]">
+        <span className="flex-1 truncate text-overline uppercase text-[var(--ds-fg)]">
           {title}
         </span>
         <span className="shrink-0 font-mono text-[10px] tabular-nums text-[var(--ds-fg-disabled)]">
