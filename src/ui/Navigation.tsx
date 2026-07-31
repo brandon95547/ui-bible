@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { ChevronRight, MoreHorizontal, ChevronLeft } from 'lucide-react'
+import { ChevronRight, MoreHorizontal, ChevronLeft, ChevronDown } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import { inspect } from '@/lib/inspect'
 import { CountBadge } from './Display'
@@ -460,6 +460,218 @@ export function NavItem({
       {count !== undefined && <CountBadge count={count} tone="neutral" />}
       {trailing}
     </Comp>
+  )
+}
+
+/* ===========================================================================
+   MEGA MENU — a wide, multi-column panel under a horizontal nav bar.
+
+   The entire design problem is hover intent. Opening on contact flashes
+   panels at anyone whose pointer merely crosses the bar; closing on exit
+   kills the panel the moment the pointer cuts the corner on its way down
+   to the thing it wants. Two asymmetric delays solve both: short to open,
+   longer to close, and zero when moving between triggers whose intent has
+   already been proven.
+   ======================================================================== */
+
+export interface MegaMenuColumn {
+  title: string
+  href?: string
+  items: { label: string; description?: string; icon?: React.ReactNode; href?: string }[]
+}
+
+export interface MegaMenuGroup {
+  label: string
+  columns: MegaMenuColumn[]
+  /** Promoted content pinned to the end of the row. */
+  featured?: React.ReactNode
+}
+
+export function MegaMenu({
+  groups,
+  openDelay = 120,
+  closeDelay = 240,
+  className,
+  'aria-label': ariaLabel = 'Main',
+}: {
+  groups: MegaMenuGroup[]
+  /** Time the pointer must rest on a trigger before the panel opens. */
+  openDelay?: number
+  /** Grace period after the pointer leaves, so a diagonal path survives. */
+  closeDelay?: number
+  className?: string
+  'aria-label'?: string
+}) {
+  const [open, setOpen] = React.useState<number | null>(null)
+  const timer = React.useRef<number | undefined>(undefined)
+  const rootRef = React.useRef<HTMLDivElement>(null)
+  const triggers = React.useRef<(HTMLButtonElement | null)[]>([])
+
+  const clear = React.useCallback(() => {
+    if (timer.current !== undefined) window.clearTimeout(timer.current)
+    timer.current = undefined
+  }, [])
+
+  /* Once one panel is open the user has proven their intent, so sliding
+     along the bar switches instantly. Re-paying the open delay on every
+     sibling makes a menu bar feel broken. */
+  const intendOpen = (i: number) => {
+    clear()
+    if (open !== null) {
+      setOpen(i)
+      return
+    }
+    timer.current = window.setTimeout(() => setOpen(i), openDelay)
+  }
+
+  const intendClose = () => {
+    clear()
+    timer.current = window.setTimeout(() => setOpen(null), closeDelay)
+  }
+
+  React.useEffect(() => clear, [clear])
+
+  React.useEffect(() => {
+    if (open === null) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return
+      setOpen(null)
+      triggers.current[open]?.focus()
+    }
+    const onPointerDown = (e: PointerEvent) => {
+      if (!rootRef.current?.contains(e.target as Node)) setOpen(null)
+    }
+    document.addEventListener('keydown', onKey)
+    document.addEventListener('pointerdown', onPointerDown)
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.removeEventListener('pointerdown', onPointerDown)
+    }
+  }, [open])
+
+  return (
+    <div
+      ref={rootRef}
+      className={cn('relative', className)}
+      /* Tabbing out of the last link in the panel must close it. Without
+         this the panel hangs open behind whatever the user moved on to. */
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node)) setOpen(null)
+      }}
+      {...inspect('MegaMenu', {
+        tokens: ['--ds-surface-overlay', '--shadow-e4', '--ds-border'],
+        why: 'Opens after 120ms of rest and closes after a 240ms grace period. The asymmetry is the whole component: the short delay stops panels flashing at a pointer that is only passing through, and the long one keeps the panel alive while the pointer travels the diagonal from the trigger to the link it wants.',
+        a11y: 'Hover is an enhancement, never the only way in — every trigger is a real button that opens on click and on Enter. aria-expanded reports the state, Escape closes and returns focus to the trigger.',
+      })}
+    >
+      <nav aria-label={ariaLabel} className="flex items-center gap-0.5">
+        {groups.map((g, i) => (
+          <button
+            key={g.label}
+            ref={(el) => {
+              triggers.current[i] = el
+            }}
+            type="button"
+            aria-expanded={open === i}
+            aria-haspopup="true"
+            onMouseEnter={() => intendOpen(i)}
+            onMouseLeave={intendClose}
+            onClick={() => setOpen((o) => (o === i ? null : i))}
+            /* Focus only follows the pointer once a panel is already open,
+               so Tabbing through the bar does not fire panels at a user
+               who is on their way somewhere else. */
+            onFocus={() => open !== null && setOpen(i)}
+            onKeyDown={(e) => {
+              if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+                e.preventDefault()
+                const d = e.key === 'ArrowRight' ? 1 : -1
+                triggers.current[(i + d + groups.length) % groups.length]?.focus()
+              } else if (e.key === 'ArrowDown') {
+                e.preventDefault()
+                setOpen(i)
+              }
+            }}
+            className={cn(
+              'flex h-9 items-center gap-1 rounded-[var(--radius-md)] px-3 text-label',
+              'transition-colors duration-[120ms]',
+              'focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--ds-focus-ring)]',
+              open === i
+                ? 'bg-[var(--ds-layer-hover)] text-[var(--ds-fg)]'
+                : 'text-[var(--ds-fg-secondary)] hover:text-[var(--ds-fg)]',
+            )}
+          >
+            {g.label}
+            <ChevronDown
+              size={13}
+              aria-hidden
+              className={cn(
+                'text-[var(--ds-fg-muted)] transition-transform duration-[160ms]',
+                open === i && 'rotate-180',
+              )}
+            />
+          </button>
+        ))}
+      </nav>
+
+      {open !== null && (
+        <div
+          /* Keeping the pointer inside the panel cancels the pending close.
+             This is what makes the grace period feel like grace rather
+             than a timer racing the user. */
+          onMouseEnter={clear}
+          onMouseLeave={intendClose}
+          className={cn(
+            'absolute inset-x-0 top-[calc(100%+6px)] z-[60] overflow-hidden',
+            'rounded-[var(--radius-xl)] border border-[var(--ds-border)]',
+            'bg-[var(--ds-surface-overlay)] p-5 shadow-e4',
+            'animate-[fade-in_140ms_ease-out_both]',
+          )}
+        >
+          <div className="flex flex-wrap gap-x-8 gap-y-6">
+            {groups[open].columns.map((col) => (
+              <div key={col.title} className="flex min-w-[11rem] flex-1 flex-col gap-2">
+                <span className="text-overline uppercase text-[var(--ds-fg-muted)]">
+                  {col.title}
+                </span>
+                <ul className="flex flex-col gap-0.5">
+                  {col.items.map((it) => (
+                    <li key={it.label}>
+                      <a
+                        href={it.href ?? '#'}
+                        className={cn(
+                          'flex items-start gap-2.5 rounded-[var(--radius-md)] px-2 py-1.5',
+                          'transition-colors duration-[120ms] hover:bg-[var(--ds-layer-hover)]',
+                          'focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--ds-focus-ring)]',
+                        )}
+                      >
+                        {it.icon && (
+                          <span className="mt-px shrink-0 text-[var(--ds-fg-muted)]" aria-hidden>
+                            {it.icon}
+                          </span>
+                        )}
+                        <span className="flex min-w-0 flex-col">
+                          <span className="text-label text-[var(--ds-fg)]">{it.label}</span>
+                          {it.description && (
+                            <span className="text-caption text-[var(--ds-fg-muted)]">
+                              {it.description}
+                            </span>
+                          )}
+                        </span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+            {groups[open].featured && (
+              <div className="min-w-[13rem] flex-1 rounded-[var(--radius-lg)] bg-[var(--ds-surface-inset)] p-4">
+                {groups[open].featured}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
   )
 }
 
