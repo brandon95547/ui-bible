@@ -301,6 +301,14 @@ export function BottomSheet({
   title,
   children,
   footer,
+  /**
+   * Heights the sheet is allowed to rest at, as fractions of the viewport,
+   * ascending. It opens at the smallest — the least intrusive size that
+   * still answers the question — and the user pulls it up if they want more.
+   * Omit it and the sheet is sized by its content, which is right for a
+   * short list of actions and wrong for anything scrollable.
+   */
+  detents,
   className,
 }: {
   open: boolean
@@ -308,16 +316,25 @@ export function BottomSheet({
   title?: React.ReactNode
   children: React.ReactNode
   footer?: React.ReactNode
+  detents?: number[]
   className?: string
 }) {
   const panelRef = React.useRef<HTMLDivElement>(null)
   const [dragY, setDragY] = React.useState(0)
+  const [detent, setDetent] = React.useState(0)
   const startY = React.useRef<number | null>(null)
+  const rawDy = React.useRef(0)
   const titleId = React.useId()
 
   useScrollLock(open)
   useFocusTrap(open, panelRef)
   useDismissable(open, onClose, [panelRef])
+
+  /* Re-opening should not inherit the height the user left it at — the
+     sheet is a transient answer, not a window with remembered geometry. */
+  React.useEffect(() => {
+    if (open) setDetent(0)
+  }, [open])
 
   if (!open) return null
 
@@ -327,11 +344,22 @@ export function BottomSheet({
   }
   const onPointerMove = (e: React.PointerEvent) => {
     if (startY.current === null) return
-    setDragY(Math.max(0, e.clientY - startY.current))
+    rawDy.current = e.clientY - startY.current
+    /* Only downward travel moves the sheet. Dragging up past the current
+       detent would lift it off the bottom edge and open a gap under it. */
+    setDragY(Math.max(0, rawDy.current))
   }
   const onPointerUp = () => {
-    if (dragY > 110) onClose()
+    const dy = rawDy.current
+    const last = detents ? detents.length - 1 : 0
+    if (dy < -60 && detent < last) {
+      setDetent(detent + 1) // pulled up: expand to the next resting height
+    } else if (dragY > 110) {
+      if (detent > 0) setDetent(detent - 1) // pulled down: collapse a step
+      else onClose() // already at the smallest: this is a dismissal
+    }
     setDragY(0)
+    rawDy.current = 0
     startY.current = null
   }
 
@@ -344,17 +372,22 @@ export function BottomSheet({
         aria-modal="true"
         aria-labelledby={title ? titleId : undefined}
         tabIndex={-1}
-        style={{ transform: dragY ? `translateY(${dragY}px)` : undefined }}
+        style={{
+          /* Without detents the sheet is sized by its content, capped at
+             85dvh. With them it rests at an explicit fraction. */
+          height: detents ? `${detents[detent] * 100}dvh` : undefined,
+          transform: dragY ? `translateY(${dragY}px)` : undefined,
+        }}
         className={cn(
           'fixed inset-x-0 bottom-0 z-[75] flex max-h-[85dvh] flex-col outline-none',
           'rounded-t-[var(--radius-3xl)] border-t border-[var(--ds-border)] bg-[var(--ds-surface-overlay)] shadow-e5',
           !dragY && 'animate-[sheet-in_280ms_cubic-bezier(0.32,0.72,0,1)_both]',
-          !dragY && 'transition-transform duration-[240ms] ease-[cubic-bezier(0.32,0.72,0,1)]',
+          !dragY && 'transition-[transform,height] duration-[240ms] ease-[cubic-bezier(0.32,0.72,0,1)]',
           className,
         )}
         {...inspect('BottomSheet', {
           tokens: ['--radius-3xl', '--ds-surface-overlay', '--shadow-e5'],
-          why: 'Anchored to the bottom because that is where the thumb already is. The 28px top radius and the grab handle are the entire affordance: they say “this slides” without a word of instruction. Dismiss threshold is 110px so a scroll gesture never closes it by accident.',
+          why: 'Anchored to the bottom because that is where the thumb already is. The 28px top radius and the grab handle are the entire affordance: they say “this slides” without a word of instruction. Dismiss threshold is 110px so a scroll gesture never closes it by accident, and with more than one detent a downward drag collapses a step before it ever dismisses.',
           a11y: 'Drag is a convenience, never the only exit — the scrim, Escape, and a real close control all work. Cap the height at 85dvh so the user can always see they are on top of something.',
         })}
       >
