@@ -66,6 +66,12 @@ export interface TokenUse {
   token: string
   value?: string
   usedFor: string
+  /**
+   * Optional sub-heading within the category — "Surfaces", "Interaction layers",
+   * "Foreground". Long colour lists are unreadable as one flat table; short ones
+   * are fine, so this is opt-in and pages that omit it render unchanged.
+   */
+  group?: string
 }
 
 /* -- 5. Recommended sizes ------------------------------------------------- */

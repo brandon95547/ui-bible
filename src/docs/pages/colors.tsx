@@ -445,22 +445,50 @@ export default defineDoc({
   },
 
   tokens: [
-    { category: 'color', token: '--ds-canvas', usedFor: 'Page background' },
-    { category: 'color', token: '--ds-surface', usedFor: 'Cards, panels, the default raised plane' },
-    { category: 'color', token: '--ds-surface-raised', usedFor: 'A surface on a surface' },
-    { category: 'color', token: '--ds-surface-overlay', usedFor: 'Dialogs, menus, popovers' },
-    { category: 'color', token: '--ds-surface-inset', usedFor: 'Wells — inputs, code, table headers' },
-    { category: 'color', token: '--ds-fg', usedFor: 'Headings and primary text' },
-    { category: 'color', token: '--ds-fg-secondary', usedFor: 'Body copy' },
-    { category: 'color', token: '--ds-fg-muted', usedFor: 'Captions, metadata, placeholders' },
-    { category: 'color', token: '--ds-accent', usedFor: 'Primary action, selection, focus' },
-    { category: 'color', token: '--ds-success', usedFor: 'Completed, healthy, approved' },
-    { category: 'color', token: '--ds-warning', usedFor: 'Degraded, needs attention, reversible risk' },
-    { category: 'color', token: '--ds-danger', usedFor: 'Failed, destructive, irreversible' },
-    { category: 'color', token: '--ds-info', usedFor: 'Neutral system information' },
-    { category: 'color', token: '--ds-layer-hover', usedFor: 'Alpha hover wash over any surface' },
-    { category: 'color', token: '--ds-layer-selected', usedFor: 'Persistent selection tint' },
-    { category: 'color', token: '--p-viz-1 … --p-viz-8', usedFor: 'Charts, avatars, categorical tags' },
+    /* -- Surfaces: the depth ladder, back to front ------------------------- */
+    { category: 'color', group: 'Surfaces', token: '--ds-canvas', usedFor: 'Page background — the furthest-back plane' },
+    { category: 'color', group: 'Surfaces', token: '--ds-sunken', usedFor: 'Recessed regions that read as below the canvas' },
+    { category: 'color', group: 'Surfaces', token: '--ds-surface', usedFor: 'Cards, panels, the default raised plane' },
+    { category: 'color', group: 'Surfaces', token: '--ds-surface-raised', usedFor: 'A surface on a surface' },
+    { category: 'color', group: 'Surfaces', token: '--ds-surface-overlay', usedFor: 'Dialogs, menus, popovers' },
+    { category: 'color', group: 'Surfaces', token: '--ds-surface-inset', usedFor: 'Wells — inputs, code, table headers' },
+
+    /* -- Interaction layers: always alpha, so they compose over anything --- */
+    { category: 'color', group: 'Interaction layers', token: '--ds-layer-hover', usedFor: 'Hover wash over any surface' },
+    { category: 'color', group: 'Interaction layers', token: '--ds-layer-active', usedFor: 'Pressed and held states' },
+    { category: 'color', group: 'Interaction layers', token: '--ds-layer-selected', usedFor: 'Persistent selection tint — never reuse the hover value' },
+    { category: 'color', group: 'Interaction layers', token: '--ds-layer-scrim', usedFor: 'Backdrop behind modals and drawers' },
+
+    /* -- Foreground: four steps, and nothing between them ------------------ */
+    { category: 'color', group: 'Foreground', token: '--ds-fg', usedFor: 'Headings and primary text' },
+    { category: 'color', group: 'Foreground', token: '--ds-fg-secondary', usedFor: 'Body copy' },
+    { category: 'color', group: 'Foreground', token: '--ds-fg-muted', usedFor: 'Captions, metadata, placeholders, icons' },
+    { category: 'color', group: 'Foreground', token: '--ds-fg-disabled', usedFor: 'Disabled text — formally exempt from contrast rules' },
+    { category: 'color', group: 'Foreground', token: '--ds-fg-on-accent', usedFor: 'Text sitting on a solid brand fill' },
+    { category: 'color', group: 'Foreground', token: '--ds-fg-inverse', usedFor: 'Text on an inverted surface — tooltips, toasts' },
+
+    /* -- Borders ----------------------------------------------------------- */
+    { category: 'color', group: 'Borders', token: '--ds-border-subtle', usedFor: 'Dividers and card edges' },
+    { category: 'color', group: 'Borders', token: '--ds-border', usedFor: 'Default component borders' },
+    { category: 'color', group: 'Borders', token: '--ds-border-strong', usedFor: 'Checkbox and radio outlines, scrollbar thumbs' },
+    { category: 'color', group: 'Borders', token: '--ds-border-interactive', usedFor: 'The edge of something you can click' },
+
+    /* -- Brand and focus --------------------------------------------------- */
+    { category: 'color', group: 'Brand & focus', token: '--ds-accent', usedFor: 'Primary action and selection' },
+    { category: 'color', group: 'Brand & focus', token: '--ds-accent-subtle', usedFor: 'Tonal brand fill behind text or an icon' },
+    { category: 'color', group: 'Brand & focus', token: '--ds-accent-border', usedFor: 'Brand-tinted edge at ≥3:1' },
+    { category: 'color', group: 'Brand & focus', token: '--ds-accent-text', usedFor: 'The pair certified for text on --ds-accent-subtle' },
+    { category: 'color', group: 'Brand & focus', token: '--ds-focus-ring', usedFor: 'One ring for the whole system — clears 3:1 on every surface' },
+
+    /* -- Status: each ships as a family of five ---------------------------- */
+    { category: 'color', group: 'Status', token: '--ds-success', usedFor: 'Completed, healthy, approved' },
+    { category: 'color', group: 'Status', token: '--ds-warning', usedFor: 'Degraded, needs attention, reversible risk' },
+    { category: 'color', group: 'Status', token: '--ds-danger', usedFor: 'Failed, destructive, irreversible' },
+    { category: 'color', group: 'Status', token: '--ds-info', usedFor: 'Neutral system information' },
+    { category: 'color', group: 'Status', token: '--ds-{role}-subtle / -border / -text / -fg', usedFor: 'The four certified companions every role ships with' },
+
+    /* -- Categorical ------------------------------------------------------- */
+    { category: 'color', group: 'Data visualisation', token: '--p-viz-1 … --p-viz-8', usedFor: 'Charts, avatars, categorical tags — never status' },
   ],
 
   do: [

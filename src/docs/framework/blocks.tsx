@@ -301,6 +301,23 @@ export function TokenTable({ tokens }: { tokens: TokenUse[] }) {
     ([, list]) => list.length > 0,
   )
 
+  // Sub-headings within a category, in first-appearance order. Tokens with no
+  // `group` collect under '' and render as a plain run of rows, so any page
+  // that has not opted in looks exactly as it did before.
+  const subGroups = (list: TokenUse[]) => {
+    const order: string[] = []
+    const byGroup = new Map<string, TokenUse[]>()
+    list.forEach((t) => {
+      const key = t.group ?? ''
+      if (!byGroup.has(key)) {
+        order.push(key)
+        byGroup.set(key, [])
+      }
+      byGroup.get(key)!.push(t)
+    })
+    return order.map((k) => [k, byGroup.get(k)!] as const)
+  }
+
   return (
     <div className="flex flex-col gap-5">
       {grouped.map(([cat, list]) => (
@@ -325,7 +342,20 @@ export function TokenTable({ tokens }: { tokens: TokenUse[] }) {
                 </tr>
               </thead>
               <tbody>
-                {list.map((t) => {
+                {subGroups(list).map(([groupName, rows]) => (
+                  <React.Fragment key={groupName || '__ungrouped'}>
+                    {groupName && (
+                      <tr className="border-b border-[var(--ds-border-subtle)] bg-[var(--ds-layer-hover)]">
+                        <th
+                          scope="colgroup"
+                          colSpan={3}
+                          className="px-3 py-1.5 text-left text-overline uppercase text-[var(--ds-fg-secondary)]"
+                        >
+                          {groupName}
+                        </th>
+                      </tr>
+                    )}
+                    {rows.map((t) => {
                   const value = t.value ?? live[t.token] ?? '—'
                   const isColor =
                     cat === 'color' && /^(#|rgb|hsl|oklch|color-mix)/i.test(value.trim())
@@ -355,7 +385,9 @@ export function TokenTable({ tokens }: { tokens: TokenUse[] }) {
                       <td className="px-3 py-2 align-top text-[var(--ds-fg-muted)]">{t.usedFor}</td>
                     </tr>
                   )
-                })}
+                    })}
+                  </React.Fragment>
+                ))}
               </tbody>
             </table>
           </div>
