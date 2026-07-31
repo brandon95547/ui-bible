@@ -286,6 +286,8 @@ export default defineDoc({
     ],
   },
 
+  palette: true,
+
   tokens: [
     { category: 'color', group: 'Surfaces', token: '--ds-canvas', usedFor: 'Page background — the furthest-back surface' },
     { category: 'color', group: 'Surfaces', token: '--ds-surface', usedFor: 'Default card and panel background' },

@@ -2,6 +2,7 @@ import * as React from 'react'
 import {
   AlertTriangle,
   Check,
+  Copy,
   Ear,
   Gauge,
   Hand,
@@ -16,6 +17,7 @@ import {
   X,
 } from 'lucide-react'
 import { cn } from '@/lib/cn'
+import { useCopy, useResolvedTokens } from '@/lib/hooks'
 import { Badge } from '@/ui/Display'
 import { scrollToSection, sectionHref } from './anchors'
 import { CodeBlock } from './CodeBlock'
@@ -281,23 +283,73 @@ const catMeta: Record<TokenCategory, { label: string; icon: React.ReactNode }> =
 
 const CAT_ORDER: TokenCategory[] = ['color', 'spacing', 'radius', 'shadow', 'typography', 'motion']
 
-export function TokenTable({ tokens }: { tokens: TokenUse[] }) {
-  const [live, setLive] = React.useState<Record<string, string>>({})
+/**
+ * The resolved value of one token, click-to-copy. Colour values get a swatch;
+ * alpha tokens sit on a checkerboard so a 4.5% white wash is still visible
+ * rather than reading as an empty chip.
+ */
+export function TokenValue({ value, isColor }: { value: string; isColor: boolean }) {
+  const { copied, copy } = useCopy()
 
-  // Resolve each token's computed value from the live document, so the table
-  // can never drift from the CSS the way a hand-written value would.
-  React.useEffect(() => {
-    const cs = getComputedStyle(document.documentElement)
+  if (value === '—') {
+    return <span className="font-mono text-[11.5px] text-[var(--ds-fg-disabled)]">—</span>
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={() => copy(value)}
+      title={`Copy ${value}`}
+      aria-label={`Copy ${value} to clipboard`}
+      className={cn(
+        'group/copy flex items-center gap-2 rounded-[var(--radius-sm)] px-1 py-0.5 -mx-1 text-left',
+        'transition-colors hover:bg-[var(--ds-layer-hover)]',
+        'focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[var(--ds-focus-ring)]',
+      )}
+    >
+      {isColor && (
+        // Backed by --ds-surface rather than left transparent: most of these
+        // are alpha tokens, and a 4.5% white wash composited over the surface
+        // it is designed to sit on is what the reader actually needs to see.
+        <span className="h-4 w-4 shrink-0 rounded-[4px] bg-[var(--ds-surface)]">
+          <span
+            className="block h-full w-full rounded-[4px] ring-1 ring-inset ring-[var(--ds-border)]"
+            style={{ background: value }}
+          />
+        </span>
+      )}
+      <span className="font-mono text-[11.5px] text-[var(--ds-fg-secondary)]">{value}</span>
+      {copied ? (
+        <Check size={11} className="shrink-0 text-[var(--ds-success-text)]" />
+      ) : (
+        <Copy
+          size={11}
+          className="shrink-0 text-[var(--ds-fg-disabled)] opacity-0 transition-opacity group-hover/copy:opacity-100"
+        />
+      )}
+    </button>
+  )
+}
+
+export function TokenTable({ tokens }: { tokens: TokenUse[] }) {
+  // Resolved from the live document, so the table can never drift from the CSS
+  // the way a hand-written value would — and re-read when the theme flips.
+  const names = React.useMemo(
+    () =>
+      tokens
+        .map((t) => (t.token.startsWith('--') ? t.token.split(/\s/)[0] : null))
+        .filter((n): n is string => Boolean(n)),
+    [tokens],
+  )
+  const resolved = useResolvedTokens(names)
+  const live = React.useMemo(() => {
     const next: Record<string, string> = {}
     tokens.forEach((t) => {
       const name = t.token.startsWith('--') ? t.token.split(/\s/)[0] : null
-      if (name) {
-        const v = cs.getPropertyValue(name).trim()
-        if (v) next[t.token] = v
-      }
+      if (name && resolved[name]) next[t.token] = resolved[name]
     })
-    setLive(next)
-  }, [tokens])
+    return next
+  }, [tokens, resolved])
 
   const grouped = CAT_ORDER.map((c) => [c, tokens.filter((t) => t.category === c)] as const).filter(
     ([, list]) => list.length > 0,
@@ -372,17 +424,7 @@ export function TokenTable({ tokens }: { tokens: TokenUse[] }) {
                         </span>
                       </td>
                       <td className="px-3 py-2 align-top">
-                        <span className="flex items-center gap-2">
-                          {isColor && (
-                            <span
-                              className="h-3.5 w-3.5 shrink-0 rounded-[4px] ring-1 ring-inset ring-[var(--ds-border)]"
-                              style={{ background: value }}
-                            />
-                          )}
-                          <span className="font-mono text-[11.5px] text-[var(--ds-fg-secondary)]">
-                            {value}
-                          </span>
-                        </span>
+                        <TokenValue value={value} isColor={isColor} />
                       </td>
                       <td className="px-3 py-2 align-top text-[var(--ds-fg-muted)]">{t.usedFor}</td>
                     </tr>

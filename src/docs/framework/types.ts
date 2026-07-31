@@ -136,6 +136,12 @@ export interface DocSpec {
   overview: Overview
   preview?: PreviewSpec
   anatomy?: AnatomySpec
+  /**
+   * Renders the complete theme palette — every primitive ramp and every
+   * semantic token — above the page's own token table. Opt-in: it belongs on
+   * the foundation pages that own the palette, not on every component page.
+   */
+  palette?: boolean
   tokens?: TokenUse[]
   sizes?: SizeRow[]
   do?: Guidance[]

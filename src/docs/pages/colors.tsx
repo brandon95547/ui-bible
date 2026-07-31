@@ -444,6 +444,8 @@ export default defineDoc({
     ],
   },
 
+  palette: true,
+
   tokens: [
     /* -- Surfaces: the depth ladder, back to front ------------------------- */
     { category: 'color', group: 'Surfaces', token: '--ds-canvas', usedFor: 'Page background — the furthest-back plane' },

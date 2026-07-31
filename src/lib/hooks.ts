@@ -176,6 +176,37 @@ export function useScrollSpy(ids: string[], rootMargin = '-88px 0px -70% 0px') {
   return active
 }
 
+/**
+ * Resolves CSS custom properties off the document, re-reading whenever the
+ * theme flips. Without the observer a token table renders dark-theme values
+ * and then quietly lies after the reader switches to light.
+ */
+export function useResolvedTokens(names: string[]) {
+  const key = names.join('|')
+  const [values, setValues] = useState<Record<string, string>>({})
+
+  useEffect(() => {
+    const read = () => {
+      const cs = getComputedStyle(document.documentElement)
+      const next: Record<string, string> = {}
+      names.forEach((n) => {
+        const v = cs.getPropertyValue(n).trim()
+        if (v) next[n] = v
+      })
+      setValues(next)
+    }
+    read()
+    const observer = new MutationObserver(read)
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme'],
+    })
+    return () => observer.disconnect()
+  }, [key]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  return values
+}
+
 /** Copy-to-clipboard with a self-resetting "copied" flag. */
 export function useCopy(timeout = 1600) {
   const [copied, setCopied] = useState(false)

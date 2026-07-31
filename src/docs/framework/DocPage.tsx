@@ -5,6 +5,7 @@ import { useScrollSpy } from '@/lib/hooks'
 import { Badge } from '@/ui/Display'
 import { Breadcrumbs } from '@/ui/Navigation'
 import { currentSectionId, scrollToSection, sectionHref } from './anchors'
+import { ColorPalette } from './ColorPalette'
 import { PreviewStage, Specimen } from './PreviewStage'
 import {
   A11yPanel,
@@ -49,6 +50,7 @@ export function DocPage({
     const out: { id: string; title: string }[] = [{ id: 'overview', title: 'Overview' }]
     if (spec.preview) out.push({ id: 'preview', title: 'Live preview' })
     if (spec.anatomy) out.push({ id: 'anatomy', title: 'Anatomy' })
+    if (spec.palette) out.push({ id: 'palette', title: 'Color palette' })
     if (spec.tokens?.length) out.push({ id: 'tokens', title: 'Design tokens' })
     if (spec.sizes?.length) out.push({ id: 'sizes', title: 'Recommended sizes' })
     if (spec.do?.length) out.push({ id: 'do', title: 'Do' })
@@ -198,13 +200,25 @@ export function DocPage({
             </Section>
           )}
 
-          {/* 4 — TOKENS */}
+          {/* 4 — COLOR PALETTE */}
+          {spec.palette && (
+            <Section
+              id="palette"
+              index={num('palette')}
+              title="Color palette"
+              description="Every colour in the active theme, resolved from the running stylesheet. Click any swatch to copy its value."
+            >
+              <ColorPalette />
+            </Section>
+          )}
+
+          {/* 5 — TOKENS */}
           {spec.tokens && spec.tokens.length > 0 && (
             <Section
               id="tokens"
               index={num('tokens')}
               title="Design tokens used"
-              description="Values are read live from the running stylesheet, so this table can never drift from the code."
+              description="Values are read live from the running stylesheet, so this table can never drift from the code. Click any value to copy it."
             >
               <TokenTable tokens={spec.tokens} />
             </Section>

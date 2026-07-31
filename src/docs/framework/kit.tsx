@@ -1,5 +1,7 @@
 import * as React from 'react'
+import { Check } from 'lucide-react'
 import { cn } from '@/lib/cn'
+import { useCopy } from '@/lib/hooks'
 
 /* ===========================================================================
    AUTHORING KIT
@@ -136,16 +138,28 @@ export function Swatch({
   onCopy?: (v: string) => void
 }) {
   const h = { sm: 'h-9', md: 'h-14', lg: 'h-20' }[size]
+  const { copied, copy } = useCopy()
   return (
     <button
       type="button"
-      onClick={() => onCopy?.(value)}
-      className="group flex flex-col overflow-hidden rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] text-left transition-colors hover:border-[var(--ds-border-strong)]"
+      // Copying is the default because a swatch that looks clickable and does
+      // nothing is worse than one that is not a button at all.
+      onClick={() => (onCopy ? onCopy(value) : copy(value))}
+      title={`Copy ${value}`}
+      className="group flex flex-col overflow-hidden rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] text-left transition-colors hover:border-[var(--ds-border-strong)] focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[var(--ds-focus-ring)]"
     >
       <span className={cn('block w-full', h)} style={{ background: value }} />
       <span className="flex flex-col gap-0.5 bg-[var(--ds-surface)] px-2.5 py-2">
         <span className="font-mono text-[11px] text-[var(--ds-fg)]">{name}</span>
-        <span className="font-mono text-[10px] uppercase text-[var(--ds-fg-muted)]">{value}</span>
+        <span className="flex items-center gap-1 font-mono text-[10px] uppercase text-[var(--ds-fg-muted)]">
+          {copied ? (
+            <>
+              <Check size={10} className="text-[var(--ds-success-text)]" /> copied
+            </>
+          ) : (
+            value
+          )}
+        </span>
         {note && <span className="text-[10px] text-[var(--ds-fg-muted)]">{note}</span>}
       </span>
     </button>
