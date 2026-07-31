@@ -237,6 +237,67 @@ function DiagonalDiagram({ safe }: { safe?: boolean }) {
   )
 }
 
+/** A static replica of the open state, so the anatomy labels have something
+    to point at without asking the reader to hold a hover. */
+function AnatomyDiagram() {
+  return (
+    <div className="w-full max-w-[38rem] rounded-[var(--radius-xl)] border border-[var(--ds-border)] bg-[var(--ds-canvas)]">
+      <div className="flex items-center gap-4 border-b border-[var(--ds-border-subtle)] px-4 py-2.5">
+        <span className="text-label font-semibold text-[var(--ds-fg)]">Northwind</span>
+        <nav className="flex flex-1 items-center gap-0.5">
+          {GROUPS.map((g, i) => (
+            <span
+              key={g.label}
+              className={`flex h-9 items-center gap-1 rounded-[var(--radius-md)] px-3 text-label ${
+                i === 0
+                  ? 'bg-[var(--ds-layer-hover)] text-[var(--ds-fg)]'
+                  : 'text-[var(--ds-fg-secondary)]'
+              }`}
+            >
+              {g.label}
+              {g.columns.length > 0 && (
+                <span className={`text-[var(--ds-fg-muted)] ${i === 0 ? 'rotate-180' : ''}`}>
+                  ▾
+                </span>
+              )}
+            </span>
+          ))}
+        </nav>
+      </div>
+
+      <div className="p-3">
+        <div className="flex flex-wrap gap-x-8 gap-y-6 rounded-[var(--radius-xl)] border border-[var(--ds-border)] bg-[var(--ds-surface-overlay)] p-5 shadow-e4">
+          {GROUPS[0].columns.map((col) => (
+            <div key={col.title} className="flex min-w-[9rem] flex-1 flex-col gap-2">
+              <span className="text-overline uppercase text-[var(--ds-fg-muted)]">{col.title}</span>
+              <ul className="flex flex-col gap-1.5">
+                {col.items.map((it) => (
+                  <li key={it.label} className="flex items-start gap-2.5">
+                    <span className="mt-px shrink-0 text-[var(--ds-fg-muted)]" aria-hidden>
+                      {it.icon}
+                    </span>
+                    <span className="flex flex-col">
+                      <span className="text-label text-[var(--ds-fg)]">{it.label}</span>
+                      {it.description && (
+                        <span className="text-caption text-[var(--ds-fg-muted)]">
+                          {it.description}
+                        </span>
+                      )}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+          <div className="min-w-[11rem] flex-1 rounded-[var(--radius-lg)] bg-[var(--ds-surface-inset)] p-4">
+            {GROUPS[0].featured}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function MiniBar({ open, label }: { open?: boolean; label?: string }) {
   return (
     <span className="relative block h-16 w-32 overflow-hidden rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-canvas)]">
@@ -487,15 +548,9 @@ export default defineDoc({
   },
 
   anatomy: {
-    render: (
-      <div className="w-full max-w-[38rem]">
-        <Chrome>
-          <MegaMenu groups={GROUPS} />
-        </Chrome>
-      </div>
-    ),
+    render: <AnatomyDiagram />,
     caption:
-      'Hover “Products”. Four triggers, three labelled columns, and one featured slot — everything below the bar is one panel, not four stacked menus.',
+      '“Products” open. Four triggers, three labelled columns, and one featured slot — everything below the bar is a single panel, not four stacked menus.',
     parts: [
       {
         n: 1,
