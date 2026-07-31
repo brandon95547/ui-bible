@@ -17,6 +17,7 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import { Badge } from '@/ui/Display'
+import { scrollToSection, sectionHref } from './anchors'
 import { CodeBlock } from './CodeBlock'
 import type {
   A11ySpec,
@@ -62,7 +63,8 @@ export function Section({
           )}
           <h2 className="text-h2 text-[var(--ds-fg)]">{title}</h2>
           <a
-            href={`#${id}`}
+            href={sectionHref(id)}
+            onClick={() => requestAnimationFrame(() => scrollToSection(id))}
             aria-label={`Link to ${title}`}
             className="opacity-0 transition-opacity focus-visible:opacity-100 group-hover:opacity-100"
           >

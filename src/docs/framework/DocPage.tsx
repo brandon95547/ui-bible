@@ -4,6 +4,7 @@ import { cn } from '@/lib/cn'
 import { useScrollSpy } from '@/lib/hooks'
 import { Badge } from '@/ui/Display'
 import { Breadcrumbs } from '@/ui/Navigation'
+import { currentSectionId, scrollToSection, sectionHref } from './anchors'
 import { PreviewStage, Specimen } from './PreviewStage'
 import {
   A11yPanel,
@@ -62,6 +63,16 @@ export function DocPage({
   const ids = React.useMemo(() => sections.map((s) => s.id), [sections])
   const activeSection = useScrollSpy(ids)
   const num = (id: string) => sections.findIndex((s) => s.id === id) + 1
+
+  // Arriving on `#/colors#tokens` — pasted, bookmarked, or reloaded — has to
+  // land on the section. The page's chunk resolves after the hash is read, so
+  // by the time the browser would normally scroll there is nothing to find.
+  React.useEffect(() => {
+    const target = currentSectionId()
+    if (!target) return
+    const frame = requestAnimationFrame(() => scrollToSection(target, 'auto'))
+    return () => cancelAnimationFrame(frame)
+  }, [spec])
 
   return (
     <article className="relative">
@@ -343,7 +354,8 @@ export function DocPage({
                 return (
                   <li key={s.id}>
                     <a
-                      href={`#${s.id}`}
+                      href={sectionHref(s.id)}
+                      onClick={() => requestAnimationFrame(() => scrollToSection(s.id))}
                       className={cn(
                         'relative flex items-baseline gap-2 py-1.5 pl-3 pr-2 text-caption transition-colors',
                         active
