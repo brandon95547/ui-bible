@@ -67,7 +67,9 @@ export function DocPage({
     <article className="relative">
       {/* ---- STICKY PAGE HEADER ------------------------------------------ */}
       <header className="sticky top-0 z-30 -mx-6 border-b border-[var(--ds-border-subtle)] bg-[var(--ds-canvas)]/85 px-6 pb-4 pt-5 backdrop-blur-xl sm:-mx-10 sm:px-10">
-        <div className="mx-auto flex max-w-[64rem] flex-col gap-2.5">
+        {/* Must track the body container below (including its xl step) or the
+            breadcrumb and h1 sit inset from the prose they introduce. */}
+        <div className="mx-auto flex max-w-[64rem] flex-col gap-2.5 xl:max-w-[76rem]">
           <div className="flex items-center justify-between gap-4">
             <Breadcrumbs
               items={[
