@@ -1,0 +1,40 @@
+# UI Bible — the deploy step for ui.skylanex.com.
+#
+# The site is static: nginx serves /var/www/ui-bible/dist directly and there is
+# no server process to keep alive. This unit exists so that "restart it" means
+# the same thing here as it does for every other service on the box.
+#
+#     cd /var/www/ui-bible && git pull
+#     sudo systemctl restart ui-bible
+#     journalctl -u ui-bible -n 40      # what the build said
+#
+# Installed as a symlink so a pull updates the unit too:
+#
+#     sudo ln -sfn /var/www/ui-bible/deploy/ui-bible.service \
+#                  /etc/systemd/system/ui-bible.service
+#     sudo systemctl daemon-reload
+#
+# Type=oneshot with RemainAfterExit: the unit reads "active (exited)" after a
+# successful build and "failed" after a broken one, so `systemctl status` is an
+# honest answer to "is the deployed site current?".
+
+[Unit]
+Description=UI Bible — rebuild the static bundle served at ui.skylanex.com
+Documentation=file:///var/www/ui-bible/README.md
+# npm ci reaches the registry when the lockfile has moved.
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=/var/www/ui-bible
+ExecStart=/var/www/ui-bible/deploy/rebuild.sh
+# A cold npm ci on this box is about a minute; the default 90s would kill it.
+TimeoutStartSec=900
+# Never at the expense of the GPU work this machine actually exists for.
+Nice=10
+NoNewPrivileges=yes
+
+[Install]
+WantedBy=multi-user.target

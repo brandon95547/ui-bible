@@ -12,6 +12,38 @@ npm run build    # typecheck + production build
 npm run preview
 ```
 
+## Deploying
+
+Production is **static**: nginx serves `/var/www/ui-bible/dist` at
+[ui.skylanex.com](https://ui.skylanex.com). There is no server process — `npm run dev`
+never runs on the box — so a pull on its own changes nothing a visitor can see, because
+`dist/` is gitignored and has to be rebuilt on the host.
+
+```bash
+ssh root@phansora.com
+cd /var/www/ui-bible && git pull
+systemctl restart ui-bible        # rebuild + swap dist/ into place
+journalctl -u ui-bible -n 40      # what the build said
+```
+
+`ui-bible.service` is a oneshot unit pointing at `deploy/rebuild.sh`. The build goes to
+`dist.new/` and is swapped in with a single `mv`, so the document root is never
+half-written and a failed build leaves the live site untouched. The previous build stays
+in `dist.old/` until the next run — rollback is `mv dist dist.bad && mv dist.old dist`.
+
+`systemctl status ui-bible` reads `active (exited)` after a good build and `failed` after
+a broken one, which makes it an honest answer to "is the deployed site current?".
+
+Installing the unit (once, or after it changes — it is symlinked, so a pull updates it):
+
+```bash
+ln -sfn /var/www/ui-bible/deploy/ui-bible.service /etc/systemd/system/ui-bible.service
+systemctl daemon-reload
+```
+
+nginx only needs `systemctl reload nginx` when `deploy/ui.skylanex.com.conf` itself
+changes.
+
 ## What is in here
 
 Four sections. Only **Components** is subdivided, and only one level deep.

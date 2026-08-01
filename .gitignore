@@ -10,6 +10,9 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+# deploy/rebuild.sh stages a build here, then keeps the previous one for rollback
+dist.new
+dist.old
 *.local
 
 # Editor directories and files
