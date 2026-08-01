@@ -190,7 +190,6 @@ export default defineDoc({
   meta: {
     id: 'animation',
     title: 'Animation',
-    group: 'Foundations',
     tagline:
       'Six named patterns built from the motion tokens. If an animation in the product is not one of these, it needs a reason.',
     keywords: ['keyframes', 'micro-interaction', 'choreography', 'stagger', 'enter', 'exit', 'collapse'],
@@ -221,7 +220,7 @@ export default defineDoc({
       {
         text: 'To indicate loading, when the layout of the result is already known.',
         instead: 'a Skeleton',
-        to: '#/skeletons',
+        to: '#/skeleton',
       },
     ],
     reasoning: (

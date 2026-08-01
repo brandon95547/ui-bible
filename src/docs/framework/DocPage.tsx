@@ -4,6 +4,7 @@ import { cn } from '@/lib/cn'
 import { useScrollSpy } from '@/lib/hooks'
 import { Badge } from '@/ui/Display'
 import { Breadcrumbs } from '@/ui/Navigation'
+import { PAGE_BY_ID } from '@/docs/nav'
 import { currentSectionId, scrollToSection, sectionHref } from './anchors'
 import { ColorPalette } from './ColorPalette'
 import { PreviewStage, Specimen } from './PreviewStage'
@@ -46,6 +47,16 @@ export function DocPage({
 }: DocPageProps) {
   const { meta, overview } = spec
 
+  // The tree in nav.ts is the single source of truth for where a page lives,
+  // so a page moving between groups needs one edit, not two that can disagree.
+  const navEntry = PAGE_BY_ID.get(meta.id)
+  const trail = navEntry
+    ? navEntry.path.split(' · ')
+    : meta.group
+      ? [meta.group]
+      : []
+  const aliases = navEntry?.aliases ?? []
+
   const sections = React.useMemo(() => {
     const out: { id: string; title: string }[] = [{ id: 'overview', title: 'Overview' }]
     if (spec.preview) out.push({ id: 'preview', title: 'Live preview' })
@@ -87,7 +98,7 @@ export function DocPage({
             <Breadcrumbs
               items={[
                 { label: 'UI Bible', onClick: () => onNavigate('home') },
-                { label: meta.group },
+                ...trail.map((label) => ({ label })),
                 { label: meta.title },
               ]}
             />
@@ -115,6 +126,17 @@ export function DocPage({
             )}
           </div>
           <p className="max-w-[68ch] text-body-lg text-[var(--ds-fg-muted)]">{meta.tagline}</p>
+          {aliases.length > 0 && (
+            // Stated up front, so someone who arrived looking for "modal"
+            // learns the name we use before reading a single guideline. Muted,
+            // not disabled: --ds-fg-disabled is 2.66:1 and this system exempts
+            // it from contrast rules precisely because nothing readable may
+            // use it.
+            <p className="max-w-[68ch] text-caption text-[var(--ds-fg-muted)]">
+              Also called {aliases.join(', ')} — in this system all of them are{' '}
+              <span className="text-[var(--ds-fg-secondary)]">{meta.title}</span>.
+            </p>
+          )}
         </div>
       </header>
 

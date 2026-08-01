@@ -115,7 +115,6 @@ export default defineDoc({
   meta: {
     id: 'typography',
     title: 'Typography',
-    group: 'Foundations',
     tagline:
       'Thirteen named styles, one variable family, and a measure that keeps the eye from getting lost. Typography is ninety-five percent of an interface — everything else is arrangement.',
     keywords: ['font', 'type scale', 'line height', 'measure', 'leading', 'tracking', 'inter'],

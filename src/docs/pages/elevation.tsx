@@ -68,7 +68,6 @@ export default defineDoc({
   meta: {
     id: 'elevation',
     title: 'Elevation',
-    group: 'Foundations',
     tagline:
       'Six levels, each mapped to a z-index band and a purpose. In light themes elevation is a shadow; in dark themes it is a lighter surface — the token name hides the difference.',
     keywords: ['shadow', 'depth', 'z-index', 'layering', 'surface', 'overlay'],

@@ -35,7 +35,6 @@ export default defineDoc({
   meta: {
     id: 'light-theme',
     title: 'Light Theme',
-    group: 'Foundations',
     tagline:
       'The other half of the product. Every surface is white, so lightness cannot express depth — shadows and hairlines do all of the work, and the brand colour has to get darker.',
     keywords: ['light mode', 'theme', 'white', 'shadow', 'hairline', 'print'],

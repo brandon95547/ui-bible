@@ -54,7 +54,6 @@ export default defineDoc({
   meta: {
     id: 'breadcrumbs',
     title: 'Breadcrumbs',
-    group: 'Navigation',
     tagline:
       'Location, not history. They answer "where am I in this hierarchy" and give a one-click route back up it — nothing more.',
     keywords: ['path', 'hierarchy', 'trail', 'wayfinding', 'ancestors', 'back'],
@@ -86,7 +85,7 @@ export default defineDoc({
       {
         text: 'The page is a step in a linear flow.',
         instead: 'a stepper',
-        to: '#/forms',
+        to: '#/form',
       },
     ],
     reasoning: (

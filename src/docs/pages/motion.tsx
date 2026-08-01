@@ -130,7 +130,6 @@ export default defineDoc({
   meta: {
     id: 'motion',
     title: 'Motion',
-    group: 'Foundations',
     tagline:
       'Seven durations, five curves. Motion exists to explain what changed and where it went — never to prove that the team can animate.',
     keywords: ['transition', 'easing', 'duration', 'curve', 'timing', 'animation', 'reduced motion'],

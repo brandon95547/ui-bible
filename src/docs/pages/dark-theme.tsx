@@ -62,7 +62,6 @@ export default defineDoc({
   meta: {
     id: 'dark-theme',
     title: 'Dark Theme',
-    group: 'Foundations',
     tagline:
       'The default theme. Depth comes from surfaces getting lighter, not from shadows getting bigger — and it is emphatically not an inversion of the light theme.',
     keywords: ['dark mode', 'night', 'theme', 'oled', 'halation', 'surface'],

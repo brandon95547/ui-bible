@@ -423,7 +423,6 @@ export default defineDoc({
   meta: {
     id: 'ux-rules',
     title: 'UX Rules',
-    group: 'Principles',
     tagline:
       'The psychology every rule in this Bible derives from. Two of these are equations you can measure in your own browser, on this page.',
     keywords: [

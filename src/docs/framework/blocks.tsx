@@ -596,8 +596,8 @@ export function A11yPanel({ spec }: { spec: A11ySpec }) {
         <A11yCard icon={<Keyboard size={14} />} title="Keyboard">
           <table className="w-full border-collapse">
             <tbody>
-              {spec.keyboard.map((k) => (
-                <tr key={k.keys} className="align-top">
+              {spec.keyboard.map((k, i) => (
+                <tr key={`${k.keys}-${i}`} className="align-top">
                   <td className="py-1 pr-3 whitespace-nowrap">
                     <kbd className="inline-block rounded-[5px] border border-b-2 border-[var(--ds-border)] bg-[var(--ds-surface-raised)] px-1.5 py-px font-sans text-[11px] font-medium text-[var(--ds-fg-secondary)]">
                       {k.keys}
@@ -645,8 +645,11 @@ export function A11yPanel({ spec }: { spec: A11ySpec }) {
               </tr>
             </thead>
             <tbody>
-              {spec.aria.map((a) => (
-                <tr key={a.attr + a.on} className="border-b border-[var(--ds-border-subtle)] last:border-0">
+              {spec.aria.map((a, i) => (
+                <tr
+                  key={`${a.attr}-${a.on}-${i}`}
+                  className="border-b border-[var(--ds-border-subtle)] last:border-0"
+                >
                   <td className="px-3 py-2 align-top font-mono text-[12px] text-[var(--ds-accent-text)]">
                     {a.attr}
                   </td>

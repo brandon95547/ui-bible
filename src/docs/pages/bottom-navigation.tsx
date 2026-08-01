@@ -93,7 +93,6 @@ export default defineDoc({
   meta: {
     id: 'bottom-navigation',
     title: 'Bottom Navigation',
-    group: 'Navigation',
     tagline:
       'Three to five destinations in the thumb zone. A sixth item drops each target below the width where thumbs stop being accurate.',
     keywords: ['tab bar', 'mobile nav', 'thumb zone', 'ios', 'android', 'bottom tabs'],
@@ -117,7 +116,7 @@ export default defineDoc({
       {
         text: 'The screen is a desktop browser.',
         instead: 'a Sidebar or a Top Bar',
-        to: '#/sidebar-nav',
+        to: '#/sidebar',
       },
       {
         text: 'The items are views of one object rather than destinations.',

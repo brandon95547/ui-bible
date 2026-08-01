@@ -203,7 +203,6 @@ export default defineDoc({
   meta: {
     id: 'loading-states',
     title: 'Loading States',
-    group: 'Feedback',
     tagline:
       'Six strategies, chosen by duration and by how much of the screen is changing. The best loading state is the one the user never sees.',
     keywords: ['spinner', 'suspense', 'optimistic ui', 'latency', 'perceived performance', 'streaming'],

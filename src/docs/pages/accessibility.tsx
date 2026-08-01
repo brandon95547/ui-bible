@@ -76,7 +76,6 @@ export default defineDoc({
   meta: {
     id: 'accessibility',
     title: 'Accessibility',
-    group: 'Foundations',
     tagline:
       'WCAG 2.2 AA is the floor, not the goal. These are the constraints every component in this Bible was designed from — not a checklist run at the end.',
     keywords: ['a11y', 'wcag', 'aria', 'screen reader', 'keyboard', 'contrast', 'focus', 'semantics'],

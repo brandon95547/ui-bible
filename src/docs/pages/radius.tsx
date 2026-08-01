@@ -55,7 +55,6 @@ export default defineDoc({
   meta: {
     id: 'radius',
     title: 'Radius',
-    group: 'Foundations',
     tagline:
       'Seven steps and one nesting rule. Corner radius is a shape language: it tells the user what a thing is before they read it.',
     keywords: ['corner', 'rounded', 'border radius', 'shape', 'squircle', 'nesting'],

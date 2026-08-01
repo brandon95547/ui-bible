@@ -60,7 +60,6 @@ export default defineDoc({
   meta: {
     id: 'icons',
     title: 'Icons',
-    group: 'Foundations',
     tagline:
       'One family, one stroke weight, six sizes. An icon is a mnemonic for something the user already knows — it is not a substitute for telling them.',
     keywords: ['iconography', 'svg', 'lucide', 'glyph', 'pictogram', 'stroke', 'optical alignment'],

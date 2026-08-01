@@ -231,7 +231,6 @@ export default defineDoc({
   meta: {
     id: 'colors',
     title: 'Colors',
-    group: 'Foundations',
     tagline:
       'Six ramps, five semantic roles, and one rule that outranks all of them: colour is never the only thing carrying the message.',
     keywords: ['palette', 'contrast', 'wcag', 'hue', 'status', 'brand', 'colour blindness'],

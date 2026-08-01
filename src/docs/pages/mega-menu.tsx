@@ -327,7 +327,6 @@ export default defineDoc({
   meta: {
     id: 'mega-menu',
     title: 'Mega Menu',
-    group: 'Navigation',
     tagline:
       'A wide, multi-column panel that exposes a whole section of a deep site at once. The engineering is entirely in the timing.',
     keywords: [
@@ -354,7 +353,7 @@ export default defineDoc({
       {
         text: 'It is an application rather than a site.',
         instead: 'a Sidebar — persistent, and it shows where you are as well as where you can go',
-        to: '#/sidebar-nav',
+        to: '#/sidebar',
       },
       {
         text: 'A section has fewer than about eight links.',

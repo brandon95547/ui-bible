@@ -244,7 +244,6 @@ export default defineDoc({
   meta: {
     id: 'drawer',
     title: 'Drawer',
-    group: 'Navigation',
     tagline:
       'An edge-anchored panel that slides over the page instead of replacing it. Pick it over a dialog when the thing behind still matters.',
     keywords: [
@@ -271,17 +270,17 @@ export default defineDoc({
       {
         text: 'The user must answer before doing anything else.',
         instead: 'a Dialog — it is centred, so it is unmissable',
-        to: '#/dialogs',
+        to: '#/dialog',
       },
       {
         text: 'The viewport is a phone.',
         instead: 'a Bottom Sheet, which opens where the thumb already is',
-        to: '#/bottom-sheet',
+        to: '#/drawer',
       },
       {
         text: 'The panel is permanent navigation.',
         instead: 'a Sidebar — no scrim, no focus trap, no dismiss',
-        to: '#/sidebar-nav',
+        to: '#/sidebar',
       },
       {
         text: 'The content is a full workspace with its own URL.',

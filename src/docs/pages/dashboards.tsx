@@ -512,7 +512,6 @@ export default defineDoc({
   meta: {
     id: 'dashboards',
     title: 'Dashboard Layouts',
-    group: 'Patterns',
     tagline:
       'Six shells that cover almost every product screen. The layout is not the hard part — deciding what deserves the top-left is.',
     keywords: [
@@ -541,7 +540,7 @@ export default defineDoc({
       {
         text: 'You need the specification of one part.',
         instead: 'the page for that part — Cards, Tables, Sidebar, Top Bar',
-        to: '#/cards',
+        to: '#/card',
       },
       {
         text: 'The screen has one job and one object.',
@@ -550,7 +549,7 @@ export default defineDoc({
       {
         text: 'The user is doing a task, not monitoring one.',
         instead: 'a form or a wizard. A dashboard is for looking, not for filling in',
-        to: '#/forms',
+        to: '#/form',
       },
     ],
     reasoning: (

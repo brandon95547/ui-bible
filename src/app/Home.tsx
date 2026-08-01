@@ -138,6 +138,44 @@ export function Home({ onNavigate, onOpenPalette }: { onNavigate: (id: string) =
         </div>
       </section>
 
+      {/* ---- ONE PURPOSE, ONE NAME ------------------------------------------ */}
+      <section className="mt-16">
+        <SectionLabel>The one-purpose rule</SectionLabel>
+        <h2 className="mt-2 text-h2">One job each. One name each.</h2>
+        <p className="mt-2 max-w-[68ch] text-body leading-relaxed text-[var(--ds-fg-muted)]">
+          The industry ships four names for the same box — modal, dialog, popup, lightbox — and a
+          developer choosing between them is doing archaeology instead of work. So every component
+          in here does exactly one job no other component does, under exactly one name. Every other
+          name is recorded as an alias: it is searchable, and it tells you what we call it instead.
+        </p>
+        <div className="mt-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+          {[
+            ['Modal, Popup, Lightbox', 'dialog', 'Dialog'],
+            ['Snackbar, Notification', 'toast', 'Toast'],
+            ['Bottom Sheet, Side Sheet', 'drawer', 'Drawer'],
+            ['Navigation Rail, Side Nav', 'sidebar', 'Sidebar'],
+          ].map(([from, id, to]) => (
+            <button
+              key={id}
+              type="button"
+              onClick={() => onNavigate(id)}
+              className={cn(
+                'flex items-center gap-2 rounded-[var(--radius-lg)] border border-[var(--ds-border-subtle)]',
+                'bg-[var(--ds-surface)] px-3.5 py-3 text-left transition-colors',
+                'hover:border-[var(--ds-border)] hover:bg-[var(--ds-surface-raised)]',
+                'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ds-focus-ring)]',
+              )}
+            >
+              <span className="min-w-0 flex-1 truncate text-caption text-[var(--ds-fg-muted)] line-through">
+                {from}
+              </span>
+              <ArrowRight size={12} className="shrink-0 text-[var(--ds-fg-muted)]" />
+              <span className="shrink-0 text-label-sm text-[var(--ds-accent-text)]">{to}</span>
+            </button>
+          ))}
+        </div>
+      </section>
+
       {/* ---- BROWSE ---------------------------------------------------------- */}
       <section className="mt-16">
         <SectionLabel>Contents</SectionLabel>
@@ -148,48 +186,88 @@ export function Home({ onNavigate, onOpenPalette }: { onNavigate: (id: string) =
           you can find anything in seconds.
         </p>
 
-        <div className="mt-6 flex flex-col gap-8">
-          {NAV.map((group) => {
-            const Icon = iconByName(group.icon)
+        <div className="mt-8 flex flex-col gap-12">
+          {NAV.map((section) => {
+            const Icon = iconByName(section.icon)
+            const groups = section.groups ?? [
+              {
+                id: section.id,
+                title: section.title,
+                icon: section.icon,
+                description: section.description,
+                pages: section.pages ?? [],
+              },
+            ]
+            const total = groups.reduce((n, g) => n + g.pages.length, 0)
+
             return (
-              <div key={group.id}>
-                <div className="mb-3 flex items-baseline gap-2.5">
+              <div key={section.id}>
+                <div className="flex flex-wrap items-baseline gap-2.5 border-b border-[var(--ds-border-subtle)] pb-3">
                   <span className="text-[var(--ds-accent-text)]">
-                    <Icon size={15} />
+                    <Icon size={17} />
                   </span>
-                  <h3 className="text-h4">{group.title}</h3>
-                  <p className="text-caption text-[var(--ds-fg-muted)]">{group.description}</p>
+                  <h3 className="text-h3">{section.title}</h3>
+                  <span className="font-mono text-caption tabular-nums text-[var(--ds-fg-muted)]">
+                    {total}
+                  </span>
+                  <p className="text-caption text-[var(--ds-fg-muted)]">{section.description}</p>
                 </div>
-                <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-                  {group.pages.map((p) => (
-                    <button
-                      key={p.id}
-                      type="button"
-                      onClick={() => onNavigate(p.id)}
-                      className={cn(
-                        'group flex flex-col gap-1 rounded-[var(--radius-lg)] border border-[var(--ds-border-subtle)]',
-                        'bg-[var(--ds-surface)] p-3.5 text-left transition-all duration-[160ms]',
-                        'hover:-translate-y-px hover:border-[var(--ds-border)] hover:bg-[var(--ds-surface-raised)] hover:shadow-e2',
-                        'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ds-focus-ring)]',
-                      )}
-                    >
-                      <span className="flex items-center gap-2">
-                        <span className="text-label text-[var(--ds-fg)]">{p.title}</span>
-                        {!IMPLEMENTED.has(p.id) && (
-                          <span className="rounded-full bg-[var(--ds-layer-active)] px-1.5 text-[9px] uppercase text-[var(--ds-fg-muted)]">
-                            soon
-                          </span>
+
+                <div className="mt-5 flex flex-col gap-7">
+                  {groups.map((group) => {
+                    const GroupIcon = iconByName(group.icon)
+                    return (
+                      <div key={group.id}>
+                        {section.groups && (
+                          <div className="mb-3 flex items-baseline gap-2.5">
+                            <span className="text-[var(--ds-fg-muted)]">
+                              <GroupIcon size={14} />
+                            </span>
+                            <h4 className="text-h4">{group.title}</h4>
+                            <p className="text-caption text-[var(--ds-fg-muted)]">
+                              {group.description}
+                            </p>
+                          </div>
                         )}
-                        <ArrowRight
-                          size={13}
-                          className="ml-auto shrink-0 -translate-x-1 text-[var(--ds-fg-disabled)] opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100"
-                        />
-                      </span>
-                      <span className="text-caption leading-relaxed text-[var(--ds-fg-muted)]">
-                        {p.blurb}
-                      </span>
-                    </button>
-                  ))}
+                        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                          {group.pages.map((p) => (
+                            <button
+                              key={p.id}
+                              type="button"
+                              onClick={() => onNavigate(p.id)}
+                              className={cn(
+                                'group flex flex-col gap-1 rounded-[var(--radius-lg)] border border-[var(--ds-border-subtle)]',
+                                'bg-[var(--ds-surface)] p-3.5 text-left transition-all duration-[160ms]',
+                                'hover:-translate-y-px hover:border-[var(--ds-border)] hover:bg-[var(--ds-surface-raised)] hover:shadow-e2',
+                                'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ds-focus-ring)]',
+                              )}
+                            >
+                              <span className="flex items-center gap-2">
+                                <span className="text-label text-[var(--ds-fg)]">{p.title}</span>
+                                {!IMPLEMENTED.has(p.id) && (
+                                  <span className="rounded-full bg-[var(--ds-layer-active)] px-1.5 text-[9px] uppercase text-[var(--ds-fg-muted)]">
+                                    soon
+                                  </span>
+                                )}
+                                <ArrowRight
+                                  size={13}
+                                  className="ml-auto shrink-0 -translate-x-1 text-[var(--ds-fg-disabled)] opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100"
+                                />
+                              </span>
+                              <span className="text-caption leading-relaxed text-[var(--ds-fg-muted)]">
+                                {p.blurb}
+                              </span>
+                              {p.aliases && p.aliases.length > 0 && (
+                                <span className="mt-0.5 truncate text-[11px] leading-relaxed text-[var(--ds-fg-muted)]">
+                                  Also called {p.aliases.join(', ')}
+                                </span>
+                              )}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )
+                  })}
                 </div>
               </div>
             )

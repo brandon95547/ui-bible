@@ -293,7 +293,6 @@ export default defineDoc({
   meta: {
     id: 'mobile-patterns',
     title: 'Mobile Patterns',
-    group: 'Patterns',
     tagline:
       'One hand, one thumb, an unreliable network and a screen the system partly owns. Every mobile rule follows from those four facts.',
     keywords: [

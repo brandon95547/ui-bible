@@ -90,7 +90,6 @@ export default defineDoc({
   meta: {
     id: 'tabs',
     title: 'Tabs',
-    group: 'Navigation',
     tagline:
       'Peer views of one object. Not a wizard, not a filter, and not navigation between unrelated destinations — those are the three things tabs are constantly misused for.',
     keywords: ['tabbed', 'segmented', 'panel', 'switcher', 'sections'],
@@ -109,17 +108,17 @@ export default defineDoc({
       {
         text: 'The steps must be completed in order.',
         instead: 'a wizard or a stepper',
-        to: '#/forms',
+        to: '#/form',
       },
       {
         text: 'The control narrows a list rather than changing the view.',
         instead: 'filter Chips',
-        to: '#/chips',
+        to: '#/chip',
       },
       {
         text: 'The destinations are separate pages with their own URLs and titles.',
         instead: 'Sidebar or Top Bar navigation',
-        to: '#/sidebar-nav',
+        to: '#/sidebar',
       },
       {
         text: 'There are more than about seven, or the labels are long.',
@@ -128,7 +127,7 @@ export default defineDoc({
       {
         text: 'Only two short options that toggle a display mode.',
         instead: 'a segmented control',
-        to: '#/radios',
+        to: '#/radio-button',
       },
     ],
     reasoning: (

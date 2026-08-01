@@ -50,7 +50,6 @@ export default defineDoc({
   meta: {
     id: 'grid',
     title: 'Grid & Layout',
-    group: 'Foundations',
     tagline:
       'A 12-column fluid grid, a 16–24px gutter, and hard caps on how wide content is allowed to get. Layout is the frame; everything else hangs off it.',
     keywords: ['columns', 'gutter', 'container', 'layout', 'flex', 'css grid', 'measure', 'shell'],

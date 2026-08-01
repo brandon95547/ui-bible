@@ -14,17 +14,53 @@ npm run preview
 
 ## What is in here
 
-| Area            | Contents                                                                                                                                    |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Foundations** | Tokens, colour, typography, spacing, grid, radius, elevation, icons, motion, animation, breakpoints, accessibility, dark theme, light theme |
-| **Actions**     | Buttons — eight variants, four sizes, split, FAB, icon                                                                                      |
-| **Inputs**      | Text inputs, dropdowns, checkboxes, radios, switches, form patterns                                                                         |
-| **Data**        | Cards, tables, badges, chips                                                                                                                |
-| **Feedback**    | Alerts, toasts, snackbars, progress, skeletons, empty/error/loading states                                                                  |
-| **Navigation**  | Top bar, sidebar, tabs, breadcrumbs, bottom nav, drawer, mega menu                                                                          |
-| **Overlays**    | Dialogs, bottom sheets                                                                                                                      |
-| **Patterns**    | Dashboards, desktop patterns, mobile patterns                                                                                               |
-| **Principles**  | The UX laws every rule in here derives from                                                                                                 |
+Four sections. Only **Components** is subdivided, and only one level deep.
+
+| Section         | Contents                                                                                                                                     |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Foundations** | Tokens, colour, typography, spacing, grid, radius, elevation, icons, motion, animation, breakpoints, accessibility, dark theme, light theme    |
+| **Components**  | 65 components in seven groups — see below                                                                                                     |
+| **Patterns**    | Dashboards, desktop, mobile, and the empty / error / loading states                                                                            |
+| **Principles**  | The UX laws every rule in here derives from                                                                                                    |
+
+| Component group  | Count | Contents                                                                                                                     |
+| ---------------- | ----- | ---------------------------------------------------------------------------------------------------------------------------- |
+| **Navigation**   | 9     | App Bar, Sidebar, Bottom Navigation, Tabs, Breadcrumbs, Pagination, Menu, Mega Menu, Tree View                                 |
+| **Actions**      | 6     | Button, Button Group, Split Button, Toolbar, Code Snippet, Command Palette                                                     |
+| **Inputs**       | 22    | Text Field, Textarea, Number, Password, Search, Phone, JSON, Select, Combobox, Multi-select, Transfer List, Checkbox, Radio Button, Switch, Slider, Colour, Date, Time, File Upload, Pin, Rating, Form |
+| **Feedback**     | 7     | Dialog, Toast, Banner, Tooltip, Popover, Progress Indicator, Skeleton                                                          |
+| **Surfaces**     | 7     | Card, Accordion, Drawer, Backdrop, Divider, Carousel, Jumbotron                                                                |
+| **Data Display** | 11    | Avatar, Badge, Chip, List, Data Table, Timeline, Gallery, Chart, QR Code, AI Label, KBD                                        |
+| **Media**        | 3     | Image, Video, Link                                                                                                            |
+
+## The one-purpose rule
+
+Every component does exactly one job that no other component does, under exactly
+one name. The industry ships four names for the same box — modal, dialog, popup,
+lightbox — and a developer choosing between them is doing archaeology instead of
+work.
+
+So each page carries an `aliases` list: every other name the industry uses for
+that component. Aliases are searchable and are printed under the page title, so
+searching "snackbar" finds Toast **and tells you we call it Toast**. The
+vocabulary converges instead of forking.
+
+Two entries collapse into one when they differ only by:
+
+| Difference    | Example                                                    |
+| ------------- | ---------------------------------------------------------- |
+| **placement** | a bottom app bar is an App Bar; a bottom sheet is a Drawer  |
+| **trigger**   | a hover card is a Popover raised on hover                   |
+| **size**      | a navigation rail is a Sidebar at its collapsed width       |
+| **vendor**    | a snackbar is a Toast with a Material accent                |
+
+They stay separate when the behaviour, the failure modes and the accessibility
+contract genuinely differ. Not before.
+
+An alias may only ever be claimed by one component, and may never be another
+component's canonical name. `nav.ts` asserts both in development and logs a
+loud console error if either is violated — the rule enforces itself rather than
+relying on review.
 
 ## The page contract
 
@@ -54,8 +90,12 @@ src/
   ui/               The real design system. Used by the Bible's own chrome.
   docs/
     framework/      The page renderer: DocPage, PreviewStage, blocks, kit
-    pages/          One file per page, exporting a DocSpec
-    nav.ts          Single source of truth for sidebar, search and prev/next
+    pages/          One file per page, exporting a DocSpec. Filename === page id.
+    pages/_folded/  Pages whose component was merged into another. Outside the
+                    glob, so they no longer publish; kept for their content
+                    until it is folded into the surviving page.
+    nav.ts          Single source of truth for the tree, search, aliases,
+                    breadcrumbs and prev/next
     registry.ts     File-system discovery via import.meta.glob
   app/              Shell, sidebar, command palette, Inspector Mode
 ```
@@ -74,11 +114,17 @@ runtime — including the light-mode previews inside the dark app.
 
 ### Adding a page
 
-1. Add an entry to the relevant group in `src/docs/nav.ts`.
-2. Create `src/docs/pages/<id>.tsx` exporting `defineDoc({ … })`.
+1. Search the app for the name first. If it comes back as an alias of something that already
+   exists, extend that page instead — that is the one-purpose rule doing its job.
+2. Add an entry to the relevant group in `src/docs/nav.ts`, with `aliases` for every other
+   name the industry uses for it.
+3. Create `src/docs/pages/<id>.tsx` exporting `defineDoc({ … })`. The filename must equal
+   the `id` in both `nav.ts` and `meta`.
 
 That is the whole process. The registry discovers the file; the sidebar, search, command
-palette and prev/next links all derive from `nav.ts`.
+palette, breadcrumbs and prev/next links all derive from `nav.ts`. An entry with no file
+renders as “soon” rather than a 404 — the nav entry is the commitment, the file is the
+delivery.
 
 ## Inspector Mode
 

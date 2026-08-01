@@ -103,7 +103,6 @@ export default defineDoc({
   meta: {
     id: 'design-tokens',
     title: 'Design Tokens',
-    group: 'Foundations',
     tagline:
       'Three tiers, one direction of reference. Every colour, size, radius, shadow and duration in this Bible resolves to a token — and every token resolves to a reason.',
     keywords: ['variables', 'theming', 'css custom properties', 'primitives', 'semantic', 'alias'],

@@ -141,7 +141,6 @@ export default defineDoc({
   meta: {
     id: 'error-states',
     title: 'Error States',
-    group: 'Feedback',
     tagline:
       'Five levels, from a single field to a whole system. Every one of them has to answer the same three questions: what happened, whose fault it is, and what to do now.',
     keywords: ['404', '500', 'failure', 'validation', 'retry', 'recovery', 'offline', 'error boundary'],

@@ -86,7 +86,6 @@ export default defineDoc({
   meta: {
     id: 'spacing',
     title: 'Spacing',
-    group: 'Foundations',
     tagline:
       'A 4px grid, fifteen steps, and one job: make the relationship between two things visible before either of them is read.',
     keywords: ['padding', 'margin', 'gap', 'whitespace', '8pt grid', 'rhythm', 'proximity', 'density'],

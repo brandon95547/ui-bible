@@ -64,7 +64,6 @@ export default defineDoc({
   meta: {
     id: 'breakpoints',
     title: 'Breakpoints',
-    group: 'Foundations',
     tagline:
       'Five thresholds, chosen from where layouts actually break rather than from a list of phone models. Plus the rule that most components should not use them at all.',
     keywords: ['responsive', 'media query', 'container query', 'mobile', 'viewport', 'adaptive'],

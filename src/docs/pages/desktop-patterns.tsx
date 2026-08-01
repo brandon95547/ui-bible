@@ -364,7 +364,6 @@ export default defineDoc({
   meta: {
     id: 'desktop-patterns',
     title: 'Desktop Patterns',
-    group: 'Patterns',
     tagline:
       'What a large screen, a precise pointer and a keyboard make possible — and the accessibility debt each of them quietly runs up.',
     keywords: [

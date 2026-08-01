@@ -4,7 +4,7 @@ import { cn } from '@/lib/cn'
 import { usePersistentState } from '@/lib/hooks'
 import { Kbd } from '@/ui/Display'
 import { iconByName } from '@/app/icons'
-import { NAV, PAGE_BY_ID, searchPages } from '@/docs/nav'
+import { NAV, PAGE_BY_ID, searchPages, type NavPage } from '@/docs/nav'
 import { IMPLEMENTED } from '@/docs/registry'
 
 const MIN_W = 208
@@ -30,10 +30,9 @@ export function Sidebar({
   onOpenPalette: () => void
 }) {
   const [width, setWidth] = usePersistentState('uib:sidebar-width', DEFAULT_W)
-  const [collapsedGroups, setCollapsedGroups] = usePersistentState<string[]>(
-    'uib:collapsed-groups',
-    [],
-  )
+  // Section and group ids share one store but are namespaced, so a group named
+  // "actions" can never collapse the section that happens to share its id.
+  const [collapsed, setCollapsed] = usePersistentState<string[]>('uib:collapsed-nodes', [])
   const [query, setQuery] = React.useState('')
   const [dragging, setDragging] = React.useState(false)
   const navRef = React.useRef<HTMLDivElement>(null)
@@ -63,10 +62,9 @@ export function Sidebar({
     [hits],
   )
 
-  const toggleGroup = (id: string) =>
-    setCollapsedGroups((prev) =>
-      prev.includes(id) ? prev.filter((g) => g !== id) : [...prev, id],
-    )
+  const isOpen = (key: string) => !collapsed.includes(key)
+  const toggle = (key: string) =>
+    setCollapsed((prev) => (prev.includes(key) ? prev.filter((g) => g !== key) : [...prev, key]))
 
   /* ---- roving keyboard navigation -------------------------------------- */
   const onNavKeyDown = (e: React.KeyboardEvent) => {
@@ -82,6 +80,22 @@ export function Sidebar({
   }
 
   const favPages = favorites.map((id) => PAGE_BY_ID.get(id)).filter(Boolean)
+
+  /** A group renders only the pages that survived the current search. */
+  const visible = (pages: NavPage[]) =>
+    matchedIds ? pages.filter((p) => matchedIds.has(p.id)) : pages
+
+  const renderRows = (pages: NavPage[]) =>
+    pages.map((p) => (
+      <NavRow
+        key={p.id}
+        page={p}
+        active={currentId === p.id}
+        onNavigate={onNavigate}
+        favorite={favorites.includes(p.id)}
+        onToggleFavorite={onToggleFavorite}
+      />
+    ))
 
   return (
     <aside
@@ -181,11 +195,12 @@ export function Sidebar({
         )}
 
         {!hits && favPages.length > 0 && (
-          <NavGroupBlock
+          <TreeNode
             title="Favourites"
             icon="Star"
-            collapsed={collapsedGroups.includes('__fav')}
-            onToggle={() => toggleGroup('__fav')}
+            depth={0}
+            open={isOpen('sec:__fav')}
+            onToggle={() => toggle('sec:__fav')}
             count={favPages.length}
           >
             {favPages.map((p) => (
@@ -198,35 +213,52 @@ export function Sidebar({
                 onToggleFavorite={onToggleFavorite}
               />
             ))}
-          </NavGroupBlock>
+          </TreeNode>
         )}
 
-        {NAV.map((group) => {
-          const pages = matchedIds
-            ? group.pages.filter((p) => matchedIds.has(p.id))
-            : group.pages
-          if (pages.length === 0) return null
-          const collapsed = !hits && collapsedGroups.includes(group.id)
+        {NAV.map((section) => {
+          const total = section.groups
+            ? section.groups.reduce((n, g) => n + g.pages.length, 0)
+            : (section.pages?.length ?? 0)
+
+          // Search collapses the two levels: only groups with surviving pages
+          // render, and every section is forced open so hits are never hidden.
+          const groups = section.groups
+            ? section.groups
+                .map((g) => ({ ...g, pages: visible(g.pages) }))
+                .filter((g) => g.pages.length > 0)
+            : []
+          const pages = section.pages ? visible(section.pages) : []
+          if (groups.length === 0 && pages.length === 0) return null
+
           return (
-            <NavGroupBlock
-              key={group.id}
-              title={group.title}
-              icon={group.icon}
-              collapsed={collapsed}
-              onToggle={() => toggleGroup(group.id)}
-              count={group.pages.length}
+            <TreeNode
+              key={section.id}
+              title={section.title}
+              icon={section.icon}
+              depth={0}
+              open={hits ? true : isOpen(`sec:${section.id}`)}
+              onToggle={() => toggle(`sec:${section.id}`)}
+              count={total}
             >
-              {pages.map((p) => (
-                <NavRow
-                  key={p.id}
-                  page={p}
-                  active={currentId === p.id}
-                  onNavigate={onNavigate}
-                  favorite={favorites.includes(p.id)}
-                  onToggleFavorite={onToggleFavorite}
-                />
-              ))}
-            </NavGroupBlock>
+              {section.groups
+                ? groups.map((g) => (
+                    <TreeNode
+                      key={g.id}
+                      title={g.title}
+                      icon={g.icon}
+                      depth={1}
+                      open={hits ? true : isOpen(`grp:${g.id}`)}
+                      onToggle={() => toggle(`grp:${g.id}`)}
+                      count={
+                        section.groups!.find((s) => s.id === g.id)?.pages.length ?? g.pages.length
+                      }
+                    >
+                      {renderRows(g.pages)}
+                    </TreeNode>
+                  ))
+                : renderRows(pages)}
+            </TreeNode>
           )
         })}
 
@@ -279,43 +311,63 @@ export function Sidebar({
   )
 }
 
-function NavGroupBlock({
+/**
+ * One node for both levels. A section (depth 0) shouts in overline caps; a
+ * group (depth 1) speaks in sentence case at label size. Two levels is the
+ * limit — a third would need a third visual weight, and there is no third
+ * weight left before the rows themselves.
+ */
+function TreeNode({
   title,
   icon,
-  collapsed,
+  depth,
+  open,
   onToggle,
   count,
   children,
 }: {
   title: string
   icon: string
-  collapsed: boolean
+  depth: 0 | 1
+  open: boolean
   onToggle: () => void
   count: number
   children: React.ReactNode
 }) {
-  const id = `group-${title.replace(/\s+/g, '-').toLowerCase()}`
+  const id = `node-${depth}-${title.replace(/\s+/g, '-').toLowerCase()}`
   return (
-    <div className="mb-1">
+    <div className={depth === 0 ? 'mb-1' : 'mb-0.5'}>
       <button
         type="button"
         onClick={onToggle}
-        aria-expanded={!collapsed}
+        aria-expanded={open}
         aria-controls={id}
-        className="group flex w-full items-center gap-2 rounded-[var(--radius-md)] px-2 py-1.5 text-left transition-colors hover:bg-[var(--ds-layer-hover)] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--ds-focus-ring)]"
+        className={cn(
+          'group flex w-full items-center gap-2 rounded-[var(--radius-md)] px-2 text-left transition-colors',
+          'hover:bg-[var(--ds-layer-hover)]',
+          'focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--ds-focus-ring)]',
+          depth === 0 ? 'py-1.5' : 'py-1',
+        )}
       >
         <ChevronRight
           size={12}
           aria-hidden
           className={cn(
             'shrink-0 text-[var(--ds-fg-disabled)] transition-transform duration-[160ms] ease-[cubic-bezier(0.2,0,0,1)]',
-            !collapsed && 'rotate-90',
+            open && 'rotate-90',
           )}
         />
         <span className="shrink-0 text-[var(--ds-fg-muted)]">
-          <GroupIcon name={icon} size={13} />
+          <GroupIcon name={icon} size={depth === 0 ? 13 : 12} />
         </span>
-        <span className="flex-1 truncate text-overline uppercase text-[var(--ds-fg)]">
+        <span
+          className={cn(
+            'flex-1 truncate',
+            depth === 0
+              ? 'text-overline uppercase text-[var(--ds-fg)]'
+              : 'text-label-sm text-[var(--ds-fg-secondary)]',
+          )}
+        >
           {title}
         </span>
         <span className="shrink-0 font-mono text-[10px] tabular-nums text-[var(--ds-fg-disabled)]">
@@ -324,7 +376,7 @@ function NavGroupBlock({
       </button>
       <div
         id={id}
-        hidden={collapsed}
+        hidden={!open}
         className="mt-0.5 flex flex-col gap-px pl-[13px]"
         style={{ borderLeft: '1px solid var(--ds-border-subtle)', marginLeft: '13px' }}
       >
@@ -341,7 +393,7 @@ function NavRow({
   favorite,
   onToggleFavorite,
 }: {
-  page: { id: string; title: string }
+  page: NavPage
   active: boolean
   onNavigate: (id: string) => void
   favorite: boolean
@@ -355,6 +407,7 @@ function NavRow({
         type="button"
         onClick={() => onNavigate(page.id)}
         aria-current={active ? 'page' : undefined}
+        title={page.aliases?.length ? `Also called ${page.aliases.join(', ')}` : undefined}
         className={cn(
           'relative flex h-7 min-w-0 flex-1 items-center gap-2 rounded-[var(--radius-sm)] pl-2.5 pr-7 text-left',
           'transition-[background-color,color] duration-[100ms]',

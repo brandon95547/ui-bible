@@ -15,7 +15,12 @@ import type { Lang } from './highlight'
 export interface DocMeta {
   id: string
   title: string
-  group: string
+  /**
+   * @deprecated The breadcrumb is derived from `nav.ts`, which is the single
+   * source of truth for where a page lives. Kept only so existing pages keep
+   * compiling; it is used solely as a fallback for a page missing from NAV.
+   */
+  group?: string
   /** One line, shown under the title and in search results. */
   tagline: string
   status?: 'stable' | 'beta' | 'draft' | 'deprecated'

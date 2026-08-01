@@ -91,7 +91,6 @@ export default defineDoc({
   meta: {
     id: 'empty-states',
     title: 'Empty States',
-    group: 'Feedback',
     tagline:
       'The most expensive screen in a product is the one with nothing on it and no way forward. Four different kinds of empty, four different jobs.',
     keywords: ['zero state', 'blank', 'no data', 'onboarding', 'no results', 'first run'],
@@ -110,7 +109,7 @@ export default defineDoc({
       {
         text: 'The data is still loading.',
         instead: 'a Skeleton',
-        to: '#/skeletons',
+        to: '#/skeleton',
       },
       {
         text: 'The region is genuinely optional and empty is a normal, unremarkable state.',

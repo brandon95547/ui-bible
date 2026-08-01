@@ -79,7 +79,7 @@ export function CommandPalette({
         .map((p) => ({
           id: `page:${p!.id}`,
           title: p!.title,
-          subtitle: p!.group,
+          subtitle: p!.path,
           icon: <Clock size={14} />,
           section: 'Recent',
           run: () => onNavigate(p!.id),
@@ -91,7 +91,7 @@ export function CommandPalette({
         .map((p) => ({
           id: `fav:${p!.id}`,
           title: p!.title,
-          subtitle: p!.group,
+          subtitle: p!.path,
           icon: <Star size={14} />,
           section: 'Favourites',
           run: () => onNavigate(p!.id),
@@ -100,7 +100,7 @@ export function CommandPalette({
       const browse: Action[] = ALL_PAGES.slice(0, 8).map((p) => ({
         id: `browse:${p.id}`,
         title: p.title,
-        subtitle: p.group,
+        subtitle: p.path,
         icon: <ArrowRight size={14} />,
         section: 'Jump to',
         run: () => onNavigate(p.id),
@@ -109,10 +109,14 @@ export function CommandPalette({
       return [...recentActions, ...favActions, ...commands, ...browse]
     }
 
+    // A hit reached through an alias says so, so the reader learns the
+    // canonical name rather than searching "modal" again next week.
     const pageHits: Action[] = searchPages(query).map((h) => ({
       id: `page:${h.page.id}`,
       title: h.page.title,
-      subtitle: `${h.page.group} · ${h.page.blurb}`,
+      subtitle: h.via
+        ? `${h.via} is called ${h.page.title} here · ${h.page.path}`
+        : `${h.page.path} · ${h.page.blurb}`,
       icon: <ArrowRight size={14} />,
       section: 'Pages',
       run: () => onNavigate(h.page.id),
