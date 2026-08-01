@@ -31,8 +31,12 @@ export function Sidebar({
 }) {
   const [width, setWidth] = usePersistentState('uib:sidebar-width', DEFAULT_W)
   // Section and group ids share one store but are namespaced, so a group named
-  // "actions" can never collapse the section that happens to share its id.
-  const [collapsed, setCollapsed] = usePersistentState<string[]>('uib:collapsed-nodes', [])
+  // "actions" can never open the section that happens to share its id.
+  //
+  // Storing what is *open* rather than what is closed is what makes the tree
+  // start collapsed: sixty rows unfurled on first paint is a wall, not a menu.
+  // Search still forces everything open, so nothing is ever hidden from a hit.
+  const [expanded, setExpanded] = usePersistentState<string[]>('uib:expanded-nodes', [])
   const [query, setQuery] = React.useState('')
   const [dragging, setDragging] = React.useState(false)
   const navRef = React.useRef<HTMLDivElement>(null)
@@ -62,9 +66,9 @@ export function Sidebar({
     [hits],
   )
 
-  const isOpen = (key: string) => !collapsed.includes(key)
+  const isOpen = (key: string) => expanded.includes(key)
   const toggle = (key: string) =>
-    setCollapsed((prev) => (prev.includes(key) ? prev.filter((g) => g !== key) : [...prev, key]))
+    setExpanded((prev) => (prev.includes(key) ? prev.filter((g) => g !== key) : [...prev, key]))
 
   /* ---- roving keyboard navigation -------------------------------------- */
   const onNavKeyDown = (e: React.KeyboardEvent) => {

@@ -64,21 +64,24 @@ relying on review.
 
 ## The page contract
 
-Every page is the same ten sections in the same order:
+Every page is the same nine sections in the same order:
 
-1. Overview — purpose, when to use, when **not** to use, UX reasoning
-2. Live preview — real interactive controls plus a full interaction-state matrix
-3. Anatomy — every part labelled and measured, with the reason for each number
-4. Design tokens used — read live from the running stylesheet
-5. Recommended sizes — height, padding, radius, icon, gaps, touch target
-6. Do — with the reason why
-7. Don't — with the reason why
-8. Accessibility — contrast, keyboard, ARIA, focus, screen readers, touch
-9. Code — usage, framework-free HTML, CSS, and the component API
-10. Notes — tips, performance, common mistakes, real-world recommendations
+1. Live preview — real interactive controls plus a full interaction-state matrix
+2. Anatomy — every part labelled and measured, with the reason for each number
+3. Design tokens used — read live from the running stylesheet
+4. Recommended sizes — height, padding, radius, icon, gaps, touch target
+5. Do — with the reason why
+6. Don't — with the reason why
+7. Accessibility — contrast, keyboard, ARIA, focus, screen readers, touch
+8. Code — usage, framework-free HTML, CSS, and the component API
+9. Notes — tips, performance, common mistakes, real-world recommendations
 
-This is not decoration. Once a reader learns where "when not to use" lives, they know it
-for every page, and looking something up stops costing attention.
+This is not decoration. Once a reader learns where "don't" lives, they know it for every
+page, and looking something up stops costing attention.
+
+The running component comes first: a page opens on the thing itself, not on prose about
+it. `DocSpec.overview` still exists and every written page still carries its copy, but it
+is no longer rendered — reinstating it is one block in `DocPage.tsx`.
 
 ## Architecture
 

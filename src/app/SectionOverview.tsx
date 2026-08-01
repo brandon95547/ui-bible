@@ -43,7 +43,7 @@ export function SectionOverview({
         </div>
         <p className="max-w-[68ch] text-body-lg text-[var(--ds-fg-muted)]">{section.description}</p>
         <p className="max-w-[68ch] text-caption leading-relaxed text-[var(--ds-fg-muted)]">
-          Every page follows the same ten sections in the same order — overview, live preview,
+          Every page follows the same nine sections in the same order — live preview first, then
           anatomy, tokens, sizes, do, don’t, accessibility, code, notes. Learn the shape once and
           you can find anything in seconds.
         </p>

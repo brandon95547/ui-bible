@@ -3,10 +3,11 @@ import type { Lang } from './highlight'
 
 /* ===========================================================================
    THE PAGE CONTRACT
-   Every page in this Bible is the same ten sections in the same order. That
-   is not a stylistic choice — it is what makes the reference usable. Once a
-   developer learns where "when not to use" lives, they know it for all 60
-   pages, and looking something up stops costing attention.
+   Every page in this Bible is the same nine sections in the same order, and
+   the first of them is the running component. That is not a stylistic choice
+   — it is what makes the reference usable. Once a developer learns where
+   "don't" lives, they know it for all 60 pages, and looking something up
+   stops costing attention.
 
    A section is omitted only when it is genuinely inapplicable (a colour ramp
    has no "recommended sizes"). Never omit one because it was hard to write.
@@ -30,7 +31,7 @@ export interface DocMeta {
   jumps?: { id: string; label: string }[]
 }
 
-/* -- 1. Overview ---------------------------------------------------------- */
+/* -- Overview (retired — no longer rendered, see DocSpec.overview) --------- */
 export interface Overview {
   purpose: string
   whenToUse: string[]
@@ -39,7 +40,7 @@ export interface Overview {
   reasoning: ReactNode
 }
 
-/* -- 2. Live preview ------------------------------------------------------ */
+/* -- 1. Live preview ------------------------------------------------------ */
 export interface PreviewSpec {
   /** The interactive playground. Real controls, real state. */
   render: ReactNode
@@ -49,7 +50,7 @@ export interface PreviewSpec {
   states?: { label: string; note?: string; render: ReactNode }[]
 }
 
-/* -- 3. Anatomy ----------------------------------------------------------- */
+/* -- 2. Anatomy ----------------------------------------------------------- */
 export interface AnatomyPart {
   n: number
   label: string
@@ -64,7 +65,7 @@ export interface AnatomySpec {
   caption?: string
 }
 
-/* -- 4. Design tokens ----------------------------------------------------- */
+/* -- 3. Design tokens ----------------------------------------------------- */
 export type TokenCategory = 'color' | 'spacing' | 'radius' | 'shadow' | 'typography' | 'motion'
 export interface TokenUse {
   category: TokenCategory
@@ -79,7 +80,7 @@ export interface TokenUse {
   group?: string
 }
 
-/* -- 5. Recommended sizes ------------------------------------------------- */
+/* -- 4. Recommended sizes ------------------------------------------------- */
 export interface SizeRow {
   name: string
   height?: string
@@ -94,14 +95,14 @@ export interface SizeRow {
   use: string
 }
 
-/* -- 6 & 7. Do / Don't ---------------------------------------------------- */
+/* -- 5 & 6. Do / Don't ---------------------------------------------------- */
 export interface Guidance {
   title: string
   why: string
   render?: ReactNode
 }
 
-/* -- 8. Accessibility ----------------------------------------------------- */
+/* -- 7. Accessibility ----------------------------------------------------- */
 export interface A11ySpec {
   contrast: string[]
   keyboard: { keys: string; does: string }[]
@@ -113,7 +114,7 @@ export interface A11ySpec {
   criteria?: { id: string; name: string; level: 'A' | 'AA' | 'AAA' }[]
 }
 
-/* -- 9. Code -------------------------------------------------------------- */
+/* -- 8. Code -------------------------------------------------------------- */
 export interface ApiProp {
   name: string
   type: string
@@ -128,7 +129,7 @@ export interface CodeSpec {
   api?: { name: string; props: ApiProp[] }[]
 }
 
-/* -- 10. Notes ------------------------------------------------------------ */
+/* -- 9. Notes ------------------------------------------------------------- */
 export interface NotesSpec {
   tips?: string[]
   performance?: string[]
@@ -138,7 +139,12 @@ export interface NotesSpec {
 
 export interface DocSpec {
   meta: DocMeta
-  overview: Overview
+  /**
+   * No longer rendered — the page opens on the live preview instead. Existing
+   * pages keep their copy so it can be reinstated or moved without rewriting
+   * it; new pages may omit it.
+   */
+  overview?: Overview
   preview?: PreviewSpec
   anatomy?: AnatomySpec
   /**

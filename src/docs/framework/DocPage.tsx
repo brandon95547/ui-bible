@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { ArrowLeft, ArrowRight, Check, Star, X } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Star } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import { useScrollSpy } from '@/lib/hooks'
 import { Badge } from '@/ui/Display'
@@ -14,13 +14,11 @@ import {
   CodeBlock,
   GuidanceGrid,
   NotesGrid,
-  Prose,
   PropsTable,
   Section,
   SizeTable,
   SubHeading,
   TokenTable,
-  UseList,
 } from './blocks'
 import type { DocSpec } from './types'
 
@@ -34,8 +32,11 @@ interface DocPageProps {
 }
 
 /**
- * Renders a DocSpec into the canonical ten-section page. The order is fixed
- * and the numbering is derived — a page cannot accidentally reorder itself.
+ * Renders a DocSpec into the canonical page. The order is fixed and the
+ * numbering is derived — a page cannot accidentally reorder itself.
+ *
+ * The live preview is section 1. Prose about a component is worth less than
+ * the component itself, so nothing is allowed to sit above it.
  */
 export function DocPage({
   spec,
@@ -45,7 +46,7 @@ export function DocPage({
   prev,
   next,
 }: DocPageProps) {
-  const { meta, overview } = spec
+  const { meta } = spec
 
   // The tree in nav.ts is the single source of truth for where a page lives,
   // so a page moving between groups needs one edit, not two that can disagree.
@@ -58,7 +59,7 @@ export function DocPage({
   const aliases = navEntry?.aliases ?? []
 
   const sections = React.useMemo(() => {
-    const out: { id: string; title: string }[] = [{ id: 'overview', title: 'Overview' }]
+    const out: { id: string; title: string }[] = []
     if (spec.preview) out.push({ id: 'preview', title: 'Live preview' })
     if (spec.anatomy) out.push({ id: 'anatomy', title: 'Anatomy' })
     if (spec.palette) out.push({ id: 'palette', title: 'Color palette' })
@@ -143,38 +144,7 @@ export function DocPage({
       {/* ---- BODY + TOC --------------------------------------------------- */}
       <div className="mx-auto flex max-w-[64rem] gap-10 pb-24 pt-10 xl:max-w-[76rem]">
         <div className="flex min-w-0 flex-1 flex-col gap-14">
-          {/* 1 — OVERVIEW */}
-          <Section id="overview" index={num('overview')} title="Overview">
-            <div className="flex flex-col gap-6">
-              <Prose>
-                <p className="text-body-lg text-[var(--ds-fg)]">{overview.purpose}</p>
-              </Prose>
-
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="rounded-[var(--radius-xl)] border border-[var(--ds-success-border)] bg-[var(--ds-success-subtle)]/40 p-4">
-                  <h3 className="mb-3 flex items-center gap-2 text-label text-[var(--ds-success-text)]">
-                    <Check size={14} /> When to use
-                  </h3>
-                  <UseList items={overview.whenToUse.map((t) => ({ text: t }))} tone="do" />
-                </div>
-                <div className="rounded-[var(--radius-xl)] border border-[var(--ds-danger-border)] bg-[var(--ds-danger-subtle)]/40 p-4">
-                  <h3 className="mb-3 flex items-center gap-2 text-label text-[var(--ds-danger-text)]">
-                    <X size={14} /> When not to use
-                  </h3>
-                  <UseList items={overview.whenNotToUse} tone="dont" />
-                </div>
-              </div>
-
-              <div className="rounded-[var(--radius-xl)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] p-5">
-                <h3 className="mb-2.5 text-overline uppercase text-[var(--ds-fg-muted)]">
-                  UX reasoning
-                </h3>
-                <Prose>{overview.reasoning}</Prose>
-              </div>
-            </div>
-          </Section>
-
-          {/* 2 — LIVE PREVIEW */}
+          {/* 1 — LIVE PREVIEW */}
           {spec.preview && (
             <Section
               id="preview"
@@ -210,7 +180,7 @@ export function DocPage({
             </Section>
           )}
 
-          {/* 3 — ANATOMY */}
+          {/* 2 — ANATOMY */}
           {spec.anatomy && (
             <Section
               id="anatomy"
@@ -222,7 +192,7 @@ export function DocPage({
             </Section>
           )}
 
-          {/* 4 — COLOR PALETTE */}
+          {/* 3 — COLOR PALETTE */}
           {spec.palette && (
             <Section
               id="palette"
@@ -234,7 +204,7 @@ export function DocPage({
             </Section>
           )}
 
-          {/* 5 — TOKENS */}
+          {/* 4 — TOKENS */}
           {spec.tokens && spec.tokens.length > 0 && (
             <Section
               id="tokens"
