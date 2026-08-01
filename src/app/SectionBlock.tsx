@@ -1,6 +1,7 @@
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, ArrowUpRight } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import { iconByName } from '@/app/icons'
+import { ComponentPreview } from '@/app/ComponentPreview'
 import { IMPLEMENTED } from '@/docs/registry'
 import type { NavGroup, NavPage, NavSection } from '@/docs/nav'
 
@@ -14,11 +15,19 @@ export function SectionBlock({
   section,
   onNavigate,
   headed = true,
+  variant = 'text',
 }: {
   section: NavSection
   onNavigate: (id: string) => void
   /** Off when the page title above already names the section. */
   headed?: boolean
+  /**
+   * `text` is the dense card — title, blurb, aliases — and is right for a list
+   * you read. `preview` trades the words for a wireframe of the component
+   * itself, which is what you actually want when you are looking for a shape
+   * whose name you do not know yet.
+   */
+  variant?: 'text' | 'preview'
 }) {
   const Icon = iconByName(section.icon)
   const groups: NavGroup[] = section.groups ?? [
@@ -61,10 +70,19 @@ export function SectionBlock({
                   <p className="text-caption text-[var(--ds-fg-muted)]">{group.description}</p>
                 </div>
               )}
-              <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-                {group.pages.map((p) => (
-                  <PageCard key={p.id} page={p} onNavigate={onNavigate} />
-                ))}
+              <div
+                className={cn(
+                  'grid sm:grid-cols-2 lg:grid-cols-3',
+                  variant === 'preview' ? 'gap-4' : 'gap-2',
+                )}
+              >
+                {group.pages.map((p) =>
+                  variant === 'preview' ? (
+                    <PreviewCard key={p.id} page={p} onNavigate={onNavigate} />
+                  ) : (
+                    <PageCard key={p.id} page={p} onNavigate={onNavigate} />
+                  ),
+                )}
               </div>
             </div>
           )
@@ -88,11 +106,7 @@ function PageCard({ page, onNavigate }: { page: NavPage; onNavigate: (id: string
     >
       <span className="flex items-center gap-2">
         <span className="text-label text-[var(--ds-fg)]">{page.title}</span>
-        {!IMPLEMENTED.has(page.id) && (
-          <span className="rounded-full bg-[var(--ds-layer-active)] px-1.5 text-[9px] uppercase text-[var(--ds-fg-muted)]">
-            soon
-          </span>
-        )}
+        <Soon page={page} />
         <ArrowRight
           size={13}
           className="ml-auto shrink-0 -translate-x-1 text-[var(--ds-fg-disabled)] opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100"
@@ -105,5 +119,56 @@ function PageCard({ page, onNavigate }: { page: NavPage; onNavigate: (id: string
         </span>
       )}
     </button>
+  )
+}
+
+/**
+ * The gallery card: a titled frame around a wireframe of the component.
+ *
+ * The drawing does the work the blurb used to. Sixty-five titles read as a
+ * word list — sixty-five silhouettes read as a contact sheet, and someone who
+ * knows the shape they need but not our name for it can point at it. The blurb
+ * is not lost; it is the tooltip, the search result, and the first line of the
+ * page itself.
+ */
+function PreviewCard({ page, onNavigate }: { page: NavPage; onNavigate: (id: string) => void }) {
+  return (
+    <button
+      type="button"
+      onClick={() => onNavigate(page.id)}
+      title={page.blurb}
+      className={cn(
+        'group flex flex-col overflow-hidden rounded-[var(--radius-lg)] border border-[var(--ds-border-subtle)]',
+        'bg-[var(--ds-surface)] text-left transition-all duration-[160ms]',
+        'hover:-translate-y-px hover:border-[var(--ds-border)] hover:shadow-e2',
+        'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ds-focus-ring)]',
+      )}
+    >
+      <span
+        className={cn(
+          'flex items-center gap-2 border-b border-[var(--ds-border-subtle)]',
+          'bg-[var(--ds-layer-hover)] px-4 py-3',
+        )}
+      >
+        <span className="truncate text-label text-[var(--ds-fg)]">{page.title}</span>
+        <Soon page={page} />
+        <ArrowUpRight
+          size={15}
+          className="ml-auto shrink-0 text-[var(--ds-fg-disabled)] transition-colors group-hover:text-[var(--ds-accent-text)]"
+        />
+      </span>
+      <span className="flex min-h-[188px] flex-1 items-center justify-center overflow-hidden p-5">
+        <ComponentPreview id={page.id} />
+      </span>
+    </button>
+  )
+}
+
+function Soon({ page }: { page: NavPage }) {
+  if (IMPLEMENTED.has(page.id)) return null
+  return (
+    <span className="shrink-0 rounded-full bg-[var(--ds-layer-active)] px-1.5 text-[9px] uppercase text-[var(--ds-fg-muted)]">
+      soon
+    </span>
   )
 }

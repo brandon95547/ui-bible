@@ -50,7 +50,14 @@ export function SectionOverview({
       </header>
 
       <div className="mt-8">
-        <SectionBlock section={section} onNavigate={onNavigate} headed={false} />
+        <SectionBlock
+          section={section}
+          onNavigate={onNavigate}
+          headed={false}
+          /* Components are things you recognise on sight; foundations are things
+             you read about. Only the first earns a wireframe. */
+          variant={section.id === 'components' ? 'preview' : 'text'}
+        />
       </div>
     </div>
   )
