@@ -65,6 +65,12 @@ export interface NavSection {
   groups?: NavGroup[]
   /** Collapsed by default when the sidebar first loads. */
   collapsed?: boolean
+  /**
+   * The section gets its own index page at `#/<id>`, linked as "Overview" above
+   * its first row in the sidebar. Only worth it for a section too large to read
+   * as a list — the small ones are their own table of contents.
+   */
+  overview?: boolean
 }
 
 /* ===========================================================================
@@ -811,6 +817,7 @@ export const NAV: NavSection[] = [
     title: 'Foundations',
     icon: 'Layers',
     description: 'The decisions everything else is built on.',
+    overview: true,
     pages: FOUNDATIONS,
   },
   {
@@ -818,6 +825,7 @@ export const NAV: NavSection[] = [
     title: 'Components',
     icon: 'Component',
     description: 'Every part we ship. One job each, one name each.',
+    overview: true,
     groups: [
       {
         id: 'navigation',
@@ -939,6 +947,16 @@ export const ALL_PAGES: ResolvedPage[] = NAV_GROUPS.flatMap((g) =>
 )
 
 export const PAGE_BY_ID = new Map(ALL_PAGES.map((p) => [p.id, p]))
+
+/**
+ * Section index pages. Deliberately *not* in ALL_PAGES: an overview is a way
+ * into the section, not a page of the standard, so it stays out of the count,
+ * the search index and prev/next.
+ */
+export function overviewSection(id: string) {
+  const section = NAV.find((s) => s.id === id)
+  return section?.overview ? section : undefined
+}
 
 export const PAGE_ORDER = ALL_PAGES.map((p) => p.id)
 

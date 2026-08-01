@@ -4,8 +4,8 @@ import { cn } from '@/lib/cn'
 import { Badge, Kbd } from '@/ui/Display'
 import { Button } from '@/ui/Button'
 import { iconByName } from '@/app/icons'
+import { SectionBlock } from '@/app/SectionBlock'
 import { NAV, ALL_PAGES } from '@/docs/nav'
-import { IMPLEMENTED } from '@/docs/registry'
 import { useInspector } from './Inspector'
 
 const PRINCIPLES = [
@@ -177,101 +177,62 @@ export function Home({ onNavigate, onOpenPalette }: { onNavigate: (id: string) =
       </section>
 
       {/* ---- BROWSE ---------------------------------------------------------- */}
+      {/* The two large sections are not listed here — 79 cards is a wall, not a
+          welcome. They index themselves, from "Overview" at the top of each in
+          the sidebar. What is left is short enough to read. */}
       <section className="mt-16">
         <SectionLabel>Contents</SectionLabel>
-        <h2 className="mt-2 text-h2">Every section</h2>
+        <h2 className="mt-2 text-h2">The two big sections index themselves</h2>
         <p className="mt-2 max-w-[62ch] text-body text-[var(--ds-fg-muted)]">
-          Every page follows the same ten sections in the same order — overview, live preview,
-          anatomy, tokens, sizes, do, don’t, accessibility, code, notes. Learn the shape once and
-          you can find anything in seconds.
+          Foundations and Components open with an Overview — the first row of each in the sidebar,
+          and the full contents of that section. Everything else is short enough to list here.
         </p>
 
-        <div className="mt-8 flex flex-col gap-12">
-          {NAV.map((section) => {
+        <div className="mt-6 grid gap-2 sm:grid-cols-2">
+          {NAV.filter((s) => s.overview).map((section) => {
             const Icon = iconByName(section.icon)
-            const groups = section.groups ?? [
-              {
-                id: section.id,
-                title: section.title,
-                icon: section.icon,
-                description: section.description,
-                pages: section.pages ?? [],
-              },
-            ]
-            const total = groups.reduce((n, g) => n + g.pages.length, 0)
-
+            const count = section.groups
+              ? section.groups.reduce((n, g) => n + g.pages.length, 0)
+              : (section.pages?.length ?? 0)
             return (
-              <div key={section.id}>
-                <div className="flex flex-wrap items-baseline gap-2.5 border-b border-[var(--ds-border-subtle)] pb-3">
-                  <span className="text-[var(--ds-accent-text)]">
-                    <Icon size={17} />
+              <button
+                key={section.id}
+                type="button"
+                onClick={() => onNavigate(section.id)}
+                className={cn(
+                  'group flex items-center gap-3 rounded-[var(--radius-lg)] border border-[var(--ds-border-subtle)]',
+                  'bg-[var(--ds-surface)] px-4 py-3.5 text-left transition-colors',
+                  'hover:border-[var(--ds-border)] hover:bg-[var(--ds-surface-raised)]',
+                  'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ds-focus-ring)]',
+                )}
+              >
+                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-[var(--radius-md)] bg-[var(--ds-accent-subtle)] text-[var(--ds-accent-text)]">
+                  <Icon size={16} />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="flex items-baseline gap-2">
+                    <span className="text-label text-[var(--ds-fg)]">{section.title}</span>
+                    <span className="font-mono text-caption tabular-nums text-[var(--ds-fg-muted)]">
+                      {count}
+                    </span>
                   </span>
-                  <h3 className="text-h3">{section.title}</h3>
-                  <span className="font-mono text-caption tabular-nums text-[var(--ds-fg-muted)]">
-                    {total}
+                  <span className="mt-0.5 block truncate text-caption text-[var(--ds-fg-muted)]">
+                    {section.description}
                   </span>
-                  <p className="text-caption text-[var(--ds-fg-muted)]">{section.description}</p>
-                </div>
-
-                <div className="mt-5 flex flex-col gap-7">
-                  {groups.map((group) => {
-                    const GroupIcon = iconByName(group.icon)
-                    return (
-                      <div key={group.id}>
-                        {section.groups && (
-                          <div className="mb-3 flex items-baseline gap-2.5">
-                            <span className="text-[var(--ds-fg-muted)]">
-                              <GroupIcon size={14} />
-                            </span>
-                            <h4 className="text-h4">{group.title}</h4>
-                            <p className="text-caption text-[var(--ds-fg-muted)]">
-                              {group.description}
-                            </p>
-                          </div>
-                        )}
-                        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-                          {group.pages.map((p) => (
-                            <button
-                              key={p.id}
-                              type="button"
-                              onClick={() => onNavigate(p.id)}
-                              className={cn(
-                                'group flex flex-col gap-1 rounded-[var(--radius-lg)] border border-[var(--ds-border-subtle)]',
-                                'bg-[var(--ds-surface)] p-3.5 text-left transition-all duration-[160ms]',
-                                'hover:-translate-y-px hover:border-[var(--ds-border)] hover:bg-[var(--ds-surface-raised)] hover:shadow-e2',
-                                'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ds-focus-ring)]',
-                              )}
-                            >
-                              <span className="flex items-center gap-2">
-                                <span className="text-label text-[var(--ds-fg)]">{p.title}</span>
-                                {!IMPLEMENTED.has(p.id) && (
-                                  <span className="rounded-full bg-[var(--ds-layer-active)] px-1.5 text-[9px] uppercase text-[var(--ds-fg-muted)]">
-                                    soon
-                                  </span>
-                                )}
-                                <ArrowRight
-                                  size={13}
-                                  className="ml-auto shrink-0 -translate-x-1 text-[var(--ds-fg-disabled)] opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100"
-                                />
-                              </span>
-                              <span className="text-caption leading-relaxed text-[var(--ds-fg-muted)]">
-                                {p.blurb}
-                              </span>
-                              {p.aliases && p.aliases.length > 0 && (
-                                <span className="mt-0.5 truncate text-[11px] leading-relaxed text-[var(--ds-fg-muted)]">
-                                  Also called {p.aliases.join(', ')}
-                                </span>
-                              )}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
+                </span>
+                <ArrowRight
+                  size={14}
+                  className="shrink-0 -translate-x-1 text-[var(--ds-fg-disabled)] opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100"
+                />
+              </button>
             )
           })}
+        </div>
+
+        <div className="mt-10 flex flex-col gap-12">
+          {NAV.filter((s) => !s.overview).map((section) => (
+            <SectionBlock key={section.id} section={section} onNavigate={onNavigate} />
+          ))}
         </div>
       </section>
 

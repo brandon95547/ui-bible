@@ -8,10 +8,12 @@ import { EmptyState, ToastProvider } from '@/ui/Feedback'
 import { Sidebar } from '@/app/Sidebar'
 import { CommandPalette } from '@/app/CommandPalette'
 import { Home } from '@/app/Home'
+import { SectionOverview } from '@/app/SectionOverview'
 import { InspectorProvider, useInspector } from '@/app/Inspector'
 import { DocPage } from '@/docs/framework/DocPage'
+import { currentSectionId } from '@/docs/framework/anchors'
 import { loadPage } from '@/docs/registry'
-import { PAGE_BY_ID, neighbours } from '@/docs/nav'
+import { PAGE_BY_ID, neighbours, overviewSection } from '@/docs/nav'
 import type { DocSpec } from '@/docs/framework/types'
 
 /* ===========================================================================
@@ -34,7 +36,9 @@ function useHashRoute() {
   const navigate = React.useCallback((id: string) => {
     window.location.hash = id === 'home' ? '' : `/${id}`
     // Anchor jumps inside a page are the browser's job; a page *change* should
-    // always start at the top.
+    // always start at the top. Pages that arrive as their own chunk reset again
+    // once their content mounts — see resetScroll in DocRoute — because this
+    // frame still belongs to the loading skeleton.
     requestAnimationFrame(() => {
       document.getElementById('main')?.scrollTo({ top: 0, behavior: 'auto' })
     })
@@ -84,6 +88,15 @@ function DocRoute({
       cancelled = true
     }
   }, [id])
+
+  // A page is a lazy chunk, so the scroll reset fired at navigation time lands
+  // while the skeleton is still mounted — short content, nothing to scroll —
+  // and the previous offset survives into the real page. Reset once the page is
+  // actually on screen, unless the URL asked for a section.
+  React.useLayoutEffect(() => {
+    if (state === 'loading' || currentSectionId()) return
+    document.getElementById('main')?.scrollTo({ top: 0, behavior: 'auto' })
+  }, [state, id])
 
   const meta = PAGE_BY_ID.get(id)
   const { prev, next } = neighbours(id)
@@ -155,6 +168,15 @@ function Shell() {
     document.documentElement.dataset.theme = theme
   }, [theme])
 
+  // A page change starts at the top. This has to run after the new route has
+  // rendered — the frame scheduled inside navigate() belongs to the old one,
+  // and React has committed nothing by then. Lazy pages reset a second time in
+  // DocRoute, once their chunk has replaced the skeleton.
+  React.useLayoutEffect(() => {
+    if (currentSectionId()) return
+    document.getElementById('main')?.scrollTo({ top: 0, behavior: 'auto' })
+  }, [route])
+
   React.useEffect(() => {
     if (route === 'home' || !PAGE_BY_ID.has(route)) return
     setRecents((prev) => [route, ...prev.filter((r) => r !== route)].slice(0, 8))
@@ -188,6 +210,7 @@ function Shell() {
   )
 
   const isHome = route === 'home'
+  const section = overviewSection(route)
 
   return (
     <div className="app-ambient flex h-dvh overflow-hidden bg-[var(--ds-canvas)]">
@@ -264,6 +287,8 @@ function Shell() {
         >
           {isHome ? (
             <Home onNavigate={navigate} onOpenPalette={() => setPaletteOpen(true)} />
+          ) : section ? (
+            <SectionOverview key={route} section={section} onNavigate={navigate} />
           ) : (
             <DocRoute
               key={route}

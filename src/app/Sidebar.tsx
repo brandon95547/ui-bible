@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { BookMarked, ChevronRight, Command, Search, SearchX, Star, X } from 'lucide-react'
+import { BookMarked, ChevronRight, Command, LayoutList, Search, SearchX, Star, X } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import { usePersistentState } from '@/lib/hooks'
 import { Kbd } from '@/ui/Display'
@@ -103,11 +103,17 @@ export function Sidebar({
       className="relative z-40 flex h-dvh shrink-0 flex-col border-r border-[var(--ds-border-subtle)] bg-[var(--ds-surface)]"
     >
       {/* ---- BRAND --------------------------------------------------------- */}
-      <div className="flex h-14 shrink-0 items-center gap-2.5 border-b border-[var(--ds-border-subtle)] px-4">
-        <button
-          type="button"
-          onClick={() => onNavigate('home')}
-          className="flex min-w-0 items-center gap-2.5 rounded-[var(--radius-md)] py-1 text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ds-focus-ring)]"
+      <div className="flex h-14 shrink-0 items-center gap-2.5 border-b border-[var(--ds-border-subtle)] px-2.5">
+        {/* A real anchor, not a button: the brand is navigation, so ⌘-click and
+            middle-click have to open home in a new tab like any other link. */}
+        <a
+          href="#"
+          aria-label="UI Bible — home"
+          onClick={(e) => {
+            e.preventDefault()
+            onNavigate('home')
+          }}
+          className="flex min-w-0 items-center gap-2.5 rounded-[var(--radius-md)] px-1.5 py-1 text-left transition-colors hover:bg-[var(--ds-layer-hover)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ds-focus-ring)]"
         >
           <span
             aria-hidden
@@ -123,7 +129,7 @@ export function Sidebar({
               v1.0 · Design System
             </span>
           </span>
-        </button>
+        </a>
       </div>
 
       {/* ---- SEARCH -------------------------------------------------------- */}
@@ -241,6 +247,14 @@ export function Sidebar({
               onToggle={() => toggle(`sec:${section.id}`)}
               count={total}
             >
+              {/* Hidden while searching: it is a way in, not a result. */}
+              {!hits && section.overview && (
+                <OverviewRow
+                  section={section.title}
+                  active={currentId === section.id}
+                  onClick={() => onNavigate(section.id)}
+                />
+              )}
               {section.groups
                 ? groups.map((g) => (
                     <TreeNode
@@ -383,6 +397,48 @@ function TreeNode({
         {children}
       </div>
     </div>
+  )
+}
+
+/**
+ * The section's own index, pinned above its first page. Shares NavRow's height
+ * and active treatment so the section reads as one list, but is italicised and
+ * carries no favourite star — it is a destination, not a page of the standard.
+ */
+function OverviewRow({
+  section,
+  active,
+  onClick,
+}: {
+  section: string
+  active: boolean
+  onClick: () => void
+}) {
+  return (
+    <button
+      data-nav-item
+      type="button"
+      onClick={onClick}
+      aria-current={active ? 'page' : undefined}
+      aria-label={`${section} overview`}
+      className={cn(
+        'relative flex h-7 min-w-0 items-center gap-1.5 rounded-[var(--radius-sm)] px-2.5 text-left',
+        'transition-[background-color,color] duration-[100ms]',
+        'focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--ds-focus-ring)]',
+        active
+          ? 'bg-[var(--ds-layer-selected)] text-[var(--ds-fg)]'
+          : 'text-[var(--ds-fg-muted)] hover:bg-[var(--ds-layer-hover)] hover:text-[var(--ds-fg)]',
+      )}
+    >
+      {active && (
+        <span
+          aria-hidden
+          className="absolute -left-[14px] top-1/2 h-4 w-[2px] -translate-y-1/2 rounded-r-full bg-[var(--ds-accent)]"
+        />
+      )}
+      <LayoutList size={11} aria-hidden className="shrink-0" />
+      <span className={cn('truncate text-label-sm italic', active && 'font-medium')}>Overview</span>
+    </button>
   )
 }
 
