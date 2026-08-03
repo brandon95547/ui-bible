@@ -1,10 +1,14 @@
 import * as React from 'react'
-import { MoreHorizontal, RotateCcw, Settings2, ChevronLeft, ChevronRight } from 'lucide-react'
+import {
+  Activity, AudioLines, ChevronLeft, ChevronRight, Clapperboard, Leaf, Mic, MoreHorizontal,
+  Music, RotateCcw, Settings2, SlidersHorizontal, Sparkles, Spline, Volume2, VolumeX,
+} from 'lucide-react'
 import { cn } from '@/lib/cn'
 import { Button, IconButton } from '@/ui/Button'
+import { Tabs } from '@/ui/Navigation'
 import { NativeSelect } from '@/ui/Select'
 import { Switch } from '@/ui/Toggle'
-import { Cell, Grid, Knob, KnobSelect, KnobToggle, PreviewStage, Row, defineDoc } from '../framework/kit'
+import { Cell, Grid, Knob, KnobSelect, KnobToggle, PreviewStage, Row, Stack, defineDoc } from '../framework/kit'
 
 /* ===========================================================================
    MIXER
@@ -81,16 +85,20 @@ function Meter({
   level,
   peak,
   className,
+  orientation = 'vertical',
 }: {
   level: number
   peak?: number
   className?: string
+  /** Horizontal for a list row, where the row itself runs across. */
+  orientation?: 'vertical' | 'horizontal'
 }) {
   return (
     <div
       aria-hidden
       className={cn(
-        'flex flex-col-reverse gap-px overflow-hidden rounded-[2px] bg-[var(--ds-sunken)] p-px',
+        'flex gap-px overflow-hidden rounded-[2px] bg-[var(--ds-sunken)] p-px',
+        orientation === 'vertical' ? 'flex-col-reverse' : 'flex-row',
         className,
       )}
     >
@@ -566,7 +574,7 @@ function MasterStrip({
 }
 
 /* -- The mixer ------------------------------------------------------------ */
-function Mixer({
+function ConsoleMixer({
   count = 8,
   running = true,
   compact = false,
@@ -730,29 +738,558 @@ function Mixer({
   )
 }
 
-/* -- Playground ----------------------------------------------------------- */
+/* ===========================================================================
+   VARIANT 2 — STUDIO
+   The same job arranged the other way round. The console shows every channel
+   at once and is optimised for COMPARING them; the studio shows one selected
+   track in depth and is optimised for WORKING ON it.
+
+   That is a real difference and not a skin. A console can hold eight faders
+   because a fader is narrow; the moment a track needs volume, pan, presence,
+   an enhance pass and a noise gate, eight of those side by side is a wall
+   nobody can read. So the studio trades simultaneity for room, and pays for it
+   with the one weakness the console does not have: you can no longer see the
+   balance.
+   ======================================================================== */
+
+/* -- Rotary --------------------------------------------------------------
+   The knob the studio uses three of. Same contract as the pan knob — a range
+   input underneath, rotation on top — but larger, labelled, and with its value
+   printed beneath, because these are values an operator reads rather than
+   positions they eyeball. */
+function RotaryKnob({
+  value,
+  onChange,
+  min,
+  max,
+  step = 0.1,
+  label,
+  format,
+  colour = 'var(--ds-accent)',
+  size = 56,
+  reset,
+  arc = 135,
+}: {
+  value: number
+  onChange?: (v: number) => void
+  min: number
+  max: number
+  step?: number
+  label: string
+  format: (v: number) => string
+  colour?: string
+  size?: number
+  reset?: number
+  arc?: number
+}) {
+  const t = (value - min) / (max - min)
+  const angle = -arc + t * arc * 2
+  const id = React.useId()
+
+  return (
+    <div className="flex flex-col items-center gap-1.5">
+      <span id={id} className="text-caption text-[var(--ds-fg-secondary)]">
+        {label}
+      </span>
+      <div className="relative" style={{ inlineSize: size, blockSize: size }}>
+        <input
+          type="range"
+          aria-labelledby={id}
+          aria-valuetext={format(value)}
+          min={min}
+          max={max}
+          step={step}
+          value={value}
+          onChange={(e) => onChange?.(Number(e.target.value))}
+          onDoubleClick={() => reset != null && onChange?.(reset)}
+          className="peer absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0"
+        />
+        {/* Travel arc. The knob face alone cannot show how far through the
+            range the value sits, and on a 270° sweep that is genuinely hard
+            to judge from the pointer angle. */}
+        <svg aria-hidden viewBox="0 0 100 100" className="absolute inset-0">
+          <circle
+            cx="50" cy="50" r="44" fill="none" strokeWidth="5" strokeLinecap="round"
+            stroke="var(--ds-layer-active)"
+            strokeDasharray={`${(arc * 2 / 360) * 276} 276`}
+            transform="rotate(-225 50 50)"
+          />
+          <circle
+            cx="50" cy="50" r="44" fill="none" strokeWidth="5" strokeLinecap="round"
+            stroke={colour}
+            strokeDasharray={`${(arc * 2 / 360) * 276 * t} 276`}
+            transform="rotate(-225 50 50)"
+          />
+        </svg>
+        <span
+          aria-hidden
+          className={cn(
+            'absolute inset-[14%] rounded-full border border-[var(--ds-border-strong)] shadow-e2',
+            'bg-gradient-to-b from-[var(--ds-surface-raised)] to-[var(--ds-surface-inset)]',
+            'peer-focus-visible:ring-[3px] peer-focus-visible:ring-[var(--ds-focus-ring)]',
+          )}
+        />
+        <span
+          aria-hidden
+          className="absolute inset-[14%] transition-transform duration-100 motion-reduce:transition-none"
+          style={{ transform: `rotate(${angle}deg)` }}
+        >
+          <span
+            className="absolute left-1/2 top-[10%] h-[30%] w-[2px] -translate-x-1/2 rounded-full"
+            style={{ background: colour }}
+          />
+        </span>
+      </div>
+      <span className="font-mono text-[11px] tabular-nums text-[var(--ds-fg)]">{format(value)}</span>
+    </div>
+  )
+}
+
+/* -- Track list ----------------------------------------------------------
+   A listbox, not a row of buttons. Selection is the whole navigation model of
+   this variant — everything to the right is "the selected track" — so it has
+   to carry real single-select semantics and arrow-key movement. */
+interface Track {
+  id: string
+  name: string
+  icon: string
+  volume: number
+  pan: number
+  presence: number
+  mute: boolean
+  solo: boolean
+  enhance: boolean
+  denoise: boolean
+}
+
+const TRACKS: Track[] = [
+  { id: 'voice', name: 'Voice', icon: 'Mic', volume: 0, pan: 0, presence: 2, mute: false, solo: false, enhance: true, denoise: true },
+  { id: 'music', name: 'Music', icon: 'Music', volume: -8.5, pan: -14, presence: 0, mute: false, solo: false, enhance: false, denoise: false },
+  { id: 'effects', name: 'Effects', icon: 'Sparkles', volume: -4, pan: 22, presence: 0, mute: false, solo: false, enhance: false, denoise: false },
+  { id: 'ambience', name: 'Ambience', icon: 'Leaf', volume: -18, pan: 0, presence: -1.5, mute: false, solo: false, enhance: false, denoise: true },
+  { id: 'clips', name: 'Clips', icon: 'Clapperboard', volume: -6, pan: 0, presence: 0, mute: true, solo: false, enhance: false, denoise: false },
+]
+
+function TrackRow({
+  track,
+  index,
+  selected,
+  level,
+  onSelect,
+  onMute,
+}: {
+  track: Track
+  index: number
+  selected: boolean
+  level: number
+  onSelect: () => void
+  onMute: () => void
+}) {
+  const colour = hue(index)
+
+  return (
+    <li
+      role="option"
+      aria-selected={selected}
+      tabIndex={selected ? 0 : -1}
+      onClick={onSelect}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          onSelect()
+        }
+      }}
+      className={cn(
+        'flex cursor-pointer items-center gap-2.5 rounded-[var(--radius-md)] border p-2.5 transition-colors',
+        'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ds-focus-ring)]',
+        selected
+          ? 'border-[var(--ds-accent-border)] bg-[var(--ds-accent-subtle)]'
+          : 'border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] hover:bg-[var(--ds-layer-hover)]',
+        track.mute && 'opacity-55',
+      )}
+    >
+      <span
+        aria-hidden
+        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[var(--radius-sm)]"
+        style={{ background: `color-mix(in oklab, ${colour} 18%, transparent)`, color: colour }}
+      >
+        <TrackGlyph name={track.icon} />
+      </span>
+
+      <span className="min-w-0 flex-1">
+        <span className="block truncate text-body-sm font-medium text-[var(--ds-fg)]">
+          {track.name}
+        </span>
+        <span className="mt-1 flex items-center gap-1.5">
+          <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: colour }} />
+          {/* Horizontal because the row is horizontal. Same rules as the
+              console meter: decorative, aria-hidden, never the only source. */}
+          <Meter level={track.mute ? 0 : level} orientation="horizontal" className="h-1.5 w-16" />
+        </span>
+      </span>
+
+      <button
+        type="button"
+        aria-pressed={track.mute}
+        aria-label={`Mute ${track.name}`}
+        onClick={(e) => {
+          e.stopPropagation()
+          onMute()
+        }}
+        className={cn(
+          'flex h-8 w-8 shrink-0 items-center justify-center rounded-[var(--radius-sm)] border transition-colors',
+          'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ds-focus-ring)]',
+          track.mute
+            ? 'border-[var(--ds-danger-border)] bg-[var(--ds-danger-subtle)] text-[var(--ds-danger-text)]'
+            : 'border-transparent text-[var(--ds-fg-muted)] hover:bg-[var(--ds-layer-hover)] hover:text-[var(--ds-fg)]',
+        )}
+      >
+        {track.mute ? <VolumeX size={15} /> : <Volume2 size={15} />}
+      </button>
+    </li>
+  )
+}
+
+function TrackGlyph({ name }: { name: string }) {
+  const map: Record<string, React.ReactNode> = {
+    Mic: <Mic size={16} />,
+    Music: <Music size={16} />,
+    Sparkles: <Sparkles size={16} />,
+    Leaf: <Leaf size={16} />,
+    Clapperboard: <Clapperboard size={16} />,
+  }
+  return <>{map[name] ?? <Music size={16} />}</>
+}
+
+/* -- Ducking curve -------------------------------------------------------
+   Two automation lanes over the same timeline: music drops while voice is
+   present. An SVG, because it is a chart — and like every chart on a control
+   surface it gets a text summary, since a line nobody can read aloud is a
+   setting nobody can verify. */
+function DuckCurve({ amount }: { amount: number }) {
+  const dip = 0.15 + (amount / 100) * 0.55
+  const music = `M0,26 L26,26 C34,26 36,${26 + dip * 40} 46,${26 + dip * 40} L62,${26 + dip * 40} C72,${26 + dip * 40} 74,30 82,30 L120,30`
+  const voice = 'M0,16 L24,16 C32,16 34,10 44,10 L64,10 C74,10 76,14 84,14 L120,14'
+
+  return (
+    <svg viewBox="0 0 120 76" preserveAspectRatio="none" className="h-full w-full" role="img"
+      aria-label={`Ducking automation. Music drops by ${amount} per cent while voice is present.`}>
+      <defs>
+        <linearGradient id="duckfade" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="var(--ds-warning)" stopOpacity="0.22" />
+          <stop offset="100%" stopColor="var(--ds-warning)" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <path d={`${music} L120,76 L0,76 Z`} fill="url(#duckfade)" />
+      <path d={voice} fill="none" stroke="var(--ds-accent)" strokeWidth="1.6" vectorEffect="non-scaling-stroke" />
+      <path d={music} fill="none" stroke="var(--ds-warning)" strokeWidth="1.6" vectorEffect="non-scaling-stroke" />
+    </svg>
+  )
+}
+
+/* -- Studio --------------------------------------------------------------- */
+function StudioMixer({ running = true }: { running?: boolean }) {
+  const [tracks, setTracks] = React.useState(TRACKS)
+  const [selectedId, setSelectedId] = React.useState('voice')
+  const [duck, setDuck] = React.useState(65)
+  const [master, setMaster] = React.useState(0)
+  const [limiter, setLimiter] = React.useState(true)
+  const [tab, setTab] = React.useState('basic')
+  const [levels, setLevels] = React.useState<number[]>(() => TRACKS.map(() => 0.4))
+
+  const selected = tracks.find((t) => t.id === selectedId) ?? tracks[0]
+  const selectedIndex = tracks.findIndex((t) => t.id === selected.id)
+  const colour = hue(selectedIndex)
+
+  React.useEffect(() => {
+    const reduced =
+      typeof window !== 'undefined' &&
+      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+    if (!running || reduced) return
+    const id = window.setInterval(() => {
+      setLevels((prev) => prev.map((l) => l + (0.35 + Math.random() * 0.55 - l) * 0.4))
+    }, 110)
+    return () => window.clearInterval(id)
+  }, [running])
+
+  const patch = (p: Partial<Track>) =>
+    setTracks((ts) => ts.map((t) => (t.id === selected.id ? { ...t, ...p } : t)))
+
+  // Arrow keys move the selection, because the list is the navigation.
+  const moveSelection = (dir: 1 | -1) => {
+    const next = (selectedIndex + dir + tracks.length) % tracks.length
+    setSelectedId(tracks[next].id)
+  }
+
+  const bus = tracks.reduce(
+    (n, t, i) => (t.mute ? n : Math.max(n, levels[i] * dbToPos(t.volume))), 0,
+  )
+  const lufs = -14 - (1 - dbToPos(master)) * 8
+
+  return (
+    <section
+      aria-label="Mix studio"
+      className="flex w-full flex-col gap-3 rounded-[var(--radius-lg)] border border-[var(--ds-border)] bg-[var(--ds-surface-inset)] p-3"
+    >
+      <header className="flex flex-wrap items-center gap-3 border-b border-[var(--ds-border-subtle)] pb-3">
+        <SlidersHorizontal size={18} className="text-[var(--ds-accent)]" />
+        <h3 className="text-title-sm font-semibold tracking-tight text-[var(--ds-fg)]">Mix Studio</h3>
+        <div className="ml-auto flex items-center gap-2">
+          <NativeSelect
+            aria-label="Mix preset"
+            size="sm"
+            defaultValue="film"
+            options={[
+              { value: 'film', label: 'Film & Documentary' },
+              { value: 'podcast', label: 'Podcast' },
+              { value: 'music', label: 'Music Bed' },
+            ]}
+          />
+          <IconButton size="sm" label="Undo" icon={<RotateCcw size={14} />} />
+          <Button size="sm" variant="filled">
+            <Sparkles size={14} />
+            Apply mix
+          </Button>
+        </div>
+      </header>
+
+      <div className="grid gap-3 lg:grid-cols-[minmax(180px,220px)_1fr_minmax(150px,180px)]">
+        {/* ---- Tracks ---- */}
+        <div className="flex flex-col gap-2 rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] p-2">
+          <p className="px-1 text-overline uppercase tracking-wide text-[var(--ds-fg-muted)]">Tracks</p>
+          <ul
+            role="listbox"
+            aria-label="Tracks"
+            className="flex flex-col gap-1.5"
+            onKeyDown={(e) => {
+              if (e.key === 'ArrowDown') {
+                e.preventDefault()
+                moveSelection(1)
+              } else if (e.key === 'ArrowUp') {
+                e.preventDefault()
+                moveSelection(-1)
+              }
+            }}
+          >
+            {tracks.map((t, i) => (
+              <TrackRow
+                key={t.id}
+                track={t}
+                index={i}
+                selected={t.id === selected.id}
+                level={levels[i]}
+                onSelect={() => setSelectedId(t.id)}
+                onMute={() =>
+                  setTracks((ts) => ts.map((x) => (x.id === t.id ? { ...x, mute: !x.mute } : x)))
+                }
+              />
+            ))}
+          </ul>
+        </div>
+
+        {/* ---- Selected track ---- */}
+        <div className="flex flex-col gap-3">
+          <div className="rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] p-3">
+            {/* The heading names the selection. Without it the panel is a set
+                of anonymous knobs and the user has to remember what they
+                clicked — the failure mode of every inspector layout. */}
+            <p className="text-overline uppercase tracking-wide text-[var(--ds-fg-muted)]">
+              {selected.name} · controls
+            </p>
+
+            <div className="mt-2 rounded-[var(--radius-sm)] bg-[var(--ds-sunken)] p-2">
+              <Waveform seed={selectedIndex + 1} colour={colour} />
+              <div aria-hidden className="mt-1 flex justify-between text-[9px] tabular-nums text-[var(--ds-fg-muted)]">
+                {['0:00', '0:20', '0:40', '1:00'].map((t) => <span key={t}>{t}</span>)}
+              </div>
+            </div>
+
+            <div className="mt-3 flex flex-wrap items-start justify-around gap-4">
+              <RotaryKnob
+                label="Volume" value={selected.volume} min={DB_MIN} max={DB_MAX} reset={0}
+                onChange={(volume) => patch({ volume })} format={fmtDb} colour={colour}
+              />
+              <RotaryKnob
+                label="Pan" value={selected.pan} min={-100} max={100} step={1} reset={0}
+                onChange={(pan) => patch({ pan })} format={fmtPan} colour={colour}
+              />
+              <RotaryKnob
+                label="Presence" value={selected.presence} min={-6} max={6} reset={0}
+                onChange={(presence) => patch({ presence })}
+                format={(v) => `${v > 0 ? '+' : ''}${v.toFixed(1)} dB`} colour={colour}
+              />
+            </div>
+
+            <div className="mt-3 grid grid-cols-2 gap-1.5 sm:grid-cols-4">
+              <StripToggle on={selected.mute} onChange={() => patch({ mute: !selected.mute })} tone="danger" name={selected.name}>
+                Mute
+              </StripToggle>
+              <StripToggle on={selected.solo} onChange={() => patch({ solo: !selected.solo })} tone="warning" name={selected.name}>
+                Solo
+              </StripToggle>
+              <StripToggle on={selected.enhance} onChange={() => patch({ enhance: !selected.enhance })} tone="warning" name={selected.name}>
+                Enhance
+              </StripToggle>
+              <StripToggle on={selected.denoise} onChange={() => patch({ denoise: !selected.denoise })} tone="warning" name={selected.name}>
+                Noise clean
+              </StripToggle>
+            </div>
+          </div>
+
+          {/* ---- Auto mix ---- */}
+          <div className="rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] p-3">
+            <div className="flex items-center justify-between">
+              <p className="text-overline uppercase tracking-wide text-[var(--ds-fg-muted)]">Auto mix</p>
+              <p className="text-caption text-[var(--ds-fg-secondary)]">
+                Duck amount{' '}
+                <span className="font-mono tabular-nums text-[var(--ds-fg)]">{duck}%</span>
+              </p>
+            </div>
+
+            <div className="mt-2 flex gap-3">
+              <div className="flex flex-col gap-1.5 pt-1">
+                {[['Voice', 'var(--ds-accent)'], ['Music', 'var(--ds-warning)']].map(([l, c]) => (
+                  <span key={l} className="flex items-center gap-1.5 text-[10px] text-[var(--ds-fg-secondary)]">
+                    <span aria-hidden className="h-0.5 w-4 rounded-full" style={{ background: c }} />
+                    {l}
+                  </span>
+                ))}
+              </div>
+              <div className="h-20 flex-1 rounded-[var(--radius-sm)] bg-[var(--ds-sunken)] p-1">
+                <DuckCurve amount={duck} />
+              </div>
+              <label className="flex w-16 shrink-0 flex-col items-center gap-1">
+                <span className="text-[10px] text-[var(--ds-fg-muted)]">Amount</span>
+                <input
+                  type="range"
+                  aria-label="Duck amount"
+                  aria-valuetext={`${duck} per cent`}
+                  min={0}
+                  max={100}
+                  value={duck}
+                  onChange={(e) => setDuck(Number(e.target.value))}
+                  className="w-full accent-[var(--ds-accent)]"
+                />
+              </label>
+            </div>
+          </div>
+        </div>
+
+        {/* ---- Master ---- */}
+        <div className="flex flex-col gap-3 rounded-[var(--radius-md)] border border-[var(--ds-accent-border)] bg-[var(--ds-surface-raised)] p-3">
+          <p className="text-center text-overline uppercase tracking-wide text-[var(--ds-fg-muted)]">Master</p>
+
+          <div className="flex justify-center gap-1.5" style={{ blockSize: 120 }}>
+            <Meter level={bus * 1.3} className="w-2.5" />
+            <div aria-hidden className="flex flex-col justify-between py-px text-[9px] tabular-nums text-[var(--ds-fg-muted)]">
+              {[0, -12, -24, -36, -60].map((d) => <span key={d}>{d}</span>)}
+            </div>
+            <Meter level={bus * 1.18} className="w-2.5" />
+          </div>
+
+          <div className="flex justify-center">
+            <RotaryKnob
+              label="Output" value={master} min={DB_MIN} max={DB_MAX} reset={0}
+              onChange={setMaster} format={fmtDb} size={72}
+            />
+          </div>
+
+          {/* Loudness is the number this variant is actually steering towards,
+              so it is the largest text on the panel — and it says how far from
+              target it is, because "-14 LUFS" alone means nothing to most
+              people editing a video. */}
+          <div className="rounded-[var(--radius-sm)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface-inset)] p-2 text-center">
+            <p className="font-mono text-title-sm tabular-nums text-[var(--ds-fg)]">
+              {lufs.toFixed(1)} <span className="text-caption text-[var(--ds-fg-muted)]">LUFS</span>
+            </p>
+            <p className="text-[10px] text-[var(--ds-fg-muted)]">
+              Target -14 · {Math.abs(lufs + 14) < 0.6 ? 'on target' : lufs < -14 ? 'quiet' : 'loud'}
+            </p>
+          </div>
+
+          <Switch checked={limiter} onCheckedChange={setLimiter} label="Limiter" size="sm" />
+          <p className="text-center text-[10px] text-[var(--ds-fg-muted)]">
+            True peak <span className="font-mono tabular-nums">-1.0 dBTP</span>
+          </p>
+        </div>
+      </div>
+
+      {/* Section tabs. These switch WHAT you are editing on the selected
+          track — they are not the variant switcher, which lives above the
+          whole preview. Two tab strips on one screen need visibly different
+          jobs, so these sit at the bottom, attached to the panel they change. */}
+      <Tabs
+        aria-label="Editor section"
+        value={tab}
+        onChange={setTab}
+        fullWidth
+        tabs={[
+          { value: 'basic', label: 'Basic', icon: <SlidersHorizontal size={14} /> },
+          { value: 'eq', label: 'EQ', icon: <Activity size={14} /> },
+          { value: 'dynamics', label: 'Dynamics', icon: <AudioLines size={14} /> },
+          { value: 'automation', label: 'Automation', icon: <Spline size={14} /> },
+        ]}
+      />
+      {tab !== 'basic' && (
+        <p className="rounded-[var(--radius-md)] border border-dashed border-[var(--ds-border)] p-4 text-center text-body-sm text-[var(--ds-fg-muted)]">
+          {tab === 'eq' && 'EQ curve for '}
+          {tab === 'dynamics' && 'Compressor and gate for '}
+          {tab === 'automation' && 'Automation lanes for '}
+          {selected.name}.
+        </p>
+      )}
+    </section>
+  )
+}
+
+/* -- Playground -----------------------------------------------------------
+   The variant switcher. Both arrangements are the same component doing the
+   same job, so they belong on one page — putting them on two would make the
+   choice between them invisible, and choosing between them is the actual
+   decision a reader comes here to make. */
+const VARIANTS = [
+  { value: 'console', label: 'Console' },
+  { value: 'studio', label: 'Studio' },
+] as const
+
 function Playground() {
+  const [variant, setVariant] = React.useState<string>('console')
   const [count, setCount] = React.useState<'4' | '6' | '8'>('8')
   const [compact, setCompact] = React.useState(false)
   const [running, setRunning] = React.useState(true)
 
   return (
-    <PreviewStage
-      center={false}
-      minHeight={0}
-      label="Mixer"
-      controls={
-        <>
-          <Knob label="Channels">
-            <KnobSelect value={count} onChange={setCount} options={['4', '6', '8'] as const} />
-          </Knob>
-          <KnobToggle checked={compact} onChange={setCompact} label="Compact" />
-          <KnobToggle checked={running} onChange={setRunning} label="Signal" />
-        </>
-      }
-    >
-      <Mixer count={Number(count)} compact={compact} running={running} />
-    </PreviewStage>
+    <Stack gap="sm">
+      <Tabs
+        aria-label="Mixer variant"
+        variant="pill"
+        value={variant}
+        onChange={setVariant}
+        tabs={VARIANTS.map((v) => ({ value: v.value, label: v.label }))}
+      />
+      <PreviewStage
+        center={false}
+        minHeight={0}
+        label={variant === 'console' ? 'Console' : 'Studio'}
+        controls={
+          <>
+            {variant === 'console' && (
+              <>
+                <Knob label="Channels">
+                  <KnobSelect value={count} onChange={setCount} options={['4', '6', '8'] as const} />
+                </Knob>
+                <KnobToggle checked={compact} onChange={setCompact} label="Compact" />
+              </>
+            )}
+            <KnobToggle checked={running} onChange={setRunning} label="Signal" />
+          </>
+        }
+      >
+        {variant === 'console'
+          ? <ConsoleMixer count={Number(count)} compact={compact} running={running} />
+          : <StudioMixer running={running} />}
+      </PreviewStage>
+    </Stack>
   )
 }
 
@@ -761,17 +1298,22 @@ export default defineDoc({
     id: 'mixer',
     title: 'Mixer',
     tagline:
-      'Many channels of the same four controls, compared by eye. A mixer is not eight sliders in a row — it is one instrument for balancing them against each other.',
+      'Balancing several signals against each other. Two arrangements: a console that shows every channel at once, and a studio that shows one in depth.',
     status: 'beta',
     keywords: [
       'fader', 'channel strip', 'mute', 'solo', 'pan', 'level meter', 'vu',
-      'audio', 'console', 'gain', 'master bus', 'db',
+      'audio', 'console', 'gain', 'master bus', 'db', 'lufs', 'ducking',
+      'loudness', 'inspector', 'track list',
+    ],
+    jumps: [
+      { id: 'studio', label: 'Studio arrangement' },
+      { id: 'choosing', label: 'Choosing between them' },
     ],
   },
 
   overview: {
     purpose:
-      'A mixer shows several parallel signals and lets the user set the balance between them. Its whole value is comparison: any one channel could be a slider and a couple of toggles, but the reason to build a mixer is that the eye can read eight fader caps as a shape and see the balance in one glance. Everything in the layout exists to protect that — identical strips, one shared scale, a fixed position for every control.',
+      'A mixer shows several parallel signals and lets the user set the balance between them. It comes in two arrangements, and the choice between them is the real design decision. A CONSOLE puts every channel on screen at once so the balance can be read as a shape — its whole value is comparison. A STUDIO puts one selected track in an inspector so it can be worked on in depth — its whole value is room. Neither is a skin of the other: the console cannot fit five controls per channel, and the studio cannot show you the balance.',
     whenToUse: [
       'Several continuous levels that are set relative to each other rather than absolutely — audio channels, EQ bands, blend weights.',
       'When the user needs to hear or see the combined result while adjusting one part of it.',
@@ -860,7 +1402,51 @@ export default defineDoc({
           'Channel 4 is soloed, so channels 1, 2 and 3 are inaudible without any of their own controls having moved. Dimming them is what stops the user concluding the mixer is broken.',
         render: (
           <PreviewStage minHeight={0} allowResize={false} center={false}>
-            <Mixer count={4} showHeader={false} showFooter={false} running={false} />
+            <ConsoleMixer count={4} showHeader={false} showFooter={false} running={false} />
+          </PreviewStage>
+        ),
+      },
+      {
+        id: 'studio',
+        title: 'The studio arrangement',
+        description:
+          'A track list on the left, and everything to the right is the selected track. This is what you build once a track needs more than a fader — volume, pan, presence, an enhance pass and a noise gate will not fit five abreast. The trade is real: you can work in depth, and you can no longer see the balance.',
+        render: (
+          <PreviewStage minHeight={0} allowResize={false} center={false}>
+            <StudioMixer running={false} />
+          </PreviewStage>
+        ),
+      },
+      {
+        id: 'choosing',
+        title: 'Choosing between them',
+        description:
+          'Ask what the user is doing. Setting levels against each other is a console job — eight caps read as one shape. Fixing one track is a studio job, and the console cannot give it the room. A tool that does both usually ships the console as the main view and opens the studio on double-click.',
+        render: (
+          <PreviewStage minHeight={0} allowResize={false} center={false}>
+            <Grid min="17rem">
+              <Cell label="Console — comparison" tone="good">
+                <p className="mb-2 text-caption text-[var(--ds-fg-secondary)]">
+                  Every channel visible. One shared scale. The balance is the picture.
+                </p>
+                <ConsoleMixer count={4} compact showHeader={false} showFooter={false} running={false} />
+              </Cell>
+              <Cell label="Studio — depth" tone="good">
+                <p className="mb-2 text-caption text-[var(--ds-fg-secondary)]">
+                  One track, five controls, room to label them. The balance is now invisible.
+                </p>
+                <div className="rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] p-3">
+                  <p className="text-overline uppercase tracking-wide text-[var(--ds-fg-muted)]">
+                    Voice · controls
+                  </p>
+                  <div className="mt-2 flex justify-around gap-3">
+                    <RotaryKnob label="Volume" value={0} min={DB_MIN} max={DB_MAX} format={fmtDb} size={44} />
+                    <RotaryKnob label="Pan" value={0} min={-100} max={100} format={fmtPan} size={44} />
+                    <RotaryKnob label="Presence" value={2} min={-6} max={6} format={(v) => `+${v.toFixed(1)} dB`} size={44} />
+                  </div>
+                </div>
+              </Cell>
+            </Grid>
           </PreviewStage>
         ),
       },
@@ -871,7 +1457,7 @@ export default defineDoc({
           'Waveforms and the printed dB scale are the first things to go. The controls keep their size — shrinking a fader to fit is how you get a control nobody can land on.',
         render: (
           <PreviewStage minHeight={0} allowResize={false} center={false}>
-            <Mixer count={4} compact showHeader={false} showFooter={false} running={false} />
+            <ConsoleMixer count={4} compact showHeader={false} showFooter={false} running={false} />
           </PreviewStage>
         ),
       },
@@ -1002,6 +1588,27 @@ export default defineDoc({
       ),
     },
     {
+      title: 'Name the selection in the inspector',
+      why: 'In the studio arrangement, everything on the right belongs to whatever is highlighted on the left. Without a heading saying which track that is, the panel is a set of anonymous knobs and the user is relying on memory of what they clicked.',
+      render: (
+        <div className="w-44 rounded-[var(--radius-xs)] border border-[var(--ds-success-border)] p-2">
+          <p className="text-overline uppercase tracking-wide text-[var(--ds-fg-muted)]">
+            Voice · controls
+          </p>
+        </div>
+      ),
+    },
+    {
+      title: 'Say what the loudness number means',
+      why: '"-14 LUFS" is meaningless to most people editing a video, and it is the number the whole studio arrangement is steering towards. Print the target beside it and say which side of it you are on.',
+      render: (
+        <div className="w-32 rounded-[var(--radius-xs)] border border-[var(--ds-success-border)] p-2 text-center">
+          <p className="font-mono text-body-sm tabular-nums text-[var(--ds-fg)]">-14.0 LUFS</p>
+          <p className="text-[10px] text-[var(--ds-fg-muted)]">Target -14 · on target</p>
+        </div>
+      ),
+    },
+    {
       title: 'Make solo visibly silence the others',
       why: 'Solo changes what the user hears without changing any control they can see. Dim the strips it silenced, or field the "channel 3 is broken" report forever.',
       render: (
@@ -1043,6 +1650,25 @@ export default defineDoc({
       ),
     },
     {
+      title: 'Do not put two tab strips with the same weight on one screen',
+      why: 'The studio has section tabs (Basic, EQ, Dynamics) that change what you edit on the selected track. If the arrangement switcher looks the same and sits nearby, neither reads as more significant than the other and every click is a guess. Give them different shapes and different places.',
+      render: (
+        <Row gap="sm" align="center">
+          <span className="rounded-full border border-[var(--ds-danger-border)] px-2 py-0.5 text-caption text-[var(--ds-danger-text)]">Console | Studio</span>
+          <span className="rounded-full border border-[var(--ds-danger-border)] px-2 py-0.5 text-caption text-[var(--ds-danger-text)]">Basic | EQ</span>
+        </Row>
+      ),
+    },
+    {
+      title: 'Do not use the studio arrangement to set a balance',
+      why: 'Balancing is comparing, and the inspector shows one track at a time. The user ends up clicking between tracks trying to hold two numbers in their head — which is precisely the job the console does in one glance.',
+      render: (
+        <span className="text-caption text-[var(--ds-danger-text)]">
+          click voice → read → click music → read → guess
+        </span>
+      ),
+    },
+    {
       title: 'Do not shrink the controls to fit more channels',
       why: 'Sixteen strips at 60px each is a mixer nobody can operate. Scroll horizontally and keep the targets — a control you cannot reliably hit is not a smaller control, it is a broken one.',
       render: (
@@ -1079,6 +1705,7 @@ export default defineDoc({
       { keys: 'Page Up / Page Down', does: 'Larger increment — conventionally 6 dB on a fader.' },
       { keys: 'Home / End', does: 'Jumps to the minimum or maximum of the focused control.' },
       { keys: 'Double-click', does: 'Resets a fader to unity and a pan knob to centre. Provide a keyboard equivalent — this must not be the only way.' },
+      { keys: '↑ / ↓ in the track list', does: 'Moves the selection in the studio arrangement, which changes everything in the inspector. Tab leaves the list rather than walking it.' },
     ],
     aria: [
       { attr: 'role="slider"', on: 'Faders and pan knobs', note: 'Implicit on input[type=range]. This is the reason to build on it rather than on a div.' },
@@ -1088,6 +1715,8 @@ export default defineDoc({
       { attr: 'aria-pressed', on: 'Mute and solo', note: 'They are toggle buttons, not links or checkboxes. The pressed state is the whole meaning.' },
       { attr: 'aria-hidden', on: 'Meters, waveforms, identity bars', note: 'Output and decoration. None of them may be the only source of a fact.' },
       { attr: 'role="status"', on: 'The clipping indicator', note: 'A polite live region, so clipping is announced once rather than sixty times a second.' },
+      { attr: 'role="listbox" / role="option"', on: 'The studio track list', note: 'Selection is the navigation model of that arrangement — everything in the inspector belongs to the selected option — so it needs real single-select semantics and roving tabindex, not a row of buttons.' },
+      { attr: 'aria-selected', on: 'Track rows', note: 'The selected track must be announced as selected, not merely styled as such. A highlight is invisible to a screen reader.' },
     ],
     focus:
       'The ring sits on the fader cap and the knob face, because those are the parts that move. It must stay visible at both ends of the travel, which means the strip needs padding the halo can occupy — a cap at 0 dB with its focus ring clipped by the strip edge is a keyboard user losing their place.',
@@ -1104,12 +1733,22 @@ export default defineDoc({
   code: {
     usage: {
       lang: 'tsx',
-      caption: 'The strip is the unit. Compose the mixer from it; do not build eight bespoke columns.',
-      code: `<Mixer
+      caption:
+        'Two arrangements over the same state. Keep the channel list in one place and let each view render it — a console and a studio holding separate copies is how the two drift apart.',
+      code: `// Console — every channel at once, for setting a balance
+<ConsoleMixer
   channels={channels}
   master={master}
   onChannelChange={(id, patch) => update(id, patch)}
   onMasterChange={setMaster}
+/>
+
+// Studio — one selected track in depth, for working on it
+<StudioMixer
+  tracks={channels}
+  selectedId={selectedId}
+  onSelect={setSelectedId}
+  onTrackChange={(patch) => update(selectedId, patch)}
 />
 
 // One strip, if you need it alone
@@ -1141,7 +1780,17 @@ export default defineDoc({
     },
     api: [
       {
-        name: 'Mixer',
+        name: 'StudioMixer',
+        props: [
+          { name: 'tracks', type: 'Track[]', required: true, description: 'The track list. Same source of truth the console reads — two views holding separate copies is how they drift apart.' },
+          { name: 'selectedId', type: 'string', required: true, description: 'Which track the inspector is showing. Controlled, so the host can select a track from elsewhere.' },
+          { name: 'onSelect', type: '(id: string) => void', required: true, description: 'Selection is this arrangement’s whole navigation model.' },
+          { name: 'onTrackChange', type: '(patch: Partial<Track>) => void', description: 'Edits apply to the selected track. No id — the selection already says which.' },
+          { name: 'target', type: 'number', default: '-14', description: 'Loudness target in LUFS. Printed beside the measured value, because the number alone means nothing to most users.' },
+        ],
+      },
+      {
+        name: 'ConsoleMixer',
         props: [
           { name: 'channels', type: 'Channel[]', required: true, description: 'One entry per strip. Order is the display order.' },
           { name: 'master', type: 'number', required: true, description: 'Master bus gain in dB.' },
@@ -1187,6 +1836,8 @@ export default defineDoc({
       'Colour as the only channel identity, which fails for a colour-blind user and fails for everyone once there are more channels than distinguishable hues.',
     ],
     realWorld: [
+      'Most real tools ship both arrangements: the console as the main view, the studio opened by double-clicking a strip. The console answers "is the balance right", the studio answers "what is wrong with this track", and neither question is rare enough to make the other view optional.',
+      'The studio arrangement is what appears in video editors, where the user is not an audio engineer and there are five tracks rather than forty. It steers towards a loudness target instead of asking for a balance, because "-14 LUFS for this platform" is a decision the tool can make and the user cannot.',
       'Every hardware console ever built puts the fader at the bottom and the meter beside it. That is not nostalgia — it is because the hand rests low and the eye tracks the meter while the hand moves.',
       'Broadcast desks give solo its own colour and its own light because an accidental solo on air is a serious failure. The visual weight is proportional to the cost of the mistake.',
       'DAWs let a strip collapse to a fader and a name and nothing else. That is the honest compact mode: drop information, never target size.',
