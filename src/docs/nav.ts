@@ -433,6 +433,15 @@ const INPUTS: NavPage[] = [
     keywords: ['range', 'two thumb', 'ticks', 'step', 'volume', 'zoom'],
   },
   {
+    id: 'mixer',
+    title: 'Mixer',
+    blurb:
+      'Many channels of the same four controls, compared by eye. Faders, pan, mute, solo and metering as one instrument.',
+    aliases: ['Console', 'Channel Strip', 'Fader Bank', 'Level Mixer'],
+    keywords: ['fader', 'pan', 'mute', 'solo', 'level meter', 'db', 'gain', 'audio', 'master bus'],
+    status: 'beta',
+  },
+  {
     id: 'color-picker',
     title: 'Color Picker',
     blurb: 'Swatches first, spectrum second, hex field always. Alpha only when it is really needed.',
