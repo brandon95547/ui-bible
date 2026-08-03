@@ -860,14 +860,91 @@ interface Track {
   solo: boolean
   enhance: boolean
   denoise: boolean
+  eq: Eq
+  dyn: Dyn
+  auto: Keyframe[]
+}
+
+/* Each tab edits a different DEPTH of the same track, which is why they are
+   tabs and not four separate tools: Basic is the everyday four, EQ is
+   frequency, Dynamics is consistency over level, Automation is change over
+   time. A user works down that list as a problem gets more specific. */
+interface Eq {
+  hp: boolean       // rumble filter
+  hpFreq: number
+  low: number       // shelf, dB
+  mid: number       // bell, dB
+  midFreq: number
+  high: number      // shelf, dB
+  deharsh: number   // 0..100, tames sibilant top end
+}
+
+interface Dyn {
+  comp: boolean
+  threshold: number // dB
+  ratio: number     // n:1
+  attack: number    // ms
+  release: number   // ms
+  gate: boolean
+  gateThreshold: number
+  deess: number     // 0..100
+}
+
+interface Keyframe {
+  id: string
+  t: number         // 0..1 through the timeline
+  value: number     // dB
+}
+
+const EQ_FLAT: Eq = { hp: false, hpFreq: 80, low: 0, mid: 0, midFreq: 1000, high: 0, deharsh: 0 }
+const DYN_OFF: Dyn = {
+  comp: false, threshold: -18, ratio: 3, attack: 12, release: 180,
+  gate: false, gateThreshold: -45, deess: 0,
 }
 
 const TRACKS: Track[] = [
-  { id: 'voice', name: 'Voice', icon: 'Mic', volume: 0, pan: 0, presence: 2, mute: false, solo: false, enhance: true, denoise: true },
-  { id: 'music', name: 'Music', icon: 'Music', volume: -8.5, pan: -14, presence: 0, mute: false, solo: false, enhance: false, denoise: false },
-  { id: 'effects', name: 'Effects', icon: 'Sparkles', volume: -4, pan: 22, presence: 0, mute: false, solo: false, enhance: false, denoise: false },
-  { id: 'ambience', name: 'Ambience', icon: 'Leaf', volume: -18, pan: 0, presence: -1.5, mute: false, solo: false, enhance: false, denoise: true },
-  { id: 'clips', name: 'Clips', icon: 'Clapperboard', volume: -6, pan: 0, presence: 0, mute: true, solo: false, enhance: false, denoise: false },
+  {
+    id: 'voice', name: 'Voice', icon: 'Mic', volume: 0, pan: 0, presence: 2,
+    mute: false, solo: false, enhance: true, denoise: true,
+    eq: { hp: true, hpFreq: 90, low: -2, mid: 1.5, midFreq: 2400, high: 2, deharsh: 35 },
+    dyn: { comp: true, threshold: -18, ratio: 3, attack: 8, release: 160, gate: true, gateThreshold: -45, deess: 40 },
+    auto: [
+      { id: 'a', t: 0, value: 0 },
+      { id: 'b', t: 0.42, value: 0 },
+      { id: 'c', t: 0.55, value: 3 },
+      { id: 'd', t: 0.85, value: 0 },
+    ],
+  },
+  {
+    id: 'music', name: 'Music', icon: 'Music', volume: -8.5, pan: -14, presence: 0,
+    mute: false, solo: false, enhance: false, denoise: false,
+    eq: { ...EQ_FLAT, low: 1, high: -1 },
+    dyn: { ...DYN_OFF, comp: true, threshold: -22, ratio: 2 },
+    auto: [
+      { id: 'a', t: 0, value: 0 },
+      { id: 'b', t: 0.2, value: -9 },
+      { id: 'c', t: 0.7, value: -9 },
+      { id: 'd', t: 1, value: -24 },
+    ],
+  },
+  {
+    id: 'effects', name: 'Effects', icon: 'Sparkles', volume: -4, pan: 22, presence: 0,
+    mute: false, solo: false, enhance: false, denoise: false,
+    eq: { ...EQ_FLAT }, dyn: { ...DYN_OFF },
+    auto: [{ id: 'a', t: 0, value: 0 }, { id: 'b', t: 1, value: 0 }],
+  },
+  {
+    id: 'ambience', name: 'Ambience', icon: 'Leaf', volume: -18, pan: 0, presence: -1.5,
+    mute: false, solo: false, enhance: false, denoise: true,
+    eq: { ...EQ_FLAT, hp: true, hpFreq: 120, high: -3 }, dyn: { ...DYN_OFF },
+    auto: [{ id: 'a', t: 0, value: -6 }, { id: 'b', t: 0.5, value: 0 }, { id: 'c', t: 1, value: -6 }],
+  },
+  {
+    id: 'clips', name: 'Clips', icon: 'Clapperboard', volume: -6, pan: 0, presence: 0,
+    mute: true, solo: false, enhance: false, denoise: false,
+    eq: { ...EQ_FLAT }, dyn: { ...DYN_OFF },
+    auto: [{ id: 'a', t: 0, value: 0 }, { id: 'b', t: 1, value: 0 }],
+  },
 ]
 
 function TrackRow({
@@ -961,6 +1038,497 @@ function TrackGlyph({ name }: { name: string }) {
   return <>{map[name] ?? <Music size={16} />}</>
 }
 
+/* ---------------------------------------------------------------------------
+   PANEL PRIMITIVES
+   EQ and Dynamics are both "a named value with a range", many times over. One
+   control, used consistently, is what stops the two panels looking like two
+   different products.
+   ------------------------------------------------------------------------ */
+function Param({
+  label,
+  value,
+  onChange,
+  min,
+  max,
+  step = 0.1,
+  format,
+  disabled,
+  hint,
+}: {
+  label: string
+  value: number
+  onChange: (v: number) => void
+  min: number
+  max: number
+  step?: number
+  format: (v: number) => string
+  disabled?: boolean
+  /** Plain-language note. These panels are the ones a non-engineer meets. */
+  hint?: string
+}) {
+  const id = React.useId()
+  const pct = ((value - min) / (max - min)) * 100
+
+  return (
+    <div className={cn('min-w-0', disabled && 'opacity-50')}>
+      <div className="flex items-baseline justify-between gap-2">
+        <label htmlFor={id} className="truncate text-caption text-[var(--ds-fg-secondary)]">
+          {label}
+        </label>
+        <span className="shrink-0 font-mono text-[11px] tabular-nums text-[var(--ds-fg)]">
+          {format(value)}
+        </span>
+      </div>
+      <div className="relative mt-1 flex items-center" style={{ blockSize: 16 }}>
+        <input
+          id={id}
+          type="range"
+          min={min}
+          max={max}
+          step={step}
+          value={value}
+          disabled={disabled}
+          aria-valuetext={format(value)}
+          aria-describedby={hint ? `${id}-hint` : undefined}
+          onChange={(e) => onChange(Number(e.target.value))}
+          className="peer absolute inset-0 z-10 w-full cursor-pointer opacity-0 disabled:cursor-not-allowed"
+        />
+        <span aria-hidden className="absolute inset-x-0 h-1 rounded-full bg-[var(--ds-layer-active)]" />
+        <span
+          aria-hidden
+          className="absolute left-0 h-1 rounded-full bg-[var(--ds-accent)]"
+          style={{ inlineSize: `${pct}%` }}
+        />
+        <span
+          aria-hidden
+          className={cn(
+            'absolute h-3 w-3 rounded-full border-2 border-[var(--ds-accent)] bg-white shadow-e1',
+            'peer-focus-visible:ring-[3px] peer-focus-visible:ring-[var(--ds-focus-ring)]',
+          )}
+          style={{ insetInlineStart: `calc(${pct}% - 6px)` }}
+        />
+      </div>
+      {hint && (
+        <p id={`${id}-hint`} className="mt-1 text-[10px] leading-snug text-[var(--ds-fg-muted)]">
+          {hint}
+        </p>
+      )}
+    </div>
+  )
+}
+
+/** A panel-level on/off with its own explanation. */
+function PanelSwitch({
+  checked,
+  onChange,
+  label,
+  description,
+}: {
+  checked: boolean
+  onChange: (v: boolean) => void
+  label: string
+  description: string
+}) {
+  return (
+    <div className="rounded-[var(--radius-sm)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface-inset)] p-2">
+      <Switch checked={checked} onCheckedChange={onChange} label={label} description={description} size="sm" />
+    </div>
+  )
+}
+
+/* -- EQ -------------------------------------------------------------------
+   The curve is the point. Frequency controls are the hardest part of a mixer
+   for a non-engineer, and a shape they can see is what turns "mid gain +3 at
+   2.4k" from jargon into "this bump makes the voice cut through". The curve is
+   derived from the controls, never edited independently — two sources of truth
+   for the same filter is how they drift. */
+function eqResponse(eq: Eq, f: number) {
+  const x = Math.log10(f)
+  let db = 0
+  db += eq.low * (1 / (1 + Math.pow(f / 220, 2)))                                  // low shelf
+  db += eq.mid * Math.exp(-Math.pow((x - Math.log10(eq.midFreq)) / 0.45, 2))       // bell
+  db += eq.high * (1 / (1 + Math.pow(3500 / f, 2)))                                // high shelf
+  db -= (eq.deharsh / 100) * 6 * Math.exp(-Math.pow((x - Math.log10(7000)) / 0.3, 2))
+  if (eq.hp) db -= 30 / (1 + Math.pow(f / eq.hpFreq, 4))                            // rumble filter
+  return db
+}
+
+const EQ_GRID = [100, 1000, 10000]
+
+function EqCurve({ eq, colour }: { eq: Eq; colour: string }) {
+  const W = 300
+  const H = 96
+  const fx = (f: number) => ((Math.log10(f) - Math.log10(20)) / (Math.log10(20000) - Math.log10(20))) * W
+  const gy = (db: number) => H / 2 - (db / 18) * (H / 2)
+
+  const d = React.useMemo(() => {
+    const pts: string[] = []
+    for (let i = 0; i <= 120; i++) {
+      const f = 20 * Math.pow(1000, i / 120)
+      pts.push(`${i === 0 ? 'M' : 'L'}${fx(f).toFixed(1)},${gy(eqResponse(eq, f)).toFixed(1)}`)
+    }
+    return pts.join(' ')
+  }, [eq])
+
+  return (
+    <svg
+      viewBox={`0 0 ${W} ${H}`}
+      preserveAspectRatio="none"
+      className="h-full w-full"
+      role="img"
+      aria-label={eqSummary(eq)}
+    >
+      <line x1="0" y1={H / 2} x2={W} y2={H / 2} stroke="var(--ds-border)" strokeWidth="1" vectorEffect="non-scaling-stroke" />
+      {EQ_GRID.map((f) => (
+        <line key={f} x1={fx(f)} y1="0" x2={fx(f)} y2={H} stroke="var(--ds-border-subtle)" strokeWidth="1" vectorEffect="non-scaling-stroke" />
+      ))}
+      <path d={`${d} L${W},${H} L0,${H} Z`} fill={colour} opacity="0.12" />
+      <path d={d} fill="none" stroke={colour} strokeWidth="2" vectorEffect="non-scaling-stroke" />
+    </svg>
+  )
+}
+
+/** The curve in words. A shape nobody can read aloud is a setting nobody can verify. */
+function eqSummary(eq: Eq) {
+  const parts: string[] = []
+  if (eq.hp) parts.push(`rumble removed below ${eq.hpFreq} hertz`)
+  if (Math.abs(eq.low) > 0.2) parts.push(`bass ${eq.low > 0 ? 'up' : 'down'} ${Math.abs(eq.low).toFixed(1)} decibels`)
+  if (Math.abs(eq.mid) > 0.2) parts.push(`mids ${eq.mid > 0 ? 'up' : 'down'} ${Math.abs(eq.mid).toFixed(1)} decibels at ${eq.midFreq} hertz`)
+  if (Math.abs(eq.high) > 0.2) parts.push(`treble ${eq.high > 0 ? 'up' : 'down'} ${Math.abs(eq.high).toFixed(1)} decibels`)
+  if (eq.deharsh > 2) parts.push(`harshness reduced ${Math.round(eq.deharsh)} per cent`)
+  return parts.length ? `Frequency response: ${parts.join(', ')}.` : 'Frequency response: flat, no adjustment.'
+}
+
+function EqPanel({
+  eq,
+  onChange,
+  colour,
+  name,
+}: {
+  eq: Eq
+  onChange: (p: Partial<Eq>) => void
+  colour: string
+  name: string
+}) {
+  return (
+    <div className="flex flex-col gap-3">
+      <div>
+        <p className="text-overline uppercase tracking-wide text-[var(--ds-fg-muted)]">
+          {name} · frequency
+        </p>
+        <p className="mt-0.5 text-caption text-[var(--ds-fg-secondary)]">
+          Turn parts of the sound up or down by pitch — bass, mids and treble — and cut out
+          rumble or harshness.
+        </p>
+      </div>
+
+      <div className="h-24 rounded-[var(--radius-sm)] bg-[var(--ds-sunken)] p-1">
+        <EqCurve eq={eq} colour={colour} />
+      </div>
+      <div aria-hidden className="-mt-2 flex justify-between px-1 text-[9px] tabular-nums text-[var(--ds-fg-muted)]">
+        <span>20 Hz</span><span>100</span><span>1k</span><span>10k</span><span>20k</span>
+      </div>
+
+      {/* The curve is visual; this is the same fact as text, for anyone who
+          cannot read a shape or is not looking at it. */}
+      <p className="rounded-[var(--radius-sm)] border border-[var(--ds-border-subtle)] px-2 py-1.5 text-[11px] text-[var(--ds-fg-secondary)]">
+        {eqSummary(eq)}
+      </p>
+
+      <div className="grid gap-x-4 gap-y-3 sm:grid-cols-2">
+        <Param
+          label="Bass" value={eq.low} min={-12} max={12} onChange={(low) => onChange({ low })}
+          format={(v) => `${v > 0 ? '+' : ''}${v.toFixed(1)} dB`}
+          hint="Weight and warmth. Too much makes speech boomy."
+        />
+        <Param
+          label="Treble" value={eq.high} min={-12} max={12} onChange={(high) => onChange({ high })}
+          format={(v) => `${v > 0 ? '+' : ''}${v.toFixed(1)} dB`}
+          hint="Air and detail. Too much makes it hissy."
+        />
+        <Param
+          label="Mids" value={eq.mid} min={-12} max={12} onChange={(mid) => onChange({ mid })}
+          format={(v) => `${v > 0 ? '+' : ''}${v.toFixed(1)} dB`}
+          hint="Where the voice lives. A small lift helps it cut through music."
+        />
+        <Param
+          label="Mid frequency" value={eq.midFreq} min={200} max={8000} step={10}
+          onChange={(midFreq) => onChange({ midFreq })}
+          format={(v) => (v >= 1000 ? `${(v / 1000).toFixed(1)} kHz` : `${Math.round(v)} Hz`)}
+          hint="Which part of the mids the control above moves."
+        />
+        <Param
+          label="Harshness" value={eq.deharsh} min={0} max={100} step={1}
+          onChange={(deharsh) => onChange({ deharsh })}
+          format={(v) => `${Math.round(v)}%`}
+          hint="Softens the sharp, sibilant top end without dulling the whole track."
+        />
+        <Param
+          label="Rumble filter" value={eq.hpFreq} min={20} max={200} step={1}
+          onChange={(hpFreq) => onChange({ hpFreq })} disabled={!eq.hp}
+          format={(v) => `${Math.round(v)} Hz`}
+          hint="Everything below this is removed: traffic, air conditioning, desk bumps."
+        />
+      </div>
+
+      <PanelSwitch
+        checked={eq.hp}
+        onChange={(hp) => onChange({ hp })}
+        label="Remove rumble"
+        description="Cuts the low frequencies nothing useful lives in. Safe on almost any voice recording."
+      />
+    </div>
+  )
+}
+
+/* -- Dynamics -------------------------------------------------------------
+   The transfer curve is the honest display here: threshold and ratio are two
+   numbers whose combined effect is genuinely hard to imagine, and the bend in
+   the line IS that effect. */
+function DynCurve({ dyn, colour }: { dyn: Dyn; colour: string }) {
+  const S = 100
+  const map = (db: number) => ((db + 60) / 60) * S
+  const out = (db: number) => (db <= dyn.threshold ? db : dyn.threshold + (db - dyn.threshold) / dyn.ratio)
+  const pts: string[] = []
+  for (let db = -60; db <= 0; db += 2) {
+    pts.push(`${pts.length === 0 ? 'M' : 'L'}${map(db).toFixed(1)},${(S - map(out(db))).toFixed(1)}`)
+  }
+
+  return (
+    <svg viewBox={`0 0 ${S} ${S}`} className="h-full w-full" role="img"
+      aria-label={`Compression. Above ${dyn.threshold} decibels, every ${dyn.ratio.toFixed(1)} decibels of input becomes one decibel of output.`}>
+      <line x1="0" y1={S} x2={S} y2="0" stroke="var(--ds-border)" strokeWidth="1" strokeDasharray="3 3" vectorEffect="non-scaling-stroke" />
+      <line
+        x1={map(dyn.threshold)} y1="0" x2={map(dyn.threshold)} y2={S}
+        stroke="var(--ds-warning)" strokeWidth="1" strokeDasharray="2 2" vectorEffect="non-scaling-stroke"
+      />
+      <path d={pts.join(' ')} fill="none" stroke={colour} strokeWidth="2" vectorEffect="non-scaling-stroke" />
+    </svg>
+  )
+}
+
+function DynamicsPanel({
+  dyn,
+  onChange,
+  colour,
+  name,
+  reduction,
+}: {
+  dyn: Dyn
+  onChange: (p: Partial<Dyn>) => void
+  colour: string
+  name: string
+  reduction: number
+}) {
+  return (
+    <div className="flex flex-col gap-3">
+      <div>
+        <p className="text-overline uppercase tracking-wide text-[var(--ds-fg-muted)]">
+          {name} · dynamics
+        </p>
+        <p className="mt-0.5 text-caption text-[var(--ds-fg-secondary)]">
+          Evens out volume that jumps around — quiet words brought up, loud ones held back,
+          background hiss gated out between phrases.
+        </p>
+      </div>
+
+      <div className="flex gap-3">
+        <div className="aspect-square h-28 shrink-0 rounded-[var(--radius-sm)] bg-[var(--ds-sunken)] p-1">
+          <DynCurve dyn={dyn} colour={colour} />
+        </div>
+        <div className="flex min-w-0 flex-1 flex-col justify-between">
+          {/* Gain reduction is the one live number that tells you the
+              compressor is doing anything at all. Without it, threshold and
+              ratio are two sliders with no visible consequence. */}
+          <div>
+            <div className="flex items-baseline justify-between">
+              <span className="text-caption text-[var(--ds-fg-secondary)]">Gain reduction</span>
+              <span className="font-mono text-[11px] tabular-nums text-[var(--ds-fg)]">
+                -{reduction.toFixed(1)} dB
+              </span>
+            </div>
+            <Meter level={Math.min(1, reduction / 12)} orientation="horizontal" className="mt-1 h-2 w-full" />
+          </div>
+          <p className="text-[10px] leading-snug text-[var(--ds-fg-muted)]">
+            Anything louder than the threshold gets turned down by the ratio. A little movement
+            here is the goal; the needle pinned is a track being squashed.
+          </p>
+        </div>
+      </div>
+
+      <div className="grid gap-x-4 gap-y-3 sm:grid-cols-2">
+        <Param
+          label="Threshold" value={dyn.threshold} min={-48} max={0} onChange={(threshold) => onChange({ threshold })}
+          disabled={!dyn.comp} format={(v) => `${v.toFixed(1)} dB`}
+          hint="The level above which the track starts being turned down."
+        />
+        <Param
+          label="Ratio" value={dyn.ratio} min={1} max={12} step={0.1} onChange={(ratio) => onChange({ ratio })}
+          disabled={!dyn.comp} format={(v) => `${v.toFixed(1)}:1`}
+          hint="How hard. 2:1 is gentle levelling, 8:1 is holding a shout down."
+        />
+        <Param
+          label="Attack" value={dyn.attack} min={1} max={100} step={1} onChange={(attack) => onChange({ attack })}
+          disabled={!dyn.comp} format={(v) => `${Math.round(v)} ms`}
+          hint="How quickly it reacts. Fast keeps peaks in check; slow keeps consonants punchy."
+        />
+        <Param
+          label="Release" value={dyn.release} min={20} max={800} step={5} onChange={(release) => onChange({ release })}
+          disabled={!dyn.comp} format={(v) => `${Math.round(v)} ms`}
+          hint="How quickly it lets go. Too fast and you hear it breathing."
+        />
+        <Param
+          label="De-esser" value={dyn.deess} min={0} max={100} step={1} onChange={(deess) => onChange({ deess })}
+          format={(v) => `${Math.round(v)}%`}
+          hint="Tames sharp S sounds specifically, rather than dulling the whole track."
+        />
+        <Param
+          label="Gate threshold" value={dyn.gateThreshold} min={-70} max={-20} onChange={(gateThreshold) => onChange({ gateThreshold })}
+          disabled={!dyn.gate} format={(v) => `${v.toFixed(0)} dB`}
+          hint="Below this the track is silenced, removing hiss between phrases."
+        />
+      </div>
+
+      <div className="grid gap-2 sm:grid-cols-2">
+        <PanelSwitch
+          checked={dyn.comp} onChange={(comp) => onChange({ comp })}
+          label="Compression"
+          description="Levels out the loud and quiet parts so nothing gets lost."
+        />
+        <PanelSwitch
+          checked={dyn.gate} onChange={(gate) => onChange({ gate })}
+          label="Noise gate"
+          description="Silences the track between phrases. Set it too high and words get clipped."
+        />
+      </div>
+    </div>
+  )
+}
+
+/* -- Automation -----------------------------------------------------------
+   Changing a value over time. The lane is the display everybody builds; the
+   LIST beside it is the part most tools skip, and it is the only reason this
+   panel works without a mouse. Dragging a point on a canvas is unreachable by
+   keyboard, so every keyframe is also a row with a real control. */
+const AUTO_PRESETS: { id: string; label: string; hint: string; frames: Keyframe[] }[] = [
+  {
+    id: 'fade-out', label: 'Fade out at the end', hint: 'Music drops away over the last few seconds.',
+    frames: [{ id: 'a', t: 0, value: 0 }, { id: 'b', t: 0.75, value: 0 }, { id: 'c', t: 1, value: -40 }],
+  },
+  {
+    id: 'lift', label: 'Lift one section', hint: 'Narration comes up where it needs to lead.',
+    frames: [
+      { id: 'a', t: 0, value: 0 }, { id: 'b', t: 0.35, value: 0 },
+      { id: 'c', t: 0.5, value: 4 }, { id: 'd', t: 0.8, value: 0 },
+    ],
+  },
+  {
+    id: 'flat', label: 'Clear', hint: 'Remove automation; the track keeps its fader level.',
+    frames: [{ id: 'a', t: 0, value: 0 }, { id: 'b', t: 1, value: 0 }],
+  },
+]
+
+function AutomationPanel({
+  frames,
+  onChange,
+  colour,
+  name,
+}: {
+  frames: Keyframe[]
+  onChange: (f: Keyframe[]) => void
+  colour: string
+  name: string
+}) {
+  const [selected, setSelected] = React.useState<string | null>(frames[0]?.id ?? null)
+  const W = 300
+  const H = 90
+  const gy = (v: number) => H / 2 - (v / 24) * (H / 2)
+  const sorted = [...frames].sort((a, b) => a.t - b.t)
+  const path = sorted.map((f, i) => `${i === 0 ? 'M' : 'L'}${(f.t * W).toFixed(1)},${gy(f.value).toFixed(1)}`).join(' ')
+
+  const patchFrame = (id: string, p: Partial<Keyframe>) =>
+    onChange(frames.map((f) => (f.id === id ? { ...f, ...p } : f)))
+
+  return (
+    <div className="flex flex-col gap-3">
+      <div>
+        <p className="text-overline uppercase tracking-wide text-[var(--ds-fg-muted)]">
+          {name} · automation
+        </p>
+        <p className="mt-0.5 text-caption text-[var(--ds-fg-secondary)]">
+          Change the level over time instead of setting one value for the whole track — fade the
+          music out, or lift the narration for a section.
+        </p>
+      </div>
+
+      <div className="rounded-[var(--radius-sm)] bg-[var(--ds-sunken)] p-1">
+        <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" className="h-24 w-full" role="img"
+          aria-label={`Automation lane with ${sorted.length} points. ${sorted.map((f) => `${Math.round(f.t * 60)} seconds, ${f.value > 0 ? '+' : ''}${f.value} decibels`).join('. ')}.`}>
+          <line x1="0" y1={H / 2} x2={W} y2={H / 2} stroke="var(--ds-border)" strokeWidth="1" strokeDasharray="3 3" vectorEffect="non-scaling-stroke" />
+          <path d={`${path} L${W},${H} L0,${H} Z`} fill={colour} opacity="0.1" />
+          <path d={path} fill="none" stroke={colour} strokeWidth="2" vectorEffect="non-scaling-stroke" />
+          {sorted.map((f) => (
+            <circle
+              key={f.id} cx={f.t * W} cy={gy(f.value)} r={f.id === selected ? 5 : 3.5}
+              fill={f.id === selected ? colour : 'var(--ds-surface)'}
+              stroke={colour} strokeWidth="2" vectorEffect="non-scaling-stroke"
+            />
+          ))}
+        </svg>
+      </div>
+      <div aria-hidden className="-mt-2 flex justify-between px-1 text-[9px] tabular-nums text-[var(--ds-fg-muted)]">
+        <span>0:00</span><span>0:20</span><span>0:40</span><span>1:00</span>
+      </div>
+
+      {/* Every point is also a row. This is the whole accessibility story of an
+          automation editor — the lane above is a picture of this list, not a
+          separate interface. */}
+      <ul className="flex flex-col gap-2">
+        {sorted.map((f, i) => (
+          <li
+            key={f.id}
+            className={cn(
+              'grid grid-cols-[auto_1fr_1fr] items-end gap-3 rounded-[var(--radius-sm)] border p-2',
+              f.id === selected
+                ? 'border-[var(--ds-accent-border)] bg-[var(--ds-accent-subtle)]'
+                : 'border-[var(--ds-border-subtle)]',
+            )}
+            onFocusCapture={() => setSelected(f.id)}
+          >
+            <span className="pb-1 text-caption tabular-nums text-[var(--ds-fg-muted)]">
+              {i + 1}
+            </span>
+            <Param
+              label="Time" value={f.t} min={0} max={1} step={0.01}
+              onChange={(t) => patchFrame(f.id, { t })}
+              format={(v) => `0:${String(Math.round(v * 60)).padStart(2, '0')}`}
+            />
+            <Param
+              label="Level" value={f.value} min={-40} max={12} step={0.5}
+              onChange={(value) => patchFrame(f.id, { value })}
+              format={(v) => `${v > 0 ? '+' : ''}${v.toFixed(1)} dB`}
+            />
+          </li>
+        ))}
+      </ul>
+
+      <div className="flex flex-wrap gap-1.5">
+        {AUTO_PRESETS.map((p) => (
+          <Button
+            key={p.id} size="xs" variant="outlined" title={p.hint}
+            onClick={() => {
+              onChange(p.frames.map((f) => ({ ...f })))
+              setSelected(p.frames[0].id)
+            }}
+          >
+            {p.label}
+          </Button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 /* -- Ducking curve -------------------------------------------------------
    Two automation lanes over the same timeline: music drops while voice is
    present. An SVG, because it is a chart — and like every chart on a control
@@ -1026,6 +1594,15 @@ function StudioMixer({ running = true }: { running?: boolean }) {
   )
   const lufs = -14 - (1 - dbToPos(master)) * 8
 
+  // How much the compressor is actually pulling down right now. Derived from
+  // the live level rather than stored, so it moves with the signal the way the
+  // real thing does — and reads zero when compression is off, which is the
+  // honest answer rather than a decorative wobble.
+  const selLevelDb = posToDb(levels[selectedIndex] ?? 0)
+  const reduction = selected.dyn.comp && selLevelDb > selected.dyn.threshold
+    ? (selLevelDb - selected.dyn.threshold) * (1 - 1 / selected.dyn.ratio)
+    : 0
+
   return (
     <section
       aria-label="Mix studio"
@@ -1087,92 +1664,139 @@ function StudioMixer({ running = true }: { running?: boolean }) {
           </ul>
         </div>
 
-        {/* ---- Selected track ---- */}
-        <div className="flex flex-col gap-3">
-          <div className="rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] p-3">
-            {/* The heading names the selection. Without it the panel is a set
-                of anonymous knobs and the user has to remember what they
-                clicked — the failure mode of every inspector layout. */}
-            <p className="text-overline uppercase tracking-wide text-[var(--ds-fg-muted)]">
-              {selected.name} · controls
-            </p>
+        {/* ---- Selected track ----
+             The heading in every panel names the selection. Without it these
+             are anonymous controls and the user is relying on memory of what
+             they clicked — the failure mode of every inspector layout. */}
+        <div
+          className="flex flex-col gap-3"
+          role="tabpanel"
+          id={`mix-panel-${tab}`}
+          aria-labelledby={`mix-tab-${tab}`}
+        >
+          {tab === 'basic' && (
+            <>
+              <div className="rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] p-3">
+                <p className="text-overline uppercase tracking-wide text-[var(--ds-fg-muted)]">
+                  {selected.name} · controls
+                </p>
+                <p className="mt-0.5 text-caption text-[var(--ds-fg-secondary)]">
+                  The everyday four: how loud, where in the stereo field, how present, and whether
+                  it is heard at all.
+                </p>
 
-            <div className="mt-2 rounded-[var(--radius-sm)] bg-[var(--ds-sunken)] p-2">
-              <Waveform seed={selectedIndex + 1} colour={colour} />
-              <div aria-hidden className="mt-1 flex justify-between text-[9px] tabular-nums text-[var(--ds-fg-muted)]">
-                {['0:00', '0:20', '0:40', '1:00'].map((t) => <span key={t}>{t}</span>)}
+                <div className="mt-2 rounded-[var(--radius-sm)] bg-[var(--ds-sunken)] p-2">
+                  <Waveform seed={selectedIndex + 1} colour={colour} />
+                  <div aria-hidden className="mt-1 flex justify-between text-[9px] tabular-nums text-[var(--ds-fg-muted)]">
+                    {['0:00', '0:20', '0:40', '1:00'].map((t) => <span key={t}>{t}</span>)}
+                  </div>
+                </div>
+
+                <div className="mt-3 flex flex-wrap items-start justify-around gap-4">
+                  <RotaryKnob
+                    label="Volume" value={selected.volume} min={DB_MIN} max={DB_MAX} reset={0}
+                    onChange={(volume) => patch({ volume })} format={fmtDb} colour={colour}
+                  />
+                  <RotaryKnob
+                    label="Pan" value={selected.pan} min={-100} max={100} step={1} reset={0}
+                    onChange={(pan) => patch({ pan })} format={fmtPan} colour={colour}
+                  />
+                  <RotaryKnob
+                    label="Presence" value={selected.presence} min={-6} max={6} reset={0}
+                    onChange={(presence) => patch({ presence })}
+                    format={(v) => `${v > 0 ? '+' : ''}${v.toFixed(1)} dB`} colour={colour}
+                  />
+                </div>
+
+                <div className="mt-3 grid grid-cols-2 gap-1.5 sm:grid-cols-4">
+                  <StripToggle on={selected.mute} onChange={() => patch({ mute: !selected.mute })} tone="danger" name={selected.name}>
+                    Mute
+                  </StripToggle>
+                  <StripToggle on={selected.solo} onChange={() => patch({ solo: !selected.solo })} tone="warning" name={selected.name}>
+                    Solo
+                  </StripToggle>
+                  <StripToggle on={selected.enhance} onChange={() => patch({ enhance: !selected.enhance })} tone="warning" name={selected.name}>
+                    Enhance
+                  </StripToggle>
+                  <StripToggle on={selected.denoise} onChange={() => patch({ denoise: !selected.denoise })} tone="warning" name={selected.name}>
+                    Noise clean
+                  </StripToggle>
+                </div>
               </div>
-            </div>
 
-            <div className="mt-3 flex flex-wrap items-start justify-around gap-4">
-              <RotaryKnob
-                label="Volume" value={selected.volume} min={DB_MIN} max={DB_MAX} reset={0}
-                onChange={(volume) => patch({ volume })} format={fmtDb} colour={colour}
-              />
-              <RotaryKnob
-                label="Pan" value={selected.pan} min={-100} max={100} step={1} reset={0}
-                onChange={(pan) => patch({ pan })} format={fmtPan} colour={colour}
-              />
-              <RotaryKnob
-                label="Presence" value={selected.presence} min={-6} max={6} reset={0}
-                onChange={(presence) => patch({ presence })}
-                format={(v) => `${v > 0 ? '+' : ''}${v.toFixed(1)} dB`} colour={colour}
-              />
-            </div>
+              {/* ---- Auto mix ---- */}
+              <div className="rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] p-3">
+                <div className="flex items-center justify-between">
+                  <p className="text-overline uppercase tracking-wide text-[var(--ds-fg-muted)]">Auto mix</p>
+                  <p className="text-caption text-[var(--ds-fg-secondary)]">
+                    Duck amount{' '}
+                    <span className="font-mono tabular-nums text-[var(--ds-fg)]">{duck}%</span>
+                  </p>
+                </div>
 
-            <div className="mt-3 grid grid-cols-2 gap-1.5 sm:grid-cols-4">
-              <StripToggle on={selected.mute} onChange={() => patch({ mute: !selected.mute })} tone="danger" name={selected.name}>
-                Mute
-              </StripToggle>
-              <StripToggle on={selected.solo} onChange={() => patch({ solo: !selected.solo })} tone="warning" name={selected.name}>
-                Solo
-              </StripToggle>
-              <StripToggle on={selected.enhance} onChange={() => patch({ enhance: !selected.enhance })} tone="warning" name={selected.name}>
-                Enhance
-              </StripToggle>
-              <StripToggle on={selected.denoise} onChange={() => patch({ denoise: !selected.denoise })} tone="warning" name={selected.name}>
-                Noise clean
-              </StripToggle>
-            </div>
-          </div>
-
-          {/* ---- Auto mix ---- */}
-          <div className="rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] p-3">
-            <div className="flex items-center justify-between">
-              <p className="text-overline uppercase tracking-wide text-[var(--ds-fg-muted)]">Auto mix</p>
-              <p className="text-caption text-[var(--ds-fg-secondary)]">
-                Duck amount{' '}
-                <span className="font-mono tabular-nums text-[var(--ds-fg)]">{duck}%</span>
-              </p>
-            </div>
-
-            <div className="mt-2 flex gap-3">
-              <div className="flex flex-col gap-1.5 pt-1">
-                {[['Voice', 'var(--ds-accent)'], ['Music', 'var(--ds-warning)']].map(([l, c]) => (
-                  <span key={l} className="flex items-center gap-1.5 text-[10px] text-[var(--ds-fg-secondary)]">
-                    <span aria-hidden className="h-0.5 w-4 rounded-full" style={{ background: c }} />
-                    {l}
-                  </span>
-                ))}
+                <div className="mt-2 flex gap-3">
+                  <div className="flex flex-col gap-1.5 pt-1">
+                    {[['Voice', 'var(--ds-accent)'], ['Music', 'var(--ds-warning)']].map(([l, c]) => (
+                      <span key={l} className="flex items-center gap-1.5 text-[10px] text-[var(--ds-fg-secondary)]">
+                        <span aria-hidden className="h-0.5 w-4 rounded-full" style={{ background: c }} />
+                        {l}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="h-20 flex-1 rounded-[var(--radius-sm)] bg-[var(--ds-sunken)] p-1">
+                    <DuckCurve amount={duck} />
+                  </div>
+                  <label className="flex w-16 shrink-0 flex-col items-center gap-1">
+                    <span className="text-[10px] text-[var(--ds-fg-muted)]">Amount</span>
+                    <input
+                      type="range"
+                      aria-label="Duck amount"
+                      aria-valuetext={`${duck} per cent`}
+                      min={0}
+                      max={100}
+                      value={duck}
+                      onChange={(e) => setDuck(Number(e.target.value))}
+                      className="w-full accent-[var(--ds-accent)]"
+                    />
+                  </label>
+                </div>
               </div>
-              <div className="h-20 flex-1 rounded-[var(--radius-sm)] bg-[var(--ds-sunken)] p-1">
-                <DuckCurve amount={duck} />
-              </div>
-              <label className="flex w-16 shrink-0 flex-col items-center gap-1">
-                <span className="text-[10px] text-[var(--ds-fg-muted)]">Amount</span>
-                <input
-                  type="range"
-                  aria-label="Duck amount"
-                  aria-valuetext={`${duck} per cent`}
-                  min={0}
-                  max={100}
-                  value={duck}
-                  onChange={(e) => setDuck(Number(e.target.value))}
-                  className="w-full accent-[var(--ds-accent)]"
-                />
-              </label>
+            </>
+          )}
+
+          {tab === 'eq' && (
+            <div className="rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] p-3">
+              <EqPanel
+                eq={selected.eq}
+                name={selected.name}
+                colour={colour}
+                onChange={(p) => patch({ eq: { ...selected.eq, ...p } })}
+              />
             </div>
-          </div>
+          )}
+
+          {tab === 'dynamics' && (
+            <div className="rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] p-3">
+              <DynamicsPanel
+                dyn={selected.dyn}
+                name={selected.name}
+                colour={colour}
+                reduction={reduction}
+                onChange={(p) => patch({ dyn: { ...selected.dyn, ...p } })}
+              />
+            </div>
+          )}
+
+          {tab === 'automation' && (
+            <div className="rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] p-3">
+              <AutomationPanel
+                frames={selected.auto}
+                name={selected.name}
+                colour={colour}
+                onChange={(auto) => patch({ auto })}
+              />
+            </div>
+          )}
         </div>
 
         {/* ---- Master ---- */}
@@ -1214,33 +1838,55 @@ function StudioMixer({ running = true }: { running?: boolean }) {
         </div>
       </div>
 
-      {/* Section tabs. These switch WHAT you are editing on the selected
-          track — they are not the variant switcher, which lives above the
-          whole preview. Two tab strips on one screen need visibly different
-          jobs, so these sit at the bottom, attached to the panel they change. */}
+      {/* Section tabs. These switch which panel of the SELECTED TRACK you are
+          editing — they are not the variant switcher, which lives above the
+          whole preview and is a pill strip. Two tab strips on one screen need
+          visibly different jobs, so these are underline tabs sitting directly
+          against the panel they change, and the panel names the track again. */}
       <Tabs
-        aria-label="Editor section"
+        aria-label="Track editor section"
         value={tab}
         onChange={setTab}
         fullWidth
-        tabs={[
-          { value: 'basic', label: 'Basic', icon: <SlidersHorizontal size={14} /> },
-          { value: 'eq', label: 'EQ', icon: <Activity size={14} /> },
-          { value: 'dynamics', label: 'Dynamics', icon: <AudioLines size={14} /> },
-          { value: 'automation', label: 'Automation', icon: <Spline size={14} /> },
-        ]}
+        tabs={SECTION_TABS.map((t) => ({ value: t.value, label: t.label, icon: t.icon }))}
       />
-      {tab !== 'basic' && (
-        <p className="rounded-[var(--radius-md)] border border-dashed border-[var(--ds-border)] p-4 text-center text-body-sm text-[var(--ds-fg-muted)]">
-          {tab === 'eq' && 'EQ curve for '}
-          {tab === 'dynamics' && 'Compressor and gate for '}
-          {tab === 'automation' && 'Automation lanes for '}
-          {selected.name}.
-        </p>
-      )}
+      <p className="text-center text-caption text-[var(--ds-fg-muted)]">
+        {SECTION_TABS.find((t) => t.value === tab)?.blurb}
+      </p>
     </section>
   )
 }
+
+/* The four depths of one track. Each blurb is written for someone who is
+   editing a video, not mixing a record — these panels are where a mixer stops
+   being self-explanatory, and a label like "Dynamics" tells that person
+   nothing at all on its own. */
+const SECTION_TABS = [
+  {
+    value: 'basic',
+    label: 'Basic',
+    icon: <SlidersHorizontal size={14} />,
+    blurb: 'Everyday controls: volume, pan, presence, mute, solo, voice enhancement and noise cleanup.',
+  },
+  {
+    value: 'eq',
+    label: 'EQ',
+    icon: <Activity size={14} />,
+    blurb: 'Adjusts frequencies — bass, mids and treble — and removes rumble or harshness.',
+  },
+  {
+    value: 'dynamics',
+    label: 'Dynamics',
+    icon: <AudioLines size={14} />,
+    blurb: 'Controls inconsistent volume using compression, limiting, gating and de-essing.',
+  },
+  {
+    value: 'automation',
+    label: 'Automation',
+    icon: <Spline size={14} />,
+    blurb: 'Changes level over time using keyframes — fading music out, or lifting narration for one section.',
+  },
+]
 
 /* -- Playground -----------------------------------------------------------
    The variant switcher. Both arrangements are the same component doing the
@@ -1307,6 +1953,7 @@ export default defineDoc({
     ],
     jumps: [
       { id: 'studio', label: 'Studio arrangement' },
+      { id: 'panels', label: 'The four panels' },
       { id: 'choosing', label: 'Choosing between them' },
     ],
   },
@@ -1414,6 +2061,53 @@ export default defineDoc({
         render: (
           <PreviewStage minHeight={0} allowResize={false} center={false}>
             <StudioMixer running={false} />
+          </PreviewStage>
+        ),
+      },
+      {
+        id: 'panels',
+        title: 'The four depths of one track',
+        description:
+          'The section tabs are not four tools — they are the same track at increasing specificity. Basic is what everyone touches; EQ is by pitch; Dynamics is consistency over level; Automation is change over time. A user works down that list as their problem gets more specific, which is why the order is fixed and Basic is first.',
+        render: (
+          <PreviewStage minHeight={0} allowResize={false} center={false}>
+            <Stack gap="md" className="w-full">
+              <div className="rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] p-3">
+                <EqPanel
+                  eq={TRACKS[0].eq}
+                  name="Voice"
+                  colour={hue(0)}
+                  onChange={() => {}}
+                />
+              </div>
+              <div className="rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] p-3">
+                <DynamicsPanel
+                  dyn={TRACKS[0].dyn}
+                  name="Voice"
+                  colour={hue(0)}
+                  reduction={3.4}
+                  onChange={() => {}}
+                />
+              </div>
+            </Stack>
+          </PreviewStage>
+        ),
+      },
+      {
+        id: 'automation-list',
+        title: 'An automation lane that works without a mouse',
+        description:
+          'The lane is the display everybody builds. The list beside it is the part most tools skip — and it is the only reason this panel is usable by keyboard, because dragging a point on a canvas is unreachable. The lane is a picture of the list, not a separate interface.',
+        render: (
+          <PreviewStage minHeight={0} allowResize={false} center={false}>
+            <div className="w-full rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] p-3">
+              <AutomationPanel
+                frames={TRACKS[1].auto}
+                name="Music"
+                colour={hue(1)}
+                onChange={() => {}}
+              />
+            </div>
           </PreviewStage>
         ),
       },
@@ -1599,6 +2293,27 @@ export default defineDoc({
       ),
     },
     {
+      title: 'Explain the panels in the user’s language',
+      why: '"Dynamics" and "EQ" mean nothing to someone editing a video, and they are exactly the two panels that person needs. Every control here carries a plain sentence — "everything below this is removed: traffic, air conditioning, desk bumps" beats "high-pass filter, 90 Hz" for the audience that actually opens it.',
+      render: (
+        <div className="w-52 rounded-[var(--radius-xs)] border border-[var(--ds-success-border)] p-2">
+          <p className="text-caption text-[var(--ds-fg-secondary)]">Rumble filter</p>
+          <p className="mt-0.5 text-[10px] leading-snug text-[var(--ds-fg-muted)]">
+            Everything below this is removed: traffic, air conditioning, desk bumps.
+          </p>
+        </div>
+      ),
+    },
+    {
+      title: 'Derive the curve from the controls',
+      why: 'The EQ curve, the compression transfer curve and the automation lane are all pictures of values that live elsewhere. Let a user edit the picture independently and you have two sources of truth for one filter, which drift the first time either is set another way.',
+      render: (
+        <code className="font-mono text-[11px] leading-relaxed text-[var(--ds-success-text)]">
+          curve = f(bands) — one direction only
+        </code>
+      ),
+    },
+    {
       title: 'Say what the loudness number means',
       why: '"-14 LUFS" is meaningless to most people editing a video, and it is the number the whole studio arrangement is steering towards. Print the target beside it and say which side of it you are on.',
       render: (
@@ -1657,6 +2372,24 @@ export default defineDoc({
           <span className="rounded-full border border-[var(--ds-danger-border)] px-2 py-0.5 text-caption text-[var(--ds-danger-text)]">Console | Studio</span>
           <span className="rounded-full border border-[var(--ds-danger-border)] px-2 py-0.5 text-caption text-[var(--ds-danger-text)]">Basic | EQ</span>
         </Row>
+      ),
+    },
+    {
+      title: 'Do not make the curve the only way to edit',
+      why: 'A draggable EQ curve or automation lane is a canvas. It cannot take focus, it has no value semantics and it is unreachable by keyboard — so every value it holds needs a real control somewhere too. The picture is the fast path, never the only path.',
+      render: (
+        <span className="text-caption text-[var(--ds-danger-text)]">
+          drag the dot, or… nothing. No keyboard route in.
+        </span>
+      ),
+    },
+    {
+      title: 'Do not leave a compressor with no visible effect',
+      why: 'Threshold and ratio are two sliders whose combined result is invisible without a gain-reduction readout. The user cannot tell whether the compressor is doing nothing or crushing the track, so they turn knobs until it sounds wrong.',
+      render: (
+        <span className="text-caption text-[var(--ds-danger-text)]">
+          threshold + ratio, no meter → tuning by superstition
+        </span>
       ),
     },
     {
