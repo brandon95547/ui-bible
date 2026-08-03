@@ -1,13 +1,14 @@
 import * as React from 'react'
 import {
-  Activity, AudioLines, ChevronLeft, ChevronRight, Clapperboard, Leaf, Mic, MoreHorizontal,
-  Music, RotateCcw, Settings2, SlidersHorizontal, Sparkles, Spline, Volume2, VolumeX,
+  Activity, AudioLines, ChevronLeft, ChevronRight, Clapperboard, Leaf, Mic, Minus,
+  MoreHorizontal, Music, Plus, RotateCcw, Settings2, SlidersHorizontal, Sparkles, Spline,
+  Trash2, TrendingDown, TrendingUp, Volume2, VolumeX, Waves,
 } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import { Button, IconButton } from '@/ui/Button'
 import { Tabs } from '@/ui/Navigation'
 import { NativeSelect } from '@/ui/Select'
-import { Switch } from '@/ui/Toggle'
+import { Segmented, Switch } from '@/ui/Toggle'
 import { Cell, Grid, Knob, KnobSelect, KnobToggle, PreviewStage, Row, Stack, defineDoc } from '../framework/kit'
 
 /* ===========================================================================
@@ -862,88 +863,159 @@ interface Track {
   denoise: boolean
   eq: Eq
   dyn: Dyn
-  auto: Keyframe[]
+  auto: Auto
 }
 
 /* Each tab edits a different DEPTH of the same track, which is why they are
    tabs and not four separate tools: Basic is the everyday four, EQ is
    frequency, Dynamics is consistency over level, Automation is change over
    time. A user works down that list as a problem gets more specific. */
-interface Eq {
-  hp: boolean       // rumble filter
-  hpFreq: number
-  low: number       // shelf, dB
-  mid: number       // bell, dB
-  midFreq: number
-  high: number      // shelf, dB
-  deharsh: number   // 0..100, tames sibilant top end
+/* EQ is expressed as five NAMED bands rather than raw filter parameters.
+   "Warmth" and "Air" are the same numbers a parametric EQ exposes, labelled for
+   the person who actually opens this panel — and each band's number ties its
+   card to its point on the curve, so the abstract graph and the concrete knob
+   are visibly the same control. */
+interface EqBand {
+  id: string
+  n: number
+  label: string
+  hint: string
+  freq: number
+  gain: number       // dB; for the low cut this is unused and slope applies
+  kind: 'cut' | 'bell' | 'shelf'
+  slope?: number     // dB/octave, low cut only
+  hueDeg: number
 }
 
+interface Eq {
+  on: boolean
+  preset: string
+  bands: EqBand[]
+}
+
+/* Dynamics is expressed as AMOUNTS, not thresholds and ratios. A video editor
+   asks for "less uneven", not "-18 dB at 3:1", so the panel takes one dial per
+   job and derives the engineering underneath. The raw controls still exist —
+   behind Advanced — because someone eventually needs them. */
 interface Dyn {
-  comp: boolean
-  threshold: number // dB
-  ratio: number     // n:1
-  attack: number    // ms
-  release: number   // ms
-  gate: boolean
-  gateThreshold: number
-  deess: number     // 0..100
+  on: boolean
+  preset: string
+  leveler: number            // 0..100
+  target: 'natural' | 'balanced' | 'broadcast'
+  comp: number               // 0..100
+  deess: number              // 0..100
+  gate: number               // threshold dB
+  gateOn: boolean
+  limiter: boolean
+  ceiling: number            // dBTP
 }
 
 interface Keyframe {
   id: string
-  t: number         // 0..1 through the timeline
-  value: number     // dB
+  t: number                  // 0..1 through the timeline
+  value: number              // dB
+  curve: 'smooth' | 'linear' | 'hold'
 }
 
-const EQ_FLAT: Eq = { hp: false, hpFreq: 80, low: 0, mid: 0, midFreq: 1000, high: 0, deharsh: 0 }
-const DYN_OFF: Dyn = {
-  comp: false, threshold: -18, ratio: 3, attack: 12, release: 180,
-  gate: false, gateThreshold: -45, deess: 0,
+interface Auto {
+  on: boolean
+  preset: string
+  mode: 'volume' | 'pan' | 'presence'
+  tool: 'select' | 'draw' | 'smooth'
+  snap: boolean
+  zoom: number
+  points: Keyframe[]
+  duck: number               // 0..100
+  fadeIn: number             // seconds
+  fadeOut: number
 }
+
+const EQ_BANDS: EqBand[] = [
+  { id: 'lowcut', n: 1, label: 'Low cut', hint: 'Removes rumble — traffic, air conditioning, desk bumps.', freq: 80, gain: 0, kind: 'cut', slope: 24, hueDeg: 265 },
+  { id: 'warmth', n: 2, label: 'Warmth', hint: 'Body and weight. Too much makes speech boomy.', freq: 180, gain: -2.6, kind: 'bell', hueDeg: 30 },
+  { id: 'clarity', n: 3, label: 'Clarity', hint: 'Where words become intelligible over music.', freq: 3000, gain: 2.4, kind: 'bell', hueDeg: 200 },
+  { id: 'presence', n: 4, label: 'Presence', hint: 'Brings the voice forward, closer to the listener.', freq: 6000, gain: 1.8, kind: 'bell', hueDeg: 140 },
+  { id: 'air', n: 5, label: 'Air', hint: 'Openness at the very top. Too much and it hisses.', freq: 12000, gain: 1.6, kind: 'shelf', hueDeg: 335 },
+]
+
+const eqFlat = (): Eq => ({
+  on: true,
+  preset: 'flat',
+  bands: EQ_BANDS.map((b) => ({ ...b, gain: 0, slope: b.slope ? 12 : undefined })),
+})
+
+const eqVoice = (): Eq => ({ on: true, preset: 'clear-narration', bands: EQ_BANDS.map((b) => ({ ...b })) })
+
+const DYN_OFF: Dyn = {
+  on: false, preset: 'none', leveler: 0, target: 'natural', comp: 0, deess: 0,
+  gate: -45, gateOn: false, limiter: true, ceiling: -1,
+}
+
+const autoFlat = (): Auto => ({
+  on: false, preset: 'none', mode: 'volume', tool: 'select', snap: true, zoom: 100,
+  points: [
+    { id: 'a', t: 0, value: 0, curve: 'smooth' },
+    { id: 'b', t: 1, value: 0, curve: 'smooth' },
+  ],
+  duck: 0, fadeIn: 0, fadeOut: 0,
+})
 
 const TRACKS: Track[] = [
   {
     id: 'voice', name: 'Voice', icon: 'Mic', volume: 0, pan: 0, presence: 2,
     mute: false, solo: false, enhance: true, denoise: true,
-    eq: { hp: true, hpFreq: 90, low: -2, mid: 1.5, midFreq: 2400, high: 2, deharsh: 35 },
-    dyn: { comp: true, threshold: -18, ratio: 3, attack: 8, release: 160, gate: true, gateThreshold: -45, deess: 40 },
-    auto: [
-      { id: 'a', t: 0, value: 0 },
-      { id: 'b', t: 0.42, value: 0 },
-      { id: 'c', t: 0.55, value: 3 },
-      { id: 'd', t: 0.85, value: 0 },
-    ],
+    eq: eqVoice(),
+    dyn: {
+      on: true, preset: 'balanced-narration', leveler: 55, target: 'balanced',
+      comp: 45, deess: 40, gate: -45, gateOn: true, limiter: true, ceiling: -1,
+    },
+    auto: {
+      ...autoFlat(), on: true, preset: 'documentary-voice', duck: 65, fadeIn: 1.5, fadeOut: 2,
+      points: [
+        { id: 'a', t: 0, value: -12, curve: 'smooth' },
+        { id: 'b', t: 0.17, value: -2, curve: 'smooth' },
+        { id: 'c', t: 0.3, value: -0.5, curve: 'smooth' },
+        { id: 'd', t: 0.52, value: 2.5, curve: 'smooth' },
+        { id: 'e', t: 0.72, value: 1, curve: 'smooth' },
+        { id: 'f', t: 0.87, value: -4, curve: 'smooth' },
+        { id: 'g', t: 1, value: -12, curve: 'smooth' },
+      ],
+    },
   },
   {
     id: 'music', name: 'Music', icon: 'Music', volume: -8.5, pan: -14, presence: 0,
     mute: false, solo: false, enhance: false, denoise: false,
-    eq: { ...EQ_FLAT, low: 1, high: -1 },
-    dyn: { ...DYN_OFF, comp: true, threshold: -22, ratio: 2 },
-    auto: [
-      { id: 'a', t: 0, value: 0 },
-      { id: 'b', t: 0.2, value: -9 },
-      { id: 'c', t: 0.7, value: -9 },
-      { id: 'd', t: 1, value: -24 },
-    ],
+    eq: { ...eqFlat(), preset: 'music-bed' },
+    dyn: { ...DYN_OFF, on: true, preset: 'gentle', leveler: 25, comp: 30 },
+    auto: {
+      ...autoFlat(), on: true, duck: 65, fadeOut: 3,
+      points: [
+        { id: 'a', t: 0, value: 0, curve: 'smooth' },
+        { id: 'b', t: 0.2, value: -9, curve: 'smooth' },
+        { id: 'c', t: 0.7, value: -9, curve: 'smooth' },
+        { id: 'd', t: 1, value: -24, curve: 'smooth' },
+      ],
+    },
   },
   {
     id: 'effects', name: 'Effects', icon: 'Sparkles', volume: -4, pan: 22, presence: 0,
     mute: false, solo: false, enhance: false, denoise: false,
-    eq: { ...EQ_FLAT }, dyn: { ...DYN_OFF },
-    auto: [{ id: 'a', t: 0, value: 0 }, { id: 'b', t: 1, value: 0 }],
+    eq: eqFlat(), dyn: { ...DYN_OFF }, auto: autoFlat(),
   },
   {
     id: 'ambience', name: 'Ambience', icon: 'Leaf', volume: -18, pan: 0, presence: -1.5,
     mute: false, solo: false, enhance: false, denoise: true,
-    eq: { ...EQ_FLAT, hp: true, hpFreq: 120, high: -3 }, dyn: { ...DYN_OFF },
-    auto: [{ id: 'a', t: 0, value: -6 }, { id: 'b', t: 0.5, value: 0 }, { id: 'c', t: 1, value: -6 }],
+    eq: {
+      ...eqFlat(),
+      bands: EQ_BANDS.map((b) =>
+        b.id === 'lowcut' ? { ...b, freq: 120 } : b.id === 'air' ? { ...b, gain: -3 } : { ...b, gain: 0 }),
+    },
+    dyn: { ...DYN_OFF }, auto: autoFlat(),
   },
   {
     id: 'clips', name: 'Clips', icon: 'Clapperboard', volume: -6, pan: 0, presence: 0,
     mute: true, solo: false, enhance: false, denoise: false,
-    eq: { ...EQ_FLAT }, dyn: { ...DYN_OFF },
-    auto: [{ id: 'a', t: 0, value: 0 }, { id: 'b', t: 1, value: 0 }],
+    eq: eqFlat(), dyn: { ...DYN_OFF }, auto: autoFlat(),
   },
 ]
 
@@ -1117,21 +1189,175 @@ function Param({
   )
 }
 
-/** A panel-level on/off with its own explanation. */
-function PanelSwitch({
-  checked,
-  onChange,
-  label,
-  description,
+/* ---------------------------------------------------------------------------
+   PANEL SHELL
+   Every tab renders into the same box, at the same height.
+
+   That is a hard requirement rather than a nicety. These panels are switched
+   between constantly while listening, and a shell that grows or shrinks moves
+   the tab strip, the track list and the master meters under the pointer every
+   time — so the control you were about to click is somewhere else, and the
+   meters you were watching jump. The height is set once by the tallest panel
+   and every other one fills it.
+   ------------------------------------------------------------------------ */
+const PANEL_MIN_H = 560
+
+function PanelShell({
+  title,
+  blurb,
+  children,
+  footer,
 }: {
-  checked: boolean
-  onChange: (v: boolean) => void
-  label: string
-  description: string
+  title: string
+  blurb: string
+  children: React.ReactNode
+  footer?: React.ReactNode
 }) {
   return (
-    <div className="rounded-[var(--radius-sm)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface-inset)] p-2">
-      <Switch checked={checked} onCheckedChange={onChange} label={label} description={description} size="sm" />
+    <div
+      // A FIXED height, not a minimum. A minimum only sets a floor, so the
+      // tallest panel still grows past it once its cards wrap at a narrow
+      // width — which is the exact jump this is meant to prevent. The header
+      // and the footer are pinned; only the middle scrolls, so the preset row
+      // and the on/off stay in the same place in every tab.
+      className="flex flex-col gap-3 overflow-hidden rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] p-3"
+      style={{ blockSize: PANEL_MIN_H }}
+    >
+      <div className="shrink-0">
+        <p className="text-overline uppercase tracking-wide text-[var(--ds-fg-muted)]">{title}</p>
+        <p className="mt-0.5 text-caption text-[var(--ds-fg-secondary)]">{blurb}</p>
+      </div>
+      <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto">{children}</div>
+      <div className="shrink-0">{footer}</div>
+    </div>
+  )
+}
+
+/* The row every panel ends with: a named preset, an A/B compare, the panel's
+   own on/off, and a reset. Identical in all three, because the user learns it
+   once — and because "is this panel even doing anything" has to be answerable
+   in the same place every time. */
+function PanelFooter({
+  presets,
+  preset,
+  onPreset,
+  on,
+  onToggle,
+  onReset,
+  label,
+}: {
+  presets: { value: string; label: string }[]
+  preset: string
+  onPreset: (v: string) => void
+  on: boolean
+  onToggle: (v: boolean) => void
+  onReset: () => void
+  label: string
+}) {
+  const [ab, setAb] = React.useState<'a' | 'b'>('a')
+  return (
+    <div className="flex flex-wrap items-center gap-2 border-t border-[var(--ds-border-subtle)] pt-2.5">
+      <label className="flex min-w-0 flex-1 items-center gap-2">
+        <span className="shrink-0 text-caption text-[var(--ds-fg-muted)]">Preset</span>
+        <NativeSelect
+          size="sm"
+          aria-label={`${label} preset`}
+          value={preset}
+          onChange={(e) => onPreset(e.target.value)}
+          options={presets}
+          className="min-w-0 flex-1"
+        />
+      </label>
+      {/* A/B is two states of one control, not two buttons — which is exactly
+          what a segmented control is for. */}
+      <Segmented
+        aria-label={`${label} compare`}
+        value={ab}
+        onChange={(v) => setAb(v as 'a' | 'b')}
+        size="sm"
+        options={[{ value: 'a', label: 'A' }, { value: 'b', label: 'B' }]}
+      />
+      <Switch checked={on} onCheckedChange={onToggle} label={`${label} on`} size="sm" />
+      <Button size="xs" variant="outlined" onClick={onReset}>
+        <RotateCcw size={13} />
+        Reset
+      </Button>
+    </div>
+  )
+}
+
+/* The suggestion bar. It states what it would do in the user's terms and needs
+   one click to accept — never applying itself, because a panel that changes
+   under you is one you stop trusting. */
+function RecommendationBar({ text, onApply }: { text: string; onApply: () => void }) {
+  return (
+    <div className="flex flex-wrap items-center gap-2 rounded-[var(--radius-sm)] border border-[var(--ds-accent-border)] bg-[var(--ds-accent-subtle)] px-2.5 py-2">
+      <Sparkles size={14} className="shrink-0 text-[var(--ds-accent-text)]" />
+      <p className="min-w-0 flex-1 text-caption text-[var(--ds-accent-text)]">{text}</p>
+      <Button size="xs" variant="tonal" onClick={onApply}>
+        Apply recommendation
+      </Button>
+    </div>
+  )
+}
+
+/* A compact knob for a band or a dynamics stage: the same range-input contract
+   as every other rotary here, sized to sit inside a card. */
+function MiniKnob({
+  value,
+  onChange,
+  min,
+  max,
+  step = 0.1,
+  label,
+  colour,
+  size = 52,
+}: {
+  value: number
+  onChange: (v: number) => void
+  min: number
+  max: number
+  step?: number
+  label: string
+  colour: string
+  size?: number
+}) {
+  const t = (value - min) / (max - min)
+  const angle = -135 + t * 270
+  return (
+    <div className="relative shrink-0" style={{ inlineSize: size, blockSize: size }}>
+      <input
+        type="range"
+        aria-label={label}
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+        className="peer absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0"
+      />
+      <svg aria-hidden viewBox="0 0 100 100" className="absolute inset-0">
+        <circle cx="50" cy="50" r="45" fill="none" strokeWidth="6" strokeLinecap="round"
+          stroke="var(--ds-layer-active)" strokeDasharray="212 283" transform="rotate(-225 50 50)" />
+        <circle cx="50" cy="50" r="45" fill="none" strokeWidth="6" strokeLinecap="round"
+          stroke={colour} strokeDasharray={`${212 * t} 283`} transform="rotate(-225 50 50)" />
+      </svg>
+      <span
+        aria-hidden
+        className={cn(
+          'absolute inset-[16%] rounded-full border border-[var(--ds-border-strong)] shadow-e1',
+          'bg-gradient-to-b from-[var(--ds-surface-raised)] to-[var(--ds-surface-inset)]',
+          'peer-focus-visible:ring-[3px] peer-focus-visible:ring-[var(--ds-focus-ring)]',
+        )}
+      />
+      <span
+        aria-hidden
+        className="absolute inset-[16%] transition-transform duration-100 motion-reduce:transition-none"
+        style={{ transform: `rotate(${angle}deg)` }}
+      >
+        <span className="absolute left-1/2 top-[8%] h-[32%] w-[2px] -translate-x-1/2 rounded-full"
+          style={{ background: colour }} />
+      </span>
     </div>
   )
 }
@@ -1142,142 +1368,196 @@ function PanelSwitch({
    2.4k" from jargon into "this bump makes the voice cut through". The curve is
    derived from the controls, never edited independently — two sources of truth
    for the same filter is how they drift. */
-function eqResponse(eq: Eq, f: number) {
+function bandContribution(b: EqBand, f: number) {
   const x = Math.log10(f)
-  let db = 0
-  db += eq.low * (1 / (1 + Math.pow(f / 220, 2)))                                  // low shelf
-  db += eq.mid * Math.exp(-Math.pow((x - Math.log10(eq.midFreq)) / 0.45, 2))       // bell
-  db += eq.high * (1 / (1 + Math.pow(3500 / f, 2)))                                // high shelf
-  db -= (eq.deharsh / 100) * 6 * Math.exp(-Math.pow((x - Math.log10(7000)) / 0.3, 2))
-  if (eq.hp) db -= 30 / (1 + Math.pow(f / eq.hpFreq, 4))                            // rumble filter
-  return db
+  if (b.kind === 'cut') return -(b.slope ?? 24) * 0.6 / (1 + Math.pow(f / b.freq, 4))
+  if (b.kind === 'shelf') return b.gain * (1 / (1 + Math.pow(b.freq / f, 2)))
+  return b.gain * Math.exp(-Math.pow((x - Math.log10(b.freq)) / 0.42, 2))
 }
 
-const EQ_GRID = [100, 1000, 10000]
+function eqResponse(eq: Eq, f: number) {
+  if (!eq.on) return 0
+  return eq.bands.reduce((db, b) => db + bandContribution(b, f), 0)
+}
 
-function EqCurve({ eq, colour }: { eq: Eq; colour: string }) {
-  const W = 300
-  const H = 96
-  const fx = (f: number) => ((Math.log10(f) - Math.log10(20)) / (Math.log10(20000) - Math.log10(20))) * W
-  const gy = (db: number) => H / 2 - (db / 18) * (H / 2)
+const EQ_AXIS = [
+  { f: 20, label: '20 Hz' }, { f: 50, label: '50' }, { f: 100, label: '100' },
+  { f: 200, label: '200' }, { f: 500, label: '500' }, { f: 1000, label: '1k' },
+  { f: 2000, label: '2k' }, { f: 5000, label: '5k' }, { f: 10000, label: '10k' },
+  { f: 20000, label: '20k' },
+]
+const EQ_DB_AXIS = [12, 6, 0, -6, -12]
+
+/** The curve in words. A shape nobody can read aloud is a setting nobody can verify. */
+function eqSummary(eq: Eq) {
+  if (!eq.on) return 'EQ is off. The track is unchanged.'
+  const parts = eq.bands
+    .filter((b) => (b.kind === 'cut' ? true : Math.abs(b.gain) > 0.2))
+    .map((b) =>
+      b.kind === 'cut'
+        ? `${b.label.toLowerCase()} below ${b.freq} hertz`
+        : `${b.label.toLowerCase()} ${b.gain > 0 ? 'up' : 'down'} ${Math.abs(b.gain).toFixed(1)} decibels at ${fmtHz(b.freq)}`)
+  return parts.length ? `Frequency response: ${parts.join(', ')}.` : 'Frequency response: flat, no adjustment.'
+}
+
+function fmtHz(f: number) {
+  return f >= 1000 ? `${(f / 1000).toFixed(f >= 10000 ? 0 : 1)} kHz` : `${Math.round(f)} Hz`
+}
+
+/* The graph. Large, because it is the primary thing on this tab — the curve is
+   what makes frequency legible to someone who does not think in hertz, and a
+   thumbnail of it teaches nothing.
+
+   Each band's point is NUMBERED and matches the number on its card below. That
+   pairing is what stops the graph being decoration: touch a knob, watch its
+   own dot move. */
+function EqGraph({ eq }: { eq: Eq }) {
+  const W = 600
+  const H = 260
+  const fx = (f: number) => ((Math.log10(f) - Math.log10(20)) / 3) * W
+  const gy = (db: number) => H / 2 - (db / 14) * (H / 2)
 
   const d = React.useMemo(() => {
     const pts: string[] = []
-    for (let i = 0; i <= 120; i++) {
-      const f = 20 * Math.pow(1000, i / 120)
+    for (let i = 0; i <= 200; i++) {
+      const f = 20 * Math.pow(1000, i / 200)
       pts.push(`${i === 0 ? 'M' : 'L'}${fx(f).toFixed(1)},${gy(eqResponse(eq, f)).toFixed(1)}`)
     }
     return pts.join(' ')
   }, [eq])
 
   return (
-    <svg
-      viewBox={`0 0 ${W} ${H}`}
-      preserveAspectRatio="none"
-      className="h-full w-full"
-      role="img"
-      aria-label={eqSummary(eq)}
-    >
-      <line x1="0" y1={H / 2} x2={W} y2={H / 2} stroke="var(--ds-border)" strokeWidth="1" vectorEffect="non-scaling-stroke" />
-      {EQ_GRID.map((f) => (
-        <line key={f} x1={fx(f)} y1="0" x2={fx(f)} y2={H} stroke="var(--ds-border-subtle)" strokeWidth="1" vectorEffect="non-scaling-stroke" />
+    <svg viewBox={`0 0 ${W} ${H}`} className="h-full w-full" role="img" aria-label={eqSummary(eq)}>
+      {EQ_DB_AXIS.map((db) => (
+        <g key={db}>
+          <line x1="0" y1={gy(db)} x2={W} y2={gy(db)} strokeWidth="1" vectorEffect="non-scaling-stroke"
+            stroke={db === 0 ? 'var(--ds-border-strong)' : 'var(--ds-border-subtle)'} />
+          <text x="4" y={gy(db) - 3} className="fill-[var(--ds-fg-muted)]" style={{ fontSize: 10 }}>
+            {db > 0 ? `+${db}` : db}
+          </text>
+        </g>
       ))}
-      <path d={`${d} L${W},${H} L0,${H} Z`} fill={colour} opacity="0.12" />
-      <path d={d} fill="none" stroke={colour} strokeWidth="2" vectorEffect="non-scaling-stroke" />
+      {EQ_AXIS.map((a) => (
+        <line key={a.f} x1={fx(a.f)} y1="0" x2={fx(a.f)} y2={H} stroke="var(--ds-border-subtle)"
+          strokeWidth="1" vectorEffect="non-scaling-stroke" opacity="0.6" />
+      ))}
+
+      <path d={`${d} L${W},${H} L0,${H} Z`} fill="var(--ds-accent)" opacity={eq.on ? 0.12 : 0.04} />
+      <path d={d} fill="none" stroke="var(--ds-accent)" strokeWidth="2.5"
+        vectorEffect="non-scaling-stroke" opacity={eq.on ? 1 : 0.35} />
+
+      {eq.bands.map((b) => {
+        const y = gy(b.kind === 'cut' ? -3 : b.gain)
+        return (
+          <g key={b.id} opacity={eq.on ? 1 : 0.35}>
+            <circle cx={fx(b.freq)} cy={y} r="11" fill={`hsl(${b.hueDeg} 78% 58%)`} />
+            <text x={fx(b.freq)} y={y + 4} textAnchor="middle" fill="#0b0b0f"
+              style={{ fontSize: 12, fontWeight: 700 }}>{b.n}</text>
+          </g>
+        )
+      })}
     </svg>
   )
 }
 
-/** The curve in words. A shape nobody can read aloud is a setting nobody can verify. */
-function eqSummary(eq: Eq) {
-  const parts: string[] = []
-  if (eq.hp) parts.push(`rumble removed below ${eq.hpFreq} hertz`)
-  if (Math.abs(eq.low) > 0.2) parts.push(`bass ${eq.low > 0 ? 'up' : 'down'} ${Math.abs(eq.low).toFixed(1)} decibels`)
-  if (Math.abs(eq.mid) > 0.2) parts.push(`mids ${eq.mid > 0 ? 'up' : 'down'} ${Math.abs(eq.mid).toFixed(1)} decibels at ${eq.midFreq} hertz`)
-  if (Math.abs(eq.high) > 0.2) parts.push(`treble ${eq.high > 0 ? 'up' : 'down'} ${Math.abs(eq.high).toFixed(1)} decibels`)
-  if (eq.deharsh > 2) parts.push(`harshness reduced ${Math.round(eq.deharsh)} per cent`)
-  return parts.length ? `Frequency response: ${parts.join(', ')}.` : 'Frequency response: flat, no adjustment.'
-}
+const EQ_PRESETS = [
+  { value: 'clear-narration', label: 'Clear narration' },
+  { value: 'warm-voice', label: 'Warm voice' },
+  { value: 'music-bed', label: 'Music bed' },
+  { value: 'flat', label: 'Flat' },
+]
 
 function EqPanel({
   eq,
   onChange,
-  colour,
   name,
 }: {
   eq: Eq
   onChange: (p: Partial<Eq>) => void
-  colour: string
   name: string
 }) {
+  const patchBand = (id: string, p: Partial<EqBand>) =>
+    onChange({ bands: eq.bands.map((b) => (b.id === id ? { ...b, ...p } : b)) })
+
   return (
-    <div className="flex flex-col gap-3">
-      <div>
-        <p className="text-overline uppercase tracking-wide text-[var(--ds-fg-muted)]">
-          {name} · frequency
-        </p>
-        <p className="mt-0.5 text-caption text-[var(--ds-fg-secondary)]">
-          Turn parts of the sound up or down by pitch — bass, mids and treble — and cut out
-          rumble or harshness.
-        </p>
+    <PanelShell
+      title={`${name} EQ`}
+      blurb="Turns parts of the sound up or down by pitch. Each control below is one point on the graph."
+      footer={
+        <PanelFooter
+          label="EQ"
+          presets={EQ_PRESETS}
+          preset={eq.preset}
+          onPreset={(preset) => onChange({ preset })}
+          on={eq.on}
+          onToggle={(on) => onChange({ on })}
+          onReset={() => onChange(eqFlat())}
+        />
+      }
+    >
+      <div className="h-56 shrink-0 rounded-[var(--radius-sm)] bg-[var(--ds-sunken)] p-1">
+        <EqGraph eq={eq} />
+      </div>
+      <div aria-hidden className="flex justify-between px-1 text-[9px] tabular-nums text-[var(--ds-fg-muted)]">
+        {EQ_AXIS.map((a) => <span key={a.f}>{a.label}</span>)}
       </div>
 
-      <div className="h-24 rounded-[var(--radius-sm)] bg-[var(--ds-sunken)] p-1">
-        <EqCurve eq={eq} colour={colour} />
-      </div>
-      <div aria-hidden className="-mt-2 flex justify-between px-1 text-[9px] tabular-nums text-[var(--ds-fg-muted)]">
-        <span>20 Hz</span><span>100</span><span>1k</span><span>10k</span><span>20k</span>
+      {/* One card per band, numbered to its point on the graph. The card shows
+          the plain name first and the engineering underneath, which is the
+          order the reader needs them in. */}
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
+        {eq.bands.map((b) => {
+          const colour = `hsl(${b.hueDeg} 78% 58%)`
+          const isCut = b.kind === 'cut'
+          return (
+            <div
+              key={b.id}
+              className="flex flex-col items-center gap-1.5 rounded-[var(--radius-sm)] border p-2"
+              style={{
+                borderColor: `color-mix(in oklab, ${colour} 40%, transparent)`,
+                background: `color-mix(in oklab, ${colour} 7%, transparent)`,
+              }}
+              title={b.hint}
+            >
+              <span className="flex w-full items-center gap-1.5">
+                <span aria-hidden
+                  className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-[10px] font-bold text-black"
+                  style={{ background: colour }}>{b.n}</span>
+                <span className="truncate text-caption text-[var(--ds-fg)]">{b.label}</span>
+              </span>
+
+              <MiniKnob
+                label={`${b.label} ${isCut ? 'frequency' : 'gain'}`}
+                colour={colour}
+                value={isCut ? b.freq : b.gain}
+                min={isCut ? 20 : -12}
+                max={isCut ? 300 : 12}
+                step={isCut ? 1 : 0.1}
+                onChange={(v) => patchBand(b.id, isCut ? { freq: v } : { gain: v })}
+              />
+
+              <span className="text-center font-mono text-[10px] leading-tight tabular-nums text-[var(--ds-fg)]">
+                {fmtHz(b.freq)}
+                <br />
+                <span className="text-[var(--ds-fg-muted)]">
+                  {isCut ? `${b.slope} dB/oct` : `${b.gain > 0 ? '+' : ''}${b.gain.toFixed(1)} dB`}
+                </span>
+              </span>
+            </div>
+          )
+        })}
       </div>
 
-      {/* The curve is visual; this is the same fact as text, for anyone who
-          cannot read a shape or is not looking at it. */}
+      {/* The curve as text. Same fact, for anyone who cannot read a shape. */}
       <p className="rounded-[var(--radius-sm)] border border-[var(--ds-border-subtle)] px-2 py-1.5 text-[11px] text-[var(--ds-fg-secondary)]">
         {eqSummary(eq)}
       </p>
 
-      <div className="grid gap-x-4 gap-y-3 sm:grid-cols-2">
-        <Param
-          label="Bass" value={eq.low} min={-12} max={12} onChange={(low) => onChange({ low })}
-          format={(v) => `${v > 0 ? '+' : ''}${v.toFixed(1)} dB`}
-          hint="Weight and warmth. Too much makes speech boomy."
-        />
-        <Param
-          label="Treble" value={eq.high} min={-12} max={12} onChange={(high) => onChange({ high })}
-          format={(v) => `${v > 0 ? '+' : ''}${v.toFixed(1)} dB`}
-          hint="Air and detail. Too much makes it hissy."
-        />
-        <Param
-          label="Mids" value={eq.mid} min={-12} max={12} onChange={(mid) => onChange({ mid })}
-          format={(v) => `${v > 0 ? '+' : ''}${v.toFixed(1)} dB`}
-          hint="Where the voice lives. A small lift helps it cut through music."
-        />
-        <Param
-          label="Mid frequency" value={eq.midFreq} min={200} max={8000} step={10}
-          onChange={(midFreq) => onChange({ midFreq })}
-          format={(v) => (v >= 1000 ? `${(v / 1000).toFixed(1)} kHz` : `${Math.round(v)} Hz`)}
-          hint="Which part of the mids the control above moves."
-        />
-        <Param
-          label="Harshness" value={eq.deharsh} min={0} max={100} step={1}
-          onChange={(deharsh) => onChange({ deharsh })}
-          format={(v) => `${Math.round(v)}%`}
-          hint="Softens the sharp, sibilant top end without dulling the whole track."
-        />
-        <Param
-          label="Rumble filter" value={eq.hpFreq} min={20} max={200} step={1}
-          onChange={(hpFreq) => onChange({ hpFreq })} disabled={!eq.hp}
-          format={(v) => `${Math.round(v)} Hz`}
-          hint="Everything below this is removed: traffic, air conditioning, desk bumps."
-        />
-      </div>
-
-      <PanelSwitch
-        checked={eq.hp}
-        onChange={(hp) => onChange({ hp })}
-        label="Remove rumble"
-        description="Cuts the low frequencies nothing useful lives in. Safe on almost any voice recording."
+      <RecommendationBar
+        text="Remove rumble and improve speech clarity."
+        onApply={() => onChange(eqVoice())}
       />
-    </div>
+    </PanelShell>
   )
 }
 
@@ -1285,123 +1565,253 @@ function EqPanel({
    The transfer curve is the honest display here: threshold and ratio are two
    numbers whose combined effect is genuinely hard to imagine, and the bend in
    the line IS that effect. */
-function DynCurve({ dyn, colour }: { dyn: Dyn; colour: string }) {
-  const S = 100
-  const map = (db: number) => ((db + 60) / 60) * S
-  const out = (db: number) => (db <= dyn.threshold ? db : dyn.threshold + (db - dyn.threshold) / dyn.ratio)
-  const pts: string[] = []
-  for (let db = -60; db <= 0; db += 2) {
-    pts.push(`${pts.length === 0 ? 'M' : 'L'}${map(db).toFixed(1)},${(S - map(out(db))).toFixed(1)}`)
-  }
+/* Before and after, on one timeline.
+
+   A transfer curve is the engineer's display and it explains the maths; this
+   explains the RESULT. Two traces over the same waveform — what went in, what
+   came out — say "the loud parts came down and the quiet parts came up" in a
+   way no threshold number does, which is the whole point of describing this
+   panel in a video editor's terms. */
+function DynWave({ dyn }: { dyn: Dyn }) {
+  const W = 600
+  const H = 120
+  const mid = H / 2
+
+  const { inPath, outPath } = React.useMemo(() => {
+    let s = 20250803
+    const rnd = () => ((s = (s * 9301 + 49297) % 233280) / 233280)
+    const inPts: string[] = []
+    const outPts: string[] = []
+    const amount = dyn.on ? (dyn.leveler * 0.6 + dyn.comp * 0.4) / 100 : 0
+    for (let i = 0; i <= 150; i++) {
+      const x = (i / 150) * W
+      // A speech-like envelope: phrases with gaps.
+      const phrase = Math.abs(Math.sin(i / 9)) * (0.55 + rnd() * 0.45)
+      const raw = Math.pow(phrase, 1.4)
+      // Levelling pulls everything towards the middle of the range.
+      const evened = raw + (0.62 - raw) * amount
+      inPts.push(`${i === 0 ? 'M' : 'L'}${x.toFixed(1)},${(mid - raw * mid * 0.92).toFixed(1)}`)
+      outPts.push(`${i === 0 ? 'M' : 'L'}${x.toFixed(1)},${(mid - evened * mid * 0.72).toFixed(1)}`)
+    }
+    return { inPath: inPts.join(' '), outPath: outPts.join(' ') }
+  }, [dyn.on, dyn.leveler, dyn.comp])
+
+  const thresholdY = mid - ((dyn.gate + 60) / 60) * mid * 0.9
 
   return (
-    <svg viewBox={`0 0 ${S} ${S}`} className="h-full w-full" role="img"
-      aria-label={`Compression. Above ${dyn.threshold} decibels, every ${dyn.ratio.toFixed(1)} decibels of input becomes one decibel of output.`}>
-      <line x1="0" y1={S} x2={S} y2="0" stroke="var(--ds-border)" strokeWidth="1" strokeDasharray="3 3" vectorEffect="non-scaling-stroke" />
-      <line
-        x1={map(dyn.threshold)} y1="0" x2={map(dyn.threshold)} y2={S}
-        stroke="var(--ds-warning)" strokeWidth="1" strokeDasharray="2 2" vectorEffect="non-scaling-stroke"
-      />
-      <path d={pts.join(' ')} fill="none" stroke={colour} strokeWidth="2" vectorEffect="non-scaling-stroke" />
+    <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" className="h-full w-full" role="img"
+      aria-label={dynSummary(dyn)}>
+      <path d={`${inPath} L${W},${mid} L0,${mid} Z`} fill="var(--ds-accent)" opacity="0.16" />
+      <path d={inPath} fill="none" stroke="var(--ds-accent)" strokeWidth="1.4" vectorEffect="non-scaling-stroke" opacity="0.8" />
+      <path d={outPath} fill="none" stroke="var(--ds-success)" strokeWidth="2" vectorEffect="non-scaling-stroke" />
+      {dyn.gateOn && (
+        <line x1="0" y1={thresholdY} x2={W} y2={thresholdY} stroke="var(--ds-warning)"
+          strokeWidth="1.4" strokeDasharray="6 4" vectorEffect="non-scaling-stroke" />
+      )}
     </svg>
+  )
+}
+
+function dynSummary(dyn: Dyn) {
+  if (!dyn.on) return 'Dynamics is off. The track is unchanged.'
+  const parts: string[] = []
+  if (dyn.leveler > 2) parts.push(`voice levelling ${Math.round(dyn.leveler)} per cent, target ${dyn.target}`)
+  if (dyn.comp > 2) parts.push(`compression ${Math.round(dyn.comp)} per cent`)
+  if (dyn.deess > 2) parts.push(`harsh S sounds reduced ${Math.round(dyn.deess)} per cent`)
+  if (dyn.gateOn) parts.push(`background noise silenced below ${dyn.gate} decibels`)
+  if (dyn.limiter) parts.push(`limiter on, ceiling ${dyn.ceiling.toFixed(1)} dBTP`)
+  return parts.length ? `Before and after: ${parts.join(', ')}.` : 'No dynamics processing applied.'
+}
+
+const DYN_PRESETS = [
+  { value: 'balanced-narration', label: 'Balanced narration' },
+  { value: 'gentle', label: 'Gentle levelling' },
+  { value: 'broadcast', label: 'Broadcast' },
+  { value: 'none', label: 'None' },
+]
+
+/** One named stage: an icon, a plain sentence, and its own control. */
+function DynStage({
+  icon,
+  title,
+  blurb,
+  children,
+}: {
+  icon: React.ReactNode
+  title: string
+  blurb: string
+  children: React.ReactNode
+}) {
+  return (
+    <div className="flex flex-col gap-2 rounded-[var(--radius-sm)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface-inset)] p-2.5">
+      <div className="flex items-start gap-2">
+        <span aria-hidden className="mt-0.5 shrink-0 text-[var(--ds-accent)]">{icon}</span>
+        <div className="min-w-0">
+          <p className="text-body-sm font-medium text-[var(--ds-fg)]">{title}</p>
+          <p className="text-[10px] leading-snug text-[var(--ds-fg-muted)]">{blurb}</p>
+        </div>
+      </div>
+      {children}
+    </div>
   )
 }
 
 function DynamicsPanel({
   dyn,
   onChange,
-  colour,
   name,
   reduction,
+  inLevel,
+  outLevel,
 }: {
   dyn: Dyn
   onChange: (p: Partial<Dyn>) => void
-  colour: string
   name: string
   reduction: number
+  inLevel: number
+  outLevel: number
 }) {
   return (
-    <div className="flex flex-col gap-3">
-      <div>
-        <p className="text-overline uppercase tracking-wide text-[var(--ds-fg-muted)]">
-          {name} · dynamics
-        </p>
-        <p className="mt-0.5 text-caption text-[var(--ds-fg-secondary)]">
-          Evens out volume that jumps around — quiet words brought up, loud ones held back,
-          background hiss gated out between phrases.
-        </p>
+    <PanelShell
+      title={`${name} dynamics`}
+      blurb="Evens out volume that jumps around — quiet words lifted, loud ones held back, hiss removed between phrases."
+      footer={
+        <PanelFooter
+          label="Dynamics"
+          presets={DYN_PRESETS}
+          preset={dyn.preset}
+          onPreset={(preset) => onChange({ preset })}
+          on={dyn.on}
+          onToggle={(on) => onChange({ on })}
+          onReset={() => onChange({ ...DYN_OFF })}
+        />
+      }
+    >
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+        {[
+          ['Input (before)', 'var(--ds-accent)'],
+          ['Output (after)', 'var(--ds-success)'],
+          ['Gate threshold', 'var(--ds-warning)'],
+        ].map(([l, c]) => (
+          <span key={l} className="flex items-center gap-1.5 text-[10px] text-[var(--ds-fg-secondary)]">
+            <span aria-hidden className="h-0.5 w-4 rounded-full" style={{ background: c }} />
+            {l}
+          </span>
+        ))}
       </div>
 
-      <div className="flex gap-3">
-        <div className="aspect-square h-28 shrink-0 rounded-[var(--radius-sm)] bg-[var(--ds-sunken)] p-1">
-          <DynCurve dyn={dyn} colour={colour} />
+      {/* IN and OUT flank the trace, so "it got more even" is a comparison you
+          can make without moving your eyes off the panel. */}
+      <div className="flex h-32 shrink-0 gap-2">
+        <div className="flex shrink-0 flex-col items-center gap-1">
+          <span aria-hidden className="text-[9px] text-[var(--ds-fg-muted)]">IN</span>
+          <Meter level={inLevel} className="w-2 flex-1" />
         </div>
-        <div className="flex min-w-0 flex-1 flex-col justify-between">
-          {/* Gain reduction is the one live number that tells you the
-              compressor is doing anything at all. Without it, threshold and
-              ratio are two sliders with no visible consequence. */}
-          <div>
-            <div className="flex items-baseline justify-between">
-              <span className="text-caption text-[var(--ds-fg-secondary)]">Gain reduction</span>
-              <span className="font-mono text-[11px] tabular-nums text-[var(--ds-fg)]">
-                -{reduction.toFixed(1)} dB
-              </span>
-            </div>
-            <Meter level={Math.min(1, reduction / 12)} orientation="horizontal" className="mt-1 h-2 w-full" />
-          </div>
-          <p className="text-[10px] leading-snug text-[var(--ds-fg-muted)]">
-            Anything louder than the threshold gets turned down by the ratio. A little movement
-            here is the goal; the needle pinned is a track being squashed.
-          </p>
+        <div className="min-w-0 flex-1 rounded-[var(--radius-sm)] bg-[var(--ds-sunken)] p-1">
+          <DynWave dyn={dyn} />
         </div>
-      </div>
-
-      <div className="grid gap-x-4 gap-y-3 sm:grid-cols-2">
-        <Param
-          label="Threshold" value={dyn.threshold} min={-48} max={0} onChange={(threshold) => onChange({ threshold })}
-          disabled={!dyn.comp} format={(v) => `${v.toFixed(1)} dB`}
-          hint="The level above which the track starts being turned down."
-        />
-        <Param
-          label="Ratio" value={dyn.ratio} min={1} max={12} step={0.1} onChange={(ratio) => onChange({ ratio })}
-          disabled={!dyn.comp} format={(v) => `${v.toFixed(1)}:1`}
-          hint="How hard. 2:1 is gentle levelling, 8:1 is holding a shout down."
-        />
-        <Param
-          label="Attack" value={dyn.attack} min={1} max={100} step={1} onChange={(attack) => onChange({ attack })}
-          disabled={!dyn.comp} format={(v) => `${Math.round(v)} ms`}
-          hint="How quickly it reacts. Fast keeps peaks in check; slow keeps consonants punchy."
-        />
-        <Param
-          label="Release" value={dyn.release} min={20} max={800} step={5} onChange={(release) => onChange({ release })}
-          disabled={!dyn.comp} format={(v) => `${Math.round(v)} ms`}
-          hint="How quickly it lets go. Too fast and you hear it breathing."
-        />
-        <Param
-          label="De-esser" value={dyn.deess} min={0} max={100} step={1} onChange={(deess) => onChange({ deess })}
-          format={(v) => `${Math.round(v)}%`}
-          hint="Tames sharp S sounds specifically, rather than dulling the whole track."
-        />
-        <Param
-          label="Gate threshold" value={dyn.gateThreshold} min={-70} max={-20} onChange={(gateThreshold) => onChange({ gateThreshold })}
-          disabled={!dyn.gate} format={(v) => `${v.toFixed(0)} dB`}
-          hint="Below this the track is silenced, removing hiss between phrases."
-        />
+        <div className="flex shrink-0 flex-col items-center gap-1">
+          <span aria-hidden className="text-[9px] text-[var(--ds-fg-muted)]">OUT</span>
+          <Meter level={outLevel} className="w-2 flex-1" />
+        </div>
       </div>
 
       <div className="grid gap-2 sm:grid-cols-2">
-        <PanelSwitch
-          checked={dyn.comp} onChange={(comp) => onChange({ comp })}
-          label="Compression"
-          description="Levels out the loud and quiet parts so nothing gets lost."
-        />
-        <PanelSwitch
-          checked={dyn.gate} onChange={(gate) => onChange({ gate })}
-          label="Noise gate"
-          description="Silences the track between phrases. Set it too high and words get clipped."
-        />
+        <DynStage icon={<AudioLines size={15} />} title="Voice leveler"
+          blurb="Keeps your voice at a consistent level throughout.">
+          <div className="flex items-center gap-3">
+            <MiniKnob label="Voice leveler amount" colour="var(--ds-accent)" value={dyn.leveler}
+              min={0} max={100} step={1} onChange={(leveler) => onChange({ leveler })} />
+            <label className="min-w-0 flex-1">
+              <span className="text-[10px] text-[var(--ds-fg-muted)]">Target</span>
+              <NativeSelect
+                size="sm" aria-label="Leveler target" value={dyn.target}
+                onChange={(e) => onChange({ target: e.target.value as Dyn['target'] })}
+                options={[
+                  { value: 'natural', label: 'Natural' },
+                  { value: 'balanced', label: 'Balanced' },
+                  { value: 'broadcast', label: 'Broadcast' },
+                ]}
+              />
+            </label>
+          </div>
+        </DynStage>
+
+        <DynStage icon={<Activity size={15} />} title="Compressor"
+          blurb="Controls loud peaks for a smoother, steadier sound.">
+          <div className="flex items-center gap-3">
+            <MiniKnob label="Compressor amount" colour="var(--ds-warning)" value={dyn.comp}
+              min={0} max={100} step={1} onChange={(comp) => onChange({ comp })} />
+            <div className="min-w-0 flex-1">
+              {/* Gain reduction is the one live number proving the compressor
+                  is doing anything at all. Without it, an amount dial has no
+                  visible consequence and gets tuned by superstition. */}
+              <div className="flex items-baseline justify-between">
+                <span className="text-[10px] text-[var(--ds-fg-muted)]">Gain reduction</span>
+                <span className="font-mono text-[10px] tabular-nums text-[var(--ds-fg)]">
+                  -{reduction.toFixed(1)} dB
+                </span>
+              </div>
+              <Meter level={Math.min(1, reduction / 12)} orientation="horizontal" className="mt-1 h-2 w-full" />
+            </div>
+          </div>
+        </DynStage>
+
+        <DynStage icon={<Waves size={15} />} title="De-esser"
+          blurb="Tames sharp S sounds without dulling the whole track.">
+          <div className="flex items-center gap-3">
+            <MiniKnob label="De-esser amount" colour="var(--ds-info)" value={dyn.deess}
+              min={0} max={100} step={1} onChange={(deess) => onChange({ deess })} />
+            <p className="text-[11px] text-[var(--ds-fg-secondary)]">
+              {dyn.deess < 2 ? 'Off' : `Reducing harsh S sounds by ${Math.round(dyn.deess)}%`}
+            </p>
+          </div>
+        </DynStage>
+
+        <DynStage icon={<Activity size={15} />} title="Noise gate"
+          blurb="Silences background noise when nobody is speaking.">
+          <Param
+            label="Threshold" value={dyn.gate} min={-70} max={-20}
+            onChange={(gate) => onChange({ gate })} disabled={!dyn.gateOn}
+            format={(v) => `${v.toFixed(0)} dB`}
+          />
+          <Switch checked={dyn.gateOn} onCheckedChange={(gateOn) => onChange({ gateOn })}
+            label="Silence background noise between words" size="sm" />
+        </DynStage>
       </div>
-    </div>
+
+      {/* The limiter is the safety net, so it reads as a status rather than
+          another dial: on or off, one number, and a plain verdict. */}
+      <div className="flex flex-wrap items-center gap-3 rounded-[var(--radius-sm)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface-inset)] p-2.5">
+        <Switch checked={dyn.limiter} onCheckedChange={(limiter) => onChange({ limiter })}
+          label="Limiter" description="Prevents distortion and protects your audio." size="sm" />
+        <label className="ml-auto flex items-center gap-2">
+          <span className="text-caption text-[var(--ds-fg-muted)]">Ceiling</span>
+          <NativeSelect
+            size="sm" aria-label="Limiter ceiling" value={String(dyn.ceiling)}
+            onChange={(e) => onChange({ ceiling: Number(e.target.value) })}
+            options={[
+              { value: '-1', label: '-1.0 dBTP' },
+              { value: '-2', label: '-2.0 dBTP' },
+              { value: '-0.3', label: '-0.3 dBTP' },
+            ]}
+          />
+        </label>
+        <span className={cn('badge badge--sm', dyn.limiter ? 'badge--success' : 'badge--warning')}>
+          <span className="badge__dot" />
+          {dyn.limiter ? 'Safe output' : 'Unprotected'}
+        </span>
+      </div>
+
+      <RecommendationBar
+        text="Smooth uneven narration and control harsh peaks."
+        onApply={() =>
+          onChange({
+            on: true, preset: 'balanced-narration', leveler: 55, target: 'balanced',
+            comp: 45, deess: 40, gateOn: true, gate: -45, limiter: true,
+          })}
+      />
+    </PanelShell>
   )
 }
 
@@ -1410,122 +1820,348 @@ function DynamicsPanel({
    LIST beside it is the part most tools skip, and it is the only reason this
    panel works without a mouse. Dragging a point on a canvas is unreachable by
    keyboard, so every keyframe is also a row with a real control. */
-const AUTO_PRESETS: { id: string; label: string; hint: string; frames: Keyframe[] }[] = [
-  {
-    id: 'fade-out', label: 'Fade out at the end', hint: 'Music drops away over the last few seconds.',
-    frames: [{ id: 'a', t: 0, value: 0 }, { id: 'b', t: 0.75, value: 0 }, { id: 'c', t: 1, value: -40 }],
-  },
-  {
-    id: 'lift', label: 'Lift one section', hint: 'Narration comes up where it needs to lead.',
-    frames: [
-      { id: 'a', t: 0, value: 0 }, { id: 'b', t: 0.35, value: 0 },
-      { id: 'c', t: 0.5, value: 4 }, { id: 'd', t: 0.8, value: 0 },
-    ],
-  },
-  {
-    id: 'flat', label: 'Clear', hint: 'Remove automation; the track keeps its fader level.',
-    frames: [{ id: 'a', t: 0, value: 0 }, { id: 'b', t: 1, value: 0 }],
-  },
+const AUTO_PRESETS = [
+  { value: 'documentary-voice', label: 'Documentary voice' },
+  { value: 'music-under', label: 'Music under narration' },
+  { value: 'none', label: 'None' },
 ]
 
-function AutomationPanel({
-  frames,
-  onChange,
-  colour,
-  name,
-}: {
-  frames: Keyframe[]
-  onChange: (f: Keyframe[]) => void
-  colour: string
-  name: string
-}) {
-  const [selected, setSelected] = React.useState<string | null>(frames[0]?.id ?? null)
-  const W = 300
-  const H = 90
-  const gy = (v: number) => H / 2 - (v / 24) * (H / 2)
-  const sorted = [...frames].sort((a, b) => a.t - b.t)
-  const path = sorted.map((f, i) => `${i === 0 ? 'M' : 'L'}${(f.t * W).toFixed(1)},${gy(f.value).toFixed(1)}`).join(' ')
+const fmtTime = (t: number) => `0:${String(Math.round(t * 60)).padStart(2, '0')}`
 
-  const patchFrame = (id: string, p: Partial<Keyframe>) =>
-    onChange(frames.map((f) => (f.id === id ? { ...f, ...p } : f)))
+/* The automation lane. A waveform behind, the level line in front, points on
+   the line — and a point editor that is real controls rather than a drag.
+
+   Dragging a dot on a canvas is the fast path and it is unreachable by
+   keyboard: a canvas cannot take focus and has no value semantics. So selecting
+   a point opens an editor with a real time field, a real level field and a real
+   curve select, and the lane is a picture of that state rather than a separate
+   interface. This is the part most tools skip. */
+function AutoLane({
+  auto,
+  seed,
+  selected,
+  onSelect,
+}: {
+  auto: Auto
+  seed: number
+  selected: string | null
+  onSelect: (id: string) => void
+}) {
+  const W = 600
+  const H = 200
+  const gy = (v: number) => H / 2 - (v / 30) * (H / 2)
+  const pts = [...auto.points].sort((a, b) => a.t - b.t)
+
+  const wave = React.useMemo(() => {
+    let s = seed * 7919 + 13
+    const rnd = () => ((s = (s * 9301 + 49297) % 233280) / 233280)
+    return Array.from({ length: 110 }, () => 0.2 + Math.pow(rnd(), 1.5) * 0.8)
+  }, [seed])
+
+  const line = pts.map((p, i) => `${i === 0 ? 'M' : 'L'}${(p.t * W).toFixed(1)},${gy(p.value).toFixed(1)}`).join(' ')
 
   return (
-    <div className="flex flex-col gap-3">
-      <div>
-        <p className="text-overline uppercase tracking-wide text-[var(--ds-fg-muted)]">
-          {name} · automation
-        </p>
-        <p className="mt-0.5 text-caption text-[var(--ds-fg-secondary)]">
-          Change the level over time instead of setting one value for the whole track — fade the
-          music out, or lift the narration for a section.
-        </p>
-      </div>
+    <svg viewBox={`0 0 ${W} ${H}`} className="h-full w-full" role="img"
+      aria-label={`${auto.mode} automation, ${pts.length} points. ${pts.map((p) => `${fmtTime(p.t)} at ${p.value > 0 ? 'plus ' : ''}${p.value.toFixed(1)} decibels`).join('; ')}.`}>
+      {/* Waveform behind, so the points can be placed against what is actually
+          being said rather than against an empty grid. */}
+      {wave.map((h, i) => (
+        <rect key={i} x={(i / wave.length) * W} width={W / wave.length - 1}
+          y={H / 2 - (h * H) / 2.6} height={(h * H) / 1.3}
+          fill="var(--ds-accent)" opacity="0.18" />
+      ))}
+      {[12, 0, -12, -24].map((db) => (
+        <g key={db}>
+          <line x1="0" y1={gy(db)} x2={W} y2={gy(db)} strokeWidth="1" vectorEffect="non-scaling-stroke"
+            strokeDasharray={db === 0 ? undefined : '4 4'}
+            stroke={db === 0 ? 'var(--ds-border-strong)' : 'var(--ds-border-subtle)'} />
+          <text x="4" y={gy(db) - 3} className="fill-[var(--ds-fg-muted)]" style={{ fontSize: 10 }}>
+            {db > 0 ? `+${db}` : db === 0 ? '0 dB' : db}
+          </text>
+        </g>
+      ))}
 
-      <div className="rounded-[var(--radius-sm)] bg-[var(--ds-sunken)] p-1">
-        <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" className="h-24 w-full" role="img"
-          aria-label={`Automation lane with ${sorted.length} points. ${sorted.map((f) => `${Math.round(f.t * 60)} seconds, ${f.value > 0 ? '+' : ''}${f.value} decibels`).join('. ')}.`}>
-          <line x1="0" y1={H / 2} x2={W} y2={H / 2} stroke="var(--ds-border)" strokeWidth="1" strokeDasharray="3 3" vectorEffect="non-scaling-stroke" />
-          <path d={`${path} L${W},${H} L0,${H} Z`} fill={colour} opacity="0.1" />
-          <path d={path} fill="none" stroke={colour} strokeWidth="2" vectorEffect="non-scaling-stroke" />
-          {sorted.map((f) => (
-            <circle
-              key={f.id} cx={f.t * W} cy={gy(f.value)} r={f.id === selected ? 5 : 3.5}
-              fill={f.id === selected ? colour : 'var(--ds-surface)'}
-              stroke={colour} strokeWidth="2" vectorEffect="non-scaling-stroke"
-            />
-          ))}
-        </svg>
-      </div>
-      <div aria-hidden className="-mt-2 flex justify-between px-1 text-[9px] tabular-nums text-[var(--ds-fg-muted)]">
-        <span>0:00</span><span>0:20</span><span>0:40</span><span>1:00</span>
-      </div>
+      <path d={line} fill="none" stroke="var(--ds-success)" strokeWidth="2.5"
+        vectorEffect="non-scaling-stroke" opacity={auto.on ? 1 : 0.35} />
 
-      {/* Every point is also a row. This is the whole accessibility story of an
-          automation editor — the lane above is a picture of this list, not a
-          separate interface. */}
-      <ul className="flex flex-col gap-2">
-        {sorted.map((f, i) => (
-          <li
-            key={f.id}
-            className={cn(
-              'grid grid-cols-[auto_1fr_1fr] items-end gap-3 rounded-[var(--radius-sm)] border p-2',
-              f.id === selected
-                ? 'border-[var(--ds-accent-border)] bg-[var(--ds-accent-subtle)]'
-                : 'border-[var(--ds-border-subtle)]',
-            )}
-            onFocusCapture={() => setSelected(f.id)}
-          >
-            <span className="pb-1 text-caption tabular-nums text-[var(--ds-fg-muted)]">
-              {i + 1}
-            </span>
-            <Param
-              label="Time" value={f.t} min={0} max={1} step={0.01}
-              onChange={(t) => patchFrame(f.id, { t })}
-              format={(v) => `0:${String(Math.round(v * 60)).padStart(2, '0')}`}
-            />
-            <Param
-              label="Level" value={f.value} min={-40} max={12} step={0.5}
-              onChange={(value) => patchFrame(f.id, { value })}
-              format={(v) => `${v > 0 ? '+' : ''}${v.toFixed(1)} dB`}
-            />
-          </li>
-        ))}
-      </ul>
+      {pts.map((p) => (
+        <circle
+          key={p.id} cx={p.t * W} cy={gy(p.value)} r={p.id === selected ? 8 : 6}
+          fill={p.id === selected ? 'var(--ds-success)' : 'var(--ds-surface)'}
+          stroke="var(--ds-success)" strokeWidth="2.5" vectorEffect="non-scaling-stroke"
+          className="cursor-pointer"
+          onClick={() => onSelect(p.id)}
+        />
+      ))}
+    </svg>
+  )
+}
 
-      <div className="flex flex-wrap gap-1.5">
-        {AUTO_PRESETS.map((p) => (
-          <Button
-            key={p.id} size="xs" variant="outlined" title={p.hint}
-            onClick={() => {
-              onChange(p.frames.map((f) => ({ ...f })))
-              setSelected(p.frames[0].id)
-            }}
-          >
-            {p.label}
-          </Button>
-        ))}
+/** The ducking lane: music level pushed down under narration, over time. */
+function DuckLane({ amount }: { amount: number }) {
+  const W = 600
+  const H = 70
+  const drop = (amount / 100) * 0.72
+  const segs = [[0.1, 0.26], [0.34, 0.5], [0.58, 0.72], [0.8, 0.95]]
+  let d = `M0,${H * 0.18}`
+  segs.forEach(([a, b]) => {
+    d += ` L${a * W - 18},${H * 0.18} C${a * W - 4},${H * 0.18} ${a * W},${H * (0.18 + drop)} ${a * W + 14},${H * (0.18 + drop)}`
+    d += ` L${b * W - 14},${H * (0.18 + drop)} C${b * W},${H * (0.18 + drop)} ${b * W + 4},${H * 0.18} ${b * W + 18},${H * 0.18}`
+  })
+  d += ` L${W},${H * 0.18}`
+
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" className="h-full w-full" role="img"
+      aria-label={`Music ducking. Music drops ${amount} per cent beneath narration, in four places.`}>
+      <path d={`${d} L${W},${H} L0,${H} Z`} fill="var(--ds-warning)" opacity="0.14" />
+      <path d={d} fill="none" stroke="var(--ds-warning)" strokeWidth="2" vectorEffect="non-scaling-stroke" />
+    </svg>
+  )
+}
+
+/** One of the four one-click jobs. Each is a whole intention, not a parameter. */
+function AutoAction({
+  icon,
+  title,
+  detail,
+  onClick,
+  children,
+}: {
+  icon: React.ReactNode
+  title: string
+  detail: string
+  onClick: () => void
+  children?: React.ReactNode
+}) {
+  return (
+    <div className="flex flex-col gap-2 rounded-[var(--radius-sm)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface-inset)] p-2.5">
+      <div className="flex items-start gap-2">
+        <span aria-hidden className="mt-0.5 shrink-0 text-[var(--ds-accent)]">{icon}</span>
+        <div className="min-w-0">
+          <p className="text-body-sm font-medium text-[var(--ds-fg)]">{title}</p>
+          <p className="text-[10px] leading-snug text-[var(--ds-fg-muted)]">{detail}</p>
+        </div>
       </div>
+      {children}
+      <Button size="xs" variant="outlined" onClick={onClick} className="mt-auto">
+        Apply
+      </Button>
     </div>
+  )
+}
+
+function AutomationPanel({
+  auto,
+  onChange,
+  name,
+  seed,
+}: {
+  auto: Auto
+  onChange: (p: Partial<Auto>) => void
+  name: string
+  seed: number
+}) {
+  const [selected, setSelected] = React.useState<string | null>(auto.points[0]?.id ?? null)
+  const point = auto.points.find((p) => p.id === selected) ?? null
+
+  const patchPoint = (id: string, p: Partial<Keyframe>) =>
+    onChange({ points: auto.points.map((k) => (k.id === id ? { ...k, ...p } : k)) })
+
+  const deletePoint = (id: string) => {
+    if (auto.points.length <= 2) return   // a lane needs two ends
+    onChange({ points: auto.points.filter((k) => k.id !== id) })
+    setSelected(null)
+  }
+
+  return (
+    <PanelShell
+      title={`${name} automation`}
+      blurb="Changes level over time instead of one setting for the whole track — fades, ducking under narration, and lifting individual quiet phrases."
+      footer={
+        <PanelFooter
+          label="Automation"
+          presets={AUTO_PRESETS}
+          preset={auto.preset}
+          onPreset={(preset) => onChange({ preset })}
+          on={auto.on}
+          onToggle={(on) => onChange({ on })}
+          onReset={() => onChange(autoFlat())}
+        />
+      }
+    >
+      {/* Toolbar. Mode says WHAT is being automated — without it, a lane of
+          points is ambiguous the moment a track automates more than level. */}
+      <div className="flex flex-wrap items-center gap-2">
+        <label className="flex items-center gap-1.5">
+          <span className="text-caption text-[var(--ds-fg-muted)]">Automate</span>
+          <NativeSelect
+            size="sm" aria-label="Automation mode" value={auto.mode}
+            onChange={(e) => onChange({ mode: e.target.value as Auto['mode'] })}
+            options={[
+              { value: 'volume', label: 'Volume' },
+              { value: 'pan', label: 'Pan' },
+              { value: 'presence', label: 'Presence' },
+            ]}
+          />
+        </label>
+        <Segmented
+          aria-label="Automation tool"
+          value={auto.tool}
+          onChange={(v) => onChange({ tool: v as Auto['tool'] })}
+          size="sm"
+          options={[
+            { value: 'select', label: 'Select' },
+            { value: 'draw', label: 'Draw' },
+            { value: 'smooth', label: 'Smooth' },
+          ]}
+        />
+        <Switch checked={auto.snap} onCheckedChange={(snap) => onChange({ snap })} label="Snap" size="sm" />
+        <span className="ml-auto flex items-center gap-1">
+          <IconButton size="xs" label="Zoom out"
+            onClick={() => onChange({ zoom: Math.max(50, auto.zoom - 25) })} icon={<Minus size={13} />} />
+          <span className="w-11 text-center font-mono text-[11px] tabular-nums text-[var(--ds-fg)]">
+            {auto.zoom}%
+          </span>
+          <IconButton size="xs" label="Zoom in"
+            onClick={() => onChange({ zoom: Math.min(400, auto.zoom + 25) })} icon={<Plus size={13} />} />
+        </span>
+      </div>
+
+      <div className="h-48 shrink-0 rounded-[var(--radius-sm)] bg-[var(--ds-sunken)] p-1">
+        <AutoLane auto={auto} seed={seed} selected={selected} onSelect={setSelected} />
+      </div>
+      <div aria-hidden className="flex justify-between px-1 text-[9px] tabular-nums text-[var(--ds-fg-muted)]">
+        {['0:00', '0:10', '0:20', '0:30', '0:40', '0:50', '1:00'].map((t) => <span key={t}>{t}</span>)}
+      </div>
+
+      {/* The point editor. Real controls, so every point is reachable and
+          adjustable without a pointer. */}
+      <div className="rounded-[var(--radius-sm)] border border-[var(--ds-border-subtle)] p-2.5">
+        {point ? (
+          <div className="flex flex-wrap items-end gap-3">
+            <span className="text-caption text-[var(--ds-fg-muted)]">
+              Point {auto.points.findIndex((p) => p.id === point.id) + 1} of {auto.points.length}
+            </span>
+            <div className="min-w-[9rem] flex-1">
+              <Param label="Time" value={point.t} min={0} max={1} step={0.01}
+                onChange={(t) => patchPoint(point.id, { t })} format={fmtTime} />
+            </div>
+            <div className="min-w-[9rem] flex-1">
+              <Param label="Level" value={point.value} min={-30} max={12} step={0.5}
+                onChange={(value) => patchPoint(point.id, { value })}
+                format={(v) => `${v > 0 ? '+' : ''}${v.toFixed(1)} dB`} />
+            </div>
+            <label className="flex items-center gap-1.5">
+              <span className="text-caption text-[var(--ds-fg-muted)]">Curve</span>
+              <NativeSelect
+                size="sm" aria-label="Point curve" value={point.curve}
+                onChange={(e) => patchPoint(point.id, { curve: e.target.value as Keyframe['curve'] })}
+                options={[
+                  { value: 'smooth', label: 'Smooth' },
+                  { value: 'linear', label: 'Linear' },
+                  { value: 'hold', label: 'Hold' },
+                ]}
+              />
+            </label>
+            <Button size="xs" variant="danger-outline" onClick={() => deletePoint(point.id)}
+              disabled={auto.points.length <= 2}>
+              <Trash2 size={13} />
+              Delete point
+            </Button>
+          </div>
+        ) : (
+          <p className="text-caption text-[var(--ds-fg-muted)]">
+            Select a point on the lane to edit its time, level and curve.
+          </p>
+        )}
+      </div>
+
+      {/* Music ducking gets its own lane, because it is the one automation a
+          video editor actually asks for by name. */}
+      <div>
+        <div className="flex items-center justify-between">
+          <p className="text-caption text-[var(--ds-fg-secondary)]">Music auto-duck</p>
+          <label className="flex items-center gap-2">
+            <span className="text-[10px] text-[var(--ds-fg-muted)]">Amount</span>
+            <input
+              type="range" aria-label="Duck amount" aria-valuetext={`${auto.duck} per cent`}
+              min={0} max={100} value={auto.duck}
+              onChange={(e) => onChange({ duck: Number(e.target.value) })}
+              className="w-24 accent-[var(--ds-accent)]"
+            />
+            <span className="w-9 text-right font-mono text-[11px] tabular-nums text-[var(--ds-fg)]">
+              {auto.duck}%
+            </span>
+          </label>
+        </div>
+        <div className="mt-1 h-14 rounded-[var(--radius-sm)] bg-[var(--ds-sunken)] p-1">
+          <DuckLane amount={auto.duck} />
+        </div>
+      </div>
+
+      <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+        <AutoAction icon={<TrendingUp size={15} />} title="Fade in"
+          detail="Bring the track up from silence at the start."
+          onClick={() => onChange({
+            points: [
+              { id: 'fi0', t: 0, value: -30, curve: 'smooth' },
+              { id: 'fi1', t: Math.min(0.3, auto.fadeIn / 60), value: 0, curve: 'smooth' },
+              ...auto.points.filter((p) => p.t > 0.3),
+              { id: 'fi2', t: 1, value: 0, curve: 'smooth' },
+            ],
+          })}
+        >
+          <label className="flex items-center gap-2">
+            <span className="text-[10px] text-[var(--ds-fg-muted)]">Duration</span>
+            <NativeSelect size="sm" aria-label="Fade in duration" value={String(auto.fadeIn)}
+              onChange={(e) => onChange({ fadeIn: Number(e.target.value) })}
+              options={[{ value: '0.5', label: '0.5s' }, { value: '1.5', label: '1.5s' }, { value: '3', label: '3s' }]} />
+          </label>
+        </AutoAction>
+
+        <AutoAction icon={<TrendingDown size={15} />} title="Fade out"
+          detail="Take the track down to silence at the end."
+          onClick={() => onChange({
+            points: [
+              ...auto.points.filter((p) => p.t < 0.7),
+              { id: 'fo0', t: 1 - auto.fadeOut / 60, value: 0, curve: 'smooth' },
+              { id: 'fo1', t: 1, value: -30, curve: 'smooth' },
+            ],
+          })}
+        >
+          <label className="flex items-center gap-2">
+            <span className="text-[10px] text-[var(--ds-fg-muted)]">Duration</span>
+            <NativeSelect size="sm" aria-label="Fade out duration" value={String(auto.fadeOut)}
+              onChange={(e) => onChange({ fadeOut: Number(e.target.value) })}
+              options={[{ value: '1', label: '1s' }, { value: '2', label: '2s' }, { value: '4', label: '4s' }]} />
+          </label>
+        </AutoAction>
+
+        <AutoAction icon={<AudioLines size={15} />} title="Level quiet sections"
+          detail="Automatically lift phrases that were recorded too quietly."
+          onClick={() => onChange({
+            on: true,
+            points: [
+              { id: 'q0', t: 0, value: 0, curve: 'smooth' },
+              { id: 'q1', t: 0.28, value: 3.5, curve: 'smooth' },
+              { id: 'q2', t: 0.46, value: 0, curve: 'smooth' },
+              { id: 'q3', t: 0.68, value: 4, curve: 'smooth' },
+              { id: 'q4', t: 1, value: 0, curve: 'smooth' },
+            ],
+          })}
+        />
+
+        <AutoAction icon={<Spline size={15} />} title="Create music ducking"
+          detail="Duck the music beneath narration automatically, wherever there is speech."
+          onClick={() => onChange({ on: true, duck: 65 })}
+        />
+      </div>
+
+      <RecommendationBar
+        text="Level quiet phrases and duck music beneath narration."
+        onApply={() => onChange({ on: true, preset: 'documentary-voice', duck: 65 })}
+      />
+    </PanelShell>
   )
 }
 
@@ -1596,11 +2232,17 @@ function StudioMixer({ running = true }: { running?: boolean }) {
 
   // How much the compressor is actually pulling down right now. Derived from
   // the live level rather than stored, so it moves with the signal the way the
-  // real thing does — and reads zero when compression is off, which is the
-  // honest answer rather than a decorative wobble.
+  // real thing does — and reads zero when the panel is off, which is the honest
+  // answer rather than a decorative wobble.
+  //
+  // The amount dial is translated into a threshold and ratio here, which is the
+  // whole trade this panel makes: the user says "more even", the engineering is
+  // derived, and the gain-reduction meter shows what that actually did.
   const selLevelDb = posToDb(levels[selectedIndex] ?? 0)
-  const reduction = selected.dyn.comp && selLevelDb > selected.dyn.threshold
-    ? (selLevelDb - selected.dyn.threshold) * (1 - 1 / selected.dyn.ratio)
+  const dynThreshold = -6 - (selected.dyn.comp / 100) * 24
+  const dynRatio = 1 + (selected.dyn.comp / 100) * 7
+  const reduction = selected.dyn.on && selected.dyn.comp > 2 && selLevelDb > dynThreshold
+    ? (selLevelDb - dynThreshold) * (1 - 1 / dynRatio)
     : 0
 
   return (
@@ -1675,79 +2317,66 @@ function StudioMixer({ running = true }: { running?: boolean }) {
           aria-labelledby={`mix-tab-${tab}`}
         >
           {tab === 'basic' && (
-            <>
-              <div className="rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] p-3">
-                <p className="text-overline uppercase tracking-wide text-[var(--ds-fg-muted)]">
-                  {selected.name} · controls
-                </p>
-                <p className="mt-0.5 text-caption text-[var(--ds-fg-secondary)]">
-                  The everyday four: how loud, where in the stereo field, how present, and whether
-                  it is heard at all.
-                </p>
-
-                <div className="mt-2 rounded-[var(--radius-sm)] bg-[var(--ds-sunken)] p-2">
-                  <Waveform seed={selectedIndex + 1} colour={colour} />
-                  <div aria-hidden className="mt-1 flex justify-between text-[9px] tabular-nums text-[var(--ds-fg-muted)]">
-                    {['0:00', '0:20', '0:40', '1:00'].map((t) => <span key={t}>{t}</span>)}
-                  </div>
+            <PanelShell
+              title={`${selected.name} controls`}
+              blurb="The everyday four: how loud, where in the stereo field, how present, and whether it is heard at all."
+              footer={
+                <div className="flex flex-wrap items-center gap-2 border-t border-[var(--ds-border-subtle)] pt-2.5">
+                  <p className="min-w-0 flex-1 text-caption text-[var(--ds-fg-muted)]">
+                    Auto mix ducks music beneath narration wherever there is speech.
+                  </p>
+                  <Button size="xs" variant="outlined"
+                    onClick={() => patch({ volume: 0, pan: 0, presence: 0 })}>
+                    <RotateCcw size={13} />
+                    Reset
+                  </Button>
                 </div>
-
-                <div className="mt-3 flex flex-wrap items-start justify-around gap-4">
-                  <RotaryKnob
-                    label="Volume" value={selected.volume} min={DB_MIN} max={DB_MAX} reset={0}
-                    onChange={(volume) => patch({ volume })} format={fmtDb} colour={colour}
-                  />
-                  <RotaryKnob
-                    label="Pan" value={selected.pan} min={-100} max={100} step={1} reset={0}
-                    onChange={(pan) => patch({ pan })} format={fmtPan} colour={colour}
-                  />
-                  <RotaryKnob
-                    label="Presence" value={selected.presence} min={-6} max={6} reset={0}
-                    onChange={(presence) => patch({ presence })}
-                    format={(v) => `${v > 0 ? '+' : ''}${v.toFixed(1)} dB`} colour={colour}
-                  />
-                </div>
-
-                <div className="mt-3 grid grid-cols-2 gap-1.5 sm:grid-cols-4">
-                  <StripToggle on={selected.mute} onChange={() => patch({ mute: !selected.mute })} tone="danger" name={selected.name}>
-                    Mute
-                  </StripToggle>
-                  <StripToggle on={selected.solo} onChange={() => patch({ solo: !selected.solo })} tone="warning" name={selected.name}>
-                    Solo
-                  </StripToggle>
-                  <StripToggle on={selected.enhance} onChange={() => patch({ enhance: !selected.enhance })} tone="warning" name={selected.name}>
-                    Enhance
-                  </StripToggle>
-                  <StripToggle on={selected.denoise} onChange={() => patch({ denoise: !selected.denoise })} tone="warning" name={selected.name}>
-                    Noise clean
-                  </StripToggle>
+              }
+            >
+              <div className="rounded-[var(--radius-sm)] bg-[var(--ds-sunken)] p-2">
+                <Waveform seed={selectedIndex + 1} colour={colour} />
+                <div aria-hidden className="mt-1 flex justify-between text-[9px] tabular-nums text-[var(--ds-fg-muted)]">
+                  {['0:00', '0:20', '0:40', '1:00'].map((t) => <span key={t}>{t}</span>)}
                 </div>
               </div>
 
-              {/* ---- Auto mix ---- */}
-              <div className="rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] p-3">
-                <div className="flex items-center justify-between">
-                  <p className="text-overline uppercase tracking-wide text-[var(--ds-fg-muted)]">Auto mix</p>
-                  <p className="text-caption text-[var(--ds-fg-secondary)]">
-                    Duck amount{' '}
-                    <span className="font-mono tabular-nums text-[var(--ds-fg)]">{duck}%</span>
-                  </p>
-                </div>
+              <div className="flex flex-wrap items-start justify-around gap-4">
+                <RotaryKnob
+                  label="Volume" value={selected.volume} min={DB_MIN} max={DB_MAX} reset={0}
+                  onChange={(volume) => patch({ volume })} format={fmtDb} colour={colour}
+                />
+                <RotaryKnob
+                  label="Pan" value={selected.pan} min={-100} max={100} step={1} reset={0}
+                  onChange={(pan) => patch({ pan })} format={fmtPan} colour={colour}
+                />
+                <RotaryKnob
+                  label="Presence" value={selected.presence} min={-6} max={6} reset={0}
+                  onChange={(presence) => patch({ presence })}
+                  format={(v) => `${v > 0 ? '+' : ''}${v.toFixed(1)} dB`} colour={colour}
+                />
+              </div>
 
-                <div className="mt-2 flex gap-3">
-                  <div className="flex flex-col gap-1.5 pt-1">
-                    {[['Voice', 'var(--ds-accent)'], ['Music', 'var(--ds-warning)']].map(([l, c]) => (
-                      <span key={l} className="flex items-center gap-1.5 text-[10px] text-[var(--ds-fg-secondary)]">
-                        <span aria-hidden className="h-0.5 w-4 rounded-full" style={{ background: c }} />
-                        {l}
-                      </span>
-                    ))}
-                  </div>
-                  <div className="h-20 flex-1 rounded-[var(--radius-sm)] bg-[var(--ds-sunken)] p-1">
-                    <DuckCurve amount={duck} />
-                  </div>
-                  <label className="flex w-16 shrink-0 flex-col items-center gap-1">
-                    <span className="text-[10px] text-[var(--ds-fg-muted)]">Amount</span>
+              <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-4">
+                <StripToggle on={selected.mute} onChange={() => patch({ mute: !selected.mute })} tone="danger" name={selected.name}>
+                  Mute
+                </StripToggle>
+                <StripToggle on={selected.solo} onChange={() => patch({ solo: !selected.solo })} tone="warning" name={selected.name}>
+                  Solo
+                </StripToggle>
+                <StripToggle on={selected.enhance} onChange={() => patch({ enhance: !selected.enhance })} tone="warning" name={selected.name}>
+                  Enhance
+                </StripToggle>
+                <StripToggle on={selected.denoise} onChange={() => patch({ denoise: !selected.denoise })} tone="warning" name={selected.name}>
+                  Noise clean
+                </StripToggle>
+              </div>
+
+              {/* ---- Auto mix ---- */}
+              <div className="shrink-0">
+                <div className="flex items-center justify-between">
+                  <p className="text-caption text-[var(--ds-fg-secondary)]">Auto mix</p>
+                  <label className="flex items-center gap-2">
+                    <span className="text-[10px] text-[var(--ds-fg-muted)]">Duck amount</span>
                     <input
                       type="range"
                       aria-label="Duck amount"
@@ -1756,46 +2385,56 @@ function StudioMixer({ running = true }: { running?: boolean }) {
                       max={100}
                       value={duck}
                       onChange={(e) => setDuck(Number(e.target.value))}
-                      className="w-full accent-[var(--ds-accent)]"
+                      className="w-24 accent-[var(--ds-accent)]"
                     />
+                    <span className="w-9 text-right font-mono text-[11px] tabular-nums text-[var(--ds-fg)]">
+                      {duck}%
+                    </span>
                   </label>
                 </div>
+                <div className="mt-1 flex gap-3">
+                  <div className="flex flex-col gap-1.5 pt-1">
+                    {[['Voice', 'var(--ds-accent)'], ['Music', 'var(--ds-warning)']].map(([l, c]) => (
+                      <span key={l} className="flex items-center gap-1.5 text-[10px] text-[var(--ds-fg-secondary)]">
+                        <span aria-hidden className="h-0.5 w-4 rounded-full" style={{ background: c }} />
+                        {l}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="h-24 flex-1 rounded-[var(--radius-sm)] bg-[var(--ds-sunken)] p-1">
+                    <DuckCurve amount={duck} />
+                  </div>
+                </div>
               </div>
-            </>
+            </PanelShell>
           )}
 
           {tab === 'eq' && (
-            <div className="rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] p-3">
-              <EqPanel
-                eq={selected.eq}
-                name={selected.name}
-                colour={colour}
-                onChange={(p) => patch({ eq: { ...selected.eq, ...p } })}
-              />
-            </div>
+            <EqPanel
+              eq={selected.eq}
+              name={selected.name}
+              onChange={(p) => patch({ eq: { ...selected.eq, ...p } })}
+            />
           )}
 
           {tab === 'dynamics' && (
-            <div className="rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] p-3">
-              <DynamicsPanel
-                dyn={selected.dyn}
-                name={selected.name}
-                colour={colour}
-                reduction={reduction}
-                onChange={(p) => patch({ dyn: { ...selected.dyn, ...p } })}
-              />
-            </div>
+            <DynamicsPanel
+              dyn={selected.dyn}
+              name={selected.name}
+              reduction={reduction}
+              inLevel={levels[selectedIndex] ?? 0}
+              outLevel={Math.min(1, (levels[selectedIndex] ?? 0) * (1 - reduction / 30) + (selected.dyn.on ? 0.12 : 0))}
+              onChange={(p) => patch({ dyn: { ...selected.dyn, ...p } })}
+            />
           )}
 
           {tab === 'automation' && (
-            <div className="rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] p-3">
-              <AutomationPanel
-                frames={selected.auto}
-                name={selected.name}
-                colour={colour}
-                onChange={(auto) => patch({ auto })}
-              />
-            </div>
+            <AutomationPanel
+              auto={selected.auto}
+              name={selected.name}
+              seed={selectedIndex + 1}
+              onChange={(p) => patch({ auto: { ...selected.auto, ...p } })}
+            />
           )}
         </div>
 
@@ -2072,24 +2711,32 @@ export default defineDoc({
         render: (
           <PreviewStage minHeight={0} allowResize={false} center={false}>
             <Stack gap="md" className="w-full">
-              <div className="rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] p-3">
-                <EqPanel
-                  eq={TRACKS[0].eq}
-                  name="Voice"
-                  colour={hue(0)}
-                  onChange={() => {}}
-                />
-              </div>
-              <div className="rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] p-3">
-                <DynamicsPanel
-                  dyn={TRACKS[0].dyn}
-                  name="Voice"
-                  colour={hue(0)}
-                  reduction={3.4}
-                  onChange={() => {}}
-                />
-              </div>
+              <EqPanel eq={TRACKS[0].eq} name="Voice" onChange={() => {}} />
+              <DynamicsPanel
+                dyn={TRACKS[0].dyn}
+                name="Voice"
+                reduction={3.4}
+                inLevel={0.72}
+                outLevel={0.58}
+                onChange={() => {}}
+              />
             </Stack>
+          </PreviewStage>
+        ),
+      },
+      {
+        id: 'fixed-shell',
+        title: 'The shell never changes height',
+        description:
+          'All four panels render into the same box at the same height, set once by the tallest of them. That is a hard requirement, not a nicety: these tabs are switched between constantly while listening, and a shell that grows or shrinks moves the tab strip, the track list and the master meters under the pointer every time — so the control you were about to click is somewhere else, and the meters you were watching jump.',
+        render: (
+          <PreviewStage minHeight={0} allowResize={false} center={false}>
+            <div className="w-full rounded-[var(--radius-md)] border border-dashed border-[var(--ds-accent-border)] p-2">
+              <p className="mb-2 text-caption text-[var(--ds-fg-secondary)]">
+                Every panel fills a {PANEL_MIN_H}px box. The dashed edge is the box.
+              </p>
+              <AutomationPanel auto={TRACKS[1].auto} name="Music" seed={2} onChange={() => {}} />
+            </div>
           </PreviewStage>
         ),
       },
@@ -2097,17 +2744,10 @@ export default defineDoc({
         id: 'automation-list',
         title: 'An automation lane that works without a mouse',
         description:
-          'The lane is the display everybody builds. The list beside it is the part most tools skip — and it is the only reason this panel is usable by keyboard, because dragging a point on a canvas is unreachable. The lane is a picture of the list, not a separate interface.',
+          'Dragging a dot on a canvas is the fast path, and it is unreachable by keyboard — a canvas cannot take focus and has no value semantics. So selecting a point opens an editor with a real time field, a real level field and a real curve select, and the lane is a picture of that state rather than a separate interface. This is the part most tools skip.',
         render: (
           <PreviewStage minHeight={0} allowResize={false} center={false}>
-            <div className="w-full rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] p-3">
-              <AutomationPanel
-                frames={TRACKS[1].auto}
-                name="Music"
-                colour={hue(1)}
-                onChange={() => {}}
-              />
-            </div>
+            <AutomationPanel auto={TRACKS[0].auto} name="Voice" seed={1} onChange={() => {}} />
           </PreviewStage>
         ),
       },
@@ -2371,6 +3011,20 @@ export default defineDoc({
         <Row gap="sm" align="center">
           <span className="rounded-full border border-[var(--ds-danger-border)] px-2 py-0.5 text-caption text-[var(--ds-danger-text)]">Console | Studio</span>
           <span className="rounded-full border border-[var(--ds-danger-border)] px-2 py-0.5 text-caption text-[var(--ds-danger-text)]">Basic | EQ</span>
+        </Row>
+      ),
+    },
+    {
+      title: 'Do not let the panel resize when the tab changes',
+      why: 'These tabs are switched between constantly while listening. If each panel sizes to its own content, the tab strip, the track list and the master meters all move — so the control you were reaching for is somewhere else, and the meters you were watching jump. Fix the height once, to the tallest panel, and let the others fill it.',
+      render: (
+        <Row gap="sm" align="center">
+          <span className="flex h-12 w-16 items-center justify-center rounded-[var(--radius-xs)] border border-[var(--ds-danger-border)] text-caption text-[var(--ds-danger-text)]">
+            tall
+          </span>
+          <span className="flex h-6 w-16 items-center justify-center rounded-[var(--radius-xs)] border border-[var(--ds-danger-border)] text-caption text-[var(--ds-danger-text)]">
+            short
+          </span>
         </Row>
       ),
     },
