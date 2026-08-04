@@ -7,6 +7,7 @@ import { Breadcrumbs } from '@/ui/Navigation'
 import { PAGE_BY_ID } from '@/docs/nav'
 import { currentSectionId, scrollToSection, sectionHref } from './anchors'
 import { ColorPalette } from './ColorPalette'
+import { PreviewContext } from './preview-context'
 import { PreviewStage, Specimen } from './PreviewStage'
 import {
   A11yPanel,
@@ -152,13 +153,20 @@ export function DocPage({
               title="Live preview"
               description="Everything below is the real component. Change the controls, tab through it, and turn on Inspector Mode to read any value off the screen."
             >
+              {/* Each stage is told which block it is, so it can offer to
+                  reopen exactly itself in a device window. This is the only
+                  place that knows both halves of that address. */}
               <div className="flex flex-col gap-8">
-                {spec.preview.render}
+                <PreviewContext.Provider value={{ pageId: meta.id, blockId: '' }}>
+                  {spec.preview.render}
+                </PreviewContext.Provider>
 
                 {spec.preview.examples?.map((ex) => (
                   <div key={ex.id} id={ex.id} className="scroll-mt-28">
                     <SubHeading description={ex.description}>{ex.title}</SubHeading>
-                    {ex.render}
+                    <PreviewContext.Provider value={{ pageId: meta.id, blockId: ex.id }}>
+                      {ex.render}
+                    </PreviewContext.Provider>
                   </div>
                 ))}
 

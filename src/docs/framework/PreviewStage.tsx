@@ -1,8 +1,13 @@
 import * as React from 'react'
-import { Code2, Crosshair, Grid3x3, Monitor, Moon, RotateCcw, Smartphone, Sun, Tablet } from 'lucide-react'
+import { createPortal } from 'react-dom'
+import {
+  Code2, Crosshair, Grid3x3, Monitor, MonitorSmartphone, Moon, RotateCcw, Smartphone, Sun, Tablet,
+} from 'lucide-react'
 import { cn } from '@/lib/cn'
 import { useInspector } from '@/app/Inspector'
 import { CodeBlock } from './CodeBlock'
+import { DEVICE_CONTROLS_SLOT, PreviewContext, devicePath } from './preview-context'
+import { storedViewport } from './DeviceView'
 import type { Lang } from './highlight'
 
 type StageTheme = 'inherit' | 'dark' | 'light'
@@ -49,6 +54,15 @@ export function PreviewStage({
   const [showCode, setShowCode] = React.useState(false)
   const [nonce, setNonce] = React.useState(0)
   const { enabled: inspecting, toggle: toggleInspect } = useInspector()
+  const target = React.useContext(PreviewContext)
+
+  if (target?.bare) {
+    return (
+      <BareStage center={center} padded={padded} bodyClassName={bodyClassName} controls={controls}>
+        {children}
+      </BareStage>
+    )
+  }
 
   return (
     <div
@@ -88,6 +102,29 @@ export function PreviewStage({
                   label="Phone width, 390px"
                 >
                   <Smartphone size={13} />
+                </StageBtn>
+                <Sep />
+              </>
+            )}
+            {/* The three buttons above narrow a container inside this page; the
+                viewport stays whatever the desktop is, so a media query never
+                fires and 100dvh is still the desktop's. This one opens a real
+                window at a real device size, where all of that is true. */}
+            {target && (
+              <>
+                {/* A real link underneath the popup. If a blocker refuses the
+                    sized window, the browser follows the href and the preview
+                    opens in an ordinary tab — same route, same bare render,
+                    just no automatic sizing. Silently doing nothing is the one
+                    outcome this must not have. */}
+                <StageBtn
+                  href={devicePath(target.pageId, target.blockId)}
+                  onClick={(e) => {
+                    if (openDeviceWindow(target.pageId, target.blockId)) e.preventDefault()
+                  }}
+                  label="Open in a device window"
+                >
+                  <MonitorSmartphone size={13} />
                 </StageBtn>
                 <Sep />
               </>
@@ -163,17 +200,107 @@ export function PreviewStage({
   )
 }
 
+/**
+ * The same preview with the stage taken away.
+ *
+ * Everything the toolbar offered is either meaningless here (a simulated width,
+ * inside a window that already is one) or has moved to the device window's own
+ * bar (theme). What survives is the specimen and its knobs — and the knobs go
+ * into the floating bar rather than the page, so the viewport under test keeps
+ * every pixel of the device's height.
+ */
+function BareStage({
+  children,
+  controls,
+  center,
+  padded,
+  bodyClassName,
+}: {
+  children: React.ReactNode
+  controls?: React.ReactNode
+  center: boolean
+  padded: boolean
+  bodyClassName?: string
+}) {
+  // The slot lives in a sibling that commits at the same time as this one, so
+  // it cannot be found during the first render. One extra pass, then it sticks.
+  const [slot, setSlot] = React.useState<HTMLElement | null>(null)
+  React.useEffect(() => setSlot(document.getElementById(DEVICE_CONTROLS_SLOT)), [])
+
+  return (
+    <>
+      <div
+        className={cn(
+          center && 'flex flex-wrap items-center justify-center gap-4',
+          padded && 'p-6',
+          bodyClassName,
+        )}
+      >
+        {children}
+      </div>
+      {controls && slot && createPortal(controls, slot)}
+    </>
+  )
+}
+
+/**
+ * Opens the preview in its own window, sized so the viewport is the device.
+ *
+ * Named per preview, so pressing the button again raises the window that is
+ * already open instead of scattering copies across the desktop. Returns false
+ * when the browser refused, which is the caller's cue to let the link through.
+ */
+function openDeviceWindow(pageId: string, blockId: string) {
+  const { w, h } = storedViewport()
+  const url = `${window.location.pathname}${window.location.search}${devicePath(pageId, blockId)}`
+  const win = window.open(
+    url,
+    `uib-device-${pageId}-${blockId || 'playground'}`,
+    `popup=yes,width=${w},height=${h}`,
+  )
+  if (!win) return false
+  win.focus()
+  return true
+}
+
 function StageBtn({
   children,
   onClick,
   active,
   label,
+  href,
 }: {
   children: React.ReactNode
-  onClick: () => void
+  onClick: (e: React.MouseEvent) => void
   active?: boolean
   label: string
+  /** Renders an anchor instead. For controls that go somewhere. */
+  href?: string
 }) {
+  const className = cn(
+    'grid h-6 w-6 place-items-center rounded-[var(--radius-xs)] transition-colors duration-[100ms]',
+    'focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[var(--ds-focus-ring)]',
+    active
+      ? 'bg-[var(--ds-accent-subtle)] text-[var(--ds-accent-text)]'
+      : 'text-[var(--ds-fg-muted)] hover:bg-[var(--ds-layer-hover)] hover:text-[var(--ds-fg)]',
+  )
+
+  if (href) {
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noreferrer"
+        onClick={onClick}
+        aria-label={label}
+        title={label}
+        className={className}
+      >
+        {children}
+      </a>
+    )
+  }
+
   return (
     <button
       type="button"
@@ -181,13 +308,7 @@ function StageBtn({
       aria-pressed={active}
       aria-label={label}
       title={label}
-      className={cn(
-        'grid h-6 w-6 place-items-center rounded-[var(--radius-xs)] transition-colors duration-[100ms]',
-        'focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[var(--ds-focus-ring)]',
-        active
-          ? 'bg-[var(--ds-accent-subtle)] text-[var(--ds-accent-text)]'
-          : 'text-[var(--ds-fg-muted)] hover:bg-[var(--ds-layer-hover)] hover:text-[var(--ds-fg)]',
-      )}
+      className={className}
     >
       {children}
     </button>

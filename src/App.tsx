@@ -12,6 +12,7 @@ import { Home } from '@/app/Home'
 import { SectionOverview } from '@/app/SectionOverview'
 import { InspectorProvider, useInspector } from '@/app/Inspector'
 import { DocPage } from '@/docs/framework/DocPage'
+import { DeviceView } from '@/docs/framework/DeviceView'
 import { currentSectionId } from '@/docs/framework/anchors'
 import { loadPage } from '@/docs/registry'
 import { PAGE_BY_ID, neighbours, overviewSection } from '@/docs/nav'
@@ -377,11 +378,16 @@ function isTypingTarget(t: EventTarget | null) {
 }
 
 export default function App() {
+  const [route] = useHashRoute()
+
+  // A device window loads the same bundle at its own address and renders one
+  // preview, without the shell around it — the whole point is that its viewport
+  // belongs to the component and nothing else.
+  const device = route === 'device' || route.startsWith('device/')
+
   return (
     <InspectorProvider>
-      <ToastProvider>
-        <Shell />
-      </ToastProvider>
+      <ToastProvider>{device ? <DeviceView route={route} /> : <Shell />}</ToastProvider>
     </InspectorProvider>
   )
 }
