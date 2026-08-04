@@ -1,7 +1,8 @@
 import * as React from 'react'
 import { BookMarked, ChevronRight, Command, LayoutList, Search, SearchX, Star, X } from 'lucide-react'
 import { cn } from '@/lib/cn'
-import { usePersistentState } from '@/lib/hooks'
+import { useFocusTrap, usePersistentState } from '@/lib/hooks'
+import { IconButton } from '@/ui/Button'
 import { Kbd } from '@/ui/Display'
 import { iconByName } from '@/app/icons'
 import { NAV, PAGE_BY_ID, searchPages, type NavPage } from '@/docs/nav'
@@ -22,13 +23,24 @@ export function Sidebar({
   favorites,
   onToggleFavorite,
   onOpenPalette,
+  variant = 'inline',
+  onClose,
 }: {
   currentId: string
   onNavigate: (id: string) => void
   favorites: string[]
   onToggleFavorite: (id: string) => void
   onOpenPalette: () => void
+  /**
+   * `inline` is the permanent column. `drawer` is what it becomes below lg,
+   * where there is no room for a column: the same tree, lifted out of the
+   * layout onto a scrim, modal for as long as it is open.
+   */
+  variant?: 'inline' | 'drawer'
+  onClose?: () => void
 }) {
+  const isDrawer = variant === 'drawer'
+  const panelRef = React.useRef<HTMLElement>(null)
   const [width, setWidth] = usePersistentState('uib:sidebar-width', DEFAULT_W)
   // Section and group ids share one store but are namespaced, so a group named
   // "actions" can never open the section that happens to share its id.
@@ -41,6 +53,9 @@ export function Sidebar({
   const [dragging, setDragging] = React.useState(false)
   const navRef = React.useRef<HTMLDivElement>(null)
   const searchRef = React.useRef<HTMLInputElement>(null)
+
+  // A modal panel keeps the keyboard inside it and hands focus back on close.
+  useFocusTrap(isDrawer, panelRef)
 
   /* ---- resize ---------------------------------------------------------- */
   React.useEffect(() => {
@@ -103,8 +118,24 @@ export function Sidebar({
 
   return (
     <aside
-      style={{ width }}
-      className="relative z-40 flex h-dvh shrink-0 flex-col border-r border-[var(--ds-border-subtle)] bg-[var(--ds-surface)]"
+      ref={panelRef}
+      // Width is a desktop affordance. As a drawer it is sized to the viewport
+      // instead, always leaving a strip of the page visible so it reads as a
+      // panel over the content rather than as a new screen.
+      style={isDrawer ? undefined : { width }}
+      role={isDrawer ? 'dialog' : undefined}
+      aria-modal={isDrawer || undefined}
+      aria-label={isDrawer ? 'Documentation navigation' : undefined}
+      tabIndex={isDrawer ? -1 : undefined}
+      onKeyDown={(e) => {
+        // Only after the search box has had its turn — see the input below.
+        if (isDrawer && e.key === 'Escape') onClose?.()
+      }}
+      className={cn(
+        'relative z-40 flex h-dvh shrink-0 flex-col border-r border-[var(--ds-border-subtle)] bg-[var(--ds-surface)]',
+        isDrawer &&
+          'fixed inset-y-0 left-0 z-[75] w-[min(19rem,calc(100vw-3rem))] shadow-e5 outline-none animate-[drawer-in-left_260ms_cubic-bezier(0.32,0.72,0,1)_both]',
+      )}
     >
       {/* ---- BRAND --------------------------------------------------------- */}
       <div className="flex h-14 shrink-0 items-center gap-2.5 border-b border-[var(--ds-border-subtle)] px-2.5">
@@ -134,6 +165,19 @@ export function Sidebar({
             </span>
           </span>
         </a>
+
+        {/* A modal surface needs a visible way out that is not a gesture. The
+            header's own toggle is behind the scrim once the drawer is open. */}
+        {isDrawer && (
+          <IconButton
+            label="Close navigation"
+            icon={<X />}
+            size="sm"
+            variant="text"
+            onClick={onClose}
+            className="ml-auto"
+          />
+        )}
       </div>
 
       {/* ---- SEARCH -------------------------------------------------------- */}
@@ -150,7 +194,12 @@ export function Sidebar({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === 'Escape') setQuery('')
+              if (e.key === 'Escape' && query) {
+                // Clearing a filter and closing the panel are two different
+                // intentions, and Escape means the nearer one first.
+                e.stopPropagation()
+                setQuery('')
+              }
               if (e.key === 'ArrowDown') {
                 e.preventDefault()
                 navRef.current?.querySelector<HTMLElement>('[data-nav-item]')?.focus()
@@ -304,6 +353,10 @@ export function Sidebar({
       </div>
 
       {/* ---- RESIZE HANDLE --------------------------------------------------- */}
+      {/* Nothing to resize as a drawer: its width comes from the viewport. The
+          same handle is hidden on coarse pointers in CSS, where a 9px
+          col-resize target is not a target at all. */}
+      {!isDrawer && (
       <div
         role="separator"
         aria-orientation="vertical"
@@ -325,6 +378,7 @@ export function Sidebar({
         }}
         className="resize-handle"
       />
+      )}
     </aside>
   )
 }
@@ -361,7 +415,7 @@ function TreeNode({
         aria-expanded={open}
         aria-controls={id}
         className={cn(
-          'group flex w-full items-center gap-2 rounded-[var(--radius-md)] px-2 text-left transition-colors',
+          'nav-row group flex w-full items-center gap-2 rounded-[var(--radius-md)] px-2 text-left transition-colors',
           'hover:bg-[var(--ds-layer-hover)]',
           'focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--ds-focus-ring)]',
           depth === 0 ? 'py-1.5' : 'py-1',
@@ -426,7 +480,7 @@ function OverviewRow({
       aria-current={active ? 'page' : undefined}
       aria-label={`${section} overview`}
       className={cn(
-        'relative flex h-7 min-w-0 items-center gap-1.5 rounded-[var(--radius-sm)] px-2.5 text-left',
+        'nav-row relative flex h-7 min-w-0 items-center gap-1.5 rounded-[var(--radius-sm)] px-2.5 text-left',
         'transition-[background-color,color] duration-[100ms]',
         'focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--ds-focus-ring)]',
         active
@@ -469,7 +523,7 @@ function NavRow({
         aria-current={active ? 'page' : undefined}
         title={page.aliases?.length ? `Also called ${page.aliases.join(', ')}` : undefined}
         className={cn(
-          'relative flex h-7 min-w-0 flex-1 items-center gap-2 rounded-[var(--radius-sm)] pl-2.5 pr-7 text-left',
+          'nav-row relative flex h-7 min-w-0 flex-1 items-center gap-2 rounded-[var(--radius-sm)] pl-2.5 pr-7 text-left',
           'transition-[background-color,color] duration-[100ms]',
           'focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--ds-focus-ring)]',
           active

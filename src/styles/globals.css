@@ -236,6 +236,20 @@
   width: 2px;
 }
 
+/* Sidebar rows are 28px of density on a mouse and 44px under a finger. Keyed to
+   the pointer rather than the viewport on purpose: a 1180px tablet is touch and
+   a 700px browser window is not, so width is the wrong question. The resize
+   handle is 9px of col-resize, which is nothing a finger can hold — it goes
+   entirely rather than growing. */
+@media (pointer: coarse) {
+  .resize-handle {
+    display: none;
+  }
+  .nav-row {
+    min-block-size: 44px;
+  }
+}
+
 /* Applied to <body> while dragging so the cursor never flickers and text
    never accidentally selects. */
 .is-resizing,

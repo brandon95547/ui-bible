@@ -1,10 +1,11 @@
 import * as React from 'react'
-import { Crosshair, FileQuestion, Moon, PanelLeftClose, PanelLeftOpen, Sun } from 'lucide-react'
+import { Crosshair, FileQuestion, Menu, Moon, PanelLeftClose, PanelLeftOpen, Sun } from 'lucide-react'
 import { cn } from '@/lib/cn'
-import { usePersistentState } from '@/lib/hooks'
+import { useMediaQuery, usePersistentState } from '@/lib/hooks'
 import { Button, IconButton } from '@/ui/Button'
 import { Tooltip } from '@/ui/Display'
 import { EmptyState, ToastProvider } from '@/ui/Feedback'
+import { Scrim } from '@/ui/Overlay'
 import { Sidebar } from '@/app/Sidebar'
 import { CommandPalette } from '@/app/CommandPalette'
 import { Home } from '@/app/Home'
@@ -156,9 +157,17 @@ function DocRoute({
    ======================================================================== */
 
 function Shell() {
-  const [route, navigate] = useHashRoute()
+  const [route, navigateTo] = useHashRoute()
   const [paletteOpen, setPaletteOpen] = React.useState(false)
-  const [sidebarOpen, setSidebarOpen] = usePersistentState('uib:sidebar-open', true)
+  // The lg breakpoint, which is where the Bible itself puts this: a 268px
+  // sidebar plus a readable content column needs about 1024px, and below that
+  // the sidebar has to stop taking a column of its own. See Breakpoints.
+  const isDesktop = useMediaQuery('(min-width: 1024px)')
+  // Two different states, deliberately. Pinning is a lasting preference and is
+  // remembered; the drawer is a momentary thing and is not — a nav panel that
+  // restores itself open over the content on a phone is a bug, not a courtesy.
+  const [sidebarPinned, setSidebarPinned] = usePersistentState('uib:sidebar-open', true)
+  const [drawerOpen, setDrawerOpen] = React.useState(false)
   const [theme, setTheme] = usePersistentState<'dark' | 'light'>('uib:theme', 'dark')
   const [favorites, setFavorites] = usePersistentState<string[]>('uib:favorites', [])
   const [recents, setRecents] = usePersistentState<string[]>('uib:recents', [])
@@ -167,6 +176,28 @@ function Shell() {
   React.useEffect(() => {
     document.documentElement.dataset.theme = theme
   }, [theme])
+
+  // Growing past lg turns the drawer back into a column. Without this the panel
+  // is left behind as a fixed overlay sitting on top of the page it is now
+  // beside — a rotated phone or a dragged window is enough to hit it.
+  React.useEffect(() => {
+    if (isDesktop) setDrawerOpen(false)
+  }, [isDesktop])
+
+  const toggleNav = React.useCallback(
+    () => (isDesktop ? setSidebarPinned((o) => !o) : setDrawerOpen((o) => !o)),
+    [isDesktop, setSidebarPinned],
+  )
+
+  // A drawer covers what it navigates to, so choosing a destination has to close
+  // it. On desktop this is already false and the call does nothing.
+  const navigate = React.useCallback(
+    (id: string) => {
+      navigateTo(id)
+      setDrawerOpen(false)
+    },
+    [navigateTo],
+  )
 
   // A page change starts at the top. This has to run after the new route has
   // rendered — the frame scheduled inside navigate() belongs to the old one,
@@ -190,7 +221,7 @@ function Shell() {
         setPaletteOpen((o) => !o)
       } else if (mod && e.key.toLowerCase() === 'b') {
         e.preventDefault()
-        setSidebarOpen((o) => !o)
+        toggleNav()
       } else if (mod && e.key.toLowerCase() === 'i') {
         e.preventDefault()
         toggleInspector()
@@ -201,7 +232,7 @@ function Shell() {
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [setSidebarOpen, toggleInspector])
+  }, [toggleNav, toggleInspector])
 
   const toggleFavorite = React.useCallback(
     (id: string) =>
@@ -211,6 +242,14 @@ function Shell() {
 
   const isHome = route === 'home'
   const section = overviewSection(route)
+  const navOpen = isDesktop ? sidebarPinned : drawerOpen
+  const navLabel = isDesktop
+    ? sidebarPinned
+      ? 'Hide sidebar'
+      : 'Show sidebar'
+    : navOpen
+      ? 'Close navigation'
+      : 'Open navigation'
 
   return (
     <div className="app-ambient flex h-dvh overflow-hidden bg-[var(--ds-canvas)]">
@@ -221,8 +260,12 @@ function Shell() {
         Skip to content
       </a>
 
-      {sidebarOpen && (
+      {drawerOpen && !isDesktop && <Scrim onClick={() => setDrawerOpen(false)} />}
+
+      {navOpen && (
         <Sidebar
+          variant={isDesktop ? 'inline' : 'drawer'}
+          onClose={() => setDrawerOpen(false)}
           currentId={route}
           onNavigate={navigate}
           favorites={favorites}
@@ -233,12 +276,19 @@ function Shell() {
 
       <div className="relative z-10 flex min-w-0 flex-1 flex-col">
         <header className="flex h-14 shrink-0 items-center gap-2 border-b border-[var(--ds-border-subtle)] bg-[var(--ds-canvas)]/80 px-3 backdrop-blur-xl">
-          <Tooltip content={sidebarOpen ? 'Hide sidebar' : 'Show sidebar'} shortcut="⌘B">
+          {/* One control, two jobs. On desktop it pins and unpins a column; below
+              lg it opens and closes an overlay, which is a hamburger and should
+              look like one. The shortcut hint is dropped where there is no
+              keyboard to press it with. */}
+          <Tooltip content={navLabel} shortcut={isDesktop ? '⌘B' : undefined}>
             <IconButton
-              label={sidebarOpen ? 'Hide sidebar' : 'Show sidebar'}
-              icon={sidebarOpen ? <PanelLeftClose /> : <PanelLeftOpen />}
+              label={navLabel}
+              icon={
+                isDesktop ? sidebarPinned ? <PanelLeftClose /> : <PanelLeftOpen /> : <Menu />
+              }
               size="sm"
-              onClick={() => setSidebarOpen((o) => !o)}
+              aria-expanded={navOpen}
+              onClick={toggleNav}
             />
           </Tooltip>
 

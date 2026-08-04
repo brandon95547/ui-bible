@@ -24,7 +24,7 @@ function Portal({ children }: { children: React.ReactNode }) {
    SCRIM
    ======================================================================== */
 
-function Scrim({ onClick, className }: { onClick?: () => void; className?: string }) {
+export function Scrim({ onClick, className }: { onClick?: () => void; className?: string }) {
   return (
     <div
       aria-hidden
