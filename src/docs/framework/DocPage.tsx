@@ -91,8 +91,15 @@ export function DocPage({
 
   return (
     <article className="relative">
-      {/* ---- STICKY PAGE HEADER ------------------------------------------ */}
-      <header className="sticky top-0 z-30 -mx-6 border-b border-[var(--ds-border-subtle)] bg-[var(--ds-canvas)]/85 px-6 pb-4 pt-5 backdrop-blur-xl sm:-mx-10 sm:px-10">
+      {/* ---- PAGE HEADER --------------------------------------------------
+          Scrolls away with the page. It is an introduction — the title, what
+          the thing is for, what else it gets called — and you read it once, at
+          the top. Pinned, it spent a fifth of the viewport restating that on
+          every screen of a page that is mostly examples, and the app bar above
+          it already names where you are. Nothing here is a control you reach
+          for mid-page; the section you want is in "On this page", which is
+          pinned precisely because it IS reached for mid-page. */}
+      <header className="-mx-6 border-b border-[var(--ds-border-subtle)] px-6 pb-4 pt-5 sm:-mx-10 sm:px-10">
         {/* Must track the body container below (including its xl step) or the
             breadcrumb and h1 sit inset from the prose they introduce. */}
         <div className="mx-auto flex max-w-[64rem] flex-col gap-2.5 xl:max-w-[76rem]">
@@ -360,7 +367,11 @@ export function DocPage({
 
         {/* ---- ON THIS PAGE ------------------------------------------------ */}
         <aside className="hidden w-52 shrink-0 xl:block">
-          <nav aria-label="On this page" className="sticky top-[10.5rem] flex flex-col gap-2">
+          {/* 10.5rem used to be the height of the pinned header this had to
+              clear. With that gone it only has the app bar above it, so it
+              rides near the top of the column instead of a third of the way
+              down it. */}
+          <nav aria-label="On this page" className="sticky top-8 flex flex-col gap-2">
             <h2 className="px-2 text-overline uppercase text-[var(--ds-fg-muted)]">On this page</h2>
             <ul className="flex flex-col gap-px border-l border-[var(--ds-border-subtle)]">
               {sections.map((s, i) => {
