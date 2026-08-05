@@ -1,8 +1,8 @@
 import * as React from 'react'
 import {
-  Activity, AudioLines, ChevronLeft, ChevronRight, Clapperboard, Leaf, Mic, Minus,
-  MoreHorizontal, Music, Plus, RotateCcw, SlidersHorizontal, Sparkles, Spline,
-  Trash2, TrendingDown, TrendingUp, Volume2, VolumeX, Waves,
+  Activity, AudioLines, Clapperboard, Leaf, Mic, Minus, Music, Plus, RotateCcw,
+  SlidersHorizontal, Sparkles, Spline, Trash2, TrendingDown, TrendingUp,
+  Volume2, VolumeX, Waves,
 } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import { Button, IconButton } from '@/ui/Button'
@@ -581,13 +581,11 @@ function ConsoleMixer({
   running = true,
   compact = false,
   showHeader = true,
-  showFooter = true,
 }: {
   count?: number
   running?: boolean
   compact?: boolean
   showHeader?: boolean
-  showFooter?: boolean
 }) {
   const [channels, setChannels] = React.useState(INITIAL)
   const [master, setMaster] = React.useState(0)
@@ -640,39 +638,22 @@ function ConsoleMixer({
       aria-label="Mixer"
       className="flex w-full flex-col gap-3 rounded-[var(--radius-lg)] border border-[var(--ds-border)] bg-[var(--ds-surface-inset)] p-3"
     >
+      {/* Routing, presets, the preset steppers and the overflow menu all lived
+          here. None of them mixed anything: they chose a destination, recalled
+          somebody else's balance, or hid whatever was left. A header of chrome
+          above the levels made the desk look configurable when the levels ARE
+          the configuration. What survives is the one control that acts on the
+          mix — put every fader back where it started. */}
       {showHeader && (
         <header className="flex flex-wrap items-center gap-3 border-b border-[var(--ds-border-subtle)] pb-3">
           <h3 className="text-title-sm font-semibold tracking-tight text-[var(--ds-fg)]">Mixer</h3>
-          <label className="flex items-center gap-1.5">
-            <span className="text-overline uppercase text-[var(--ds-fg-muted)]">Routing</span>
-            <NativeSelect
-              aria-label="Routing"
-              defaultValue="studio"
-              options={[
-                { value: 'studio', label: 'Studio Mix' },
-                { value: 'broadcast', label: 'Broadcast' },
-                { value: 'stems', label: 'Stems' },
-              ]}
-            />
-          </label>
-          <label className="ml-auto flex items-center gap-1.5">
-            <span className="text-overline uppercase text-[var(--ds-fg-muted)]">Preset</span>
-            <NativeSelect
-              aria-label="Preset"
-              defaultValue="podcast"
-              options={[
-                { value: 'podcast', label: 'Podcast Studio' },
-                { value: 'film', label: 'Film Dialogue' },
-                { value: 'flat', label: 'Flat' },
-              ]}
-            />
-          </label>
-          <div className="flex items-center gap-1">
-            <IconButton size="sm" label="Previous preset" icon={<ChevronLeft size={14} />} />
-            <IconButton size="sm" label="Next preset" icon={<ChevronRight size={14} />} />
-            <IconButton size="sm" label="Reset mixer" onClick={reset} icon={<RotateCcw size={14} />} />
-            <IconButton size="sm" label="More options" icon={<MoreHorizontal size={14} />} />
-          </div>
+          <IconButton
+            size="sm"
+            className="ml-auto"
+            label="Reset mixer"
+            onClick={reset}
+            icon={<RotateCcw size={14} />}
+          />
         </header>
       )}
 
@@ -706,20 +687,6 @@ function ConsoleMixer({
         </div>
       </div>
 
-      {/* Auto ducking, Normalize and Noise reduction lived here as switches.
-          They are processing — things done TO a signal — and a mixer's job is
-          balancing signals against each other. Mixed into the footer they read
-          as part of that job and put three more decisions under a surface whose
-          whole argument is that you can see every level at once. Reset stays:
-          it undoes the balance, so it belongs to the balance. */}
-      {showFooter && (
-        <footer className="flex flex-wrap items-center justify-end border-t border-[var(--ds-border-subtle)] pt-3">
-          <Button size="sm" variant="outlined" onClick={reset}>
-            <RotateCcw size={14} />
-            Reset mix
-          </Button>
-        </footer>
-      )}
     </section>
   )
 }
@@ -2675,7 +2642,7 @@ export default defineDoc({
           'Channel 4 is soloed, so channels 1, 2 and 3 are inaudible without any of their own controls having moved. Dimming them is what stops the user concluding the mixer is broken.',
         render: (
           <PreviewStage minHeight={0} allowResize={false} center={false}>
-            <ConsoleMixer count={4} showHeader={false} showFooter={false} running={false} />
+            <ConsoleMixer count={4} showHeader={false} running={false} />
           </PreviewStage>
         ),
       },
@@ -2750,7 +2717,7 @@ export default defineDoc({
                 <p className="mb-2 text-caption text-[var(--ds-fg-secondary)]">
                   Every channel visible. One shared scale. The balance is the picture.
                 </p>
-                <ConsoleMixer count={4} compact showHeader={false} showFooter={false} running={false} />
+                <ConsoleMixer count={4} compact showHeader={false} running={false} />
               </Cell>
               <Cell label="Studio — depth" tone="good">
                 <p className="mb-2 text-caption text-[var(--ds-fg-secondary)]">
@@ -2778,7 +2745,7 @@ export default defineDoc({
           'Waveforms and the printed dB scale are the first things to go. The controls keep their size — shrinking a fader to fit is how you get a control nobody can land on.',
         render: (
           <PreviewStage minHeight={0} allowResize={false} center={false}>
-            <ConsoleMixer count={4} compact showHeader={false} showFooter={false} running={false} />
+            <ConsoleMixer count={4} compact showHeader={false} running={false} />
           </PreviewStage>
         ),
       },
