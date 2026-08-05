@@ -272,7 +272,7 @@ export default defineDoc({
         label: 'Track colour',
         value: 'border-strong → accent',
         kind: 'color',
-        note: 'The state is carried by colour and position together, so it survives greyscale and does not depend on the user noticing a 16px shift.',
+        note: 'Three channels carry the state, not two: track colour, knob position, and the check inside the handle. Colour and position alone both have a reader they fail — see Accessibility.',
       },
       {
         n: 5,
@@ -399,7 +399,8 @@ export default defineDoc({
     ],
     contrast: [
       'The off track must reach 3:1 against the surface, or the control is invisible until someone hovers it.',
-      'The on track must be distinguishable from the off track in greyscale. Knob position is the redundant signal here, and it is why the knob travels the full width.',
+      'The on track must be distinguishable from the off track in greyscale — accent against a neutral grey is a narrower luminance gap than it looks, and deuteranopia closes it further.',
+      'That is why the handle carries a check when on. Colour is one channel and knob position is the other, and position only reads as "on" when there is a second switch nearby to compare it against — a lone switch in a settings row has nothing to be compared to. The glyph is the channel that needs neither. Material offers the same thing as thumbIcon for the same reason.',
       'The knob stays white in both themes. A knob that matches the surface disappears against the off track.',
     ],
     keyboard: [

@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { Check, Minus } from 'lucide-react'
+// Check is shared: it is the tick in a checked Checkbox and the state glyph in a Switch handle.
 import { cn } from '@/lib/cn'
 import { inspect } from '@/lib/inspect'
 import { useId } from '@/lib/hooks'
@@ -35,7 +36,7 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(functi
 
   return (
     <div
-      className={cn('flex items-start gap-2.5', disabled && 'opacity-50', className)}
+      className={cn('control-row flex items-start gap-2.5', disabled && 'opacity-50', className)}
       {...inspect(`Checkbox · ${size}`, {
         tokens: ['--ds-accent', '--radius-xs', '--ds-border-strong', '--ds-focus-ring'],
         why: '18px is the smallest box where a checkmark still reads as a checkmark rather than a smudge. The label is part of the target, which turns a 18px hit area into a ~200px one — Fitts’ Law, for free.',
@@ -128,7 +129,7 @@ export const Radio = React.forwardRef<HTMLInputElement, RadioProps>(function Rad
   const box = size === 'sm' ? 'h-4 w-4' : 'h-[18px] w-[18px]'
 
   return (
-    <div className={cn('flex items-start gap-2.5', disabled && 'opacity-50', className)}>
+    <div className={cn('control-row flex items-start gap-2.5', disabled && 'opacity-50', className)}>
       <span className="relative inline-grid shrink-0 place-items-center" style={{ marginTop: size === 'sm' ? 3 : 2 }}>
         <input
           ref={ref}
@@ -275,6 +276,11 @@ export interface SwitchProps {
   disabled?: boolean
   /** Renders the control on the right — the correct layout for settings rows. */
   align?: 'start' | 'end'
+  /**
+   * Draw a check in the handle when on. Default. Turn it off only where the switch is
+   * decorative or the knob is too small to carry a glyph — see the note in the component.
+   */
+  stateIcon?: boolean
   id?: string
   className?: string
 }
@@ -287,6 +293,7 @@ export function Switch({
   size = 'md',
   disabled,
   align = 'start',
+  stateIcon = true,
   id: idProp,
   className,
 }: SwitchProps) {
@@ -294,7 +301,23 @@ export function Switch({
   const id = idProp ?? auto
   const track = size === 'sm' ? 'h-[18px] w-8' : 'h-[22px] w-[38px]'
   const knob = size === 'sm' ? 'h-3.5 w-3.5' : 'h-[18px] w-[18px]'
-  const travel = size === 'sm' ? 'translate-x-[14px]' : 'translate-x-4'
+  // Travel is the CONTENT box minus the knob, not the visual width minus the knob. The track
+  // is border-box with a 2px transparent border and 2px of padding, so a 38px switch has a
+  // 30px content box: a 18px knob travels 12px, not 16px.
+  //
+  // It was 16px (and 14px at sm), which put the knob 4px inside the track when off and hard
+  // against the edge when on. Nobody reports that as a bug — it just looks slightly wrong in a
+  // way that is hard to name, which is exactly the kind of thing this file exists to get right.
+  const travel = size === 'sm' ? 'translate-x-2.5' : 'translate-x-3'
+  // A glyph inside the handle is the only channel that carries on/off without colour or
+  // position. Both of those fail somebody: position is invisible when the switch is the only
+  // one on screen with nothing to compare against, and the accent-vs-grey track is a narrow
+  // luminance gap in greyscale or with deuteranopia. Material offers exactly this as
+  // `thumbIcon` and gives the same reason for it.
+  //
+  // Only at md. The sm knob is 14px, and a check drawn at 9px inside it is a smudge that
+  // reads as dirt on the screen rather than as a state.
+  const showIcon = stateIcon && size === 'md'
 
   const control = (
     <button
@@ -306,7 +329,7 @@ export function Switch({
       disabled={disabled}
       onClick={() => onCheckedChange(!checked)}
       className={cn(
-        'relative inline-flex shrink-0 items-center rounded-full border-2 border-transparent p-0.5',
+        'group/switch relative inline-flex shrink-0 items-center rounded-full border-2 border-transparent p-0.5',
         'transition-colors duration-[180ms] ease-[cubic-bezier(0.32,0.72,0,1)]',
         'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ds-focus-ring)]',
         'disabled:cursor-not-allowed disabled:opacity-50',
@@ -317,19 +340,34 @@ export function Switch({
       )}
       {...inspect(`Switch · ${size}`, {
         tokens: ['--ds-accent', '--ds-border-strong', '--ease-emphasized'],
-        why: 'The knob travels on an emphasized curve (fast out, settled in) over 180ms — long enough to read as movement, short enough that a rapid toggle never queues up. Track colour, not just knob position, carries the state so it survives greyscale.',
-        a11y: 'role="switch" + aria-checked. A screen reader announces “on/off”, not “checked” — which is the correct mental model for something that saves instantly.',
+        why: 'The knob travels on an emphasized curve (fast out, settled in) over 180ms — long enough to read as movement, short enough that a rapid toggle never queues up. Travel is the content box minus the knob (12px at md), so the knob sits the same 4px off each end instead of being flush at one of them.',
+        a11y: 'role="switch" + aria-checked. A screen reader announces “on/off”, not “checked” — the correct mental model for something that saves instantly. The check in the handle is the third state channel after colour and position: greyscale and deuteranopia both flatten an accent-vs-grey track, and a lone switch has no neighbour to compare its knob position against.',
       })}
     >
       <span
         aria-hidden
         className={cn(
-          'pointer-events-none inline-block rounded-full bg-white shadow-e1',
+          'pointer-events-none grid place-items-center rounded-full bg-white shadow-e1',
           'transition-transform duration-[180ms] ease-[cubic-bezier(0.32,0.72,0,1)]',
+          // Grows under the finger and settles back. Material grows the handle on press for
+          // the same reason: on a control with no travel until you release, the press itself
+          // has to acknowledge that it landed.
+          !disabled && 'group-active/switch:scale-110',
           knob,
           checked ? travel : 'translate-x-0',
         )}
-      />
+      >
+        {showIcon && (
+          <Check
+            className={cn(
+              'text-[var(--ds-accent)] transition-opacity duration-[120ms]',
+              checked ? 'opacity-100' : 'opacity-0',
+            )}
+            size={11}
+            strokeWidth={3.5}
+          />
+        )}
+      </span>
     </button>
   )
 
@@ -338,7 +376,7 @@ export function Switch({
   return (
     <div
       className={cn(
-        'flex items-start gap-3',
+        'control-row flex items-start gap-3',
         align === 'end' && 'w-full justify-between',
         disabled && 'opacity-60',
         className,

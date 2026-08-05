@@ -139,36 +139,40 @@ export function Chip({
   children,
   ...rest
 }: ChipProps) {
-  const Comp = (as === 'button' ? 'button' : 'span') as React.ElementType
-  return (
-    <Comp
-      {...(as === 'button' ? { type: 'button', 'aria-pressed': selected, disabled } : {})}
-      className={cn(
-        'group inline-flex items-center gap-1.5 rounded-full border font-medium',
-        'transition-all duration-[120ms] ease-[cubic-bezier(0.2,0,0,1)]',
-        'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ds-focus-ring)]',
-        size === 'sm' ? 'h-6 pl-2 pr-2 text-caption' : 'h-7 pl-2.5 pr-2.5 text-label',
-        (icon || avatar) && (size === 'sm' ? 'pl-1.5' : 'pl-1.5'),
-        onRemove && (size === 'sm' ? 'pr-1' : 'pr-1'),
-        selected
-          ? 'border-[var(--ds-accent-border)] bg-[var(--ds-accent-subtle)] text-[var(--ds-accent-text)]'
-          : cn(
-              'border-[var(--ds-border)] bg-[var(--ds-surface)] text-[var(--ds-fg-secondary)]',
-              as === 'button' &&
-                !disabled &&
-                'hover:border-[var(--ds-border-strong)] hover:bg-[var(--ds-layer-hover)] hover:text-[var(--ds-fg)]',
-            ),
-        tone !== 'neutral' && !selected && toneSubtle[tone],
-        disabled && 'pointer-events-none opacity-45',
-        className,
-      )}
-      {...inspect(`Chip · ${size}`, {
-        tokens: ['--radius-full', '--ds-accent-subtle', '--ds-border'],
-        why: 'A chip is 28px tall — under a button (36px) because it is a secondary, high-density control, but still above the 24px floor where a pill starts to read as a static badge.',
-        a11y: 'Filter chips use aria-pressed, not aria-selected — they toggle independently. The remove button is a separate focusable element with its own accessible name.',
-      })}
-      {...rest}
-    >
+  const interactive = as === 'button'
+  // A removable chip is TWO controls, not one. It used to render the × as a role="button"
+  // span nested inside the chip's own <button>, which is invalid HTML — a button's content
+  // model forbids interactive descendants — and unreliable in practice: several screen
+  // readers never expose a nested control, so "remove this token" simply was not reachable.
+  //
+  // So when the chip both acts and removes, the pill becomes a plain container and the two
+  // real buttons sit inside it as siblings. The container carries the shape and the colour;
+  // each button carries its own name, its own focus ring and its own hit area.
+  const split = interactive && !!onRemove
+  const Comp = (split ? 'span' : interactive ? 'button' : 'span') as React.ElementType
+
+  const shell = cn(
+    'group inline-flex items-center gap-1.5 rounded-full border font-medium',
+    'transition-all duration-[120ms] ease-[cubic-bezier(0.2,0,0,1)]',
+    !split && 'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ds-focus-ring)]',
+    size === 'sm' ? 'h-6 pl-2 pr-2 text-caption' : 'h-7 pl-2.5 pr-2.5 text-label',
+    (icon || avatar) && 'pl-1.5',
+    onRemove && 'pr-1',
+    selected
+      ? 'border-[var(--ds-accent-border)] bg-[var(--ds-accent-subtle)] text-[var(--ds-accent-text)]'
+      : cn(
+          'border-[var(--ds-border)] bg-[var(--ds-surface)] text-[var(--ds-fg-secondary)]',
+          interactive &&
+            !disabled &&
+            'hover:border-[var(--ds-border-strong)] hover:bg-[var(--ds-layer-hover)] hover:text-[var(--ds-fg)]',
+        ),
+    tone !== 'neutral' && !selected && toneSubtle[tone],
+    disabled && 'pointer-events-none opacity-45',
+    className,
+  )
+
+  const label = (
+    <>
       {avatar}
       {icon && (
         <span aria-hidden style={{ lineHeight: 0 }} className="shrink-0">
@@ -176,27 +180,56 @@ export function Chip({
         </span>
       )}
       <span className="truncate">{children}</span>
-      {onRemove && (
-        <span
-          role="button"
-          tabIndex={0}
-          aria-label={`Remove ${typeof children === 'string' ? children : 'item'}`}
-          onClick={(e) => {
-            e.stopPropagation()
-            onRemove()
-          }}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault()
-              e.stopPropagation()
-              onRemove()
-            }
-          }}
-          className="grid h-[18px] w-[18px] shrink-0 cursor-pointer place-items-center rounded-full text-[var(--ds-fg-muted)] transition-colors hover:bg-[var(--ds-layer-active)] hover:text-[var(--ds-fg)] focus-visible:outline-2 focus-visible:outline-[var(--ds-focus-ring)]"
+    </>
+  )
+
+  const removeBtn = onRemove ? (
+    <button
+      type="button"
+      disabled={disabled}
+      aria-label={`Remove ${typeof children === 'string' ? children : 'item'}`}
+      onClick={(e) => {
+        e.stopPropagation()
+        onRemove()
+      }}
+      className="grid h-[18px] w-[18px] shrink-0 cursor-pointer place-items-center rounded-full text-[var(--ds-fg-muted)] transition-colors hover:bg-[var(--ds-layer-active)] hover:text-[var(--ds-fg)] focus-visible:outline-2 focus-visible:outline-[var(--ds-focus-ring)]"
+    >
+      <X size={11} strokeWidth={2.5} />
+    </button>
+  ) : null
+
+  const probe = inspect(`Chip · ${size}`, {
+    tokens: ['--radius-full', '--ds-accent-subtle', '--ds-border'],
+    why: 'A chip is 28px tall — under a button (36px) because it is a secondary, high-density control, but still above the 24px floor where a pill starts to read as a static badge.',
+    a11y:
+      'Filter chips use aria-pressed, not aria-selected — they toggle independently. A removable chip renders as a container holding two SIBLING buttons: a real <button> cannot contain another one, and a nested control is invisible to several screen readers. Tab therefore reaches the chip and its × as two separate stops, which is also what lets a keyboard user remove a token at all.',
+  })
+
+  if (split) {
+    return (
+      <span className={shell} {...probe} {...rest}>
+        <button
+          type="button"
+          aria-pressed={selected}
+          disabled={disabled}
+          className="inline-flex min-w-0 items-center gap-[inherit] rounded-full text-inherit focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ds-focus-ring)]"
         >
-          <X size={11} strokeWidth={2.5} />
-        </span>
-      )}
+          {label}
+        </button>
+        {removeBtn}
+      </span>
+    )
+  }
+
+  return (
+    <Comp
+      {...(interactive ? { type: 'button', 'aria-pressed': selected, disabled } : {})}
+      className={shell}
+      {...probe}
+      {...rest}
+    >
+      {label}
+      {removeBtn}
     </Comp>
   )
 }
@@ -404,9 +437,14 @@ export function Tooltip({
 }) {
   const [open, setOpen] = React.useState(false)
   const timer = React.useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+  // Set when Escape dismisses the tooltip, so it cannot immediately reopen under a pointer
+  // that never moved. Cleared when the pointer or focus actually leaves — dismissing has to
+  // last as long as the user stays put, or the key did nothing.
+  const suppressed = React.useRef(false)
   const id = React.useId()
 
   const show = () => {
+    if (suppressed.current) return
     clearTimeout(timer.current)
     timer.current = setTimeout(() => setOpen(true), delay)
   }
@@ -414,7 +452,32 @@ export function Tooltip({
     clearTimeout(timer.current)
     setOpen(false)
   }
+  const leave = () => {
+    suppressed.current = false
+    hide()
+  }
   React.useEffect(() => () => clearTimeout(timer.current), [])
+
+  // WCAG 2.1 AA, SC 1.4.13 "Content on Hover or Focus" — anything revealed by hover or focus
+  // must be DISMISSIBLE without moving the pointer or the focus. A tooltip that can only be
+  // closed by moving away is a failure, and it is not a theoretical one: at high zoom a
+  // tooltip routinely covers the very control it describes, so a user who cannot move the
+  // pointer off it cannot read what is underneath.
+  //
+  // Capture phase, and propagation stops here: a tooltip open inside a dialog must take the
+  // Escape for itself rather than closing the dialog out from under the user. That is the
+  // same "innermost layer wins" rule the dismissable overlays follow.
+  React.useEffect(() => {
+    if (!open) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return
+      e.stopPropagation()
+      suppressed.current = true
+      hide()
+    }
+    document.addEventListener('keydown', onKey, true)
+    return () => document.removeEventListener('keydown', onKey, true)
+  }, [open])
 
   const pos = {
     top: 'bottom-[calc(100%+7px)] left-1/2 -translate-x-1/2',
@@ -427,9 +490,11 @@ export function Tooltip({
     <span
       className="relative inline-flex"
       onMouseEnter={show}
-      onMouseLeave={hide}
-      onFocusCapture={() => setOpen(true)}
-      onBlurCapture={hide}
+      onMouseLeave={leave}
+      onFocusCapture={() => {
+        if (!suppressed.current) setOpen(true)
+      }}
+      onBlurCapture={leave}
     >
       {React.cloneElement(children as React.ReactElement<{ 'aria-describedby'?: string }>, {
         'aria-describedby': open ? id : undefined,
@@ -439,7 +504,7 @@ export function Tooltip({
           role="tooltip"
           id={id}
           className={cn(
-            'pointer-events-none absolute z-[80] flex items-center gap-2 whitespace-nowrap',
+            'absolute z-[80] flex items-center gap-2 whitespace-nowrap',
             'rounded-[var(--radius-md)] border border-[var(--ds-border)] bg-[var(--ds-surface-overlay)]',
             'px-2.5 py-1.5 text-caption text-[var(--ds-fg)] shadow-e3',
             'animate-[scale-in_120ms_cubic-bezier(0.2,0,0,1)_both]',
@@ -448,7 +513,8 @@ export function Tooltip({
           {...inspect('Tooltip', {
             tokens: ['--ds-surface-overlay', '--shadow-e3', '--radius-md', '--text-caption'],
             why: '400ms open delay stops tooltips firing while the pointer merely crosses the toolbar; 0ms close keeps them from trailing the cursor. 7px offset clears the focus ring without breaking the visual link.',
-            a11y: 'Wired with aria-describedby and shown on focus as well as hover. Never put an action, a link, or the element’s only name inside one.',
+            a11y:
+              'Wired with aria-describedby and shown on focus as well as hover. Escape dismisses it without moving the pointer, and it is a DOM child of the trigger so the pointer can travel onto it without it vanishing — the two halves of WCAG 1.4.13. It is deliberately NOT pointer-events-none: that made it unhoverable, which is the failure that criterion exists to name. Never put an action, a link, or the element’s only name inside one.',
           })}
         >
           {content}

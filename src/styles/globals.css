@@ -248,6 +248,17 @@
   .nav-row {
     min-block-size: 44px;
   }
+  /* Checkbox, Radio and Switch rows. Every one of those pages has said "touch: 44px (row)"
+     since it was written, and every one of them was describing something no code did: the
+     controls are 16–22px, the label sets the row height, and a one-line label makes a ~20px
+     row. The claim is only true if the row is made to be true, which is what this is.
+
+     On the row rather than on the control on purpose — growing an 18px checkbox to 44px
+     would blow up the form's rhythm, and the label is part of the target anyway, so the row
+     is the thing a finger is actually aiming at. */
+  .control-row {
+    min-block-size: 44px;
+  }
 }
 
 /* Applied to <body> while dragging so the cursor never flickers and text
