@@ -676,6 +676,160 @@ export function MegaMenu({
 }
 
 /* ===========================================================================
+   APP BAR
+   The top region of a screen: where you are, the way back, and the two or
+   three things you can do here.
+
+   The arrangement is Material's, because Material solved this one and the
+   solution is now what a phone user expects. Three sizes, and the size is a
+   statement about the title:
+
+     small   64px   one row. The title shares the row with the icons, so it
+                    has to stay short. This is the default and should stay
+                    the default — it costs the least content.
+     medium  112px  the title drops to its own line under the icons, where it
+                    can be read as a heading rather than as a label between
+                    two buttons.
+     large   152px  the same arrangement with the title at display weight.
+                    For the first screen of a section, where the title IS the
+                    content of the header.
+
+   `align="center"` is the fourth arrangement and only applies to `small`.
+   It reads as a phone screen — iOS has centred titles, and a centred title
+   in a one-row bar is what tells a user this is a page and not a document.
+   Center a title only with one leading and at most one trailing icon: it is
+   centred in the BAR, not between the icons, so a crowded row pushes the
+   title off-centre visually even though it is not.
+
+   Everything below the title row is the caller's. The bar never holds page
+   content, and it never holds more than three trailing actions — past that
+   they stop being read and start being scanned.
+   ======================================================================== */
+
+export type AppBarSize = 'small' | 'medium' | 'large'
+export type AppBarAlign = 'start' | 'center'
+
+export interface AppBarProps {
+  /** The screen's name. One line — the bar truncates rather than wraps. */
+  title: React.ReactNode
+  /**
+   * A second line under the title, at half its weight. For the thing that
+   * qualifies the title — a count, a status, the parent it belongs to — and
+   * never for a sentence.
+   */
+  subtitle?: React.ReactNode
+  /** 64px one row / 112px title below / 152px title below at display size. */
+  size?: AppBarSize
+  /** `center` is small-only; medium and large always start-align. */
+  align?: AppBarAlign
+  /** The back arrow or the drawer trigger. Omit on a root screen with no drawer. */
+  leading?: React.ReactNode
+  /** Up to three. The overflow menu is the third one, not the fourth. */
+  actions?: React.ReactNode
+  /**
+   * Content has scrolled beneath the bar. Material changes the CONTAINER
+   * COLOUR rather than adding a shadow, which is what keeps a flat design
+   * flat while still separating two scrolling planes.
+   */
+  scrolled?: boolean
+  /** Sticks to the top of its scroll container. On by default. */
+  sticky?: boolean
+  className?: string
+}
+
+// Material's three, kept as the literal numbers because on this component the
+// number IS the spec: 64 is one row, 112 is that row plus a line for the title,
+// 152 is that row plus a line for a title at display size.
+const APP_BAR_HEIGHT: Record<AppBarSize, string> = {
+  small: 'h-[64px]',
+  medium: 'h-[112px]',
+  large: 'h-[152px]',
+}
+
+export function AppBar({
+  title,
+  subtitle,
+  size = 'small',
+  align = 'start',
+  leading,
+  actions,
+  scrolled = false,
+  sticky = true,
+  className,
+}: AppBarProps) {
+  // Centring is a one-row idea. In a two-row bar the title sits under the
+  // icons with the whole width to itself, and centring it there would break
+  // the left edge every other line of the screen is aligned to.
+  const centred = align === 'center' && size === 'small'
+  const stacked = size !== 'small'
+
+  const titleBlock = (
+    <div className={cn('flex min-w-0 flex-col justify-center', centred && 'items-center text-center')}>
+      <h1
+        className={cn(
+          'truncate text-[var(--ds-fg)]',
+          size === 'large' ? 'text-h1' : size === 'medium' ? 'text-h2' : 'text-h3',
+        )}
+      >
+        {title}
+      </h1>
+      {subtitle && (
+        <p className="truncate text-body-sm text-[var(--ds-fg-secondary)]">{subtitle}</p>
+      )}
+    </div>
+  )
+
+  return (
+    <header
+      role="banner"
+      className={cn(
+        'flex w-full flex-col',
+        APP_BAR_HEIGHT[size],
+        sticky && 'sticky top-0 z-10',
+        // The colour IS the elevation. Material dropped the shadow here in
+        // favour of a container-colour change, and it survives dark mode and
+        // a busy page better than a shadow does.
+        scrolled ? 'bg-[var(--ds-surface-raised)]' : 'bg-[var(--ds-canvas)]',
+        'transition-[background-color,block-size] duration-[160ms] ease-[cubic-bezier(0.2,0,0,1)]',
+        'px-1 pe-1.5',
+        className,
+      )}
+      {...inspect('AppBar', {
+        tokens: ['--ds-canvas', '--ds-surface-raised', '--text-h1', '--text-h2', '--text-h3'],
+        why: 'Three heights, and the height is a statement about the title: 64px shares a row with the icons, 112px and 152px give the title its own line. On scroll the container colour changes rather than a shadow appearing — the same separation without adding a plane.',
+        a11y: 'header[role=banner] with the title as the page h1. The leading control is a real button with a label; a bare chevron announces as "button".',
+      })}
+    >
+      {/* The icon row. In a small bar it also holds the title; in the taller
+          two, it is icons only and the title lives under it. */}
+      <div className={cn('flex shrink-0 items-center gap-1', stacked ? 'h-16' : 'h-full', centred && 'relative')}>
+        <span className="flex h-12 w-12 shrink-0 items-center justify-center">{leading}</span>
+
+        {!stacked && !centred && <div className="flex min-w-0 flex-1 flex-col justify-center">{titleBlock}</div>}
+
+        {centred && (
+          // Absolutely centred, and pointer-transparent, so an extra trailing
+          // icon moves the icons and never the title. Capped at 60% so it
+          // truncates before it can collide with either side.
+          <div className="pointer-events-none absolute inset-x-0 mx-auto flex max-w-[60%] flex-col items-center">
+            {titleBlock}
+          </div>
+        )}
+
+        <span className={cn('flex items-center gap-0.5', centred || stacked ? 'ms-auto' : '')}>{actions}</span>
+      </div>
+
+      {stacked && (
+        // Bottom-aligned, not centred in the space: the title reads as the
+        // heading of the content under it, so it sits as close to that
+        // content as the padding allows.
+        <div className="flex min-w-0 flex-1 items-end px-3 pb-4">{titleBlock}</div>
+      )}
+    </header>
+  )
+}
+
+/* ===========================================================================
    BOTTOM NAVIGATION — mobile only, 3–5 destinations
    ======================================================================== */
 

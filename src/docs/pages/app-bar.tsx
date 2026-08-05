@@ -1,108 +1,142 @@
 import * as React from 'react'
-import { Bell, ChevronDown, Command, Menu, Plus, Search } from 'lucide-react'
-import { Button, IconButton } from '@/ui/Button'
-import { Avatar, Badge, CountBadge, Kbd } from '@/ui/Display'
-import { Breadcrumbs } from '@/ui/Navigation'
+import { ArrowLeft, Bell, CalendarDays, Menu, MoreVertical, Search } from 'lucide-react'
+import { IconButton } from '@/ui/Button'
+import { Avatar, CountBadge } from '@/ui/Display'
+import { AppBar, type AppBarAlign, type AppBarSize } from '@/ui/Navigation'
 import { Knob, KnobSelect, KnobToggle, PreviewStage, Stack, defineDoc } from '../framework/kit'
 
-function Bar({
-  density = 'md',
-  scrolled,
-  mobile,
-}: {
-  density?: 'sm' | 'md'
-  scrolled?: boolean
-  mobile?: boolean
-}) {
+/* The two controls every example in this page uses, so the arrangements are
+   compared on their arrangement and not on their contents. */
+const back = <IconButton label="Back" icon={<ArrowLeft />} size="md" />
+const drawer = <IconButton label="Open navigation" icon={<Menu />} size="md" />
+const actions = (
+  <>
+    <IconButton label="Search" icon={<Search />} size="md" />
+    <IconButton label="Calendar" icon={<CalendarDays />} size="md" />
+  </>
+)
+
+/** A screen under the bar, so a bar is never judged floating in space. */
+function Screen({ children, lines = 5 }: { children: React.ReactNode; lines?: number }) {
   return (
-    <div
-      className={`flex w-full items-center gap-2 border-b border-[var(--ds-border-subtle)] bg-[var(--ds-canvas)]/85 px-3 backdrop-blur-xl transition-shadow ${
-        density === 'sm' ? 'h-12' : 'h-14'
-      } ${scrolled ? 'shadow-e2' : ''}`}
-    >
-      {mobile && <IconButton label="Open navigation" icon={<Menu />} size="sm" />}
-
-      <span className="flex items-center gap-2 pl-1">
-        <span
-          aria-hidden
-          className="grid h-6 w-6 place-items-center rounded-[var(--radius-sm)] bg-gradient-to-br from-[var(--p-brand-400)] to-[var(--p-brand-700)] text-[10px] font-bold text-white"
-        >
-          A
-        </span>
-        {!mobile && (
-          <button className="inline-flex items-center gap-1 text-label text-[var(--ds-fg)]">
-            Acme
-            <ChevronDown size={13} className="text-[var(--ds-fg-muted)]" />
-          </button>
-        )}
-      </span>
-
-      {!mobile && (
-        <span className="ml-1 hidden md:block">
-          <Breadcrumbs
-            items={[
-              { label: 'Production', href: '#/app-bar' },
-              { label: 'api-gateway' },
-            ]}
+    <div className="w-full overflow-hidden rounded-[var(--radius-lg)] border border-[var(--ds-border)] bg-[var(--ds-canvas)]">
+      {children}
+      <div className="space-y-2 p-4">
+        {Array.from({ length: lines }).map((_, i) => (
+          <div
+            key={i}
+            className="h-3 rounded-full bg-[var(--ds-layer-active)]"
+            style={{ width: `${[92, 78, 88, 64, 84, 72][i % 6]}%` }}
           />
-        </span>
-      )}
-
-      <button
-        type="button"
-        className="ml-auto flex h-8 min-w-0 max-w-xs flex-1 items-center gap-2 rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface-inset)] px-2.5 text-caption text-[var(--ds-fg-muted)] md:ml-4"
-      >
-        <Search size={13} className="shrink-0" />
-        <span className="flex-1 truncate text-left">Search…</span>
-        {!mobile && <Kbd>⌘K</Kbd>}
-      </button>
-
-      <span className="ml-auto flex items-center gap-1">
-        {!mobile && (
-          <Button size="sm" startIcon={<Plus />}>
-            New
-          </Button>
-        )}
-        <span className="relative">
-          <IconButton label="Notifications" icon={<Bell />} size="sm" />
-          <span className="pointer-events-none absolute -right-0.5 -top-0.5">
-            <CountBadge count={3} tone="danger" />
-          </span>
-        </span>
-        <button className="ml-1 rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ds-focus-ring)]">
-          <Avatar name="Ada Lovelace" size="sm" />
-        </button>
-      </span>
+        ))}
+      </div>
     </div>
   )
 }
 
 function Playground() {
-  const [density, setDensity] = React.useState<'sm' | 'md'>('md')
+  const [size, setSize] = React.useState<AppBarSize>('small')
+  const [align, setAlign] = React.useState<AppBarAlign>('start')
+  const [subtitle, setSubtitle] = React.useState(true)
+  const [leading, setLeading] = React.useState(true)
   const [scrolled, setScrolled] = React.useState(false)
-  const [mobile, setMobile] = React.useState(false)
 
   return (
     <PreviewStage
       label="Playground"
       center={false}
-      minHeight={140}
+      minHeight={220}
       padded={false}
       controls={
         <div className="flex flex-wrap items-center gap-2.5">
-          <Knob label="Height">
-            <KnobSelect value={density} onChange={setDensity} options={['sm', 'md'] as const} />
+          <Knob label="Size">
+            <KnobSelect value={size} onChange={setSize} options={['small', 'medium', 'large'] as const} />
           </Knob>
+          <Knob label="Align">
+            <KnobSelect value={align} onChange={setAlign} options={['start', 'center'] as const} />
+          </Knob>
+          <KnobToggle checked={subtitle} onChange={setSubtitle} label="Subtitle" />
+          <KnobToggle checked={leading} onChange={setLeading} label="Leading" />
           <KnobToggle checked={scrolled} onChange={setScrolled} label="Scrolled" />
-          <KnobToggle checked={mobile} onChange={setMobile} label="Mobile" />
         </div>
       }
     >
       <div className="w-full">
-        <Bar density={density} scrolled={scrolled} mobile={mobile} />
-        <div className="h-24 bg-[var(--ds-canvas)]" />
+        <Screen>
+          <AppBar
+            size={size}
+            align={align}
+            title="Headline"
+            subtitle={subtitle ? 'Subtitle' : undefined}
+            leading={leading ? back : undefined}
+            actions={actions}
+            scrolled={scrolled}
+            sticky={false}
+          />
+        </Screen>
+        {align === 'center' && size !== 'small' && (
+          <p className="px-1 pt-2 text-caption text-[var(--ds-fg-muted)]">
+            Centring applies to <code>small</code> only — in a two-row bar the title owns its own
+            line, and centring it would break the left edge the rest of the screen aligns to.
+          </p>
+        )}
       </div>
     </PreviewStage>
+  )
+}
+
+/* The search variant. When a screen's whole job is finding something, the
+   search field takes the bar's place rather than sitting inside it. */
+function SearchAppBar() {
+  return (
+    <header
+      role="banner"
+      className="flex h-16 w-full items-center gap-2 bg-[var(--ds-canvas)] px-1 pe-1.5"
+    >
+      <span className="flex h-12 w-12 shrink-0 items-center justify-center">{drawer}</span>
+      <button
+        type="button"
+        className="flex h-12 min-w-0 flex-1 items-center rounded-full bg-[var(--ds-surface-inset)] px-5 text-body-lg text-[var(--ds-fg-muted)] transition-colors hover:bg-[var(--ds-layer-hover)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ds-focus-ring)]"
+      >
+        <span className="truncate">Search</span>
+      </button>
+      <button className="ms-1 shrink-0 rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ds-focus-ring)]">
+        <Avatar name="Ada Lovelace" size="sm" />
+      </button>
+    </header>
+  )
+}
+
+/** Medium collapsing to small as the content scrolls under it. */
+function CollapseDemo() {
+  const [scrolled, setScrolled] = React.useState(false)
+  return (
+    <div className="w-full overflow-hidden rounded-[var(--radius-lg)] border border-[var(--ds-border)]">
+      <AppBar
+        size={scrolled ? 'small' : 'medium'}
+        title="Headline"
+        subtitle="Subtitle"
+        leading={back}
+        actions={actions}
+        scrolled={scrolled}
+        sticky={false}
+      />
+      <div
+        className="h-44 overflow-y-auto bg-[var(--ds-canvas)] p-4"
+        onScroll={(e) => setScrolled(e.currentTarget.scrollTop > 4)}
+      >
+        <Stack gap="sm">
+          {Array.from({ length: 12 }).map((_, i) => (
+            <div
+              key={i}
+              className="rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] px-3 py-2 text-caption text-[var(--ds-fg-muted)]"
+            >
+              Row {i + 1} — scroll to collapse the bar
+            </div>
+          ))}
+        </Stack>
+      </div>
+    </div>
   )
 }
 
@@ -111,57 +145,68 @@ export default defineDoc({
     id: 'app-bar',
     title: 'App Bar',
     tagline:
-      'The one region present on every screen. Everything in it is competing for the most valuable 56 pixels in the product, so almost nothing earns a slot.',
-    keywords: ['app bar', 'header', 'masthead', 'toolbar', 'global nav', 'command bar'],
+      'The top of the screen: where you are, the way back, and the two or three things you can do here. Its height is a statement about the title, and nothing else belongs in it.',
+    keywords: ['app bar', 'top app bar', 'header', 'masthead', 'toolbar', 'title bar', 'navigation bar'],
   },
 
   overview: {
     purpose:
-      'The top bar is the app’s constant frame: identity, global search, the one universal create action, and the account. Because it appears on every screen, everything in it costs the user attention thousands of times a week — which is why the bar is defined by what it excludes.',
+      'The app bar names the screen and holds the way out of it. Everything else in it is competing for the most valuable 64 pixels in the product — pixels the user pays for on every screen, forever — which is why the bar is defined by what it excludes.',
     whenToUse: [
-      'Always, in an application shell. It is the anchor that makes navigation feel like one product.',
-      'To hold global search or the command palette entry point.',
-      'To hold the single most universal create action, if one genuinely exists.',
-      'To hold account, notifications and workspace switching.',
+      'On every screen that has a name. The title is the answer to "where am I", and it is worth a row on its own.',
+      'To hold the way back or the drawer trigger, at the far left, in the same place on every screen.',
+      'To hold the two or three actions that apply to this whole screen.',
+      'At medium or large, to give a section its heading — the first screen of a flow, a detail page, a document.',
     ],
     whenNotToUse: [
       {
-        text: 'For page-specific actions.',
-        instead: 'a page header inside the content area',
+        text: 'For actions that apply to a selection rather than the screen.',
+        instead: 'a contextual action bar that replaces the app bar while the selection lasts',
       },
       {
-        text: 'As the primary navigation in an app with more than about five destinations.',
-        instead: 'a Sidebar',
+        text: 'As the primary navigation between destinations.',
+        instead: 'a Bottom Nav on phones, a Sidebar on desktop',
         to: '#/sidebar',
       },
       {
-        text: 'For a filter or a view switcher that belongs to one page.',
-        instead: 'a toolbar above the content',
+        text: 'For a filter row or a view switcher belonging to one screen.',
+        instead: 'a toolbar directly above the content',
+        to: '#/toolbar',
       },
       {
-        text: 'To show a marketing banner or an upsell on every screen.',
-        instead: 'a dismissible Alert on the relevant page',
+        text: 'To carry a banner, an upsell or a status message on every screen.',
+        instead: 'a dismissible Alert on the screen it concerns',
         to: '#/banner',
       },
     ],
     reasoning: (
       <>
         <p>
-          56 pixels tall. That is enough for a 36px control with 10px of breathing room above and
-          below, and it is the smallest height where a bar reads as a distinct region rather than as
-          a border. Every extra pixel is taken from the content on every screen, forever.
+          The bar comes in <strong>three heights, and the height is a decision about the title</strong>.
+          At 64px the title shares a row with the icons, so it has to stay short and it reads as a
+          label. At 112px it drops to its own line, where it reads as a heading. At 152px it is the
+          content of the header rather than a caption on it. Start at 64 and go taller only when the
+          title has earned it — every extra pixel is taken from the content on every screen.
         </p>
         <p>
-          The bar has <strong>three zones</strong>: identity and location on the left, search in the
-          middle, actions and account on the right. That arrangement follows the reading path — you
-          see where you are, then what you can look for, then what you can do — and it is stable
-          enough that users stop looking and start pointing.
+          <strong>The title can be centred, but only in the one-row bar.</strong> A centred title is
+          what tells a phone user this is a page rather than a document, and it is the arrangement
+          they already know. It costs something real: a centred title is centred in the BAR, so it
+          survives one leading and at most one trailing icon before it starts looking off-centre
+          against a crowded right side. In the two-row bars the title owns its line and aligns to the
+          same left edge as everything under it, which is why centring is not offered there.
         </p>
         <p>
-          The bar is <strong>translucent with a backdrop blur</strong> and gains its shadow only
-          once content has scrolled beneath it. A permanent shadow makes the bar look detached on a
-          page that has not scrolled; adding it on scroll is what makes the layering legible exactly
-          when it matters.
+          <strong>A subtitle is a qualifier, not a sentence.</strong> "12 unread", "Draft", the parent
+          folder — the thing that tells you which Headline this is. If it needs a verb, it belongs in
+          the content.
+        </p>
+        <p>
+          On scroll the bar <strong>changes container colour rather than growing a shadow</strong>.
+          Both separate the two planes; only one of them survives dark mode, a busy page and a
+          screenshot without looking like a mistake. A tall bar can also collapse to the small one as
+          the content comes up, which returns the pixels exactly when the user has shown they want
+          content rather than context.
         </p>
       </>
     ),
@@ -171,189 +216,211 @@ export default defineDoc({
     render: <Playground />,
     examples: [
       {
-        id: 'zones',
-        title: 'The three zones',
+        id: 'arrangements',
+        title: 'The four arrangements',
         description:
-          'Left is identity and location, centre is search, right is action and account. Everything else is a candidate for removal.',
+          'One component, four configurations. Centred title; title beside the back button; title under it at medium; the same at large. Everything else — the leading control, the actions, the subtitle — is the same in all four.',
         render: (
           <PreviewStage center={false} minHeight={0} allowResize={false} padded={false}>
-            <div className="w-full">
-              <Bar />
-              <div className="grid grid-cols-3 border-b border-[var(--ds-border-subtle)] text-center">
-                {[
-                  ['Left', 'Logo · workspace · breadcrumbs'],
-                  ['Centre', 'Search · command palette'],
-                  ['Right', 'Create · notifications · account'],
-                ].map(([z, what]) => (
-                  <div key={z} className="border-r border-[var(--ds-border-subtle)] p-3 last:border-0">
-                    <p className="text-overline uppercase text-[var(--ds-fg-muted)]">{z}</p>
-                    <p className="mt-1 text-caption text-[var(--ds-fg-secondary)]">{what}</p>
+            <Stack gap="lg" className="w-full">
+              {(
+                [
+                  ['Small · centred', { size: 'small', align: 'center' }],
+                  ['Small · start, with subtitle', { size: 'small', align: 'start', subtitle: 'Subtitle' }],
+                  ['Medium', { size: 'medium', subtitle: 'Subtitle' }],
+                  ['Large', { size: 'large', subtitle: 'Subtitle' }],
+                ] as const
+              ).map(([label, props], i) => (
+                <div key={label}>
+                  <p className="mb-1.5 flex items-center gap-2 px-1 text-overline uppercase text-[var(--ds-fg-muted)]">
+                    <span className="grid h-4 w-4 place-items-center rounded-full border border-[var(--ds-border)] text-[10px]">
+                      {i + 1}
+                    </span>
+                    {label}
+                  </p>
+                  <div className="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--ds-border)]">
+                    <AppBar
+                      title="Headline"
+                      leading={back}
+                      actions={actions}
+                      sticky={false}
+                      {...props}
+                    />
                   </div>
-                ))}
-              </div>
-            </div>
-          </PreviewStage>
-        ),
-      },
-      {
-        id: 'scroll',
-        title: 'Scroll behaviour',
-        description:
-          'The bar is sticky and translucent. It gains a shadow only once content passes beneath it — before that, the shadow has nothing to separate.',
-        render: (
-          <PreviewStage center={false} minHeight={0} allowResize={false} padded={false}>
-            <ScrollDemo />
-          </PreviewStage>
-        ),
-      },
-      {
-        id: 'responsive',
-        title: 'What survives on mobile',
-        description:
-          'The menu trigger appears, the workspace name and breadcrumbs collapse, the create button moves into a FAB or the drawer. Search stays — it is the one thing that always earns its place.',
-        render: (
-          <PreviewStage center={false} minHeight={0} allowResize={false} padded={false}>
-            <Stack gap="md" className="w-full">
-              <div>
-                <p className="mb-1.5 px-3 text-overline uppercase text-[var(--ds-fg-muted)]">Desktop</p>
-                <Bar />
-              </div>
-              <div className="mx-auto w-full max-w-[24rem] overflow-hidden rounded-[var(--radius-lg)] border border-[var(--ds-border)]">
-                <p className="border-b border-[var(--ds-border-subtle)] bg-[var(--ds-surface-inset)] px-3 py-1.5 text-overline uppercase text-[var(--ds-fg-muted)]">
-                  Mobile
-                </p>
-                <Bar mobile />
-              </div>
+                </div>
+              ))}
             </Stack>
+          </PreviewStage>
+        ),
+      },
+      {
+        id: 'search',
+        title: 'When the screen is search',
+        description:
+          'A search field does not go inside the app bar — at 64px there is no room for a field and a title that both mean something. On a screen whose job is finding, the field takes the bar’s place: drawer, field, account.',
+        render: (
+          <PreviewStage center={false} minHeight={0} allowResize={false} padded={false}>
+            <Screen lines={4}>
+              <SearchAppBar />
+            </Screen>
+          </PreviewStage>
+        ),
+      },
+      {
+        id: 'collapse',
+        title: 'Collapsing on scroll',
+        description:
+          'A medium bar collapses to a small one once content passes under it, and the container colour changes with it. The title never disappears — it moves up into the row it shares with the icons.',
+        render: (
+          <PreviewStage center={false} minHeight={0} allowResize={false} padded={false}>
+            <CollapseDemo />
           </PreviewStage>
         ),
       },
     ],
     states: [
-      { label: 'Default', render: <span className="text-caption text-[var(--ds-fg-muted)]">56px, translucent</span> },
-      { label: 'Scrolled', note: 'Gains e2', render: <span className="block h-6 w-20 rounded-[var(--radius-sm)] border-b border-[var(--ds-border-subtle)] bg-[var(--ds-canvas)] shadow-e2" /> },
-      { label: 'Compact', note: '48px', render: <span className="block h-6 w-20 rounded-[var(--radius-sm)] border border-[var(--ds-border-subtle)]" /> },
-      { label: 'Search idle', render: <span className="inline-flex h-7 items-center gap-1.5 rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface-inset)] px-2 text-caption text-[var(--ds-fg-muted)]"><Search size={12} /> Search</span> },
-      { label: 'Search focused', render: <span className="inline-flex h-7 items-center gap-1.5 rounded-[var(--radius-md)] border border-[var(--ds-accent)] bg-[var(--ds-surface-inset)] px-2 text-caption shadow-[0_0_0_3px_var(--ds-accent-subtle)]"><Search size={12} /> Search</span> },
-      { label: 'Notification', render: <span className="relative inline-flex"><IconButton label="Notifications" icon={<Bell />} size="sm" /><span className="absolute -right-0.5 -top-0.5"><CountBadge count={3} tone="danger" /></span></span> },
+      { label: 'Small', note: '64px', render: <span className="text-caption text-[var(--ds-fg-muted)]">title on the icon row</span> },
+      { label: 'Medium', note: '112px', render: <span className="text-caption text-[var(--ds-fg-muted)]">title on its own line</span> },
+      { label: 'Large', note: '152px', render: <span className="text-caption text-[var(--ds-fg-muted)]">title at display size</span> },
+      { label: 'Centred', note: 'small only', render: <span className="block h-6 w-24 rounded-[var(--radius-sm)] border border-[var(--ds-border-subtle)] text-center text-[10px] leading-6 text-[var(--ds-fg-muted)]">Headline</span> },
+      { label: 'With subtitle', render: <span className="flex flex-col leading-tight"><span className="text-label text-[var(--ds-fg)]">Headline</span><span className="text-caption text-[var(--ds-fg-secondary)]">Subtitle</span></span> },
+      { label: 'At rest', render: <span className="block h-6 w-20 rounded-[var(--radius-sm)] bg-[var(--ds-canvas)] ring-1 ring-[var(--ds-border-subtle)]" /> },
+      { label: 'Scrolled', note: 'container colour changes', render: <span className="block h-6 w-20 rounded-[var(--radius-sm)] bg-[var(--ds-surface-raised)] ring-1 ring-[var(--ds-border-subtle)]" /> },
+      { label: 'Leading', render: <IconButton label="Back" icon={<ArrowLeft />} size="md" /> },
+      { label: 'Drawer', render: <IconButton label="Open navigation" icon={<Menu />} size="md" /> },
+      { label: 'Overflow', note: 'the third action, not the fourth', render: <IconButton label="More" icon={<MoreVertical />} size="md" /> },
+      { label: 'Notification', render: <span className="relative inline-flex"><IconButton label="Notifications" icon={<Bell />} size="md" /><span className="absolute right-0 top-0"><CountBadge count={3} tone="danger" /></span></span> },
       { label: 'Account', render: <Avatar name="Ada Lovelace" size="sm" /> },
-      { label: 'Environment', note: 'A hard-to-miss cue', render: <Badge tone="danger" size="sm" dot>Production</Badge> },
-      { label: 'Mobile', render: <IconButton label="Menu" icon={<Menu />} size="sm" /> },
-      { label: 'Command hint', render: <Kbd>⌘K</Kbd> },
-      { label: 'Impersonating', render: <Badge tone="warning" size="sm" dot>Viewing as Ada</Badge> },
-      { label: 'Offline', render: <Badge tone="neutral" size="sm" dot>Offline</Badge> },
     ],
   },
 
   anatomy: {
     render: (
       <div className="w-full max-w-2xl overflow-hidden rounded-[var(--radius-lg)] border border-[var(--ds-border)]">
-        <Bar />
+        <AppBar size="medium" title="Headline" subtitle="Subtitle" leading={back} actions={actions} sticky={false} />
       </div>
     ),
     caption:
-      'Left, centre and right zones in a 56px bar. Every control is 32px, leaving 12px of clearance above and below.',
+      'The medium bar: a 64px icon row, then the title bottom-aligned in the remaining 48px. The small bar is the first row alone; the large bar is the same with 88px under it.',
     parts: [
       {
         n: 1,
         label: 'Height',
-        value: '56px (48px compact)',
+        value: '64 / 112 / 152px',
         kind: 'size',
-        note: 'A 32px control with 12px of clearance. 48px is available for dense internal tools; below that the bar stops reading as a region.',
+        note: 'One row; one row plus a title line; one row plus a display-size title line. Nothing between them — three heights are learnable, a slider of heights is not.',
       },
       {
         n: 2,
-        label: 'Background',
-        value: 'canvas at 85% + blur',
-        kind: 'color',
-        note: 'Translucent so content scrolling beneath is faintly visible, which is what makes the bar read as floating above the page rather than clipped to it.',
+        label: 'Icon row',
+        value: '64px',
+        kind: 'size',
+        note: 'The same first row in all three sizes, so the back button never moves when the size changes. That constancy is the whole reason the collapse animation is legible.',
       },
       {
         n: 3,
-        label: 'Control size',
-        value: '32px (sm)',
+        label: 'Touch target',
+        value: '48px',
         kind: 'size',
-        note: 'One step below the default 36px. The bar is dense by nature and a row of full-size buttons makes it feel crowded.',
+        note: 'The leading and trailing controls are 48px targets around a 24px glyph. This is the one region of the product where a user reaches without looking.',
       },
       {
         n: 4,
-        label: 'Search width',
-        value: 'max 28rem, flexes',
-        kind: 'size',
-        note: 'Capped so it does not dominate on a wide monitor, and flexible so it does not crowd the actions on a narrow one.',
+        label: 'Title',
+        value: 'h3 / h2 / h1',
+        kind: 'type',
+        note: 'Grows with the bar: 19px on the icon row, 24px on its own line, 32px when the title is the point of the header. Always one line — it truncates rather than wrapping.',
       },
       {
         n: 5,
-        label: 'Scroll shadow',
-        value: 'e0 → e2 on scroll',
-        kind: 'motion',
-        note: 'Toggled by an IntersectionObserver sentinel at the top of the scroll container, not by a scroll listener.',
+        label: 'Subtitle',
+        value: 'body-sm, fg-secondary',
+        kind: 'type',
+        note: 'Half the weight of the title and directly under it. A qualifier — a count, a state, a parent — never a sentence.',
       },
       {
         n: 6,
-        label: 'Right gap',
-        value: '4px between icon buttons',
+        label: 'Title inset',
+        value: '56px with a leading control',
         kind: 'space',
-        note: 'Tight, because these are one group. The gap before the avatar is 8px, marking it as separate.',
+        note: 'The 48px target plus the 8px gutter. Without a leading control the title starts at 16px, and the two must not be mixed within one app.',
+      },
+      {
+        n: 7,
+        label: 'Container',
+        value: 'canvas → surface-raised',
+        kind: 'color',
+        note: 'The scrolled state is a colour change, not a shadow. It reads the same in dark mode and does not add a plane to a flat design.',
+      },
+      {
+        n: 8,
+        label: 'Bottom padding',
+        value: '16px under the title',
+        kind: 'space',
+        note: 'The title is bottom-aligned in the tall bars so it sits with the content it heads, rather than floating in the middle of the bar.',
       },
     ],
   },
 
   tokens: [
-    { category: 'color', token: '--ds-canvas', usedFor: 'Bar background at 85% alpha' },
-    { category: 'color', token: '--ds-border-subtle', usedFor: 'Bottom edge' },
-    { category: 'color', token: '--ds-surface-inset', usedFor: 'Search field' },
-    { category: 'color', token: '--ds-fg-muted', usedFor: 'Search placeholder, icon buttons at rest' },
-    { category: 'spacing', token: 'height', value: '56px / 48px', usedFor: 'Default and compact' },
-    { category: 'spacing', token: 'padding-x', value: '12px', usedFor: 'Bar gutters' },
-    { category: 'spacing', token: 'gap', value: '4px / 8px', usedFor: 'Within a group / between groups' },
-    { category: 'shadow', token: '--shadow-e2', usedFor: 'Applied once content scrolls beneath' },
-    { category: 'motion', token: 'duration', value: '160ms', usedFor: 'Shadow transition on scroll' },
+    { category: 'color', token: '--ds-canvas', usedFor: 'Container at rest' },
+    { category: 'color', token: '--ds-surface-raised', usedFor: 'Container once content scrolls beneath' },
+    { category: 'color', token: '--ds-fg', usedFor: 'Title' },
+    { category: 'color', token: '--ds-fg-secondary', usedFor: 'Subtitle' },
+    { category: 'color', token: '--ds-fg-muted', usedFor: 'Icon controls at rest' },
+    { category: 'color', token: '--ds-surface-inset', usedFor: 'The search field, in the search variant' },
+    { category: 'typography', token: '--text-h3', usedFor: 'Title, small' },
+    { category: 'typography', token: '--text-h2', usedFor: 'Title, medium' },
+    { category: 'typography', token: '--text-h1', usedFor: 'Title, large' },
+    { category: 'typography', token: '--text-body-sm', usedFor: 'Subtitle' },
+    { category: 'spacing', token: 'height', value: '64 / 112 / 152px', usedFor: 'small / medium / large' },
+    { category: 'spacing', token: 'padding-inline', value: '4px (controls) / 16px (title)', usedFor: 'Gutters — the control padding makes up the rest' },
+    { category: 'radius', token: '--radius-full', usedFor: 'Search field, avatar' },
+    { category: 'motion', token: 'duration', value: '160ms', usedFor: 'Container colour and the collapse' },
   ],
 
   sizes: [
-    { name: 'Compact', height: '48px', padding: '0 12px', use: 'Dense internal tools where every pixel of content matters.' },
-    { name: 'Default', height: '56px', padding: '0 12px', use: 'Applications. 32px controls with 12px of clearance.' },
-    { name: 'Marketing', height: '64–72px', padding: '0 24px', use: 'Public pages, where the bar carries brand weight.' },
-    { name: 'Search', maxWidth: '28rem', minWidth: '160px', use: 'Flexes between the two, capped so it never dominates.' },
-    { name: 'Controls', height: '32px', touch: '44px (padded)', use: 'One step below the default button size.' },
+    { name: 'Small', height: '64px', type: 'h3 (19px)', touch: '48px', use: 'The default. The title shares the icon row, so keep it to two or three words.' },
+    { name: 'Small · centred', height: '64px', type: 'h3 (19px)', use: 'Phone screens, and only with one leading and at most one trailing control.' },
+    { name: 'Medium', height: '112px', type: 'h2 (24px)', use: 'When the title is a heading rather than a label — a detail screen, a document.' },
+    { name: 'Large', height: '152px', type: 'h1 (32px)', use: 'The first screen of a section, where the title is the content of the header.' },
+    { name: 'Search variant', height: '64px', minWidth: '160px', use: 'Replaces the bar on a screen whose primary job is finding something.' },
+    { name: 'Controls', height: '48px', icon: '24px', touch: '48px', use: 'Leading and trailing. Full size, not the compact button — this row is reached without looking.' },
   ],
 
   do: [
     {
-      title: 'Keep it to one create action',
-      why: 'A "New" button with a dropdown beats four separate create buttons. The bar is the most contested space in the product and every additional control makes the others harder to find.',
+      title: 'Keep the leading control in the same place on every screen',
+      why: 'Back is the most-used control in any app. Its value comes entirely from being where it was last time, which means it outranks anything else competing for the left edge.',
+      render: <IconButton label="Back" icon={<ArrowLeft />} size="md" />,
+    },
+    {
+      title: 'Let the title truncate, never wrap',
+      why: 'A wrapping title changes the height of the bar, which moves everything on the screen. Truncation loses the end of a long name; wrapping loses the layout.',
       render: (
-        <Button size="sm" startIcon={<Plus />} endIcon={<ChevronDown />}>
-          New
-        </Button>
+        <div className="w-48 overflow-hidden rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] p-2">
+          <p className="truncate text-h3 text-[var(--ds-fg)]">Quarterly revenue reconciliation</p>
+        </div>
       ),
     },
     {
-      title: 'Make search reachable by keyboard',
-      why: '⌘K is now a universal convention. Showing the shortcut in the field teaches it to the users who do not know it yet, at zero cost.',
+      title: 'Make the third action an overflow menu',
+      why: 'Two glyphs are recognised; five are a quiz taken on every screen. Everything past the second goes behind one predictable button.',
       render: (
-        <span className="inline-flex h-8 items-center gap-2 rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface-inset)] px-2.5 text-caption text-[var(--ds-fg-muted)]">
-          <Search size={13} /> Search… <Kbd>⌘K</Kbd>
-        </span>
+        <div className="flex items-center gap-0.5">
+          <IconButton label="Search" icon={<Search />} size="md" />
+          <IconButton label="Calendar" icon={<CalendarDays />} size="md" />
+          <IconButton label="More" icon={<MoreVertical />} size="md" />
+        </div>
       ),
     },
     {
-      title: 'Signal a dangerous environment unmistakably',
-      why: 'Production and staging must be distinguishable at a glance. A tinted badge in the bar prevents an entire category of expensive mistake.',
-      render: (
-        <Badge tone="danger" dot>
-          Production
-        </Badge>
-      ),
-    },
-    {
-      title: 'Add the shadow only once content scrolls under it',
-      why: 'Before scrolling there is nothing to separate. A permanent shadow makes the bar look detached from a page it is actually attached to.',
+      title: 'Collapse a tall bar instead of hiding it',
+      why: 'Scrolling means the user wants content, and 152px of title is a lot to spend on context they have read. Collapsing to 64px returns most of it while keeping the title and the way back on screen.',
       render: (
         <Stack gap="sm" className="w-full">
-          <span className="block h-6 w-full rounded-[var(--radius-sm)] border-b border-[var(--ds-border-subtle)] bg-[var(--ds-surface)]" />
-          <span className="block h-6 w-full rounded-[var(--radius-sm)] border-b border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] shadow-e2" />
+          <span className="block h-8 w-full rounded-[var(--radius-sm)] bg-[var(--ds-canvas)] ring-1 ring-[var(--ds-border-subtle)]" />
+          <span className="block h-4 w-full rounded-[var(--radius-sm)] bg-[var(--ds-surface-raised)] ring-1 ring-[var(--ds-border-subtle)]" />
         </Stack>
       ),
     },
@@ -361,21 +428,43 @@ export default defineDoc({
 
   dont: [
     {
-      title: 'Do not fill it with page actions',
-      why: 'Actions that only apply to one page belong on that page. In the bar they are present everywhere and correct almost nowhere.',
+      title: 'Do not centre a title with a crowded right side',
+      why: 'A centred title is centred in the bar, not between the icons. With one leading and three trailing controls it is mathematically centred and visibly wrong, and users read that as a bug.',
       render: (
-        <div className="flex w-full items-center gap-1.5 overflow-hidden rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] p-2">
-          {['Export', 'Filter', 'Sort', 'Share', 'Duplicate', 'Archive'].map((a) => (
-            <Button key={a} size="xs" variant="text">
-              {a}
-            </Button>
-          ))}
+        <div className="w-full overflow-hidden rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)]">
+          <AppBar
+            size="small"
+            align="center"
+            title="Headline"
+            leading={back}
+            actions={
+              <>
+                <IconButton label="Search" icon={<Search />} size="md" />
+                <IconButton label="Calendar" icon={<CalendarDays />} size="md" />
+                <IconButton label="Notifications" icon={<Bell />} size="md" />
+                <IconButton label="More" icon={<MoreVertical />} size="md" />
+              </>
+            }
+            sticky={false}
+          />
+        </div>
+      ),
+    },
+    {
+      title: 'Do not put a sentence in the subtitle',
+      why: 'The subtitle is a qualifier at 13px. A sentence there is body content in a region that cannot wrap, so it truncates mid-thought on every phone.',
+      render: (
+        <div className="w-64 overflow-hidden rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] p-2">
+          <p className="text-h3 text-[var(--ds-fg)]">Headline</p>
+          <p className="truncate text-body-sm text-[var(--ds-danger-text)]">
+            This report was generated last night and includes all…
+          </p>
         </div>
       ),
     },
     {
       title: 'Do not hide the bar on scroll',
-      why: 'Hide-on-scroll saves 56px and costs the user their anchor. It also makes the bar reappear unpredictably when they scroll up by a few pixels.',
+      why: 'Hide-on-scroll saves 64px and costs the user their anchor and their way back. It also reappears unpredictably when they scroll up by a few pixels. Collapse instead.',
       render: (
         <span className="text-caption text-[var(--ds-danger-text)]">
           scroll down → bar vanishes → user scrolls up to find it
@@ -383,29 +472,17 @@ export default defineDoc({
       ),
     },
     {
-      title: 'Do not use it as primary navigation for a large app',
-      why: 'Horizontal space runs out at about five items, and past that the labels truncate or collapse into an overflow menu nobody opens.',
+      title: 'Do not mix arrangements within one app',
+      why: 'Centred on one screen and start-aligned on the next makes the title look like it moved, and every screen change costs a re-read. Pick one and change size, not alignment.',
       render: (
-        <div className="flex w-full items-center gap-3 overflow-hidden rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] p-2 text-caption text-[var(--ds-fg-muted)]">
-          {['Dashboard', 'Projects', 'Deployments', 'Monitoring', 'Team', 'Billing', 'Settings'].map(
-            (l) => (
-              <span key={l} className="whitespace-nowrap">
-                {l}
-              </span>
-            ),
-          )}
-        </div>
-      ),
-    },
-    {
-      title: 'Do not put an unlabelled icon row on the right',
-      why: 'Five unlabelled glyphs is a quiz the user takes on every screen. Two or three universals plus the avatar is the ceiling.',
-      render: (
-        <div className="flex items-center gap-1">
-          {[Bell, Search, Command, Plus, Menu].map((Icon, i) => (
-            <IconButton key={i} label="?" icon={<Icon />} size="sm" />
-          ))}
-        </div>
+        <Stack gap="sm" className="w-full">
+          <div className="overflow-hidden rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)]">
+            <AppBar size="small" align="center" title="Headline" leading={back} sticky={false} />
+          </div>
+          <div className="overflow-hidden rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)]">
+            <AppBar size="small" title="Headline" leading={back} sticky={false} />
+          </div>
+        </Stack>
       ),
     },
   ],
@@ -414,71 +491,69 @@ export default defineDoc({
     criteria: [
       { id: '1.3.1', name: 'Info and Relationships', level: 'A' },
       { id: '2.4.1', name: 'Bypass Blocks', level: 'A' },
-      { id: '2.4.5', name: 'Multiple Ways', level: 'AA' },
+      { id: '2.4.6', name: 'Headings and Labels', level: 'AA' },
+      { id: '2.5.5', name: 'Target Size', level: 'AAA' },
       { id: '3.2.3', name: 'Consistent Navigation', level: 'AA' },
     ],
     contrast: [
-      'The translucent background means text sits over whatever is scrolling beneath. The backdrop blur plus the 85% alpha keeps the effective contrast above 4.5:1, but verify it against your busiest page.',
-      'The bottom border must reach 3:1 against both the bar and the content, or the region boundary disappears when the shadow is not present.',
-      'An environment badge must not rely on colour alone — ours pairs the tone with a dot and the word "Production".',
+      'The title carries the screen’s name and must reach 4.5:1 against the container in both the rest and the scrolled colour — they are different backgrounds, so check both.',
+      'The subtitle is 13px, which is not large text: it needs the same 4.5:1, which is why it uses fg-secondary and not fg-muted.',
+      'Icon glyphs need 3:1 as non-text content. A muted glyph on the scrolled container is the case that usually fails.',
     ],
     keyboard: [
       { keys: 'Skip link', does: 'The first focusable element on the page jumps past the bar to the main content.' },
-      { keys: 'Tab', does: 'Moves left to right through the bar in DOM order.' },
-      { keys: '⌘K / Ctrl K', does: 'Opens the command palette from anywhere.' },
-      { keys: '/', does: 'Focuses search when the user is not already typing.' },
+      { keys: 'Tab', does: 'Leading control, then the title if it is a link, then the actions left to right.' },
+      { keys: 'Enter / Space', does: 'Activates the focused control. The bar itself is never focusable.' },
+      { keys: 'Escape', does: 'Closes the overflow menu and returns focus to the button that opened it.' },
     ],
     aria: [
-      { attr: '<header> + role="banner"', on: 'The bar', note: 'The banner landmark. There is exactly one per page.' },
-      { attr: '<nav aria-label>', on: 'Nav inside the bar', note: 'Distinguishes it from the sidebar nav and the breadcrumbs.' },
-      { attr: 'aria-label', on: 'Every icon button', note: 'Notifications, Account, Open navigation. An unlabelled icon announces as "button".' },
-      { attr: 'aria-expanded', on: 'The workspace switcher', note: 'Plus aria-haspopup, on the trigger rather than the menu.' },
-      { attr: 'aria-live="polite"', on: 'The notification count', note: 'So a change is announced without interrupting.' },
+      { attr: '<header role="banner">', on: 'The bar', note: 'The banner landmark, one per page, so a screen reader user can jump to or past it.' },
+      { attr: '<h1>', on: 'The title', note: 'The bar names the screen, so its title is the page heading. If the content has its own h1, the bar’s title is an h2 or a plain span — never two h1s.' },
+      { attr: 'aria-label', on: 'Every icon control', note: '"Back", "Open navigation", "More options". An unlabelled glyph announces as "button".' },
+      { attr: 'aria-expanded + aria-haspopup', on: 'The overflow trigger', note: 'On the button, not on the menu.' },
+      { attr: 'aria-live="polite"', on: 'A count in the bar', note: 'So a change is announced without interrupting what is being read.' },
     ],
     focus:
-      'The skip link is the first focusable element and must become visible on focus. Without it, every keyboard user tabs through the entire bar on every page.',
+      'The skip link is the first focusable element and must become visible on focus — without it every keyboard user tabs the whole bar on every screen. Focus rings must clear the container: the controls sit at the very top of the viewport, so an outside ring is clipped unless the bar reserves for it.',
     screenReader: [
-      'The banner landmark lets users jump straight to or past the bar. It is one of the highest-value landmarks on any page.',
-      'The notification count needs a real accessible name — "3 unread notifications", not "3".',
-      'Keep the bar’s DOM order identical on every page. WCAG 3.2.3 is about consistency, and inconsistent ordering breaks the muscle memory it exists to protect.',
+      'The title is the first thing announced on the screen. Make it the screen’s real name, not the app’s — "Invoices", not "Acme".',
+      'A subtitle is read straight after the title, as one phrase. "Invoices, 12 unread" works; "Invoices, Updated 3 minutes ago by Ada" does not.',
+      'Keep the bar’s DOM order identical on every screen. WCAG 3.2.3 is about consistency, and reordering breaks exactly the muscle memory the bar exists to build.',
     ],
     touch:
-      'Controls are 32px visually and padded to 44px on coarse pointers. Keep the account avatar at the far right where the thumb naturally lands, and the menu trigger at the far left.',
+      'Leading and trailing controls are 48px targets around a 24px glyph, with at least 8px between them. The leading control sits in the top-left, which is the hardest place to reach one-handed — which is why back is also a system gesture, and why a tall bar must never rely on its icons alone.',
   },
 
   code: {
     usage: {
       lang: 'tsx',
-      code: `<header
-  role="banner"
-  className="sticky top-0 z-10 flex h-14 items-center gap-2 border-b
-             border-line-subtle bg-canvas/85 px-3 backdrop-blur-xl"
->
-  <a href="#main" className="sr-only-ds focus:not-sr-only">Skip to content</a>
+      code: `// Small, start-aligned. The default, and the one most screens want.
+<AppBar
+  title="Headline"
+  leading={<IconButton label="Back" icon={<ArrowLeft />} onClick={goBack} />}
+  actions={<IconButton label="Search" icon={<Search />} />}
+/>
 
-  <WorkspaceSwitcher />
-  <Breadcrumbs items={crumbs} className="hidden md:flex" />
+// Centred — small only, one leading and at most one trailing control.
+<AppBar align="center" title="Headline" leading={backButton} actions={oneAction} />
 
-  <button
-    onClick={openPalette}
-    className="ml-auto flex h-8 max-w-md flex-1 items-center gap-2 …"
-  >
-    <Search size={13} aria-hidden />
-    <span className="flex-1 text-left">Search…</span>
-    <Kbd>⌘K</Kbd>
-  </button>
+// The title on its own line, with a qualifier under it.
+<AppBar size="medium" title="Headline" subtitle="12 unread" leading={backButton} />
 
-  <nav aria-label="Account" className="ml-auto flex items-center gap-1">
-    <Button size="sm" startIcon={<Plus />}>New</Button>
-    <IconButton label="Notifications" icon={<Bell />} size="sm" />
-    <AccountMenu />
-  </nav>
-</header>
-
-// Shadow on scroll — a sentinel, not a scroll listener
-const sentinel = useRef<HTMLDivElement>(null)
+// Collapse on scroll: swap the size, the height transition does the rest.
 const [scrolled, setScrolled] = useState(false)
 
+<AppBar
+  size={scrolled ? 'small' : 'large'}
+  scrolled={scrolled}
+  title="Headline"
+  subtitle="Subtitle"
+  leading={backButton}
+  actions={actions}
+/>
+
+// The sentinel that drives it — not a scroll listener
+const sentinel = useRef<HTMLDivElement>(null)
 useEffect(() => {
   const el = sentinel.current
   if (!el) return
@@ -489,102 +564,110 @@ useEffect(() => {
 
 <div ref={sentinel} className="h-px" />   // directly under the bar`,
     },
+    api: [
+      {
+        name: 'AppBar',
+        props: [
+          { name: 'title', type: 'ReactNode', required: true, description: 'The screen’s name. One line — it truncates rather than wrapping.' },
+          { name: 'subtitle', type: 'ReactNode', description: 'A qualifier under the title: a count, a state, a parent. Never a sentence.' },
+          { name: 'size', type: "'small' | 'medium' | 'large'", default: "'small'", description: '64px with the title on the icon row, 112px with it on its own line, 152px with it at display size.' },
+          { name: 'align', type: "'start' | 'center'", default: "'start'", description: 'Centres the title. Applies to size="small" only; the taller bars always start-align.' },
+          { name: 'leading', type: 'ReactNode', description: 'The back arrow or the drawer trigger, in a 48px target at the far left. Omit on a root screen with no drawer.' },
+          { name: 'actions', type: 'ReactNode', description: 'Up to three trailing controls. The third one is the overflow menu, not a fourth glyph.' },
+          { name: 'scrolled', type: 'boolean', default: 'false', description: 'Content has passed beneath the bar: the container colour changes. Drive it from an IntersectionObserver sentinel.' },
+          { name: 'sticky', type: 'boolean', default: 'true', description: 'Sticks to the top of its scroll container at z-10.' },
+          { name: 'className', type: 'string', description: 'Merged onto the container. For layout only — the bar owns its own height and colour.' },
+        ],
+      },
+    ],
     css: {
       lang: 'css',
-      code: `.ds-topbar {
+      code: `.ds-app-bar {
   position: sticky;
   inset-block-start: 0;
-  z-index: 10;                        /* the e2 band */
+  z-index: 10;
   display: flex;
-  align-items: center;
-  gap: 8px;
-  block-size: 56px;
-  padding-inline: 12px;
-  border-block-end: 1px solid var(--ds-border-subtle);
+  flex-direction: column;
+  block-size: 64px;                    /* small */
+  padding-inline: 4px 6px;             /* the controls' own padding makes the rest */
 
-  /* Translucent, so content scrolling beneath stays faintly visible.
-     That is what makes the bar read as above the page. */
-  background: color-mix(in oklab, var(--ds-canvas) 85%, transparent);
-  backdrop-filter: blur(16px);
+  /* The container colour IS the elevation. Material dropped the shadow here,
+     and the colour change survives dark mode and a busy page better. */
+  background: var(--ds-canvas);
+  transition:
+    background-color 160ms var(--ease-standard),
+    block-size 160ms var(--ease-standard);
+}
+.ds-app-bar[data-scrolled='true'] { background: var(--ds-surface-raised); }
 
-  transition: box-shadow 160ms var(--ease-standard);
+.ds-app-bar[data-size='medium'] { block-size: 112px; }
+.ds-app-bar[data-size='large']  { block-size: 152px; }
+
+/* The icon row is 64px in every size, so the back button never moves when
+   the bar grows or collapses. */
+.ds-app-bar__row { display: flex; align-items: center; gap: 4px; block-size: 64px; }
+.ds-app-bar__control { inline-size: 48px; block-size: 48px; }
+
+/* Title: on the row at small, on its own line — bottom-aligned — above it. */
+.ds-app-bar__title { font: var(--text-h3); color: var(--ds-fg); }
+.ds-app-bar[data-size='medium'] .ds-app-bar__title { font: var(--text-h2); }
+.ds-app-bar[data-size='large']  .ds-app-bar__title { font: var(--text-h1); }
+.ds-app-bar__subtitle { font: var(--text-body-sm); color: var(--ds-fg-secondary); }
+.ds-app-bar__title,
+.ds-app-bar__subtitle { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+
+.ds-app-bar__headline { display: flex; flex: 1; align-items: flex-end; padding: 0 12px 16px; }
+
+/* Centred: absolute, so an extra trailing icon moves the icons and never the
+   title, and capped so it truncates before it can collide with either side. */
+.ds-app-bar[data-align='center'] .ds-app-bar__title-block {
+  position: absolute;
+  inset-inline: 0;
+  margin-inline: auto;
+  max-inline-size: 60%;
+  text-align: center;
+  pointer-events: none;
 }
 
-/* Only once there is something to separate */
-.ds-topbar[data-scrolled='true'] { box-shadow: var(--shadow-e2); }
-
-/* Safe area on notched devices in landscape */
+/* Notched devices in landscape */
 @supports (padding: max(0px)) {
-  .ds-topbar {
-    padding-inline-start: max(12px, env(safe-area-inset-left));
-    padding-inline-end: max(12px, env(safe-area-inset-right));
+  .ds-app-bar {
+    padding-inline-start: max(4px, env(safe-area-inset-left));
+    padding-inline-end: max(6px, env(safe-area-inset-right));
   }
 }
 
-/* backdrop-filter is expensive. Drop it where it is not supported
-   rather than shipping a transparent bar. */
-@supports not (backdrop-filter: blur(1px)) {
-  .ds-topbar { background: var(--ds-canvas); }
-}
-
-@media (max-width: 768px) {
-  .ds-topbar__breadcrumbs,
-  .ds-topbar__workspace-name { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .ds-app-bar { transition: background-color 160ms var(--ease-standard); }
 }`,
     },
   },
 
   notes: {
     tips: [
-      'The bar is the best place to teach keyboard shortcuts. A visible ⌘K in the search field converts more users to the palette than any onboarding tour.',
-      'Workspace and environment switchers belong on the left, next to the logo. Users read the bar left to right and expect scope before content.',
-      'If you must show an announcement banner, put it above the bar rather than inside it, and make it dismissible. Inside, it deforms the layout on every page.',
-      'On a page with its own header, keep the top bar minimal — two headers of similar weight makes it unclear which one owns the page.',
+      'Pick one alignment for the whole app and vary the size instead. Alignment is the thing users notice moving; size reads as emphasis.',
+      'A large bar on the first screen of a section and a small bar everywhere inside it is the pattern that makes a hierarchy legible without a breadcrumb.',
+      'If the title needs more than three words, the screen probably needs a shorter name — not a taller bar.',
+      'On desktop the same component still works, but the actions migrate to the content area: a 1440px-wide bar with two glyphs on the right is mostly empty space.',
     ],
     performance: [
-      'backdrop-filter forces a separate compositing layer and re-composites on every scroll frame. It is worth it for one 56px bar and nowhere else.',
-      'Use an IntersectionObserver sentinel rather than a scroll listener for the shadow. A scroll handler running on every frame is a common source of jank.',
-      'The bar renders on every route. Memoise it and keep its state out of the route tree, or every navigation re-renders it needlessly.',
-      'Lazy-load the command palette. It is behind a keystroke, not on the critical path.',
+      'Drive the scrolled state from an IntersectionObserver sentinel, not a scroll handler. A handler on every frame is a common source of jank, and the bar is on every screen.',
+      'Animate the height, not the layout inside it. Cross-fading the title between two positions costs a layout per frame and looks worse than moving it.',
+      'The bar renders on every route. Memoise it and keep its state out of the route tree, or every navigation re-renders it.',
+      'A translucent bar with a backdrop blur forces a compositing layer that re-composites on every scroll frame. The colour change costs nothing and reads as clearly.',
     ],
     mistakes: [
-      'No skip link, so every keyboard user tabs through the whole bar on every page.',
-      'Hiding the bar on scroll, removing the user’s anchor to save 56 pixels.',
-      'Unlabelled icon buttons, which announce as "button" and are a guess for sighted users too.',
-      'Page-specific actions in a global region, so they are present everywhere and correct nowhere.',
-      'Forgetting the safe-area inset, so on a notched phone in landscape the leftmost control is under the notch.',
+      'No skip link, so every keyboard user tabs through the bar on every screen.',
+      'Two h1s — one in the bar and one in the content — which makes the heading outline meaningless.',
+      'A centred title with three trailing icons, which is centred in the bar and visibly off-centre on the screen.',
+      'Hiding the bar on scroll, removing the user’s anchor and their way back to save 64px.',
+      'A subtitle that changes on every render (a relative timestamp), which a screen reader re-announces each time.',
     ],
     realWorld: [
-      'Audit the bar quarterly. It accumulates: every team wants a slot, and nothing is ever removed unless someone makes a point of removing it.',
-      'Environment colouring in the top bar is the cheapest possible protection against running a destructive command in the wrong place. Every infrastructure product should have it.',
-      'Track what users click in the bar. Anything under 1% either needs a better label or belongs in the command palette instead.',
-      'Keep the bar identical across the product, including the marketing site if you can. The moment it changes between areas, users stop trusting its position.',
+      'Audit the bar quarterly. It accumulates: every team wants a glyph in it, and nothing leaves unless someone makes a point of removing it.',
+      'Track what gets tapped. Anything under 1% belongs in the overflow menu, and the overflow menu is where you find out what the screen is really for.',
+      'The title is the screen’s name in analytics, in the back stack, in search, and in the user’s head. Choose it once and use the same string everywhere.',
+      'Test the collapse on a slow device before shipping it. A height animation that drops frames is more distracting than a bar that simply stays tall.',
     ],
   },
 })
-
-function ScrollDemo() {
-  const [scrolled, setScrolled] = React.useState(false)
-  return (
-    <div className="w-full overflow-hidden rounded-[var(--radius-lg)] border border-[var(--ds-border)]">
-      <div className="sticky top-0 z-10">
-        <Bar scrolled={scrolled} />
-      </div>
-      <div
-        className="h-40 overflow-y-auto bg-[var(--ds-canvas)] p-4"
-        onScroll={(e) => setScrolled(e.currentTarget.scrollTop > 4)}
-      >
-        <Stack gap="sm">
-          {Array.from({ length: 10 }).map((_, i) => (
-            <div
-              key={i}
-              className="rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] px-3 py-2 text-caption text-[var(--ds-fg-muted)]"
-            >
-              Row {i + 1} — scroll to see the bar gain its shadow
-            </div>
-          ))}
-        </Stack>
-      </div>
-    </div>
-  )
-}
