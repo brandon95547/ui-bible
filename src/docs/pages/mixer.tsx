@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {
   Activity, AudioLines, ChevronLeft, ChevronRight, Clapperboard, Leaf, Mic, Minus,
-  MoreHorizontal, Music, Plus, RotateCcw, Settings2, SlidersHorizontal, Sparkles, Spline,
+  MoreHorizontal, Music, Plus, RotateCcw, SlidersHorizontal, Sparkles, Spline,
   Trash2, TrendingDown, TrendingUp, Volume2, VolumeX, Waves,
 } from 'lucide-react'
 import { cn } from '@/lib/cn'
@@ -390,15 +390,16 @@ export interface Channel {
   solo: boolean
 }
 
+// The five buses a video edit actually mixes, in signal order — picture first,
+// then the voice it is cut to, then everything under them. "Track 5…8" was
+// filler that made the demo look like a music desk; these are the ones a real
+// timeline hands you, and the master takes the sum.
 const INITIAL: Channel[] = [
-  { id: '1', name: 'Narration', db: 0, pan: 0, mute: false, solo: false },
-  { id: '2', name: 'Music', db: -4.2, pan: -22, mute: true, solo: false },
-  { id: '3', name: 'SFX', db: -2.1, pan: 10, mute: false, solo: false },
-  { id: '4', name: 'Ambience', db: -6, pan: 34, mute: false, solo: true },
-  { id: '5', name: 'Track 5', db: -3.3, pan: -8, mute: false, solo: false },
-  { id: '6', name: 'Track 6', db: -9.1, pan: 48, mute: true, solo: false },
-  { id: '7', name: 'Track 7', db: -1.8, pan: 0, mute: false, solo: false },
-  { id: '8', name: 'Track 8', db: 0, pan: -40, mute: false, solo: false },
+  { id: '1', name: 'Media', db: -1.4, pan: 0, mute: false, solo: false },
+  { id: '2', name: 'Storyboard', db: -8.5, pan: 0, mute: true, solo: false },
+  { id: '3', name: 'Narration', db: 0, pan: 0, mute: false, solo: false },
+  { id: '4', name: 'Music', db: -4.2, pan: -22, mute: false, solo: false },
+  { id: '5', name: 'SFX', db: -2.1, pan: 10, mute: false, solo: true },
 ]
 
 /* -- Strip ---------------------------------------------------------------- */
@@ -490,8 +491,8 @@ function ChannelStrip({
         <Meter level={audible ? level : 0} className="w-2 shrink-0" />
       </div>
 
-      {/* The identity bar. Reading eight strips is a scanning task, and a solid
-          block of colour at a fixed position is the fastest possible index. */}
+      {/* The identity bar. Reading a row of strips is a scanning task, and a
+          solid block of colour at a fixed position is the fastest index. */}
       <span aria-hidden className="h-1 w-full shrink-0" style={{ background: colour }} />
     </div>
   )
@@ -576,7 +577,7 @@ function MasterStrip({
 
 /* -- The mixer ------------------------------------------------------------ */
 function ConsoleMixer({
-  count = 8,
+  count = INITIAL.length,
   running = true,
   compact = false,
   showHeader = true,
@@ -592,11 +593,6 @@ function ConsoleMixer({
   const [master, setMaster] = React.useState(0)
   const [masterMute, setMasterMute] = React.useState(false)
   const [levels, setLevels] = React.useState<number[]>(() => INITIAL.map(() => 0.3))
-  const [processing, setProcessing] = React.useState({
-    ducking: true,
-    normalize: true,
-    denoise: true,
-  })
 
   const visible = channels.slice(0, count)
   const soloed = visible.some((c) => c.solo)
@@ -680,8 +676,8 @@ function ConsoleMixer({
         </header>
       )}
 
-      {/* One scroll container, because eight strips do not fit a phone and
-          shrinking them until they do produces controls nobody can hit. */}
+      {/* One scroll container, because a full desk does not fit a phone and
+          shrinking it until it does produces controls nobody can hit. */}
       <div className="overflow-x-auto">
         <div
           className="grid min-w-max gap-2"
@@ -710,26 +706,15 @@ function ConsoleMixer({
         </div>
       </div>
 
+      {/* Auto ducking, Normalize and Noise reduction lived here as switches.
+          They are processing — things done TO a signal — and a mixer's job is
+          balancing signals against each other. Mixed into the footer they read
+          as part of that job and put three more decisions under a surface whose
+          whole argument is that you can see every level at once. Reset stays:
+          it undoes the balance, so it belongs to the balance. */}
       {showFooter && (
-        <footer className="flex flex-wrap items-center gap-2 border-t border-[var(--ds-border-subtle)] pt-3">
-          {([
-            ['ducking', 'Auto ducking'],
-            ['normalize', 'Normalize'],
-            ['denoise', 'Noise reduction'],
-          ] as const).map(([key, label]) => (
-            <div
-              key={key}
-              className="flex items-center gap-2 rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] px-2.5 py-1.5"
-            >
-              <Switch
-                checked={processing[key]}
-                onCheckedChange={(v) => setProcessing((p) => ({ ...p, [key]: v }))}
-                label={label}
-              />
-              <IconButton size="xs" label={`${label} settings`} icon={<Settings2 size={13} />} />
-            </div>
-          ))}
-          <Button size="sm" variant="outlined" className="ml-auto" onClick={reset}>
+        <footer className="flex flex-wrap items-center justify-end border-t border-[var(--ds-border-subtle)] pt-3">
+          <Button size="sm" variant="outlined" onClick={reset}>
             <RotateCcw size={14} />
             Reset mix
           </Button>
@@ -2539,7 +2524,9 @@ const VARIANTS = [
 
 function Playground() {
   const [variant, setVariant] = React.useState<string>('console')
-  const [count, setCount] = React.useState<'4' | '6' | '8'>('8')
+  // Bounded by INITIAL — offering "8" when the desk holds five made the control
+  // lie: picking it changed nothing.
+  const [count, setCount] = React.useState<'3' | '4' | '5'>('5')
   const [compact, setCompact] = React.useState(false)
   const [running, setRunning] = React.useState(true)
 
@@ -2561,7 +2548,7 @@ function Playground() {
             {variant === 'console' && (
               <>
                 <Knob label="Channels">
-                  <KnobSelect value={count} onChange={setCount} options={['4', '6', '8'] as const} />
+                  <KnobSelect value={count} onChange={setCount} options={['3', '4', '5'] as const} />
                 </Knob>
                 <KnobToggle checked={compact} onChange={setCompact} label="Compact" />
               </>
@@ -2885,7 +2872,7 @@ export default defineDoc({
   ],
 
   sizes: [
-    { name: 'Strip', minWidth: '112px', maxWidth: '160px', use: 'Below 112px the pan knob drops under the 44px target. Above 160px eight strips stop fitting a laptop.' },
+    { name: 'Strip', minWidth: '112px', maxWidth: '160px', use: 'Below 112px the pan knob drops under the 44px target. Above 160px a full desk stops fitting a laptop.' },
     { name: 'Fader travel', height: '150px min, 210px default', use: 'Under 150px the taper stops buying anything and the useful range collapses.' },
     { name: 'Fader cap', height: '40px', minWidth: '26px', touch: '44px hit area', use: 'Large on purpose — it is aimed at while listening, not while looking.' },
     { name: 'Pan knob', height: '44px', touch: '44px', use: 'The knob is the target; there is no separate hit area to grow.' },
