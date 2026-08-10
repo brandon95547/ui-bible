@@ -43,6 +43,12 @@ export interface NavPage {
   /** Extra search terms — concepts, not synonyms. */
   keywords?: string[]
   status?: 'stable' | 'beta' | 'draft'
+  /**
+   * A handful of literal hex values shown as a strip on the page's card in the
+   * section index. Only for pages whose subject *is* a set of colours — an
+   * index of palettes that shows no colour is a list of foreign words.
+   */
+  swatches?: string[]
 }
 
 export interface NavGroup {
@@ -751,6 +757,128 @@ const MEDIA: NavPage[] = [
 ]
 
 /* ===========================================================================
+   COLOR
+   Palettes we did not draw. Foundations owns *our* colour — the ramps, the
+   semantic roles, the contrast contract. This section owns everyone else's,
+   which is a different kind of page: no tokens, no theming, no authority.
+   A palette here is a reference you are being shown how to convert, and the
+   conversion is the point. Using a Palette carries that argument once so the
+   fourteen palette pages do not each repeat it.
+
+   Flat and staying flat until there is a second source. When Material, IBM or
+   Tailwind's ramps arrive, this becomes `groups` with one per source — the
+   same shape Components already uses.
+   ======================================================================== */
+
+const COLOR: NavPage[] = [
+  {
+    id: 'using-a-palette',
+    title: 'Using a Palette',
+    blurb:
+      'Turning twenty borrowed hex values into something you can ship — what to keep, what to measure, and where it enters the token tiers.',
+    keywords: ['borrowed colour', 'ramp', 'categorical', 'brand colour', 'conversion', 'swatches'],
+  },
+  {
+    id: 'flat-ui-defo',
+    title: 'Flat UI Palette v1',
+    blurb: 'The original 2013 twenty — the set that named flat design.',
+    keywords: ['flat ui colors', 'turquoise', 'alizarin', 'midnight blue', '2013'],
+    swatches: ['#1abc9c', '#9b59b6', '#27ae60', '#f1c40f', '#95a5a6', '#7f8c8d'],
+  },
+  {
+    id: 'flat-ui-nl',
+    title: 'Dutch Palette',
+    blurb: 'Saturated primaries falling away into jewel tones. Jeroen Van Eerden.',
+    keywords: ['netherlands', 'holland', 'sunflower', 'jeroen van eerden'],
+    swatches: ['#ffc312', '#fda7df', '#a3cb38', '#ee5a24', '#833471', '#6f1e51'],
+  },
+  {
+    id: 'flat-ui-tr',
+    title: 'Turkish Palette',
+    blurb: 'Neon highlighters over two near-blacks. Tamer Köseli.',
+    keywords: ['turkey', 'neon', 'electric', 'tamer koseli'],
+    swatches: ['#cd84f1', '#ffaf40', '#ffb8b8', '#32ff7e', '#4b4b4b', '#3d3d3d'],
+  },
+  {
+    id: 'flat-ui-in',
+    title: 'Indian Palette',
+    blurb: 'Warm spice over deep plum and navy. Ranganath Krishnamani.',
+    keywords: ['india', 'spice', 'fuchsia', 'ranganath krishnamani'],
+    swatches: ['#fea47f', '#55e6c1', '#1b9cfc', '#b33771', '#d6a2e8', '#82589f'],
+  },
+  {
+    id: 'flat-ui-se',
+    title: 'Swedish Palette',
+    blurb: 'High-chroma and system-bright. Jesper Dahlqvist.',
+    keywords: ['sweden', 'ios', 'bright', 'jesper dahlqvist'],
+    swatches: ['#ef5777', '#34e7e4', '#3c40c6', '#ffc048', '#485460', '#1e272e'],
+  },
+  {
+    id: 'flat-ui-ca',
+    title: 'Canadian Palette',
+    blurb: 'Candy pastels above, deep indigo below. Dmitri Litvinov.',
+    keywords: ['canada', 'pastel', 'indigo', 'dmitri litvinov'],
+    swatches: ['#ff9ff3', '#48dbfb', '#ff9f43', '#00d2d3', '#576574', '#222f3e'],
+  },
+  {
+    id: 'flat-ui-au',
+    title: 'Aussie Palette',
+    blurb: 'Sun-bleached pastels pulled hard into indigo. Kate Hoolahan.',
+    keywords: ['australia', 'bleached', 'washed', 'kate hoolahan'],
+    swatches: ['#f6e58d', '#badc58', '#f0932b', '#7ed6df', '#95afc0', '#535c68'],
+  },
+  {
+    id: 'flat-ui-ru',
+    title: 'Russian Palette',
+    blurb: 'Dusty, low-chroma and the most restrained of the fourteen. Alexander Zaytsev.',
+    keywords: ['russia', 'dusty', 'muted', 'alexander zaytsev'],
+    swatches: ['#f3a683', '#e77f67', '#f5cd79', '#786fa6', '#596275', '#303952'],
+  },
+  {
+    id: 'flat-ui-fr',
+    title: 'French Palette',
+    blurb: 'Soft pastels grading evenly into deep sea blues. Léa Poisson.',
+    keywords: ['france', 'pastel', 'gradient', 'lea poisson'],
+    swatches: ['#fad390', '#82ccdd', '#e55039', '#fa983a', '#38ada9', '#079992'],
+  },
+  {
+    id: 'flat-ui-es',
+    title: 'Spanish Palette',
+    blurb: 'Ochre, terracotta and stone — where the warm neutrals are. Miguel Camacho.',
+    keywords: ['spain', 'earthy', 'terracotta', 'ochre', 'miguel camacho'],
+    swatches: ['#40407a', '#34ace0', '#474787', '#ff5252', '#ffda79', '#ccae62'],
+  },
+  {
+    id: 'flat-ui-de',
+    title: 'German Palette',
+    blurb: 'A light and dark step per hue, plus a real grey ramp. The most systematic here. Martin David.',
+    keywords: ['germany', 'systematic', 'ramp', 'grey', 'martin david'],
+    swatches: ['#fc5c65', '#26de81', '#fa8231', '#45aaf2', '#778ca3', '#4b6584'],
+  },
+  {
+    id: 'flat-ui-cn',
+    title: 'Chinese Palette',
+    blurb: 'Vermillion and true blue over a full grey ramp. The only one that ships pure white. Wenjun.',
+    keywords: ['china', 'vermillion', 'coral', 'grey ramp', 'wenjun'],
+    swatches: ['#eccc68', '#a4b0be', '#ff6348', '#7bed9f', '#dfe4ea', '#ced6e0'],
+  },
+  {
+    id: 'flat-ui-us',
+    title: 'American Palette',
+    blurb: 'Mint, sky and lavender pastels — the most-copied palette on the web. Kevin Yang.',
+    keywords: ['united states', 'mint', 'pastel', 'dashboard', 'kevin yang'],
+    swatches: ['#55efc4', '#a29bfe', '#00cec9', '#ffeaa7', '#636e72', '#2d3436'],
+  },
+  {
+    id: 'flat-ui-gb',
+    title: 'British Palette',
+    blurb: 'Bright primaries over cool slate, with five usable greys. Jan Losert.',
+    keywords: ['united kingdom', 'britain', 'slate', 'navy', 'jan losert'],
+    swatches: ['#00a8ff', '#4cd137', '#8c7ae6', '#e84118', '#353b48', '#2f3640'],
+  },
+]
+
+/* ===========================================================================
    PATTERNS & PRINCIPLES
    ======================================================================== */
 
@@ -886,6 +1014,14 @@ export const NAV: NavSection[] = [
         pages: MEDIA,
       },
     ],
+  },
+  {
+    id: 'color',
+    title: 'Color',
+    icon: 'Palette',
+    description: 'Palettes we did not draw, and how to convert one into something you can ship.',
+    overview: true,
+    pages: COLOR,
   },
   {
     id: 'patterns',

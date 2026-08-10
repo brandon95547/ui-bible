@@ -177,15 +177,16 @@ export function Home({ onNavigate, onOpenPalette }: { onNavigate: (id: string) =
       </section>
 
       {/* ---- BROWSE ---------------------------------------------------------- */}
-      {/* The two large sections are not listed here — 79 cards is a wall, not a
+      {/* The large sections are not listed here — 90-odd cards is a wall, not a
           welcome. They index themselves, from "Overview" at the top of each in
           the sidebar. What is left is short enough to read. */}
       <section className="mt-16">
         <SectionLabel>Contents</SectionLabel>
-        <h2 className="mt-2 text-h2">The two big sections index themselves</h2>
+        <h2 className="mt-2 text-h2">The big sections index themselves</h2>
         <p className="mt-2 max-w-[62ch] text-body text-[var(--ds-fg-muted)]">
-          Foundations and Components open with an Overview — the first row of each in the sidebar,
-          and the full contents of that section. Everything else is short enough to list here.
+          Foundations, Components and Color each open with an Overview — the first row of the
+          section in the sidebar, and its full contents. Everything else is short enough to list
+          here.
         </p>
 
         <div className="mt-6 grid gap-2 sm:grid-cols-2">

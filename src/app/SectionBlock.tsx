@@ -113,6 +113,19 @@ function PageCard({ page, onNavigate }: { page: NavPage; onNavigate: (id: string
         />
       </span>
       <span className="text-caption leading-relaxed text-[var(--ds-fg-muted)]">{page.blurb}</span>
+      {/* A page whose subject is a set of colours shows them. Six stops is
+          enough to recognise a palette by and short enough not to turn the
+          card into the page. */}
+      {page.swatches && page.swatches.length > 0 && (
+        <span
+          aria-hidden
+          className="mt-1.5 flex h-4 overflow-hidden rounded-[var(--radius-xs)] ring-1 ring-inset ring-[var(--ds-border-subtle)]"
+        >
+          {page.swatches.map((hex) => (
+            <span key={hex} className="flex-1" style={{ background: hex }} />
+          ))}
+        </span>
+      )}
       {page.aliases && page.aliases.length > 0 && (
         <span className="mt-0.5 truncate text-[11px] leading-relaxed text-[var(--ds-fg-muted)]">
           Also called {page.aliases.join(', ')}

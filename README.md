@@ -46,14 +46,25 @@ changes.
 
 ## What is in here
 
-Four sections. Only **Components** is subdivided, and only one level deep.
+Five sections. Only **Components** is subdivided, and only one level deep.
 
 | Section         | Contents                                                                                                                                     |
 | --------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Foundations** | Tokens, colour, typography, spacing, grid, radius, elevation, icons, motion, animation, breakpoints, accessibility, dark theme, light theme    |
 | **Components**  | 65 components in seven groups — see below                                                                                                     |
+| **Color**       | Palettes we did not draw — Flat UI Colors 2's fourteen — plus the page on converting one into something shippable                              |
 | **Patterns**    | Dashboards, desktop, mobile, and the empty / error / loading states                                                                            |
 | **Principles**  | The UX laws every rule in here derives from                                                                                                    |
+
+**Foundations owns our colour; Color owns everyone else's.** The ramps, the semantic
+roles and the contrast contract are a foundation and stay there. A borrowed palette has
+no tokens, no theming and no authority — it is a reference you are being shown how to
+convert, and every palette page computes its own audit from the hex values rather than
+restating them. The argument for *how* you convert one lives once, on **Using a
+Palette**, instead of fourteen times.
+
+The section is flat while there is one source. A second (Material, IBM, Tailwind) turns
+it into `groups`, one per source — the shape Components already uses.
 
 | Component group  | Count | Contents                                                                                                                     |
 | ---------------- | ----- | ---------------------------------------------------------------------------------------------------------------------------- |
