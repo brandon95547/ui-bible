@@ -81,6 +81,25 @@ export function toHsl(hex: string): [number, number, number] {
   return [h * 360, s * 100, l * 100]
 }
 
+/** The inverse of toHsl. h in degrees, s and l as percentages. */
+export function hslToHex(h: number, s: number, l: number) {
+  const S = s / 100
+  const L = l / 100
+  const c = (1 - Math.abs(2 * L - 1)) * S
+  const x = c * (1 - Math.abs(((h / 60) % 2) - 1))
+  const m = L - c / 2
+  const seg = Math.floor(((h % 360) + 360) % 360 / 60)
+  const [r, g, b] = [
+    [c, x, 0],
+    [x, c, 0],
+    [0, c, x],
+    [0, x, c],
+    [x, 0, c],
+    [c, 0, x],
+  ][seg]
+  return rgbToHex([(r + m) * 255, (g + m) * 255, (b + m) * 255])
+}
+
 export function toHslString(hex: string) {
   const [h, s, l] = toHsl(hex)
   return `hsl(${Math.round(h)} ${Math.round(s)}% ${Math.round(l)}%)`
@@ -92,6 +111,65 @@ export function formatColor(hex: string, format: Format) {
   if (format === 'RGB') return toRgbString(hex)
   if (format === 'HSL') return toHslString(hex)
   return hex.toUpperCase()
+}
+
+/* -- mixing ----------------------------------------------------------------
+   Plain sRGB interpolation, which is what `color-mix(in srgb, …)` does. Not
+   perceptually uniform, and deliberately so: these functions exist to derive
+   the hover, active, border and disabled steps that a twenty-colour palette
+   never ships, and matching the browser's own arithmetic means the generated
+   CSS and the preview cannot disagree.
+   ------------------------------------------------------------------------ */
+
+export function mix(a: string, b: string, t: number) {
+  const ca = hexToRgb(a)
+  const cb = hexToRgb(b)
+  return rgbToHex([
+    ca[0] + (cb[0] - ca[0]) * t,
+    ca[1] + (cb[1] - ca[1]) * t,
+    ca[2] + (cb[2] - ca[2]) * t,
+  ])
+}
+
+export const darken = (hex: string, amount: number) => mix(hex, '#000000', amount)
+export const lighten = (hex: string, amount: string | number = 0.1) =>
+  mix(hex, '#ffffff', Number(amount))
+
+export function withAlpha(hex: string, alpha: number) {
+  const [r, g, b] = hexToRgb(hex)
+  return `rgb(${r} ${g} ${b} / ${alpha})`
+}
+
+/**
+ * The ink that hits a target ratio against a background, found by bisection
+ * between a base colour and that background.
+ *
+ * A derived text ramp built by mixing fixed percentages produces a different
+ * ramp on every palette, and on the darker ones it produces a failing one.
+ * Solving for the ratio instead means the secondary text step is 8:1 whether
+ * the palette bottoms out at #130f40 or #4b4b4b — the number is the spec, and
+ * the mix is whatever it takes to reach it.
+ */
+export function mixToContrast(ink: string, bg: string, target: number) {
+  if (contrast(ink, bg) <= target) return ink
+  // `lo` is the last mix known to clear the target; `hi` the first known to
+  // miss it. Returning the midpoint would land on either side, which is how a
+  // ramp solved for 8:1 ends up reporting 7.95:1 and failing its own spec.
+  // Return the passing bound, always.
+  let lo = 0
+  let hi = 1
+  for (let i = 0; i < 24; i++) {
+    const mid = (lo + hi) / 2
+    if (contrast(mix(ink, bg, mid), bg) >= target) lo = mid
+    else hi = mid
+  }
+  return mix(ink, bg, lo)
+}
+
+/** Shortest distance around the hue circle, in degrees. */
+export function hueDistance(a: number, b: number) {
+  const d = Math.abs(a - b) % 360
+  return d > 180 ? 360 - d : d
 }
 
 /* -- ordering -------------------------------------------------------------- */

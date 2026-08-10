@@ -394,6 +394,7 @@ import { readableOn } from '@/docs/framework/palette'
       'If two palettes look interchangeable as strips, they are interchangeable in your product. Pick on the audit numbers instead.',
       'A palette is a fast way to lose an argument about colour and get on with the layout. That is a legitimate reason to use one.',
       'Sorting by hue tells you which colours can sit next to each other; sorting by lightness tells you which ones can be read. Both orders are on every palette page.',
+      'Every palette page carries the conversion already done — surfaces, a solved text ramp, semantic roles with hover and active, chart colours and the CSS to paste. Read it as a worked example rather than a deliverable: the rules are consistent across all fourteen precisely so that they are comparable, which is not the same as being right for your product.',
     ],
     performance: [
       'Twenty custom properties cost nothing. Twenty custom properties defined inside a component that mounts a hundred times cost something — define them once at :root.',

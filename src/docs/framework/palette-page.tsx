@@ -1,6 +1,15 @@
 import { ExternalLink } from 'lucide-react'
 import { PreviewStage } from './PreviewStage'
-import { ContrastAudit, PaletteInUse, PaletteSheet, PaletteStrip } from './PaletteSheet'
+import { ContrastAudit, PaletteSheet, PaletteStrip } from './PaletteSheet'
+import {
+  AlertExamples,
+  ChartColors,
+  ComponentExamples,
+  ElevationScale,
+  SemanticRows,
+  TokenRows,
+} from './PaletteSystem'
+import { derivePaletteSystem, systemCss } from './palette-system'
 import { auditPalette, byLightness, contrast, readableOn } from './palette'
 import { defineDoc } from './types'
 import type { DocSpec } from './types'
@@ -25,21 +34,27 @@ export function definePalettePage(p: Palette): DocSpec {
   const audit = auditPalette(p.colors)
   const darkest = byLightness(p.colors)[0]
   const lightest = byLightness(p.colors)[p.colors.length - 1]
+  const sys = derivePaletteSystem(p)
+  const taken = [...sys.surfaces, ...sys.text].filter((t) => t.taken).length +
+    sys.semantic.filter((r) => r.base.taken).length +
+    sys.semantic.filter((r) => r.hover.taken).length
+  const totalTokens =
+    sys.surfaces.length + sys.text.length + sys.semantic.length * 3 + sys.chart.length
 
   /* -- generated code ----------------------------------------------------- */
 
   const vars = p.colors.map((c) => `  --flat-${p.id}-${c.slug}: ${c.hex};`).join('\n')
 
-  const css = `/* ${p.title} — ${p.author}, Flat UI Colors 2 */
+  const css = `/* ---- The twenty, verbatim. Namespaced, so a borrowed value can never
+        be mistaken for one of ours. ---------------------------------------- */
+/* ${p.title} — ${p.author}, Flat UI Colors 2 */
 :root {
 ${vars}
 }
 
-/* Tailwind v4: the same values, bound as utilities. Keep them in a namespace
-   of their own so a borrowed palette can never be mistaken for a token. */
-@theme {
-${p.colors.map((c) => `  --color-${p.id}-${c.slug}: var(--flat-${p.id}-${c.slug});`).join('\n')}
-}`
+/* ---- The system derived from them. This is the half a palette does not
+        ship, and the half a product cannot be built without. -------------- */
+${systemCss(sys)}`
 
   const usage = `// A borrowed palette is categorical data, not a set of semantics.
 // Bind it to series, not to states.
@@ -104,24 +119,77 @@ ${byLightness(p.colors)
       ),
       examples: [
         {
-          id: 'audit',
-          title: 'Which surface each colour is ink on',
-          description:
-            'Every value measured against white and against black. Read a row in both directions — 4.86:1 on white is equally “this colour as text on a white page” and “white as a label on this colour”. The verdict column is the answer people actually want when they ask whether a colour is accessible, and it is almost never both.',
+          id: 'text',
+          title: '01 · Text colours',
+          description: `A palette ships hues, not a text ramp. These five are solved against the page background rather than mixed by percentage — "secondary" means 8:1 on every one of the fourteen palettes, so the pages stay comparable and none of them ships a ramp that fails. Disabled sits below the floor deliberately; it is the one role WCAG exempts.`,
           render: (
             <PreviewStage center={false} minHeight={0} allowResize={false}>
-              <ContrastAudit colors={p.colors} />
+              <TokenRows sys={sys} tokens={sys.text} />
             </PreviewStage>
           ),
         },
         {
-          id: 'in-use',
-          title: 'The same six colours on both surfaces',
-          description:
-            'A palette is drawn against one background and then used against another. Chart marks, the legend beside them, and a label sitting inside the fill — this is where a set that looked fine as a strip starts losing members.',
+          id: 'surfaces',
+          title: '02 · Surfaces and backgrounds',
+          description: `Anchored on ${darkest.name}, the darkest colour in the set. The rest of the ladder is computed, because no palette ships two darks that happen to sit 16% apart — and depth read from surface lightness is the only kind that survives greyscale, high-contrast mode and a phone in sunlight.`,
           render: (
             <PreviewStage center={false} minHeight={0} allowResize={false}>
-              <PaletteInUse colors={p.colors} />
+              <TokenRows sys={sys} tokens={sys.surfaces} />
+            </PreviewStage>
+          ),
+        },
+        {
+          id: 'semantic',
+          title: '03 · Semantic colours',
+          description:
+            'Primary is the palette’s opening colour — designers lead with their signature. The status roles are the nearest hue this palette carries to each target, which is the honest version of a choice usually made by eye. Hover prefers a darker sibling the designer actually drew; active is always computed. Where a role sits far from its ideal hue, the row says so.',
+          render: (
+            <PreviewStage center={false} minHeight={0} allowResize={false}>
+              <SemanticRows sys={sys} />
+            </PreviewStage>
+          ),
+        },
+        {
+          id: 'components',
+          title: '04 · Component examples',
+          description:
+            'The moment the palette stops being a picture. Filled, outlined and text buttons across five roles, four field states, and the selection controls — a colour that read as confident in a swatch grid often cannot hold a five-character label, and there is no way to discover that except by putting the label on it.',
+          render: (
+            <PreviewStage center={false} minHeight={0} allowResize={false}>
+              <ComponentExamples sys={sys} />
+            </PreviewStage>
+          ),
+        },
+        {
+          id: 'chart',
+          title: '05 · Chart colours',
+          description:
+            'Eight hues spread around the circle, each required to clear 3:1 against the page — under WCAG 1.4.11 a chart mark is a meaningful graphic, so a series nobody can see is not a style choice. This set is kept separate from the semantic roles on purpose: a series that happens to be red must not read as a failure.',
+          render: (
+            <PreviewStage center={false} minHeight={0} allowResize={false}>
+              <ChartColors sys={sys} />
+            </PreviewStage>
+          ),
+        },
+        {
+          id: 'alerts',
+          title: '06 · Alerts and notifications',
+          description:
+            'The four status roles doing the job they exist for, each with an icon and a word alongside the fill. Run these through a greyscale filter — if you can still tell the error from the success, colour was reinforcing the message rather than carrying it.',
+          render: (
+            <PreviewStage center={false} minHeight={0} allowResize={false}>
+              <AlertExamples sys={sys} />
+            </PreviewStage>
+          ),
+        },
+        {
+          id: 'elevation',
+          title: '07 · Elevation',
+          description:
+            'The one part of the system that is not derived from the palette and never should be. Shadows are black at rising alpha on every palette on earth; on a page this dark they barely register, which is why the surface ladder in section 02 is what actually carries depth.',
+          render: (
+            <PreviewStage center={false} minHeight={0} allowResize={false}>
+              <ElevationScale sys={sys} />
             </PreviewStage>
           ),
         },
@@ -223,7 +291,7 @@ ${byLightness(p.colors)
       css: {
         lang: 'css',
         code: css,
-        caption: 'Namespaced by palette, so a borrowed value can never be mistaken for one of ours.',
+        caption: `The twenty plus the ${totalTokens} they were expanded into. ${taken} of those are literal palette colours; the rest are computed, and each carries the arithmetic that produced it.`,
       },
     },
 
@@ -247,5 +315,15 @@ ${byLightness(p.colors)
         'The fastest legitimate use is prototyping: grab a palette, get the categorical colours out of the way, and spend the argument you saved on hierarchy instead.',
       ],
     },
+
+    appendix: [
+      {
+        id: 'reference',
+        title: 'Contrast reference',
+        description:
+          'The measurement behind every derivation above. White and black bound what a colour can do, and reading a row in both directions gives you both answers at once — 4.86:1 on white is equally “this as text on a white page” and “white as a label on this fill”. The last column is what people mean when they ask whether a colour is accessible, and it is almost never both.',
+        render: <ContrastAudit colors={p.colors} />,
+      },
+    ],
   })
 }
