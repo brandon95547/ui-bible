@@ -734,8 +734,21 @@ const MEDIA: NavPage[] = [
     title: 'Video',
     blurb:
       'Player controls, poster frames, captions, and the autoplay rules that keep it legal and quiet.',
-    aliases: ['Player', 'Media Player', 'Audio'],
+    // "Audio" used to alias this page, from when sound had nowhere else to go. It
+    // now belongs to Audio Player: the two differ in the way the one-purpose rule
+    // asks about — no picture means the waveform IS the content surface, the list
+    // is the hard case rather than the exception, and the failure mode is a
+    // hundred megabytes of decoding rather than a missing caption track.
+    aliases: ['Player', 'Media Player'],
     keywords: ['captions', 'poster', 'autoplay', 'muted', 'transcript', 'controls'],
+  },
+  {
+    id: 'audio-player',
+    title: 'Audio Player',
+    blurb:
+      'Playback for sound with no picture. The waveform is the content, the list is the hard case, and one clip plays at a time.',
+    aliases: ['Waveform', 'Waveform Player', 'Sound Player', 'Voice Preview', 'Audio Scrubber'],
+    keywords: ['audio', 'waveform', 'peaks', 'seek', 'scrubber', 'playhead', 'narration', 'sample', 'podcast', 'transport'],
   },
   {
     id: 'link',

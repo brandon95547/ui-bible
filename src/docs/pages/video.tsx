@@ -175,7 +175,7 @@ export default defineDoc({
     title: 'Video',
     tagline:
       'Player controls, poster frames, captions, and the autoplay rules that keep it legal and quiet.',
-    keywords: ['player', 'media player', 'audio', 'captions', 'poster', 'autoplay', 'transcript', 'controls'],
+    keywords: ['player', 'media player', 'captions', 'poster', 'autoplay', 'transcript', 'controls'],
   },
 
   overview: {
@@ -206,6 +206,11 @@ export default defineDoc({
         text: 'It is a loading animation.',
         instead: 'a Progress Indicator or a Skeleton',
         to: '#/progress-indicator',
+      },
+      {
+        text: 'There is nothing to look at — it is speech, music or a sound effect.',
+        instead: 'an Audio Player, where the waveform stands in for the picture',
+        to: '#/audio-player',
       },
     ],
     reasoning: (
