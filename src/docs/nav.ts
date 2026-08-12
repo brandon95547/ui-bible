@@ -937,6 +937,27 @@ const PATTERNS: NavPage[] = [
 
 const PRINCIPLES: NavPage[] = [
   {
+    id: 'visual-hierarchy',
+    title: 'Visual Hierarchy',
+    blurb:
+      'Decide what an element IS before what colour it is. Role sets elevation; elevation is then expressed.',
+    aliases: ['Layering', 'Depth', 'Surface Hierarchy'],
+    keywords: [
+      'hierarchy',
+      'elevation',
+      'surface',
+      'depth',
+      'contrast',
+      'layering',
+      'dark mode',
+      'boxing',
+      'nesting',
+      'role',
+      'emphasis',
+      'scanning',
+    ],
+  },
+  {
     id: 'ux-rules',
     title: 'UX Rules',
     blurb:
