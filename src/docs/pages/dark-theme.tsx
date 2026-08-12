@@ -1,3 +1,4 @@
+import * as React from 'react'
 import { Button } from '@/ui/Button'
 import { Badge } from '@/ui/Display'
 import { Alert } from '@/ui/Feedback'
@@ -29,6 +30,61 @@ function SurfaceLadder({ theme }: { theme: 'dark' | 'light' }) {
           </div>
         ))}
       </Stack>
+    </div>
+  )
+}
+
+/* Page → panel → control, nested for real rather than drawn side by side: the
+   failure only becomes obvious when the control is physically inside the thing
+   it is supposed to be sitting on. */
+function SurfaceStack({ correct }: { correct: boolean }) {
+  return (
+    <div className="rounded-[var(--radius-lg)] bg-[var(--ds-canvas)] p-3">
+      <p className="mb-2 text-[10px] uppercase tracking-wide text-[var(--ds-fg-muted)]">
+        canvas · #0A0B0E
+      </p>
+      <div className="rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] p-3">
+        <p className="mb-2 text-[10px] uppercase tracking-wide text-[var(--ds-fg-muted)]">
+          panel · #101216
+        </p>
+        <div
+          className="rounded-[var(--radius-sm)] border border-[var(--ds-border-interactive)] px-3 py-2"
+          style={{ background: correct ? 'var(--ds-field)' : 'var(--ds-surface-inset)' }}
+        >
+          <span className="text-caption text-[var(--ds-fg-secondary)]">
+            control · {correct ? '#191D24' : '#0D0F13'}
+          </span>
+        </div>
+        <p className="mt-2 text-[10px] leading-relaxed text-[var(--ds-fg-muted)]">
+          {correct
+            ? 'Two steps, both upward. The control is the lightest thing in the stack, so it is unmistakably the part you touch.'
+            : 'The control is darker than the panel AND darker than the page behind it. It has fallen through both.'}
+        </p>
+      </div>
+    </div>
+  )
+}
+
+/* A real field, so the difference is judged the way it will be met — with a
+   label, a placeholder and something to hover. */
+function FieldSample({ token, hoverToken }: { token: string; hoverToken?: string }) {
+  const [hover, setHover] = React.useState(false)
+  return (
+    <div className="rounded-[var(--radius-lg)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] p-4">
+      <label className="mb-1.5 block text-label text-[var(--ds-fg-secondary)]">Report title</label>
+      <div
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
+        className="flex h-9 items-center rounded-[var(--radius-md)] border border-[var(--ds-border-interactive)] px-3 transition-colors duration-[120ms]"
+        style={{ background: `var(${hover && hoverToken ? hoverToken : token})` }}
+      >
+        <span className="text-body text-[var(--ds-fg-muted)]">Enter a working title</span>
+      </div>
+      <p className="mt-2 text-[10px] leading-relaxed text-[var(--ds-fg-muted)]">
+        {hoverToken
+          ? 'Sits above the card and lifts again on hover — it answers the pointer.'
+          : 'Sits below the card it is inside. On a near-black page there is nowhere darker left to go, so it stops reading as a field at all.'}
+      </p>
     </div>
   )
 }
@@ -173,6 +229,69 @@ export default defineDoc({
         ),
       },
       {
+        id: 'stacking',
+        title: 'Stacked surfaces only go up',
+        description:
+          'The single rule that decides every surface colour in dark mode: whatever sits on top of something else is lighter than the thing behind it. Depth is lightness here, so a surface that goes darker is not "recessed" — it has moved backwards, behind the page it is supposed to be sitting on.',
+        render: (
+          <PreviewStage center={false} minHeight={0} allowResize={false}>
+            <div className="grid w-full gap-4 lg:grid-cols-2">
+              <Cell label="Each layer lighter than the last" tone="good">
+                <SurfaceStack correct />
+              </Cell>
+              <Cell label="The control goes darker than its panel" tone="bad">
+                <SurfaceStack correct={false} />
+              </Cell>
+            </div>
+          </PreviewStage>
+        ),
+      },
+      {
+        id: 'controls-go-up',
+        title: 'A control is a surface, not a hole',
+        description:
+          'Material 3 puts a filled text field on surface-container-highest — the lightest container in the ramp, never a darker one. The reason is behavioural, not decorative: lightness is what reads as "in front of the page", and anything a person is meant to click or type into has to read that way. The Bible used to back fields with --ds-surface-inset and it was wrong; inset is now reserved for wells nobody interacts with.',
+        render: (
+          <PreviewStage center={false} minHeight={0} allowResize={false}>
+            <div className="grid w-full gap-4 lg:grid-cols-2">
+              <Cell label="--ds-field · a control you can act on" tone="good">
+                <FieldSample token="--ds-field" hoverToken="--ds-field-hover" />
+              </Cell>
+              <Cell label="--ds-surface-inset · reads as switched off" tone="bad">
+                <FieldSample token="--ds-surface-inset" />
+              </Cell>
+            </div>
+          </PreviewStage>
+        ),
+      },
+      {
+        id: 'inset-exception',
+        title: 'The one place darker is right',
+        description:
+          'Inset survives for wells that hold content rather than accept input — a code block, a table header, the unfilled part of a meter. Nothing here invites a click, so reading as "behind the surface" is accurate rather than misleading. If it has a focus ring, it is not one of these.',
+        render: (
+          <PreviewStage center={false} minHeight={0} allowResize={false}>
+            <div className="grid w-full gap-4 sm:grid-cols-3">
+              {[
+                ['Code block', 'holds content'],
+                ['Table header', 'labels a grid'],
+                ['Meter track', 'the unfilled part'],
+              ].map(([label, note]) => (
+                <div
+                  key={label}
+                  className="rounded-[var(--radius-lg)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] p-3"
+                >
+                  <div className="rounded-[var(--radius-md)] bg-[var(--ds-surface-inset)] px-3 py-2">
+                    <p className="text-caption text-[var(--ds-fg-secondary)]">{label}</p>
+                  </div>
+                  <p className="mt-2 text-[10px] text-[var(--ds-fg-muted)]">{note}</p>
+                </div>
+              ))}
+            </div>
+          </PreviewStage>
+        ),
+      },
+      {
         id: 'chroma',
         title: 'Colour has to move',
         description:
@@ -250,10 +369,17 @@ export default defineDoc({
       },
       {
         n: 3,
+        label: 'Field',
+        value: '#191D24 — lighter than surface',
+        kind: 'color',
+        note: 'Controls go UP. Material 3 puts a filled field on the lightest container in the ramp: a thing you can act on is a surface standing on the page, not a hole cut into it.',
+      },
+      {
+        n: 3.5,
         label: 'Inset',
         value: '#0D0F13 — darker than surface',
         kind: 'color',
-        note: 'Wells go the other way. An input darker than its card reads as a hole you can pour text into; lighter reads as a button.',
+        note: 'Only for wells nobody clicks: code blocks, table headers, meter tracks, media areas. It used to back inputs too, which is what made fields read as switched off.',
       },
       {
         n: 4,
@@ -277,7 +403,9 @@ export default defineDoc({
     { category: 'color', token: '--ds-surface', value: '#101216', usedFor: 'Cards, panels' },
     { category: 'color', token: '--ds-surface-raised', value: '#171a20', usedFor: 'Elevated cards, active segments' },
     { category: 'color', token: '--ds-surface-overlay', value: '#1d212a', usedFor: 'Dialogs, menus, toasts' },
-    { category: 'color', token: '--ds-surface-inset', value: '#0d0f13', usedFor: 'Inputs, code blocks, table headers' },
+    { category: 'color', token: '--ds-field', value: '#191d24', usedFor: 'Inputs, selects, textareas — a control is a raised surface' },
+    { category: 'color', token: '--ds-field-hover', value: '#1f242d', usedFor: 'The lift a field takes under the pointer' },
+    { category: 'color', token: '--ds-surface-inset', value: '#0d0f13', usedFor: 'Non-interactive wells only: code blocks, table headers, meter tracks' },
     { category: 'color', token: '--ds-fg', value: '#edeff4', usedFor: 'Primary text — 13.8:1 on canvas' },
     { category: 'color', token: '--ds-fg-secondary', value: '#a8b0c0', usedFor: 'Body text — 7.6:1' },
     { category: 'color', token: '--ds-fg-muted', value: '#737c8d', usedFor: 'Captions — 4.6:1' },

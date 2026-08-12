@@ -136,9 +136,18 @@ const padX: Record<ControlSize, string> = { sm: 'px-2.5', md: 'px-3', lg: 'px-3.
 
 export function controlShell(status: FieldStatus, disabled?: boolean, readOnly?: boolean) {
   return cn(
-    'w-full bg-[var(--ds-surface-inset)] border transition-[border-color,box-shadow,background-color]',
+    // --ds-field, not --ds-surface-inset. Material 3 puts a filled field on the
+    // LIGHTEST container in the ramp (surface-container-highest), never a darker
+    // one: a control you can act on is a surface standing on the page, not a hole
+    // cut into it. The inset token was landing this field below the card it sat
+    // in, which read as a recess and — on a near-black canvas — as a control that
+    // had been switched off. Inset now means non-interactive wells only.
+    'w-full bg-[var(--ds-field)] border transition-[border-color,box-shadow,background-color]',
     'duration-[120ms] ease-[cubic-bezier(0.2,0,0,1)]',
     'placeholder:text-[var(--ds-fg-muted)]',
+    // The hover lift is the other half of "this is a control": it answers the
+    // pointer. Suppressed for disabled and readOnly below, which are not controls.
+    !disabled && !readOnly && 'hover:bg-[var(--ds-field-hover)]',
     status === 'default' && 'border-[var(--ds-border-interactive)] hover:border-[var(--ds-border-strong)]',
     status === 'error' && 'border-[var(--ds-danger-border)] hover:border-[var(--ds-danger)]',
     status === 'success' && 'border-[var(--ds-success-border)]',
@@ -216,7 +225,7 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(func
       <span
         className="block"
         {...inspect(`TextInput · ${size}`, {
-          tokens: ['--ds-surface-inset', '--ds-border-interactive', '--ds-accent', '--radius-md'],
+          tokens: ['--ds-field', '--ds-border-interactive', '--ds-accent', '--radius-md'],
           why: 'The control is inset (darker than the surface) so it reads as a hole you can pour text into, not a raised button you press. 12px horizontal padding gives the caret breathing room at the left edge.',
           a11y: 'aria-invalid flips on error. Focus adds a 3px halo — the border colour alone is a 1px cue and fails for low-vision users.',
         })}
@@ -240,7 +249,7 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(func
         className,
       )}
       {...inspect(`TextInput · ${size} · adorned`, {
-        tokens: ['--ds-surface-inset', '--ds-border-interactive', '--radius-md', '--ds-fg-muted'],
+        tokens: ['--ds-field', '--ds-border-interactive', '--radius-md', '--ds-fg-muted'],
         why: 'Adornments live inside the border so the whole thing reads as one control. Icons are muted, not full-contrast — they are wayfinding, not content.',
         a11y: 'The wrapper carries :focus-within styling; the inner input keeps a real focus event so screen readers still fire correctly.',
       })}
@@ -396,7 +405,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(fun
         className,
       )}
       {...inspect('Textarea', {
-        tokens: ['--ds-surface-inset', '--radius-md', '--ds-border-interactive'],
+        tokens: ['--ds-field', '--radius-md', '--ds-border-interactive'],
         why: 'Default height shows ~4 lines. Two lines makes users feel they should be brief; ten makes an empty box feel like homework. Resize is vertical-only — horizontal resize breaks the form grid.',
         a11y: 'Never disable resize entirely unless auto-resize replaces it; users with low vision enlarge the box to read their own text.',
       })}

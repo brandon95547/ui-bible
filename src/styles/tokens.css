@@ -130,6 +130,17 @@
   --ds-surface-overlay: #1d212a;
   --ds-surface-inset: #0d0f13;
 
+  /* Interactive control surfaces. Material 3 puts a filled field on
+     surface-container-highest — the LIGHTEST container in the ramp, never a
+     darker one — because a control you can act on is a surface standing on the
+     page, not a hole cut into it. These sit a step above --ds-surface so a field
+     reads as raised whether it lands on the canvas or inside a card.
+     --ds-surface-inset stays, but only for the things it was always right for:
+     non-interactive wells (code blocks, table headers, meter tracks, media
+     areas), where nothing is asking to be clicked. */
+  --ds-field: #191d24;
+  --ds-field-hover: #1f242d;
+
   /* Interaction layers — always alpha so they compose over any surface. */
   --ds-layer-hover: rgb(255 255 255 / 0.045);
   --ds-layer-active: rgb(255 255 255 / 0.075);
@@ -220,6 +231,13 @@
   --ds-surface-raised: #ffffff;
   --ds-surface-overlay: #ffffff;
   --ds-surface-inset: #f7f8fa;
+
+  /* The rule is "a control is its own container", not "a control is lighter".
+     Light theme has nowhere to go above white, so the container tints AWAY from
+     the page instead — the same separation, achieved in the only direction
+     available. This is why the two themes cannot be inversions of each other. */
+  --ds-field: #f7f8fa;
+  --ds-field-hover: #f0f2f5;
 
   --ds-layer-hover: rgb(16 18 22 / 0.04);
   --ds-layer-active: rgb(16 18 22 / 0.075);

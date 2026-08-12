@@ -54,7 +54,7 @@ export function NativeSelect({
           className,
         )}
         {...inspect('Select · native', {
-          tokens: ['--ds-surface-inset', '--radius-md', '--ds-border-interactive'],
+          tokens: ['--ds-field', '--radius-md', '--ds-border-interactive'],
           why: 'Right padding is 36px, not 12px — the chevron needs 16px plus its own 12px gutter, or long option labels collide with it.',
           a11y: 'A native <select> is keyboard-, screen-reader- and mobile-complete on day one. A custom listbox has to re-implement all of it and usually gets type-ahead wrong.',
         })}

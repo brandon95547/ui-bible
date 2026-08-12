@@ -407,7 +407,8 @@ export default defineDoc({
   },
 
   tokens: [
-    { category: 'color', token: '--ds-surface-inset', usedFor: 'Field background — darker than the surface' },
+    { category: 'color', token: '--ds-field', usedFor: 'Field background — a step LIGHTER than the surface it sits on' },
+    { category: 'color', token: '--ds-field-hover', usedFor: 'Hover lift, so the field answers the pointer' },
     { category: 'color', token: '--ds-border-interactive', usedFor: 'Resting border' },
     { category: 'color', token: '--ds-border-strong', usedFor: 'Hover border' },
     { category: 'color', token: '--ds-accent', usedFor: 'Focused border' },
@@ -647,7 +648,10 @@ export default defineDoc({
   inline-size: 100%;
   block-size: 36px;
   padding-inline: 12px;
-  background: var(--ds-surface-inset);   /* a well, not a button */
+  /* Material 3 fills a text field with the lightest container in the ramp,
+     never a darker one: a control is a surface standing on the page, not a
+     hole cut into it. --ds-surface-inset is for wells nobody clicks. */
+  background: var(--ds-field);
   border: 1px solid var(--ds-border-interactive);
   border-radius: var(--radius-md);
   color: var(--ds-fg);
@@ -681,7 +685,7 @@ export default defineDoc({
 /* Autofill: browsers force their own background. Paint over it. */
 .ds-input:-webkit-autofill {
   -webkit-text-fill-color: var(--ds-fg);
-  box-shadow: 0 0 0 1000px var(--ds-surface-inset) inset;
+  box-shadow: 0 0 0 1000px var(--ds-field) inset;
 }
 
 /* iOS zooms in on focus when the font is under 16px */
