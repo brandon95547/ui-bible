@@ -318,24 +318,26 @@
 }
 
 /* ---- CODE -------------------------------------------------------------- */
+/* Dark values come from the Spanish palette (see tokens.css). Light overrides
+   below are unchanged. */
 .tok-key {
-  color: #b0a4ff;
+  color: #b2b1e7;
 }
 .tok-str {
-  color: #62dca7;
+  color: #5ce3c4;
 }
 .tok-num {
-  color: #ffc94d;
+  color: #ffda79;
 }
 .tok-com {
   color: var(--ds-fg-muted);
   font-style: italic;
 }
 .tok-tag {
-  color: #ff929b;
+  color: #ff9d70;
 }
 .tok-attr {
-  color: #f7b222;
+  color: #6cc4ea;
 }
 .tok-punc {
   color: var(--ds-fg-muted);

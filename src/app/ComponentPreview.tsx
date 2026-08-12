@@ -803,10 +803,13 @@ const PREVIEWS: Record<string, () => React.ReactElement> = {
           h={54}
           className="rounded-[5px] bg-[linear-gradient(to_top_right,#000,transparent),linear-gradient(to_right,#fff,var(--p-brand-500))]"
         />
+        {/* A hue wheel, so it has to be literal rather than tokenised — but the
+            literals were the old iris/emerald/amber set and survived the palette
+            swap looking like a different product. Spanish palette now. */}
         <Bar
           w={78}
           h={8}
-          className="rounded-[3px] bg-[linear-gradient(to_right,#ee4351,#f7b222,#16b375,#2e7df6,#7c6cff,#ee4351)]"
+          className="rounded-[3px] bg-[linear-gradient(to_right,#ff5252,#ffb142,#33d9b2,#34ace0,#706fd3,#ff5252)]"
         />
       </Col>
       <Col className="gap-1.5">

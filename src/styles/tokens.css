@@ -36,19 +36,23 @@
   --p-neutral-975: #0a0b0e;
   --p-neutral-1000: #000000;
 
-  /* Brand — iris. Hue 265. Chosen for high chroma at both ends of the ramp
-     so it survives on white and on near-black without a second brand color. */
-  --p-brand-50: #f2f0ff;
-  --p-brand-100: #e6e2ff;
-  --p-brand-200: #cfc8ff;
-  --p-brand-300: #b0a4ff;
-  --p-brand-400: #937fff;
-  --p-brand-500: #7c6cff;
-  --p-brand-600: #6a55f2;
-  --p-brand-700: #5942d6;
-  --p-brand-800: #4835a8;
-  --p-brand-900: #322663;
-  --p-brand-950: #1e1740;
+  /* Brand — C64 Purple from the Spanish Palette, the derivation's `primary`.
+     500 is the palette colour itself; lighter steps mix toward white, darker
+     toward --ds-sunken, so both ends land inside the palette's own world rather
+     than drifting to a generic violet. 900 comes out at #2c2c54 — Lucky Point,
+     the palette's own second purple — which is the check that the anchors are
+     right rather than a coincidence worth admiring. */
+  --p-brand-50: #f4f3fb;
+  --p-brand-100: #e8e8f8;
+  --p-brand-200: #d1d1f1;
+  --p-brand-300: #b2b1e7;    /* 8.0:1 on canvas — the text-safe step */
+  --p-brand-400: #8f8fdd;    /* 5.5:1 */
+  --p-brand-500: #706fd3;    /* taken: C64 Purple */
+  --p-brand-600: #5c5cae;
+  --p-brand-700: #4c4c90;
+  --p-brand-800: #3c3c72;
+  --p-brand-900: #2c2c54;    /* = Lucky Point, arrived at by the ramp */
+  --p-brand-950: #222240;
 
   /* Success — emerald */
   --p-success-50: #e8fbf2;
@@ -104,14 +108,14 @@
 
   /* Categorical — data viz, tags, avatars. Ordered for maximum adjacent
      separation, including for deuteranopia. Never used for status. */
-  --p-viz-1: #7c6cff;
-  --p-viz-2: #35c98a;
-  --p-viz-3: #f7b222;
-  --p-viz-4: #529aff;
-  --p-viz-5: #ff7ac6;
-  --p-viz-6: #2ed3d3;
-  --p-viz-7: #ff9556;
-  --p-viz-8: #b0a4ff;
+  --p-viz-1: #706fd3;   /* C64 Purple */
+  --p-viz-2: #33d9b2;   /* Celestial Green */
+  --p-viz-3: #ff5252;   /* Fluorescent Red */
+  --p-viz-4: #ccae62;   /* Desert */
+  --p-viz-5: #218c74;   /* Palm Springs Splash */
+  --p-viz-6: #ff793f;   /* Synthetic Pumpkin */
+  --p-viz-7: #f7f1e3;   /* Swan White */
+  --p-viz-8: #ffb142;   /* Mandarin Sorbet */
 }
 
 /* ---------------------------------------------------------------------------
@@ -121,14 +125,31 @@
 [data-theme='dark'] {
   color-scheme: dark;
 
+  /* ---------------------------------------------------------------------
+     THE SPANISH PALETTE, RUN THROUGH OUR OWN DERIVATION
+
+     The ground is no longer a neutral near-black. It is Lucky Point (#2c2c54)
+     and its neighbours — the two deep purples that give this palette its
+     character — with the ochres and terracottas carrying status.
+
+     These are not eyeballed. Every value below is the output of
+     derivePaletteSystem(palette('es')) — the same function that draws the
+     Spanish Palette page — so the site is now a worked example of its own
+     documentation, and re-running the derivation reproduces it exactly.
+
+     Still dark, deliberately: the palette's Swan White and Crocodile Tooth
+     would make a handsome light theme, but that is a different decision.
+     The light theme below is untouched.
+     --------------------------------------------------------------------- */
+
   /* Surfaces. In dark UI, elevation is communicated by getting *lighter*,
      not by casting a bigger shadow — a shadow on black is invisible. */
-  --ds-canvas: #0a0b0e;
-  --ds-sunken: #07080a;
-  --ds-surface: #101216;
-  --ds-surface-raised: #171a20;
-  --ds-surface-overlay: #1d212a;
-  --ds-surface-inset: #0d0f13;
+  --ds-canvas: #1e1e39;             /* derived: the page, below Lucky Point */
+  --ds-sunken: #17172c;             /* derived: one step under the page */
+  --ds-surface: #252547;            /* derived */
+  --ds-surface-raised: #2c2c54;     /* taken: Lucky Point, row 2 col 1 */
+  --ds-surface-overlay: #3b3b60;    /* derived: the top of the ramp */
+  --ds-surface-inset: #191932;      /* derived: wells only, see --ds-field */
 
   /* Interactive control surfaces. Material 3 puts a filled field on
      surface-container-highest — the LIGHTEST container in the ramp, never a
@@ -138,22 +159,26 @@
      --ds-surface-inset stays, but only for the things it was always right for:
      non-interactive wells (code blocks, table headers, meter tracks, media
      areas), where nothing is asking to be clicked. */
-  --ds-field: #191d24;
-  --ds-field-hover: #1f242d;
+  --ds-field: #32325c;              /* a step above raised — a control, not a well */
+  --ds-field-hover: #3a3a69;
 
   /* Interaction layers — always alpha so they compose over any surface. */
   --ds-layer-hover: rgb(255 255 255 / 0.045);
   --ds-layer-active: rgb(255 255 255 / 0.075);
-  --ds-layer-selected: rgb(124 108 255 / 0.16);
-  --ds-layer-scrim: rgb(4 5 7 / 0.72);
+  --ds-layer-selected: rgb(112 111 211 / 0.16);
+  --ds-layer-scrim: rgb(12 12 25 / 0.72);
 
-  /* Foreground */
-  --ds-fg: #edeff4;
-  --ds-fg-secondary: #a8b0c0;
-  --ds-fg-muted: #a6a6a6;
-  --ds-fg-disabled: #4e5665;
+  /* Foreground. Ratios are measured against --ds-canvas by the derivation. */
+  --ds-fg: #f6f5f4;                 /* 14.8:1 — near Swan White, off the palette */
+  --ds-fg-secondary: #b6b6bd;       /* 8.0:1 */
+  /* The derivation lands muted at 4.5:1 against the PAGE, but muted text does not
+     only sit on the page — it is the placeholder inside a field and the caption on
+     an overlay, both lighter grounds. At the derived value a placeholder measured
+     3.4:1. Lifted until it clears 4.5:1 on the lightest surface it can land on. */
+  --ds-fg-muted: #a9a8b1;           /* 6.9:1 page · 5.1:1 field · 4.5:1 overlay */
+  --ds-fg-disabled: #606072;        /* 2.6:1 — not text, a state */
   --ds-fg-on-accent: #ffffff;
-  --ds-fg-inverse: #171a20;
+  --ds-fg-inverse: #1e1e39;
 
   /* Borders */
   --ds-border-subtle: rgb(255 255 255 / 0.06);
@@ -161,49 +186,64 @@
   --ds-border-strong: rgb(255 255 255 / 0.19);
   --ds-border-interactive: rgb(255 255 255 / 0.14);
 
-  /* Brand */
-  --ds-accent: #7c6cff;
-  --ds-accent-hover: #8f81ff;
-  --ds-accent-active: #6a55f2;
-  --ds-accent-fg: #ffffff;
-  --ds-accent-subtle: rgb(124 108 255 / 0.15);
-  --ds-accent-subtle-hover: rgb(124 108 255 / 0.22);
-  --ds-accent-border: rgb(124 108 255 / 0.38);
-  --ds-accent-text: #b0a4ff;
+  /* Brand — C64 Purple, the derivation's `primary`. The nearest thing this
+     palette has to the violet the Bible already used, so the identity survives
+     the swap; hover lightens and active darkens, per the elevation rule. */
+  /* One step under C64 Purple. The palette colour itself takes a white label at
+     4.28:1 — the derivation reports 4.3 and accepts it, but that is under AA for
+     normal text, and this fill's whole job is carrying button labels. Darkened
+     until the label passes; the palette colour survives untouched as
+     --p-brand-500 and as the chart's eighth series. */
+  --ds-accent: #6867c9;             /* derived from C64 Purple for label contrast */
+  --ds-accent-hover: #7f7edb;       /* derived: lightened */
+  --ds-accent-active: #5554a0;      /* derived: pressed */
+  --ds-accent-fg: #ffffff;          /* 4.8:1 on the fill, measured */
+  --ds-accent-subtle: rgb(112 111 211 / 0.18);
+  --ds-accent-subtle-hover: rgb(112 111 211 / 0.26);
+  --ds-accent-border: rgb(112 111 211 / 0.42);
+  --ds-accent-text: #aba9ea;        /* the fill itself is too dark for text here */
 
-  /* Status — `-text` is the pair certified for text on `-subtle`. */
-  --ds-success: #16b375;
-  --ds-success-hover: #1cc082;
-  --ds-success-fg: #04231a;
-  --ds-success-subtle: rgb(53 201 138 / 0.14);
-  --ds-success-border: rgb(53 201 138 / 0.34);
-  --ds-success-text: #62dca7;
+  /* Status — `-text` is the pair certified for text on `-subtle`.
+     Roles are the derivation's, so they are checkable against the palette page.
+     Where it names a darker palette colour as the hover, that becomes `-active`
+     instead: on a dark ground a control lightens under the pointer and darkens
+     under the press, and inverting that would contradict the elevation rule two
+     sections up. Every `-fg` is the measured pair for its fill. */
+  --ds-success: #33d9b2;            /* taken: Celestial Green */
+  --ds-success-hover: #5ce3c4;      /* derived: lightened */
+  --ds-success-active: #218c74;     /* taken: Palm Springs Splash */
+  --ds-success-fg: #1e1e39;         /* 9.0:1 on the fill */
+  --ds-success-subtle: rgb(51 217 178 / 0.14);
+  --ds-success-border: rgb(51 217 178 / 0.34);
+  --ds-success-text: #5ce3c4;
 
-  --ds-warning: #f7b222;
-  --ds-warning-hover: #ffc142;
-  --ds-warning-fg: #2a1a06;
-  --ds-warning-subtle: rgb(247 178 34 / 0.14);
-  --ds-warning-border: rgb(247 178 34 / 0.34);
-  --ds-warning-text: #ffc94d;
+  --ds-warning: #ffda79;            /* taken: Spiced Butternut */
+  --ds-warning-hover: #ffe79c;      /* derived: lightened */
+  --ds-warning-active: #ffb142;     /* taken: Mandarin Sorbet */
+  --ds-warning-fg: #1e1e39;         /* 12.0:1 on the fill */
+  --ds-warning-subtle: rgb(255 218 121 / 0.14);
+  --ds-warning-border: rgb(255 218 121 / 0.34);
+  --ds-warning-text: #ffda79;
 
-  --ds-danger: #ee4351;
-  --ds-danger-hover: #fa5b68;
-  --ds-danger-active: #d62838;
-  --ds-danger-fg: #ffffff;
-  --ds-danger-subtle: rgb(250 100 112 / 0.14);
-  --ds-danger-border: rgb(250 100 112 / 0.36);
-  --ds-danger-text: #ff929b;
+  --ds-danger: #ff793f;             /* taken: Synthetic Pumpkin */
+  --ds-danger-hover: #ff9463;       /* derived: lightened */
+  --ds-danger-active: #cd6133;      /* taken: Chilean Fire */
+  --ds-danger-fg: #1e1e39;          /* 6.2:1 on the fill */
+  --ds-danger-subtle: rgb(255 121 63 / 0.14);
+  --ds-danger-border: rgb(255 121 63 / 0.36);
+  --ds-danger-text: #ff9d70;
 
-  --ds-info: #2e7df6;
-  --ds-info-hover: #4a90ff;
-  --ds-info-fg: #ffffff;
-  --ds-info-subtle: rgb(82 154 255 / 0.14);
-  --ds-info-border: rgb(82 154 255 / 0.34);
-  --ds-info-text: #85b9ff;
+  --ds-info: #34ace0;               /* taken: Summer Sky */
+  --ds-info-hover: #5cbde7;         /* derived: lightened */
+  --ds-info-active: #227093;        /* taken: Devil Blue */
+  --ds-info-fg: #1e1e39;            /* 6.2:1 on the fill */
+  --ds-info-subtle: rgb(52 172 224 / 0.14);
+  --ds-info-border: rgb(52 172 224 / 0.34);
+  --ds-info-text: #6cc4ea;
 
   /* Focus — one ring for the whole system. Users learn it once. */
-  --ds-focus-ring: #937fff;
-  --ds-focus-ring-offset: #0a0b0e;
+  --ds-focus-ring: #8584dd;
+  --ds-focus-ring-offset: #1e1e39;
 
   /* Elevation. Dark shadows are near-black and tighter than light shadows;
      a soft gray shadow just fogs the surface. */
@@ -213,7 +253,7 @@
   --ds-shadow-3: 0 4px 8px -4px rgb(0 0 0 / 0.6), 0 12px 20px -6px rgb(0 0 0 / 0.44);
   --ds-shadow-4: 0 8px 16px -6px rgb(0 0 0 / 0.62), 0 24px 40px -12px rgb(0 0 0 / 0.52);
   --ds-shadow-5: 0 16px 32px -8px rgb(0 0 0 / 0.66), 0 40px 72px -16px rgb(0 0 0 / 0.6);
-  --ds-shadow-accent: 0 0 0 1px rgb(124 108 255 / 0.4), 0 8px 24px -8px rgb(124 108 255 / 0.45);
+  --ds-shadow-accent: 0 0 0 1px rgb(112 111 211 / 0.4), 0 8px 24px -8px rgb(112 111 211 / 0.45);
 }
 
 /* ---------------------------------------------------------------------------
