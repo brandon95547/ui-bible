@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { FastForward, Pause, Play, Rewind, Volume2, VolumeX } from 'lucide-react'
+import { FastForward, MoreVertical, Pause, Play, Rewind, Volume2, VolumeX } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import { IconButton } from '@/ui/Button'
 import { Cell, Grid, KnobToggle, PreviewStage, Row, Stack, defineDoc } from '../framework/kit'
@@ -285,6 +285,200 @@ function Player({
   )
 }
 
+/* ---------------------------------------------------------------------------
+   THE ROW — a player that is one line of a table rather than a card
+
+   The list treatment below (VoiceList) boxes each player in its own card with
+   the name stacked above it. That gives every row two left edges and cuts the
+   waveform to whatever is left, which is the one thing a media library must not
+   do: if the shapes are not the same scale on the same baseline, they cannot be
+   compared, and comparing them is why you drew them instead of printing titles.
+
+   Here the cells are columns. Name, waveform and duration line up down the page,
+   the waveform takes the slack, and the play control is an outlined circle that
+   FILLS while playing — in a list of twenty that fill is how you find the row you
+   are hearing without reading any of them.
+
+   Everything optional is optional for a reason, not for configurability's sake:
+     · showLabel — off when the table already has a Name column, or when the row
+                   is identified by something else entirely (a date, a take number)
+     · showTime  — off when the duration is meaningless or unknown
+     · actions   — NOT a player concern. Whether a track can be renamed or deleted
+                   is a permission question the player cannot answer, so the host
+                   passes the control in. A row the user has no rights over gets no
+                   menu at all rather than a disabled one: a disabled control says
+                   "this is yours, later"; an absent one says "this was never
+                   yours", and for a shared default voice that is the truth.
+   --------------------------------------------------------------------------- */
+function VoiceRow({
+  name,
+  src,
+  duration,
+  showLabel = true,
+  showTime = true,
+  actions,
+}: {
+  name: string
+  src: string
+  duration: number
+  showLabel?: boolean
+  showTime?: boolean
+  actions?: React.ReactNode
+}) {
+  const peaks = React.useMemo(() => syntheticPeaks(src, 96), [src])
+  const [time, setTime] = React.useState(0)
+  const [playing, setPlaying] = React.useState(false)
+
+  React.useEffect(() => {
+    if (!playing) return
+    const id = window.setInterval(() => {
+      setTime((t) => {
+        const next = t + 0.1
+        if (next >= duration) {
+          setPlaying(false)
+          return duration
+        }
+        return next
+      })
+    }, 100)
+    return () => window.clearInterval(id)
+  }, [playing, duration])
+
+  const progress = duration > 0 ? time / duration : 0
+
+  return (
+    <div className="flex items-center gap-4 border-b border-[var(--ds-border-subtle)] py-2.5 last:border-b-0">
+      <button
+        type="button"
+        aria-label={`${playing ? 'Pause' : 'Play'} ${name}`}
+        onClick={() => setPlaying((p) => !p)}
+        className={cn(
+          'grid h-9 w-9 shrink-0 place-items-center rounded-full border transition-colors',
+          'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ds-focus-ring)]',
+          playing
+            ? 'border-transparent bg-[var(--ds-accent)] text-[var(--ds-fg-on-accent)] hover:bg-[var(--ds-accent-hover)]'
+            : 'border-[var(--ds-border-strong)] text-[var(--ds-fg-secondary)] hover:border-[var(--ds-fg-muted)] hover:text-[var(--ds-fg)]',
+        )}
+      >
+        {playing ? (
+          <Pause size={14} fill="currentColor" strokeWidth={0} />
+        ) : (
+          <Play size={14} fill="currentColor" strokeWidth={0} className="ml-px" />
+        )}
+      </button>
+
+      {showLabel && (
+        <span className="w-28 shrink-0 truncate text-body-sm text-[var(--ds-fg)]">{name}</span>
+      )}
+
+      <Waveform
+        peaks={peaks}
+        progress={progress}
+        duration={duration}
+        height={32}
+        label={`Seek ${name}`}
+        onSeek={(f) => setTime(Math.max(0, Math.min(1, f)) * duration)}
+      />
+
+      {showTime && (
+        <span className="w-10 shrink-0 text-right text-caption tabular-nums text-[var(--ds-fg-muted)]">
+          {fmt(playing || time > 0 ? time : duration)}
+        </span>
+      )}
+
+      {/* The cell exists only where actions can. Reserving it on a read-only row
+          indents that waveform to line up with a button that never arrives. */}
+      {actions ? <div className="flex w-8 shrink-0 justify-end">{actions}</div> : null}
+    </div>
+  )
+}
+
+const TABLE_VOICES = [
+  { id: 'arthur', name: 'Arthur', duration: 8 },
+  { id: 'charlotte', name: 'Charlotte', duration: 9 },
+  { id: 'edward', name: 'Edward', duration: 7 },
+  { id: 'janet', name: 'Janet', duration: 6 },
+]
+
+function VoiceTable({
+  showLabel = true,
+  showTime = true,
+  canDelete = false,
+}: {
+  showLabel?: boolean
+  showTime?: boolean
+  canDelete?: boolean
+}) {
+  return (
+    <div className="w-full">
+      <div className="flex items-center gap-4 border-b border-[var(--ds-border)] pb-2 text-overline uppercase tracking-wider text-[var(--ds-fg-muted)]">
+        <span className="flex-1">Voice</span>
+        {showTime && <span className="w-10 text-right">Duration</span>}
+        {canDelete && <span className="w-8" aria-hidden="true" />}
+      </div>
+      {TABLE_VOICES.map((v) => (
+        <VoiceRow
+          key={v.id}
+          name={v.name}
+          src={`${v.id}.mp3`}
+          duration={v.duration}
+          showLabel={showLabel}
+          showTime={showTime}
+          actions={
+            canDelete ? (
+              <button
+                type="button"
+                aria-label={`More actions for ${v.name}`}
+                aria-haspopup="menu"
+                className="grid h-8 w-8 place-items-center rounded-[var(--radius-md)] text-[var(--ds-fg-muted)] transition-colors hover:bg-[var(--ds-layer-hover)] hover:text-[var(--ds-fg)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ds-focus-ring)]"
+              >
+                <MoreVertical size={16} />
+              </button>
+            ) : null
+          }
+        />
+      ))}
+    </div>
+  )
+}
+
+function TablePlayground() {
+  const [showLabel, setShowLabel] = React.useState(true)
+  const [showTime, setShowTime] = React.useState(true)
+  const [canDelete, setCanDelete] = React.useState(false)
+  return (
+    <PreviewStage
+      label="Row variant"
+      minHeight={0}
+      center={false}
+      allowResize={false}
+      controls={
+        <div className="flex flex-wrap items-center gap-2.5">
+          <KnobToggle checked={showLabel} onChange={setShowLabel} label="Name" />
+          <KnobToggle checked={showTime} onChange={setShowTime} label="Duration" />
+          <KnobToggle checked={canDelete} onChange={setCanDelete} label="User owns these" />
+        </div>
+      }
+      code={`// One line of a table: play · name · waveform · duration.
+const row = new AudioPlayer({
+  mount: cell,
+  variant: 'row',
+  lazyWaveform: true,
+  label: voice.name,
+  showLabel: true,      // off when the table already has a Name column
+  showTime: true,       // off when the duration means nothing
+})
+row.attach(voice.src, { duration: voice.duration_sec })
+
+// Actions are the HOST's, not the player's — the player cannot know
+// whether this user may delete this voice.
+if (voice.owner_id === session.user_id) cell.after(overflowMenu(voice))`}
+    >
+      <VoiceTable showLabel={showLabel} showTime={showTime} canDelete={canDelete} />
+    </PreviewStage>
+  )
+}
+
 /* A list of them, to show the one rule a single player cannot demonstrate:
    starting one stops the rest. */
 function VoiceList() {
@@ -425,6 +619,31 @@ export default defineDoc({
             </div>
           </PreviewStage>
         ),
+      },
+      {
+        id: 'row-variant',
+        title: 'A library is a table, not a stack of cards',
+        description:
+          'The same four voices as columns. The card version above gives every row two left edges and cuts the waveform to whatever is left of the line — so the shapes are different scales and cannot be compared, which is the one thing a media library exists to let you do. Here name, waveform and duration line up down the page and the waveform takes the slack, so a shape is the length of its sample. The play control is outlined at rest and fills while playing: in a list of twenty that fill is how you find the row you are hearing without reading any of them.',
+        render: (
+          <PreviewStage minHeight={0} allowResize={false} center={false}>
+            <div className="grid w-full gap-4 lg:grid-cols-2">
+              <Cell label="Cards — every waveform a different scale" tone="bad">
+                <VoiceList />
+              </Cell>
+              <Cell label="Columns — shapes comparable down the page" tone="good">
+                <VoiceTable />
+              </Cell>
+            </div>
+          </PreviewStage>
+        ),
+      },
+      {
+        id: 'row-options',
+        title: 'What a row may drop',
+        description:
+          'Name and duration are each optional, and the overflow menu is not the player’s to decide. Turn "User owns these" off to see the read-only case: no menu, and no actions column reserved for one. A disabled button says "this is yours, later"; an absent one says "this was never yours" — which for a shared default voice is the truth.',
+        render: <TablePlayground />,
       },
       {
         id: 'waveform-vs-bar',
