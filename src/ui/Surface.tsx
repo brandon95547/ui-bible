@@ -2,6 +2,8 @@ import * as React from 'react'
 import { ArrowDownRight, ArrowUpRight } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import { inspect } from '@/lib/inspect'
+import type { Tone } from './Display'
+import { ProgressRing } from './Feedback'
 
 /* ===========================================================================
    CARD
@@ -186,6 +188,16 @@ export function Panel({
    STAT — the dashboard atom
    ======================================================================== */
 
+/** Tone drives the leading chip only — fill plus the icon colour certified against it. */
+const statChip: Record<Tone, string> = {
+  neutral: 'bg-[var(--ds-layer-active)] text-[var(--ds-fg-secondary)]',
+  accent: 'bg-[var(--ds-accent-subtle)] text-[var(--ds-accent-text)]',
+  success: 'bg-[var(--ds-success-subtle)] text-[var(--ds-success-text)]',
+  warning: 'bg-[var(--ds-warning-subtle)] text-[var(--ds-warning-text)]',
+  danger: 'bg-[var(--ds-danger-subtle)] text-[var(--ds-danger-text)]',
+  info: 'bg-[var(--ds-info-subtle)] text-[var(--ds-info-text)]',
+}
+
 export function Stat({
   label,
   value,
@@ -193,6 +205,9 @@ export function Stat({
   deltaLabel,
   icon,
   spark,
+  layout = 'stacked',
+  tone = 'neutral',
+  progress,
   className,
 }: {
   label: string
@@ -201,9 +216,80 @@ export function Stat({
   deltaLabel?: string
   icon?: React.ReactNode
   spark?: number[]
+  /**
+   * `stacked` leads with the number — a measurement you are tracking over time.
+   * `leading` puts the icon in a tinted chip at the front and drops the value to
+   * 16px, so the value can be a word ("Complete") rather than a figure.
+   */
+  layout?: 'stacked' | 'leading'
+  /** Colours the leading chip. The stacked layout has no chip and ignores it. */
+  tone?: Tone
+  /** Renders a ring in the chip in place of the icon. `leading` only. */
+  progress?: number
   className?: string
 }) {
   const up = (delta ?? 0) >= 0
+
+  const deltaEl = delta !== undefined && (
+    <span
+      className={cn(
+        'inline-flex items-center gap-0.5 text-caption font-medium tabular-nums',
+        up ? 'text-[var(--ds-success-text)]' : 'text-[var(--ds-danger-text)]',
+      )}
+    >
+      {up ? <ArrowUpRight size={13} /> : <ArrowDownRight size={13} />}
+      {up ? '+' : ''}
+      {delta}%<span className="sr-only-ds">{up ? ' increase' : ' decrease'}</span>
+    </span>
+  )
+
+  if (layout === 'leading') {
+    const hasChip = icon !== undefined || progress !== undefined
+    return (
+      <div
+        className={cn(
+          'flex items-center gap-3.5 rounded-[var(--radius-xl)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] p-4',
+          className,
+        )}
+        {...inspect('Stat', {
+          tokens: [
+            '--text-overline',
+            '--text-h4',
+            tone === 'neutral' ? '--ds-layer-active' : `--ds-${tone}-subtle`,
+            '--ds-fg-muted',
+          ],
+          why: 'The chip carries the tone, which frees the value to be a plain word rather than a figure. The label sits at 11px overline above a 16px value — a quarter of the stacked layout’s emphasis, because this tile reports a fact you read once, not a number you watch.',
+          a11y: 'The chip icon is decorative and hidden: the label names the field and the value states it, so the tone is never the only thing carrying the meaning.',
+        })}
+      >
+        {hasChip && (
+          <span
+            aria-hidden={progress === undefined || undefined}
+            className={cn(
+              'grid h-11 w-11 shrink-0 place-items-center rounded-full',
+              statChip[tone],
+            )}
+          >
+            {progress !== undefined ? (
+              <ProgressRing value={progress} size={28} thickness={3} tone={tone} />
+            ) : (
+              icon
+            )}
+          </span>
+        )}
+        <div className="flex min-w-0 flex-col gap-1">
+          <span className="text-overline uppercase text-[var(--ds-fg-muted)]">{label}</span>
+          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+            <span data-tabular className="text-h4 tabular-nums text-[var(--ds-fg)] [overflow-wrap:anywhere]">
+              {value}
+            </span>
+            {deltaEl}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div
       className={cn(
@@ -226,18 +312,7 @@ export function Stat({
         <span data-tabular className="text-h2 tabular-nums text-[var(--ds-fg)]">
           {value}
         </span>
-        {delta !== undefined && (
-          <span
-            className={cn(
-              'inline-flex items-center gap-0.5 text-caption font-medium tabular-nums',
-              up ? 'text-[var(--ds-success-text)]' : 'text-[var(--ds-danger-text)]',
-            )}
-          >
-            {up ? <ArrowUpRight size={13} /> : <ArrowDownRight size={13} />}
-            {up ? '+' : ''}
-            {delta}%<span className="sr-only-ds">{up ? ' increase' : ' decrease'}</span>
-          </span>
-        )}
+        {deltaEl}
       </div>
       {spark && <Sparkline data={spark} up={up} />}
       {deltaLabel && <span className="text-caption text-[var(--ds-fg-muted)]">{deltaLabel}</span>}

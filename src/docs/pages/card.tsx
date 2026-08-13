@@ -1,5 +1,15 @@
 import * as React from 'react'
-import { ArrowUpRight, GitBranch, MoreHorizontal, Rocket } from 'lucide-react'
+import {
+  ArrowUpRight,
+  CheckCircle2,
+  Clock,
+  FileText,
+  Flag,
+  GitBranch,
+  MoreHorizontal,
+  Rocket,
+  ShieldAlert,
+} from 'lucide-react'
 import { Card, CardFooter, CardHeader, Panel, Stat } from '@/ui/Surface'
 import { Button, IconButton } from '@/ui/Button'
 import { Avatar, AvatarStack, Badge } from '@/ui/Display'
@@ -186,6 +196,52 @@ export default defineDoc({
         ),
       },
       {
+        id: 'stats-leading',
+        title: 'Stat tiles — leading chip',
+        description:
+          'layout="leading" moves the icon into a 44px tinted chip at the front and drops the value from 32px to 16px. Use it when the value is a word rather than a figure — a state, a phase, a verdict. The chip carries the tone so the value itself can stay plain text, and a ring can replace the icon where the fact is a proportion.',
+        render: (
+          <PreviewStage center={false} minHeight={0} allowResize>
+            <div className="grid w-full gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              <Stat
+                layout="leading"
+                tone="success"
+                icon={<CheckCircle2 size={20} />}
+                label="Status"
+                value="Complete"
+              />
+              <Stat
+                layout="leading"
+                tone="info"
+                icon={<Flag size={20} />}
+                label="Stage"
+                value="Published"
+              />
+              <Stat
+                layout="leading"
+                icon={<FileText size={20} />}
+                label="Lessons"
+                value="12 / 12"
+              />
+              <Stat layout="leading" tone="info" progress={100} label="Progress" value="100%" />
+              <Stat
+                layout="leading"
+                icon={<Clock size={20} />}
+                label="Total audio"
+                value="25:42"
+              />
+              <Stat
+                layout="leading"
+                tone="warning"
+                icon={<ShieldAlert size={20} />}
+                label="Source validation"
+                value="Some content flagged"
+              />
+            </div>
+          </PreviewStage>
+        ),
+      },
+      {
         id: 'panel',
         title: 'Panels',
         description:
@@ -353,6 +409,7 @@ export default defineDoc({
     { name: 'Default', padding: '20px', radius: '16px', gap: '12px', minWidth: '240px', maxWidth: '640px', use: 'The standard. Collections, forms, panels.' },
     { name: 'Comfortable', padding: '24px', radius: '16px', gap: '16px', minWidth: '320px', maxWidth: '760px', use: 'Marketing surfaces and single-card pages.' },
     { name: 'Stat tile', padding: '16px', radius: '16px', minWidth: '160px', use: 'Dashboard metrics. Four across at 1024px.' },
+    { name: 'Stat tile, leading', padding: '16px', radius: '16px', gap: '14px', icon: '44px chip / 20px glyph', minWidth: '220px', use: 'Word-valued facts. Three across at 1024px — the value runs longer than a figure.' },
     { name: 'Grid track', minWidth: '15rem', gap: '12px', use: 'auto-fill minmax(15rem, 1fr) — reflows with no media queries.' },
   ],
 
@@ -536,8 +593,15 @@ export default defineDoc({
   <DeploymentList />
 </Panel>
 
-// Stat tile
-<Stat label="Requests" value="1.24M" delta={12.4} deltaLabel="vs last week" spark={series} />`,
+// Stat tile: a number you are tracking
+<Stat label="Requests" value="1.24M" delta={12.4} deltaLabel="vs last week" spark={series} />
+
+// Stat tile: a fact you read once — icon in a tinted chip, value as a word
+<Stat layout="leading" tone="success" icon={<CheckCircle2 size={20} />}
+      label="Status" value="Complete" />
+
+// …or a ring in place of the icon, when the fact is a proportion
+<Stat layout="leading" tone="info" progress={72} label="Progress" value="72%" />`,
     },
     html: {
       lang: 'html',
@@ -640,9 +704,15 @@ export default defineDoc({
       {
         name: 'Stat',
         props: [
-          { name: 'value', type: 'ReactNode', required: true, description: 'The number. Rendered at h2 with tabular figures.' },
+          { name: 'label', type: 'string', required: true, description: 'What the value measures. Overline case, always the smallest text in the tile.' },
+          { name: 'value', type: 'ReactNode', required: true, description: 'The figure, at h2 with tabular numerals — or a word at h4 under layout="leading".' },
+          { name: 'layout', type: "'stacked' | 'leading'", default: "'stacked'", description: 'stacked leads with the number; leading puts the icon in a 44px chip at the front and shrinks the value to 16px.' },
+          { name: 'tone', type: "'neutral' | 'accent' | 'success' | 'warning' | 'danger' | 'info'", default: "'neutral'", description: 'Colours the leading chip. Semantic, never decorative. The stacked layout has no chip and ignores it.' },
+          { name: 'icon', type: 'ReactNode', description: 'Decorative glyph. Muted and top-right when stacked; inside the tinted chip when leading. Pass it at size 20.' },
+          { name: 'progress', type: 'number', description: '0–100. Renders a ring in the chip in place of the icon, for a value that is a proportion. Leading layout only.' },
           { name: 'delta', type: 'number', description: 'Percentage change. Paired with an arrow, a sign and hidden text.' },
-          { name: 'spark', type: 'number[]', description: 'Sparkline series. Decorative, aria-hidden.' },
+          { name: 'deltaLabel', type: 'string', description: 'What the delta compares against — "vs last week". Stacked layout only.' },
+          { name: 'spark', type: 'number[]', description: 'Sparkline series. Decorative, aria-hidden. Stacked layout only.' },
         ],
       },
     ],
