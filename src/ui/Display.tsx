@@ -287,14 +287,23 @@ export function Avatar({
           src
             ? undefined
             : {
-                background: `color-mix(in oklab, var(--p-viz-${hue}) 22%, var(--ds-surface))`,
-                color: `var(--p-viz-${hue})`,
+                // Mixed with `transparent`, not with a surface token: this
+                // composites over whatever the avatar is actually sitting on.
+                // Mixing toward --ds-surface froze the result at one rung, so
+                // the same avatar read as raised on the page and as a hole
+                // inside a card or a drawer.
+                background: `color-mix(in oklab, var(--p-viz-${hue}) 22%, transparent)`,
+                // The hue identifies the person from the FILL. As a foreground
+                // it was 3.9–4.4:1 — the viz ramp is tuned for fills, and a
+                // component has no business reading a --p-* primitive as text
+                // in the first place.
+                color: 'var(--ds-fg)',
               }
         }
         {...inspect(`Avatar · ${size}`, {
-          tokens: ['--p-viz-1…8', '--radius-full', '--ds-border-subtle'],
-          why: 'Initials are tinted from a deterministic hash of the name, so the same person is always the same colour and users start recognising them by shape before reading. A 1px inset ring keeps a light photo from bleeding into a light surface.',
-          a11y: 'The image carries alt=""; the accessible name comes from the surrounding link or the adjacent text. An avatar alone is decorative.',
+          tokens: ['--p-viz-1…8', '--ds-fg', '--radius-full', '--ds-border-subtle'],
+          why: 'The fill is tinted from a deterministic hash of the name, so the same person is always the same colour and users start recognising them by shape before reading. The tint is an alpha mix, so it lifts off a card and a drawer as readily as off the page. A 1px inset ring keeps a light photo from bleeding into a light surface.',
+          a11y: 'Initials take the standard foreground rather than the identity hue: at 22% the tint stays dark enough for --ds-fg to clear 4.5:1 on every surface, which the hue itself did not. The image carries alt=""; the accessible name comes from the surrounding link or the adjacent text. An avatar alone is decorative.',
         })}
       >
         {src ? (

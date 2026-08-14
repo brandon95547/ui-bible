@@ -51,7 +51,7 @@ const RAMP = {
   canvas: '#101010',
   surface: '#1f1f1f',
   raised: '#282828',
-  overlay: '#3e3e3e',
+  overlay: '#303030',
 }
 
 /** The ramp in order, so "one rung up" is expressible. */
@@ -111,7 +111,16 @@ function WashTrap() {
           const ground = hexToRgb(g.hex)
           const tile = resolve(g.hex)
           const delta = relLuminance(tile) - relLuminance(ground)
-          const up = delta > 0
+          /* Three outcomes, not two. A wash of the page colour painted ON the
+             page composites to the page — it does not sink, it simply stops
+             existing, and calling that "a hole" would overstate it. The hole is
+             what the same class does one container up. */
+          const verdict =
+            delta > 0.0005
+              ? { tone: 'success' as const, text: 'reads as raised' }
+              : delta < -0.0005
+                ? { tone: 'danger' as const, text: 'reads as a hole' }
+                : { tone: 'warning' as const, text: 'vanishes into the ground' }
           return (
             <div key={g.name} className="min-w-0 flex-1">
               <div
@@ -127,9 +136,7 @@ function WashTrap() {
                 {rgbToHex(tile)} on {g.hex}
               </div>
               <div className="mt-1">
-                <Badge tone={up ? 'success' : 'danger'}>
-                  {up ? 'reads as raised' : 'reads as a hole'}
-                </Badge>
+                <Badge tone={verdict.tone}>{verdict.text}</Badge>
               </div>
             </div>
           )
@@ -139,7 +146,7 @@ function WashTrap() {
       <p className="text-caption text-[var(--ds-fg-secondary)]">
         {treatment === 'ladder step'
           ? 'A rung is picked relative to whatever it lands on, so the tile reads as raised in both containers.'
-          : 'One class, two meanings. The wash is 30% of the page colour — slightly lighter on the page, and most of the way back down to it inside the panel.'}
+          : 'One class, two meanings, neither of them the intended one. The wash is 30% of the page colour: on the page it composites to the page and the tile disappears; inside the panel it drags 30% of the way back down and reads as a hole punched in it.'}
       </p>
     </Stack>
   )
@@ -538,8 +545,8 @@ const raisesCorrectly = (parent: string, wash: string, alpha: number) =>
   relLuminance(composite(hexToRgb(parent), hexToRgb(wash), alpha)) >
   relLuminance(hexToRgb(parent))
 
-raisesCorrectly('#101010', '#101010', 0.3)   // true  — on the page, fine
-raisesCorrectly('#3e3e3e', '#101010', 0.3)   // false — inside a drawer, a hole
+raisesCorrectly('#101010', '#101010', 0.3)   // false — on the page it vanishes
+raisesCorrectly('#303030', '#101010', 0.3)   // false — inside a drawer, a hole
 
 // Which is the whole argument for opaque steps:
 // a rung is absolute, a wash is a function of its parent.`,

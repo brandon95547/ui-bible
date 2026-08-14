@@ -318,7 +318,8 @@ export default defineDoc({
   },
 
   tokens: [
-    { category: 'color', token: '--p-viz-1 … --p-viz-8', usedFor: 'Name-derived background — categorical, never status' },
+    { category: 'color', token: '--p-viz-1 … --p-viz-8', usedFor: 'Name-derived background, mixed to 22% alpha so it composes over any surface — categorical, never status' },
+    { category: 'color', token: '--ds-fg', usedFor: 'The initials. The identity hue is a fill; as text it measured 3.9:1' },
     { category: 'color', token: '--ds-layer-active', usedFor: 'The unknown-entity fallback' },
     { category: 'color', token: '--ds-fg-muted', usedFor: 'The generic person glyph' },
     { category: 'color', token: '--ds-surface', usedFor: 'The ring around a presence dot and around stacked avatars' },
@@ -516,7 +517,7 @@ function hue(name: string) {
 
 <!-- Initials: role="img" with a label, because "A L" identifies nobody. -->
 <span class="ds-avatar ds-avatar--md" role="img" aria-label="Grace Hopper"
-      style="--avatar-bg: var(--p-viz-3)">
+      style="--avatar-bg: color-mix(in oklab, var(--p-viz-3) 22%, transparent)">
   <span aria-hidden="true">GH</span>
 </span>
 
@@ -546,8 +547,14 @@ function hue(name: string) {
   place-items: center;
   flex: 0 0 auto;
   border-radius: 999px;              /* circles are people */
+  /* An alpha tint, so the same avatar lifts off a card and a drawer as
+     readily as off the page. Mixing toward a surface token freezes it at one
+     rung and inverts everywhere else. */
   background: var(--avatar-bg, var(--ds-layer-active));
-  color: #fff;
+
+  /* The hue identifies the person from the FILL. Read as text it measures
+     3.9-4.4:1 across the eight, because the viz ramp is tuned for fills. */
+  color: var(--ds-fg);
   font-weight: 600;                  /* initials are small and need it */
   overflow: hidden;
   user-select: none;

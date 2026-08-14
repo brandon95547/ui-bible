@@ -71,8 +71,28 @@ function fmtPan(pan: number) {
    "success" or "danger", which they do not. */
 const CHANNEL_HUES = [205, 265, 135, 30, 175, 335, 220, 45] as const
 
-function hue(i: number, l = 58, s = 78) {
-  return `hsl(${CHANNEL_HUES[i % CHANNEL_HUES.length]} ${s}% ${l}%)`
+/* Two lightnesses, because one cannot do both jobs. HSL lightness is not
+   perceptual: the same L% lands at wildly different contrast depending on the
+   hue, so both figures below are the WORST of the eight rather than an average,
+   and the violet at 265 is what sets them.
+
+     62%  a fill. The numerals painted on these badges are black, and 58% left
+          the violet at 3.91:1 — under AA for an 11px bold numeral.
+     74%  the same identity as TEXT or an icon on a dark ground, where 58%
+          bottomed out at 2.45:1 against --ds-surface-overlay.
+
+   The identity is unchanged; only the lightness moves, and only far enough. */
+function hslHue(deg: number, l: number, s = 78) {
+  return `hsl(${deg} ${s}% ${l}%)`
+}
+
+function hue(i: number, l = 62, s = 78) {
+  return hslHue(CHANNEL_HUES[i % CHANNEL_HUES.length], l, s)
+}
+
+/** The same identity, lifted until it is legible as text or as an icon. */
+function hueText(i: number) {
+  return hue(i, 74)
 }
 
 /* -- Meter ----------------------------------------------------------------
@@ -448,7 +468,9 @@ function ChannelStrip({
             thing an engineer writes down. Tabular so it does not jitter. */}
         <div className="flex items-baseline justify-between border-t border-[var(--ds-border-subtle)] pt-1.5">
           <span className="text-overline uppercase text-[var(--ds-fg-muted)]">Gain</span>
-          <span className="font-mono text-[11px] tabular-nums" style={{ color: colour }}>
+          {/* The readout is text, so it takes the lifted lightness — the fill
+              value is two points under AA on the violet channel. */}
+          <span className="font-mono text-[11px] tabular-nums" style={{ color: hueText(index) }}>
             {fmtDb(channel.db)}
           </span>
         </div>
@@ -1012,7 +1034,7 @@ function TrackRow({
       <span
         aria-hidden
         className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[var(--radius-sm)]"
-        style={{ background: `color-mix(in oklab, ${colour} 18%, transparent)`, color: colour }}
+        style={{ background: `color-mix(in oklab, ${colour} 18%, transparent)`, color: hueText(index) }}
       >
         <TrackGlyph name={track.icon} />
       </span>
@@ -1402,7 +1424,7 @@ function EqGraph({ eq }: { eq: Eq }) {
         const y = gy(b.kind === 'cut' ? -3 : b.gain)
         return (
           <g key={b.id} opacity={eq.on ? 1 : 0.35}>
-            <circle cx={fx(b.freq)} cy={y} r="11" fill={`hsl(${b.hueDeg} 78% 58%)`} />
+            <circle cx={fx(b.freq)} cy={y} r="11" fill={hslHue(b.hueDeg, 62)} />
             <text x={fx(b.freq)} y={y + 4} textAnchor="middle" fill="#0b0b0f"
               style={{ fontSize: 12, fontWeight: 700 }}>{b.n}</text>
           </g>
@@ -1459,7 +1481,7 @@ function EqPanel({
           order the reader needs them in. */}
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
         {eq.bands.map((b) => {
-          const colour = `hsl(${b.hueDeg} 78% 58%)`
+          const colour = hslHue(b.hueDeg, 62)
           const isCut = b.kind === 'cut'
           return (
             <div
