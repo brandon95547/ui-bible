@@ -45,8 +45,8 @@
   --p-brand-50: #f4f3fb;
   --p-brand-100: #e8e8f8;
   --p-brand-200: #d1d1f1;
-  --p-brand-300: #b2b1e7;    /* 8.0:1 on canvas — the text-safe step */
-  --p-brand-400: #8f8fdd;    /* 5.5:1 */
+  --p-brand-300: #b2b1e7;    /* 9.4:1 on canvas — the text-safe step */
+  --p-brand-400: #8f8fdd;    /* 6.5:1 */
   --p-brand-500: #706fd3;    /* taken: C64 Purple */
   --p-brand-600: #5c5cae;
   --p-brand-700: #4c4c90;
@@ -126,65 +126,97 @@
   color-scheme: dark;
 
   /* ---------------------------------------------------------------------
-     THE SPANISH PALETTE, RUN THROUGH OUR OWN DERIVATION
+     A NEUTRAL BLACK GROUND, CARRYING THE SPANISH PALETTE
 
-     The ground is no longer a neutral near-black. It is Lucky Point (#2c2c54)
-     and its neighbours — the two deep purples that give this palette its
-     character — with the ochres and terracottas carrying status.
+     The ground is black and has no hue at all: every surface below is a pure
+     neutral (r = g = b), so nothing in the chrome competes with the colour.
+     The palette still runs the whole system — C64 Purple is the accent,
+     Celestial Green / Spiced Butternut / Synthetic Pumpkin / Summer Sky carry
+     status — but it now sits ON the page instead of BEING the page, which is
+     what makes a saturated accent read as saturated.
 
-     These are not eyeballed. Every value below is the output of
-     derivePaletteSystem(palette('es')) — the same function that draws the
-     Spanish Palette page — so the site is now a worked example of its own
-     documentation, and re-running the derivation reproduces it exactly.
+     The ramp is not eyeballed. Its eight steps are evenly spaced in OKLCH
+     lightness, and every adjacent pair was then re-checked as a contrast ratio,
+     because the two disagree near black: OKLCH calls the bottom rung the biggest
+     jump in the ladder, and the eye calls it the smallest. Where they disagree
+     this close to the floor, the ratio is right — which is why the page sits at
+     #101010 rather than #000000, and why the floor under it is not pure black
+     either. Both leave the one step of headroom a well needs.
 
-     Still dark, deliberately: the palette's Swan White and Crocodile Tooth
-     would make a handsome light theme, but that is a different decision.
-     The light theme below is untouched.
+       sunken 0.115  canvas 0.173  inset 0.209  surface 0.239
+       raised 0.277  field  0.309  f-hvr 0.341  overlay 0.364
+
+     One structural change came out of the move. The old ground had room for two
+     rungs below the page, so a well could be darker than the canvas. A black
+     page has room for one. So --ds-surface-inset now sits just ABOVE the canvas
+     and is defined against the container it sits in — a table header inside a
+     card, a code header on a code block — rather than against the page. Which
+     is what it always was in practice; the old value only looked absolute
+     because there was room underneath it.
+
+     Every ratio below was re-measured, not carried over. Foregrounds were
+     re-solved as pure neutrals at the same ratios they had before, and the
+     three status `-text` tokens were lifted toward white until their own
+     `-subtle` fill clears 4.5:1 at the TOP of the ramp — a chip inside a
+     dialog, the one composite the previous values missed at 4.1:1.
+
+     The light theme below is untouched: it was never a hue-carrying ground.
      --------------------------------------------------------------------- */
 
   /* Surfaces. In dark UI, elevation is communicated by getting *lighter*,
-     not by casting a bigger shadow — a shadow on black is invisible. */
-  --ds-canvas: #1e1e39;             /* derived: the page, below Lucky Point */
-  --ds-sunken: #17172c;             /* derived: one step under the page */
-  --ds-surface: #252547;            /* derived */
-  --ds-surface-raised: #2c2c54;     /* taken: Lucky Point, row 2 col 1 */
-  --ds-surface-overlay: #3b3b60;    /* derived: the top of the ramp */
-  --ds-surface-inset: #191932;      /* derived: wells only, see --ds-field */
+     not by casting a bigger shadow — a shadow on black is invisible, and on
+     THIS page it is invisible in the literal sense. The ramp does all of it. */
+  --ds-canvas: #101010;             /* the page */
+  --ds-sunken: #050505;             /* the floor: one step under the page */
+  --ds-surface: #1f1f1f;            /* panels and the nav column */
+  --ds-surface-raised: #282828;     /* cards — an object on a panel */
+  --ds-surface-overlay: #3e3e3e;    /* the top of the ramp */
+  --ds-surface-inset: #181818;      /* wells only, see --ds-field */
 
   /* Interactive control surfaces. Material 3 puts a filled field on
      surface-container-highest — the LIGHTEST container in the ramp, never a
      darker one — because a control you can act on is a surface standing on the
-     page, not a hole cut into it. These sit a step above --ds-surface so a field
-     reads as raised whether it lands on the canvas or inside a card.
+     page, not a hole cut into it. These sit a step above --ds-surface-raised so
+     a field reads as raised whether it lands on the canvas or inside a card.
      --ds-surface-inset stays, but only for the things it was always right for:
      non-interactive wells (code blocks, table headers, meter tracks, media
      areas), where nothing is asking to be clicked. */
-  --ds-field: #32325c;              /* a step above raised — a control, not a well */
-  --ds-field-hover: #3a3a69;
+  --ds-field: #303030;              /* a step above raised — a control, not a well */
+  --ds-field-hover: #383838;
 
   /* Interaction layers — always alpha so they compose over any surface. */
   --ds-layer-hover: rgb(255 255 255 / 0.045);
   --ds-layer-active: rgb(255 255 255 / 0.075);
   --ds-layer-selected: rgb(112 111 211 / 0.16);
-  --ds-layer-scrim: rgb(12 12 25 / 0.72);
+  --ds-layer-scrim: rgb(0 0 0 / 0.72);
 
-  /* Foreground. Ratios are measured against --ds-canvas by the derivation. */
-  --ds-fg: #f6f5f4;                 /* 14.8:1 — near Swan White, off the palette */
-  --ds-fg-secondary: #b6b6bd;       /* 8.0:1 */
-  /* The derivation lands muted at 4.5:1 against the PAGE, but muted text does not
-     only sit on the page — it is the placeholder inside a field and the caption on
-     an overlay, both lighter grounds. At the derived value a placeholder measured
-     3.4:1. Lifted until it clears 4.5:1 on the lightest surface it can land on. */
-  --ds-fg-muted: #a9a8b1;           /* 6.9:1 page · 5.1:1 field · 4.5:1 overlay */
-  --ds-fg-disabled: #606072;        /* 2.6:1 — not text, a state */
+  /* Foreground. Pure neutrals, like the ground: a faintly violet gray was
+     invisible on a violet page and reads as a colour cast on a black one.
+     Ratios are against --ds-canvas; the second figure is the LIGHTEST ground
+     the token can land on, which is the one that decides whether it passes.
+
+     The ceiling is deliberate. #f6f5f4 measures 17.5:1 on this page — past the
+     point where light text starts to bloom against a dark field, which is the
+     halation the Dark Theme page warns about. Darkened until it reads 15.0:1,
+     the same ratio the previous, lighter ground gave. */
+  --ds-fg: #e5e4e3;                 /* 15.0:1 page · 8.4:1 overlay */
+  --ds-fg-secondary: #b6b6b6;       /* 9.4:1 page · 5.3:1 overlay */
+  /* Muted text does not only sit on the page — it is the placeholder inside a
+     field and the caption on an overlay, both lighter grounds. This value is
+     certified against the overlay, not the page, for exactly that reason. */
+  --ds-fg-muted: #aaaaaa;           /* 8.2:1 page · 5.7:1 field · 4.6:1 overlay */
+  --ds-fg-disabled: #585858;        /* 2.7:1 — not text, a state */
   --ds-fg-on-accent: #ffffff;
-  --ds-fg-inverse: #1e1e39;
+  --ds-fg-inverse: #101010;
 
-  /* Borders */
-  --ds-border-subtle: rgb(255 255 255 / 0.06);
-  --ds-border: rgb(255 255 255 / 0.11);
+  /* Borders. Alpha, so one value composes over every level of the ramp. The
+     alphas are ~8% higher than the previous ground's: a white overlay wins less
+     contrast against a dark neutral than against a mid purple, and these were
+     re-solved so an edge reads with the same strength it did before. */
+  --ds-border-subtle: rgb(255 255 255 / 0.063);
+  --ds-border: rgb(255 255 255 / 0.115);
   --ds-border-strong: rgb(255 255 255 / 0.19);
-  --ds-border-interactive: rgb(255 255 255 / 0.14);
+  --ds-border-interactive: rgb(255 255 255 / 0.148);
 
   /* Brand — C64 Purple, the derivation's `primary`. The nearest thing this
      palette has to the violet the Bible already used, so the identity survives
@@ -201,7 +233,10 @@
   --ds-accent-subtle: rgb(112 111 211 / 0.18);
   --ds-accent-subtle-hover: rgb(112 111 211 / 0.26);
   --ds-accent-border: rgb(112 111 211 / 0.42);
-  --ds-accent-text: #aba9ea;        /* the fill itself is too dark for text here */
+  /* The fill itself is too dark for text here. Lifted 9% toward white against
+     the old value so it clears 4.5:1 on --ds-accent-subtle composited over the
+     OVERLAY — a purple chip inside a dialog, where it previously read 4.1:1. */
+  --ds-accent-text: #b5b3ed;        /* 9.6:1 page · 4.6:1 on its own subtle fill */
 
   /* Status — `-text` is the pair certified for text on `-subtle`.
      Roles are the derivation's, so they are checkable against the palette page.
@@ -212,41 +247,45 @@
   --ds-success: #33d9b2;            /* taken: Celestial Green */
   --ds-success-hover: #5ce3c4;      /* derived: lightened */
   --ds-success-active: #218c74;     /* taken: Palm Springs Splash */
-  --ds-success-fg: #1e1e39;         /* 9.0:1 on the fill */
+  --ds-success-fg: #101010;         /* 10.7:1 on the fill */
   --ds-success-subtle: rgb(51 217 178 / 0.14);
   --ds-success-border: rgb(51 217 178 / 0.34);
-  --ds-success-text: #5ce3c4;
+  --ds-success-text: #5ce3c4;       /* 5.2:1 on its own subtle fill over an overlay */
 
   --ds-warning: #ffda79;            /* taken: Spiced Butternut */
   --ds-warning-hover: #ffe79c;      /* derived: lightened */
   --ds-warning-active: #ffb142;     /* taken: Mandarin Sorbet */
-  --ds-warning-fg: #1e1e39;         /* 12.0:1 on the fill */
+  --ds-warning-fg: #101010;         /* 14.2:1 on the fill */
   --ds-warning-subtle: rgb(255 218 121 / 0.14);
   --ds-warning-border: rgb(255 218 121 / 0.34);
-  --ds-warning-text: #ffda79;
+  --ds-warning-text: #ffda79;       /* 5.6:1 on its own subtle fill over an overlay */
 
   --ds-danger: #ff793f;             /* taken: Synthetic Pumpkin */
   --ds-danger-hover: #ff9463;       /* derived: lightened */
   --ds-danger-active: #cd6133;      /* taken: Chilean Fire */
-  --ds-danger-fg: #1e1e39;          /* 6.2:1 on the fill */
+  --ds-danger-fg: #101010;          /* 7.4:1 on the fill */
   --ds-danger-subtle: rgb(255 121 63 / 0.14);
   --ds-danger-border: rgb(255 121 63 / 0.36);
-  --ds-danger-text: #ff9d70;
+  --ds-danger-text: #ffa57b;        /* lifted 8%: 4.6:1 on its own subtle fill over an overlay */
 
   --ds-info: #34ace0;               /* taken: Summer Sky */
   --ds-info-hover: #5cbde7;         /* derived: lightened */
   --ds-info-active: #227093;        /* taken: Devil Blue */
-  --ds-info-fg: #1e1e39;            /* 6.2:1 on the fill */
+  --ds-info-fg: #101010;            /* 7.4:1 on the fill */
   --ds-info-subtle: rgb(52 172 224 / 0.14);
   --ds-info-border: rgb(52 172 224 / 0.34);
-  --ds-info-text: #6cc4ea;
+  --ds-info-text: #73c7eb;          /* lifted 5%: 4.6:1 on its own subtle fill over an overlay */
 
   /* Focus — one ring for the whole system. Users learn it once. */
-  --ds-focus-ring: #8584dd;
-  --ds-focus-ring-offset: #1e1e39;
+  --ds-focus-ring: #8584dd;         /* 5.8:1 page · 3.2:1 overlay — clears 3:1 everywhere */
+  --ds-focus-ring-offset: #101010;
 
   /* Elevation. Dark shadows are near-black and tighter than light shadows;
-     a soft gray shadow just fogs the surface. */
+     a soft gray shadow just fogs the surface. On a black page they do almost
+     nothing on their own, which is the point: the surface ramp carries the
+     elevation and the shadow only softens the edge where a panel overhangs a
+     LIGHTER surface. Every raised component pairs one with --ds-border, and on
+     this ground the border is the half that reads. */
   --ds-shadow-0: 0 0 #0000;
   --ds-shadow-1: 0 1px 2px -1px rgb(0 0 0 / 0.6), 0 1px 1px rgb(0 0 0 / 0.32);
   --ds-shadow-2: 0 2px 4px -2px rgb(0 0 0 / 0.6), 0 4px 8px -2px rgb(0 0 0 / 0.36);
