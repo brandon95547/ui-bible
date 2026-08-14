@@ -439,10 +439,15 @@ export function Popover({
   const [open, setOpen] = React.useState(false)
   const triggerRef = React.useRef<HTMLButtonElement>(null)
   const panelRef = React.useRef<HTMLDivElement>(null)
-  useDismissable(open, () => setOpen(false), [triggerRef, panelRef])
+  // The wrapper, not the trigger ref: callers routinely render the trigger
+  // without forwarding `ref`, and an unattached triggerRef makes an
+  // outside-pointerdown close the panel a beat before the trigger's own click
+  // reopens it — so clicking the trigger again never closes the menu.
+  const wrapRef = React.useRef<HTMLSpanElement>(null)
+  useDismissable(open, () => setOpen(false), [wrapRef, panelRef])
 
   return (
-    <span className="relative inline-flex">
+    <span ref={wrapRef} className="relative inline-flex">
       {trigger({ open, toggle: () => setOpen((o) => !o), ref: triggerRef })}
       {open && (
         <div
