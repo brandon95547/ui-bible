@@ -184,10 +184,13 @@ export function Dialog({
           {footer && (
             <footer
               className={cn(
+                // The border does the separating, not a fill. An opaque surface
+                // token inside an overlay is an absolute value in a container
+                // one rung above it: --ds-surface here reads as a hole in the
+                // panel rather than as a bar attached to it. The hairline is
+                // alpha, so it composes correctly at any level.
                 'flex items-center justify-end gap-2.5 px-6 py-4',
-                scrollable
-                  ? 'border-t border-[var(--ds-border-subtle)] bg-[var(--ds-surface)]'
-                  : 'pt-5',
+                scrollable ? 'border-t border-[var(--ds-border-subtle)]' : 'pt-5',
               )}
             >
               {footer}
@@ -243,7 +246,12 @@ export function Drawer({
         tabIndex={-1}
         style={{ width: `min(${width}, calc(100vw - 2rem))` }}
         className={cn(
-          'fixed inset-y-0 z-[75] flex flex-col bg-[var(--ds-surface)] shadow-e5 outline-none',
+          // Overlay, not surface. A drawer is a modal panel over a scrim, which
+          // the Role → level table puts at the top of the ramp alongside the
+          // dialog and the menu. It was a rung low — the only modal surface in
+          // the system that was — and on a black ground that read as the page
+          // rather than as something lifted off it.
+          'fixed inset-y-0 z-[75] flex flex-col bg-[var(--ds-surface-overlay)] shadow-e5 outline-none',
           side === 'right'
             ? 'right-0 border-l border-[var(--ds-border)]'
             : 'left-0 border-r border-[var(--ds-border)]',
@@ -253,7 +261,7 @@ export function Drawer({
           className,
         )}
         {...inspect(`Drawer · ${side}`, {
-          tokens: ['--ds-surface', '--shadow-e5', '--ease-emphasized'],
+          tokens: ['--ds-surface-overlay', '--shadow-e5', '--ease-emphasized'],
           why: 'Enters from the edge it is anchored to, so the motion tells you where it came from and where it will go back to. 26rem is wide enough for a form, narrow enough that the list behind stays readable — that visible context is the reason to pick a drawer over a dialog.',
           a11y: 'Still a modal: focus is trapped and the background is inert. If the background must stay interactive, it is a sidebar, not a drawer, and it should not have a scrim.',
         })}
@@ -282,7 +290,9 @@ export function Drawer({
         )}
         <div className="flex-1 overflow-y-auto p-5">{children}</div>
         {footer && (
-          <footer className="flex items-center justify-end gap-2.5 border-t border-[var(--ds-border-subtle)] bg-[var(--ds-surface-inset)] px-5 py-3.5">
+          // Border only, matching the dialog and the sheet: a well token inside
+          // an overlay is two rungs below its own container.
+          <footer className="flex items-center justify-end gap-2.5 border-t border-[var(--ds-border-subtle)] px-5 py-3.5">
             {footer}
           </footer>
         )}

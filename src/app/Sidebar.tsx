@@ -209,7 +209,10 @@ export function Sidebar({
             placeholder="Search components…"
             aria-label="Search components"
             className={cn(
-              'h-8 w-full rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface-inset)]',
+              // A field, not a well. This input sits on the nav column's own
+              // --ds-surface; on the well token it was darker than the panel
+              // holding it and read as switched off.
+              'h-8 w-full rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-field)]',
               'pl-8 pr-14 text-body-sm text-[var(--ds-fg)] placeholder:text-[var(--ds-fg-muted)]',
               'transition-[border-color,box-shadow] duration-[120ms]',
               'focus:border-[var(--ds-accent)] focus:shadow-[0_0_0_3px_var(--ds-accent-subtle)] focus:outline-none',

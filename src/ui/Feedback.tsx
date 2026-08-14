@@ -595,7 +595,10 @@ export function EmptyState({
             compact ? 'h-11 w-11' : 'h-14 w-14',
             tone === 'danger'
               ? 'bg-[var(--ds-danger-subtle)] text-[var(--ds-danger-text)]'
-              : 'bg-[var(--ds-surface-inset)] text-[var(--ds-fg-muted)]',
+              // Alpha, not an absolute rung: an empty state renders on the
+              // page, inside a card and inside a drawer, and a fixed value can
+              // only be right in one of them.
+              : 'bg-[var(--ds-layer-active)] text-[var(--ds-fg-muted)]',
           )}
         >
           {icon}

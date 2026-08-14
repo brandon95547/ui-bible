@@ -41,18 +41,18 @@ function SurfaceStack({ correct }: { correct: boolean }) {
   return (
     <div className="rounded-[var(--radius-lg)] bg-[var(--ds-canvas)] p-3">
       <p className="mb-2 text-[10px] uppercase tracking-wide text-[var(--ds-fg-muted)]">
-        canvas · #1E1E39
+        canvas · #101010
       </p>
       <div className="rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] p-3">
         <p className="mb-2 text-[10px] uppercase tracking-wide text-[var(--ds-fg-muted)]">
-          panel · #252547
+          panel · #1F1F1F
         </p>
         <div
           className="rounded-[var(--radius-sm)] border border-[var(--ds-border-interactive)] px-3 py-2"
           style={{ background: correct ? 'var(--ds-field)' : 'var(--ds-surface-inset)' }}
         >
           <span className="text-caption text-[var(--ds-fg-secondary)]">
-            control · {correct ? '#32325C' : '#191932'}
+            control · {correct ? '#383838' : '#181818'}
           </span>
         </div>
         <p className="mt-2 text-[10px] leading-relaxed text-[var(--ds-fg-muted)]">
@@ -155,22 +155,26 @@ export default defineDoc({
         <p>
           <strong>Never use pure black or pure white.</strong> #FFF text on #000 produces halation —
           the light text visually bleeds into the dark field, which is uncomfortable for everyone and
-          genuinely difficult for readers with astigmatism. Our canvas is <code>#1E1E39</code> and
-          our brightest foreground is <code>#F6F5F4</code>, giving 14.8:1: far above the requirement
-          and below the point where it starts to hurt.
+          genuinely difficult for readers with astigmatism. Our canvas is <code>#101010</code> and
+          our brightest foreground is <code>#E5E4E3</code>, giving 15.0:1: far above the requirement
+          and below the point where it starts to hurt. Both ends are deliberate. The page stops
+          short of black so a well has one rung to drop into, and the foreground stops short of
+          white so nothing on the page ever reaches the ratio that blooms.
         </p>
         <p>
           <strong>Elevation lightens.</strong> A shadow on near-black has almost nothing to darken,
-          so depth has to come from the surface ramp — canvas, surface, raised, overlay, each about
-          4–6% lighter than the last. The shadow is still present, but it is defining an edge rather
-          than communicating height.
+          so depth has to come from the surface ramp — canvas, surface, raised, overlay, each one
+          OKLCH lightness step (about 0.035) above the last. The shadow is still present, but it is
+          defining an edge rather than communicating height, and the 1px alpha border does more of
+          that work than the shadow does.
         </p>
         <p>
           <strong>Saturated colours must be desaturated and lightened.</strong> A colour tuned for
           white backgrounds vibrates against dark ones — the chromatic aberration in the eye cannot
           focus both the background and a high-chroma foreground simultaneously. Our brand goes from{' '}
-          <code>#6A55F2</code> in light to <code>#7C6CFF</code> in dark: lighter, slightly less
-          saturated, and far more comfortable.
+          <code>#6A55F2</code> in light to <code>#6867C9</code> in dark, and the value that carries
+          brand-coloured <em>text</em> goes lighter again, to <code>#B5B3ED</code> — the fill itself
+          is too dark to read on. One hue, three jobs, three measured values.
         </p>
       </>
     ),
@@ -208,9 +212,9 @@ export default defineDoc({
         render: (
           <PreviewStage center={false} minHeight={0} allowResize={false}>
             <div className="grid w-full gap-4 sm:grid-cols-2">
-              <Cell label="#1E1E39 on #F6F5F4 — 14.8:1" tone="good">
-                <div className="rounded-[var(--radius-md)] bg-[#1E1E39] p-4">
-                  <p className="text-body-sm leading-relaxed text-[#F6F5F4]">
+              <Cell label="#101010 on #E5E4E3 — 15.0:1" tone="good">
+                <div className="rounded-[var(--radius-md)] bg-[#101010] p-4">
+                  <p className="text-body-sm leading-relaxed text-[#E5E4E3]">
                     Deployment finished in 42 seconds across three regions. Every request is retried
                     twice before the circuit opens.
                   </p>
@@ -327,13 +331,13 @@ export default defineDoc({
       },
     ],
     states: [
-      { label: 'Canvas', note: '#1E1E39', render: <span className="block h-10 w-16 rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-canvas)]" /> },
-      { label: 'Surface', note: '#252547', render: <span className="block h-10 w-16 rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface)]" /> },
-      { label: 'Raised', note: '#2C2C54', render: <span className="block h-10 w-16 rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface-raised)]" /> },
-      { label: 'Overlay', note: '#3B3B60', render: <span className="block h-10 w-16 rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface-overlay)]" /> },
-      { label: 'Inset', note: '#191932', render: <span className="block h-10 w-16 rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface-inset)]" /> },
+      { label: 'Canvas', note: '#101010', render: <span className="block h-10 w-16 rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-canvas)]" /> },
+      { label: 'Surface', note: '#1F1F1F', render: <span className="block h-10 w-16 rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface)]" /> },
+      { label: 'Raised', note: '#282828', render: <span className="block h-10 w-16 rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface-raised)]" /> },
+      { label: 'Overlay', note: '#303030', render: <span className="block h-10 w-16 rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface-overlay)]" /> },
+      { label: 'Inset', note: '#181818', render: <span className="block h-10 w-16 rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface-inset)]" /> },
       { label: 'Hover', note: 'white 4.5%', render: <span className="block h-10 w-16 rounded-[var(--radius-md)] bg-[var(--ds-surface)] ring-1 ring-inset ring-[var(--ds-border-subtle)]"><span className="block h-full w-full rounded-[var(--radius-md)] bg-[var(--ds-layer-hover)]" /></span> },
-      { label: 'Border', note: 'white 11%', render: <span className="block h-10 w-16 rounded-[var(--radius-md)] border border-[var(--ds-border)]" /> },
+      { label: 'Border', note: 'white 11.5%', render: <span className="block h-10 w-16 rounded-[var(--radius-md)] border border-[var(--ds-border)]" /> },
       { label: 'Scrim', note: 'black 72%', render: <span className="block h-10 w-16 rounded-[var(--radius-md)] bg-[var(--ds-layer-scrim)]" /> },
     ],
   },
@@ -370,14 +374,14 @@ export default defineDoc({
       {
         n: 3,
         label: 'Field',
-        value: '#32325C — lighter than surface',
+        value: '#383838 — above every surface, the overlay included',
         kind: 'color',
-        note: 'Controls go UP. Material 3 puts a filled field on the lightest container in the ramp: a thing you can act on is a surface standing on the page, not a hole cut into it.',
+        note: 'Controls go UP, past every container including the overlay. Material 3 puts a filled field on the lightest container in the ramp: a thing you can act on is a surface standing on the page, not a hole cut into it. An input inside a dialog is where systems get this wrong.',
       },
       {
         n: 3.5,
         label: 'Inset',
-        value: '#191932 — darker than surface',
+        value: '#181818 — darker than surface',
         kind: 'color',
         note: 'Only for wells nobody clicks: code blocks, table headers, meter tracks, media areas. It used to back inputs too, which is what made fields read as switched off.',
       },
@@ -391,7 +395,7 @@ export default defineDoc({
       {
         n: 5,
         label: 'Foreground ceiling',
-        value: '#F6F5F4, not #FFFFFF',
+        value: '#E5E4E3, not #FFFFFF',
         kind: 'color',
         note: '14.8:1 rather than 21:1. Well past AAA, and specifically below the point where light text starts to bloom against a dark field.',
       },
@@ -399,17 +403,17 @@ export default defineDoc({
   },
 
   tokens: [
-    { category: 'color', token: '--ds-canvas', value: '#1e1e39', usedFor: 'Page background' },
-    { category: 'color', token: '--ds-surface', value: '#252547', usedFor: 'Cards, panels' },
-    { category: 'color', token: '--ds-surface-raised', value: '#2c2c54', usedFor: 'Elevated cards, active segments' },
-    { category: 'color', token: '--ds-surface-overlay', value: '#3b3b60', usedFor: 'Dialogs, menus, toasts' },
-    { category: 'color', token: '--ds-field', value: '#32325c', usedFor: 'Inputs, selects, textareas — a control is a raised surface' },
-    { category: 'color', token: '--ds-field-hover', value: '#3a3a69', usedFor: 'The lift a field takes under the pointer' },
-    { category: 'color', token: '--ds-surface-inset', value: '#191932', usedFor: 'Non-interactive wells only: code blocks, table headers, meter tracks' },
-    { category: 'color', token: '--ds-fg', value: '#f6f5f4', usedFor: 'Primary text — 14.8:1 on canvas' },
-    { category: 'color', token: '--ds-fg-secondary', value: '#b6b6bd', usedFor: 'Body text — 8.0:1' },
-    { category: 'color', token: '--ds-fg-muted', value: '#a9a8b1', usedFor: 'Captions — 6.9:1 on canvas, 4.5:1 on an overlay' },
-    { category: 'color', token: '--ds-border-subtle', value: 'white 6%', usedFor: 'Dividers, card edges' },
+    { category: 'color', token: '--ds-canvas', value: '#101010', usedFor: 'Page background' },
+    { category: 'color', token: '--ds-surface', value: '#1f1f1f', usedFor: 'Cards, panels' },
+    { category: 'color', token: '--ds-surface-raised', value: '#282828', usedFor: 'Elevated cards, active segments' },
+    { category: 'color', token: '--ds-surface-overlay', value: '#303030', usedFor: 'Dialogs, menus, toasts' },
+    { category: 'color', token: '--ds-field', value: '#383838', usedFor: 'Inputs, selects, textareas — a control is a raised surface' },
+    { category: 'color', token: '--ds-field-hover', value: '#3d3d3d', usedFor: 'The lift a field takes under the pointer' },
+    { category: 'color', token: '--ds-surface-inset', value: '#181818', usedFor: 'Non-interactive wells only: code blocks, table headers, meter tracks' },
+    { category: 'color', token: '--ds-fg', value: '#e5e4e3', usedFor: 'Primary text — 15.0:1 on canvas' },
+    { category: 'color', token: '--ds-fg-secondary', value: '#b6b6b6', usedFor: 'Body text — 9.4:1' },
+    { category: 'color', token: '--ds-fg-muted', value: '#aaaaaa', usedFor: 'Captions — 8.2:1 on canvas, 4.7:1 on a hovered field' },
+    { category: 'color', token: '--ds-border-subtle', value: 'white 6.3%', usedFor: 'Dividers, card edges' },
     { category: 'color', token: '--ds-layer-hover', value: 'white 4.5%', usedFor: 'Hover wash over any surface' },
     { category: 'color', token: '--ds-accent', value: '#6867c9', usedFor: 'Brand — C64 Purple, one step down so a white label passes AA' },
     { category: 'color', token: '--ds-layer-scrim', value: 'black 72%', usedFor: 'Behind modal surfaces' },
@@ -520,7 +524,7 @@ export default defineDoc({
     ],
     contrast: [
       'Dark themes need contrast checked independently — a pair that passes on white frequently fails on near-black and vice versa.',
-      'Our primary text is 13.8:1, body 7.6:1 and captions 4.6:1 against the canvas. All comfortably above AA, all deliberately below 21:1.',
+      'Our primary text is 15.0:1, body 9.4:1 and captions 8.2:1 against the canvas. All comfortably above AA, all deliberately below 21:1. Captions are certified against --ds-field-hover, where they read 4.7:1 — the lightest ground in the system, and the one that decides whether they pass.',
       'Alpha borders and tints must be composited against their actual surface before measuring. A 6% white border over the canvas and the same border over an overlay are different colours.',
     ],
     keyboard: [
@@ -532,7 +536,7 @@ export default defineDoc({
       { attr: 'forced-colors', on: 'Media query', note: 'High Contrast Mode replaces the palette entirely. Test that layout and semantics survive without any of your colours.' },
     ],
     focus:
-      'The focus ring uses #937FFF in dark — lighter than the accent, so it clears 3:1 against both the accent-filled button and the near-black canvas.',
+      'The focus ring uses #8584DD in dark and is drawn with a 2px offset, which is what makes it legal: against the page it reads 5.8:1, while against the accent fill it would only be 1.5:1. A ring that hugs a filled button is measuring itself against the wrong thing.',
     screenReader: [
       'Theme has no effect on assistive technology. Never use it as a signal — a "dark banner means danger" convention is invisible to a screen reader and to a light-theme user.',
     ],
@@ -572,20 +576,22 @@ function initialTheme(): 'dark' | 'light' {
   color-scheme: dark;
 
   /* Surfaces climb in lightness. Never pure black. */
-  --ds-canvas:          #1e1e39;
-  --ds-surface:         #252547;
-  --ds-surface-raised:  #2c2c54;
-  --ds-surface-overlay: #3b3b60;
-  --ds-surface-inset:   #191932;   /* darker: wells only, never a control */
+  --ds-canvas:          #101010;
+  --ds-surface:         #1f1f1f;
+  --ds-surface-raised:  #282828;
+  --ds-surface-overlay: #303030;
+  --ds-surface-inset:   #181818;   /* darker: wells only, never a control */
 
   /* Foreground stops short of pure white to avoid halation */
-  --ds-fg:           #f6f5f4;      /* 14.8:1 */
-  --ds-fg-secondary: #b6b6bd;      /*  8.0:1 */
-  --ds-fg-muted:     #a9a8b1;      /*  6.9:1 */
+  --ds-fg:           #e5e4e3;      /* 15.0:1 */
+  --ds-fg-secondary: #b6b6b6;      /*  9.4:1 */
+  --ds-fg-muted:     #aaaaaa;      /*  8.2:1 */
 
-  /* Alpha, so one token works over every surface */
-  --ds-border-subtle: rgb(255 255 255 / 0.06);
-  --ds-border:        rgb(255 255 255 / 0.11);
+  /* Alpha, so one token works over every surface. The alphas are a few
+     points higher than a mid-tone ground needs: white wins less contrast
+     against a dark neutral, so an edge at 6% would disappear. */
+  --ds-border-subtle: rgb(255 255 255 / 0.063);
+  --ds-border:        rgb(255 255 255 / 0.115);
   --ds-layer-hover:   rgb(255 255 255 / 0.045);
 
   /* Brand lightens and loses a little chroma */

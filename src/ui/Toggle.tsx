@@ -55,7 +55,10 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(functi
           disabled={disabled}
           aria-invalid={error || undefined}
           className={cn(
-            'peer appearance-none border bg-[var(--ds-surface-inset)] transition-all',
+            // A control, so it goes UP: --ds-field, never the well token.
+            // An unchecked box on --ds-surface-inset sits below the card it is
+            // in, which is the exact failure the Dark Theme page demonstrates.
+            'peer appearance-none border bg-[var(--ds-field)] transition-all',
             'duration-[120ms] ease-[cubic-bezier(0.2,0,0,1)]',
             'rounded-[var(--radius-xs)]',
             box,
@@ -137,12 +140,13 @@ export const Radio = React.forwardRef<HTMLInputElement, RadioProps>(function Rad
           type="radio"
           disabled={disabled}
           className={cn(
-            'peer appearance-none rounded-full border bg-[var(--ds-surface-inset)]',
+            // Same rule as the checkbox: interactivity outranks depth.
+            'peer appearance-none rounded-full border bg-[var(--ds-field)]',
             'transition-all duration-[120ms] ease-[cubic-bezier(0.2,0,0,1)]',
             box,
             'border-[var(--ds-border-strong)] hover:border-[var(--ds-accent)]',
             'not-disabled:hover:bg-[var(--ds-accent-subtle)]',
-            'checked:border-[5px] checked:border-[var(--ds-accent)] checked:bg-[var(--ds-surface-inset)]',
+            'checked:border-[5px] checked:border-[var(--ds-accent)] checked:bg-[var(--ds-field)]',
             'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ds-focus-ring)]',
             'disabled:cursor-not-allowed',
           )}

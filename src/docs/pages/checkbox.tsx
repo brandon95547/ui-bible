@@ -275,7 +275,7 @@ export default defineDoc({
   },
 
   tokens: [
-    { category: 'color', token: '--ds-surface-inset', usedFor: 'Unchecked box fill' },
+    { category: 'color', token: '--ds-field', usedFor: 'Unchecked box fill — a control goes above its container, never below it' },
     { category: 'color', token: '--ds-border-strong', usedFor: 'Unchecked box border' },
     { category: 'color', token: '--ds-accent', usedFor: 'Checked fill and border' },
     { category: 'color', token: '--ds-accent-fg', usedFor: 'The checkmark' },
@@ -474,7 +474,10 @@ const some = selected.length > 0 && !all
   block-size: 18px;
   border: 1px solid var(--ds-border-strong);
   border-radius: var(--radius-xs);
-  background: var(--ds-surface-inset);
+
+  /* The control rung, not the well one. On --ds-surface-inset an unchecked
+     box sits below the card holding it and reads as switched off. */
+  background: var(--ds-field);
   transition:
     background-color 120ms var(--ease-standard),
     border-color     120ms var(--ease-standard);

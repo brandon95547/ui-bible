@@ -257,7 +257,9 @@ export function CommandPalette({
             })}
           </div>
 
-          <div className="flex items-center gap-4 border-t border-[var(--ds-border-subtle)] bg-[var(--ds-surface-inset)] px-4 py-2 text-caption text-[var(--ds-fg-muted)]">
+          {/* Border only. The palette is an overlay; a well token inside it is two
+              rungs below its own container and reads as a hole. */}
+          <div className="flex items-center gap-4 border-t border-[var(--ds-border-subtle)] px-4 py-2 text-caption text-[var(--ds-fg-muted)]">
             <span className="flex items-center gap-1.5">
               <Kbd>↑</Kbd>
               <Kbd>↓</Kbd> navigate

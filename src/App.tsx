@@ -298,7 +298,9 @@ function Shell() {
             onClick={() => setPaletteOpen(true)}
             className={cn(
               'ml-1 flex h-8 min-w-0 max-w-md flex-1 items-center gap-2 rounded-[var(--radius-md)]',
-              'border border-[var(--ds-border-subtle)] bg-[var(--ds-surface-inset)] px-2.5',
+              // It is a button that opens the palette, so it takes the control
+              // rung rather than the well one.
+              'border border-[var(--ds-border-subtle)] bg-[var(--ds-field)] px-2.5',
               'text-caption text-[var(--ds-fg-muted)] transition-colors',
               'hover:border-[var(--ds-border)] hover:text-[var(--ds-fg-secondary)]',
               'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ds-focus-ring)]',

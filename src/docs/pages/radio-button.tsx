@@ -277,7 +277,7 @@ export default defineDoc({
   },
 
   tokens: [
-    { category: 'color', token: '--ds-surface-inset', usedFor: 'Unselected fill' },
+    { category: 'color', token: '--ds-field', usedFor: 'Unselected fill — a control goes above its container, never below it' },
     { category: 'color', token: '--ds-border-strong', usedFor: 'Unselected border' },
     { category: 'color', token: '--ds-accent', usedFor: 'Selected ring' },
     { category: 'color', token: '--ds-accent-subtle', usedFor: 'Hover fill, selected card background' },
@@ -500,7 +500,7 @@ export default defineDoc({
   block-size: 18px;
   border: 1px solid var(--ds-border-strong);
   border-radius: 999px;                 /* round means "one of these" */
-  background: var(--ds-surface-inset);
+  background: var(--ds-field);
   transition: border 120ms var(--ease-standard),
               background-color 120ms var(--ease-standard);
 }
@@ -514,7 +514,7 @@ export default defineDoc({
    and no sub-pixel seam between the ring and the fill. */
 .ds-radio__input:checked {
   border: 5px solid var(--ds-accent);
-  background: var(--ds-surface-inset);
+  background: var(--ds-field);
 }
 
 .ds-radio__input:focus-visible {

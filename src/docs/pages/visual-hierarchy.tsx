@@ -43,12 +43,15 @@ const relLuminance = ([r, g, b]: RGB) => {
   return 0.2126 * ch(r) + 0.7152 * ch(g) + 0.0722 * ch(b)
 }
 
-/* The Bible's own dark ramp, as literals so the demo can do arithmetic on it. */
+/* The Bible's own dark ramp, as literals so the demo can do arithmetic on it.
+   These must track tokens.css by hand — the demos below composite them and
+   print the result, so a stale value here would be a page that lies about the
+   system it documents. */
 const RAMP = {
-  canvas: '#1e1e39',
-  surface: '#252547',
-  raised: '#2c2c54',
-  overlay: '#3b3b60',
+  canvas: '#101010',
+  surface: '#1f1f1f',
+  raised: '#282828',
+  overlay: '#3e3e3e',
 }
 
 /** The ramp in order, so "one rung up" is expressible. */
@@ -375,7 +378,7 @@ export default defineDoc({
       </div>
     ),
     parts: [
-      { n: 1, label: 'Page', value: '--ds-canvas', note: 'The ground. Nothing may go below it.', kind: 'color' },
+      { n: 1, label: 'Page', value: '--ds-canvas', note: 'The ground. On a black theme it sits one rung up from the floor, so a well still has one step to drop into.', kind: 'color' },
       { n: 2, label: 'Panel', value: '--ds-surface', note: 'A region of the page. One step.', kind: 'color' },
       { n: 3, label: 'Card', value: '--ds-surface-raised', note: 'An object on the panel. Two steps.', kind: 'color' },
       { n: 4, label: 'Control', value: '--ds-field', note: 'Interactive, so it stands above the card it sits in — never below.', kind: 'color' },
@@ -535,8 +538,8 @@ const raisesCorrectly = (parent: string, wash: string, alpha: number) =>
   relLuminance(composite(hexToRgb(parent), hexToRgb(wash), alpha)) >
   relLuminance(hexToRgb(parent))
 
-raisesCorrectly('#1e1e39', '#1e1e39', 0.3)   // true  — on the page, fine
-raisesCorrectly('#3b3b60', '#1e1e39', 0.3)   // false — inside a drawer, a hole
+raisesCorrectly('#101010', '#101010', 0.3)   // true  — on the page, fine
+raisesCorrectly('#3e3e3e', '#101010', 0.3)   // false — inside a drawer, a hole
 
 // Which is the whole argument for opaque steps:
 // a rung is absolute, a wash is a function of its parent.`,
@@ -572,18 +575,18 @@ raisesCorrectly('#3b3b60', '#1e1e39', 0.3)   // false — inside a drawer, a hol
 .card, .drawer, .panel { border: 1px solid var(--ds-border-subtle); }
 
 /* The bug this prevents: an opaque border equal to its parent's fill.
-   border-color: #1a2130 on a #1a2130 panel measures 1.00:1. */`,
+   border-color: #1f1f1f on a #1f1f1f panel measures 1.00:1. */`,
     },
     api: [
       {
         name: 'Role → level',
         props: [
-          { name: 'Page', type: '--ds-canvas', description: 'The ground. Nothing goes below it, including "subtle" wells.' },
+          { name: 'Page', type: '--ds-canvas', description: 'The ground. Almost nothing goes below it — on a black theme there is one rung of headroom and --ds-sunken is already using it.' },
           { name: 'Panel / region', type: '--ds-surface', description: 'A division of the page. Often needs no fill at all — spacing may be enough.' },
           { name: 'Card / object', type: '--ds-surface-raised', description: 'Something separable that the user thinks of as a unit.' },
           { name: 'Control', type: '--ds-field', description: 'Anything actionable. Goes above its container regardless of how deep that container is.' },
           { name: 'Overlay', type: '--ds-surface-overlay', description: 'Drawer, dialog, menu. Top of the ramp, plus a scrim.' },
-          { name: 'Well', type: '--ds-surface-inset', description: 'Non-interactive only: code blocks, table headers, meter tracks. If it takes focus, it is a control.' },
+          { name: 'Well', type: '--ds-surface-inset', description: 'Non-interactive only: code blocks, table headers, meter tracks. Below the container it sits in, not below the page — on black the page has no room under it. If it takes focus, it is a control.' },
           { name: 'Hover / selected', type: '--ds-layer-*', description: 'Alpha over whatever the row already is. Never an opaque value.' },
         ],
       },

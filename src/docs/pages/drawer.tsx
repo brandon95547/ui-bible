@@ -197,7 +197,7 @@ function NonModalDiagram({ modal }: { modal?: boolean }) {
         ))}
       </div>
       {modal && <span className="absolute inset-0 bg-[var(--ds-layer-scrim)]" aria-hidden />}
-      <div className="absolute inset-y-0 right-0 w-[46%] border-l border-[var(--ds-border)] bg-[var(--ds-surface)] p-2.5 shadow-e4">
+      <div className="absolute inset-y-0 right-0 w-[46%] border-l border-[var(--ds-border)] bg-[var(--ds-surface-overlay)] p-2.5 shadow-e4">
         <span className="text-[10px] font-semibold text-[var(--ds-fg)]">
           {modal ? 'Drawer' : 'Sidebar'}
         </span>
@@ -224,7 +224,7 @@ function MiniPanel({
     <span className="relative block h-16 w-28 overflow-hidden rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-canvas)]">
       {scrim && <span className="absolute inset-0 bg-[var(--ds-layer-scrim)]" aria-hidden />}
       <span
-        className={`absolute inset-y-0 bg-[var(--ds-surface)] shadow-e3 ${
+        className={`absolute inset-y-0 bg-[var(--ds-surface-overlay)] shadow-e3 ${
           side === 'right'
             ? 'right-0 border-l border-[var(--ds-border)]'
             : 'left-0 border-r border-[var(--ds-border)]'
@@ -426,7 +426,7 @@ export default defineDoc({
           ))}
         </div>
         <span className="absolute inset-0 bg-[var(--ds-layer-scrim)]" aria-hidden />
-        <div className="absolute inset-y-0 right-0 flex w-[58%] flex-col border-l border-[var(--ds-border)] bg-[var(--ds-surface)] shadow-e5">
+        <div className="absolute inset-y-0 right-0 flex w-[58%] flex-col border-l border-[var(--ds-border)] bg-[var(--ds-surface-overlay)] shadow-e5">
           <div className="flex items-start justify-between gap-2 border-b border-[var(--ds-border-subtle)] px-3.5 py-3">
             <div>
               <div className="text-label text-[var(--ds-fg)]">api-gateway</div>
@@ -437,12 +437,12 @@ export default defineDoc({
             </span>
           </div>
           <div className="flex flex-1 flex-col gap-2 overflow-hidden p-3.5">
-            <span className="h-7 rounded-[var(--radius-sm)] border border-[var(--ds-border)] bg-[var(--ds-surface-inset)]" />
-            <span className="h-7 rounded-[var(--radius-sm)] border border-[var(--ds-border)] bg-[var(--ds-surface-inset)]" />
-            <span className="h-7 rounded-[var(--radius-sm)] border border-[var(--ds-border)] bg-[var(--ds-surface-inset)]" />
+            <span className="h-7 rounded-[var(--radius-sm)] border border-[var(--ds-border)] bg-[var(--ds-field)]" />
+            <span className="h-7 rounded-[var(--radius-sm)] border border-[var(--ds-border)] bg-[var(--ds-field)]" />
+            <span className="h-7 rounded-[var(--radius-sm)] border border-[var(--ds-border)] bg-[var(--ds-field)]" />
           </div>
-          <div className="flex items-center justify-end gap-2 border-t border-[var(--ds-border-subtle)] bg-[var(--ds-surface-inset)] px-3.5 py-2.5">
-            <span className="h-6 w-14 rounded-[var(--radius-sm)] bg-[var(--ds-surface)]" />
+          <div className="flex items-center justify-end gap-2 border-t border-[var(--ds-border-subtle)] px-3.5 py-2.5">
+            <span className="h-6 w-14 rounded-[var(--radius-sm)] bg-[var(--ds-field)]" />
             <span className="h-6 w-20 rounded-[var(--radius-sm)] bg-[var(--ds-accent)]" />
           </div>
         </div>
@@ -512,8 +512,8 @@ export default defineDoc({
 
   tokens: [
     { category: 'color', token: '--ds-layer-scrim', usedFor: 'The dimming layer over the page' },
-    { category: 'color', token: '--ds-surface', usedFor: 'Panel background' },
-    { category: 'color', token: '--ds-surface-inset', usedFor: 'Footer background' },
+    { category: 'color', token: '--ds-surface-overlay', usedFor: 'Panel background — a modal surface sits at the top of the ramp' },
+    { category: 'color', token: '--ds-border-subtle', usedFor: 'Footer and header rules. The footer has no fill: an absolute surface token inside an overlay reads as a hole in it' },
     { category: 'color', token: '--ds-border', usedFor: 'The anchored edge' },
     { category: 'color', token: '--ds-border-subtle', usedFor: 'Header and footer rules' },
     { category: 'shadow', token: '--shadow-e5', usedFor: 'Panel elevation' },
@@ -796,7 +796,7 @@ const Panel = isPhone ? BottomSheet : Drawer`,
      A full-bleed panel reads as a new page, not as an overlay. */
   inline-size: min(26rem, 100vw - 2rem);
 
-  background: var(--ds-surface);
+  background: var(--ds-surface-overlay);   /* modal surface: top of the ramp */
   box-shadow: var(--shadow-e5);
 }
 
@@ -838,8 +838,11 @@ const Panel = isPhone ? BottomSheet : Drawer`,
   justify-content: flex-end;
   gap: 10px;
   padding: 14px 20px;
+
+  /* The rule separates it; a fill would not. An opaque surface token here is
+     an absolute value inside a container one rung above it, so it reads as a
+     hole punched in the panel rather than a bar attached to it. */
   border-block-start: 1px solid var(--ds-border-subtle);
-  background: var(--ds-surface-inset);
 }
 
 .ds-scrim {

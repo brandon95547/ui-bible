@@ -143,22 +143,33 @@
      #101010 rather than #000000, and why the floor under it is not pure black
      either. Both leave the one step of headroom a well needs.
 
-       sunken 0.115  canvas 0.173  inset 0.209  surface 0.239
-       raised 0.277  field  0.309  f-hvr 0.341  overlay 0.364
+       sunken 0.115  canvas 0.173  inset  0.209  surface 0.239
+       raised 0.277  overlay 0.309  field 0.341  f-hvr   0.360
 
-     One structural change came out of the move. The old ground had room for two
-     rungs below the page, so a well could be darker than the canvas. A black
-     page has room for one. So --ds-surface-inset now sits just ABOVE the canvas
-     and is defined against the container it sits in — a table header inside a
-     card, a code header on a code block — rather than against the page. Which
-     is what it always was in practice; the old value only looked absolute
-     because there was room underneath it.
+     Two structural changes came out of the move.
+
+     The old ground had room for two rungs below the page, so a well could be
+     darker than the canvas. A black page has room for one. So --ds-surface-inset
+     now sits just ABOVE the canvas and is defined against the container it sits
+     in — a table header inside a card, a code header on a code block — rather
+     than against the page. Which is what it always was in practice; the old
+     value only looked absolute because there was room underneath it.
+
+     And --ds-field now clears --ds-surface-overlay, which it never did before.
+     The Bible's own rule is that a control goes above its container regardless
+     of how deep that container is, yet a text input inside a dialog used to
+     land a rung BELOW the dialog — the same "control fell through the floor"
+     bug the Dark Theme page demonstrates, in the system's own tokens. Fixing it
+     meant lowering the overlay rather than raising the field: --ds-fg-muted
+     stops clearing 4.5:1 above about #404040, so the ceiling is set by the
+     dimmest text that has to sit on it, not by how much lift a dialog wants.
+     A dialog gets its lift from the scrim; a menu gets it from --ds-border.
 
      Every ratio below was re-measured, not carried over. Foregrounds were
      re-solved as pure neutrals at the same ratios they had before, and the
      three status `-text` tokens were lifted toward white until their own
-     `-subtle` fill clears 4.5:1 at the TOP of the ramp — a chip inside a
-     dialog, the one composite the previous values missed at 4.1:1.
+     `-subtle` fill clears 4.5:1 at the TOP of the ramp — a chip on a hovered
+     control, the one composite the previous values missed at 4.1:1.
 
      The light theme below is untouched: it was never a hue-carrying ground.
      --------------------------------------------------------------------- */
@@ -170,19 +181,20 @@
   --ds-sunken: #050505;             /* the floor: one step under the page */
   --ds-surface: #1f1f1f;            /* panels and the nav column */
   --ds-surface-raised: #282828;     /* cards — an object on a panel */
-  --ds-surface-overlay: #3e3e3e;    /* the top of the ramp */
+  --ds-surface-overlay: #303030;    /* dialogs, drawers, menus — over a scrim */
   --ds-surface-inset: #181818;      /* wells only, see --ds-field */
 
   /* Interactive control surfaces. Material 3 puts a filled field on
      surface-container-highest — the LIGHTEST container in the ramp, never a
      darker one — because a control you can act on is a surface standing on the
-     page, not a hole cut into it. These sit a step above --ds-surface-raised so
-     a field reads as raised whether it lands on the canvas or inside a card.
+     page, not a hole cut into it. So these sit above EVERY surface, the overlay
+     included: a field reads as raised whether it lands on the canvas, inside a
+     card, or inside a dialog. That last case is the one systems get wrong.
      --ds-surface-inset stays, but only for the things it was always right for:
      non-interactive wells (code blocks, table headers, meter tracks, media
      areas), where nothing is asking to be clicked. */
-  --ds-field: #303030;              /* a step above raised — a control, not a well */
-  --ds-field-hover: #383838;
+  --ds-field: #383838;              /* above the whole ramp — a control, not a well */
+  --ds-field-hover: #3d3d3d;        /* the ceiling: muted text still reads 4.7:1 here */
 
   /* Interaction layers — always alpha so they compose over any surface. */
   --ds-layer-hover: rgb(255 255 255 / 0.045);
@@ -199,12 +211,12 @@
      point where light text starts to bloom against a dark field, which is the
      halation the Dark Theme page warns about. Darkened until it reads 15.0:1,
      the same ratio the previous, lighter ground gave. */
-  --ds-fg: #e5e4e3;                 /* 15.0:1 page · 8.4:1 overlay */
-  --ds-fg-secondary: #b6b6b6;       /* 9.4:1 page · 5.3:1 overlay */
+  --ds-fg: #e5e4e3;                 /* 15.0:1 page · 8.6:1 on the lightest control */
+  --ds-fg-secondary: #b6b6b6;       /* 9.4:1 page · 5.4:1 on the lightest control */
   /* Muted text does not only sit on the page — it is the placeholder inside a
      field and the caption on an overlay, both lighter grounds. This value is
      certified against the overlay, not the page, for exactly that reason. */
-  --ds-fg-muted: #aaaaaa;           /* 8.2:1 page · 5.7:1 field · 4.6:1 overlay */
+  --ds-fg-muted: #aaaaaa;           /* 8.2:1 page · 5.7:1 overlay · 4.7:1 field-hover */
   --ds-fg-disabled: #585858;        /* 2.7:1 — not text, a state */
   --ds-fg-on-accent: #ffffff;
   --ds-fg-inverse: #101010;
@@ -236,7 +248,7 @@
   /* The fill itself is too dark for text here. Lifted 9% toward white against
      the old value so it clears 4.5:1 on --ds-accent-subtle composited over the
      OVERLAY — a purple chip inside a dialog, where it previously read 4.1:1. */
-  --ds-accent-text: #b5b3ed;        /* 9.6:1 page · 4.6:1 on its own subtle fill */
+  --ds-accent-text: #b5b3ed;        /* 9.6:1 page · 4.7:1 on its own subtle fill */
 
   /* Status — `-text` is the pair certified for text on `-subtle`.
      Roles are the derivation's, so they are checkable against the palette page.
@@ -277,7 +289,7 @@
   --ds-info-text: #73c7eb;          /* lifted 5%: 4.6:1 on its own subtle fill over an overlay */
 
   /* Focus — one ring for the whole system. Users learn it once. */
-  --ds-focus-ring: #8584dd;         /* 5.8:1 page · 3.2:1 overlay — clears 3:1 everywhere */
+  --ds-focus-ring: #8584dd;         /* 5.8:1 page · 3.3:1 field-hover — clears 3:1 everywhere */
   --ds-focus-ring-offset: #101010;
 
   /* Elevation. Dark shadows are near-black and tighter than light shadows;

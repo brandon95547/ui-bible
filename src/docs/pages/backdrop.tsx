@@ -637,7 +637,7 @@ function ScrimSample({
       data-theme={dark ? 'dark' : 'light'}
       className={cn(
         'relative block overflow-hidden rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)]',
-        dark ? 'bg-[#0a0b0e]' : 'bg-white',
+        'bg-[var(--ds-canvas)]',
         small ? 'h-14 w-20' : 'h-24 w-full',
       )}
     >
@@ -646,7 +646,7 @@ function ScrimSample({
           className={cn(
             'block truncate font-medium',
             small ? 'text-[9px]' : 'text-caption',
-            dark ? 'text-[#e8eaf0]' : 'text-[#0a0b0e]',
+            'text-[var(--ds-fg)]',
           )}
         >
           api-gateway

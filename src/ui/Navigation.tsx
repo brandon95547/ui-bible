@@ -664,7 +664,9 @@ export function MegaMenu({
               </div>
             ))}
             {groups[open].featured && (
-              <div className="min-w-[13rem] flex-1 rounded-[var(--radius-lg)] bg-[var(--ds-surface-inset)] p-4">
+              // Alpha, so it lifts off whatever the panel is. The well token
+              // is two rungs below the overlay this sits inside.
+              <div className="min-w-[13rem] flex-1 rounded-[var(--radius-lg)] bg-[var(--ds-layer-active)] p-4">
                 {groups[open].featured}
               </div>
             )}
