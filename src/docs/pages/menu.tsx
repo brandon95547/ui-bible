@@ -48,6 +48,7 @@ function Playground() {
     <PreviewStage
       label="Playground"
       minHeight={260}
+      clip={false}
       controls={
         <div className="flex flex-wrap items-center gap-2.5">
           <Knob label="Align">
@@ -109,7 +110,7 @@ function CheckableDemo() {
   ]
 
   return (
-    <PreviewStage minHeight={230}>
+    <PreviewStage minHeight={230} clip={false}>
       <Popover
         trigger={({ toggle: t, open }) => (
           <Button variant="outlined" size="sm" aria-haspopup="menu" aria-expanded={open} onClick={t}>
@@ -222,7 +223,7 @@ export default defineDoc({
         description:
           'The commonest menu in any product. Each trigger names its row, so forty menus are forty distinct controls rather than forty buttons called "More".',
         render: (
-          <PreviewStage minHeight={220} center={false}>
+          <PreviewStage minHeight={220} center={false} clip={false}>
             <Stack gap="xs" className="w-full">
               {['api-gateway', 'billing-worker', 'web-frontend'].map((name) => (
                 <Row

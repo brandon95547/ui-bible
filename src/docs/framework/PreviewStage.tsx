@@ -34,6 +34,18 @@ export function PreviewStage({
   controls,
   label,
   allowResize = true,
+  /**
+   * Whether the stage clips what it contains. On by default, which is right for a
+   * specimen that sits inside the frame.
+   *
+   * Turn it OFF for anything that floats out of its own bounds — a menu, a dropdown, a
+   * tooltip. A popover taller than the space under its trigger is cut in half by the
+   * frame otherwise, and the page whose job is to SHOW the menu is the one page where a
+   * half-drawn menu is worst. Note it takes both edges: the frame's own overflow-hidden
+   * and the body's overflow-x-auto, which computes overflow-y to auto and clips
+   * vertically even though only the x axis is named.
+   */
+  clip = true,
 }: {
   children: React.ReactNode
   code?: string
@@ -47,6 +59,7 @@ export function PreviewStage({
   controls?: React.ReactNode
   label?: string
   allowResize?: boolean
+  clip?: boolean
 }) {
   const [theme, setTheme] = React.useState<StageTheme>('inherit')
   const [grid, setGrid] = React.useState(false)
@@ -67,7 +80,8 @@ export function PreviewStage({
   return (
     <div
       className={cn(
-        'overflow-hidden rounded-[var(--radius-xl)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface)]',
+        'rounded-[var(--radius-xl)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface)]',
+        clip && 'overflow-hidden',
         className,
       )}
     >
@@ -167,7 +181,8 @@ export function PreviewStage({
 
       <div
         className={cn(
-          'relative flex justify-center overflow-x-auto',
+          'relative flex justify-center',
+          clip && 'overflow-x-auto',
           grid && 'preview-grid',
           width !== 'full' && 'bg-[var(--ds-sunken)] py-6',
         )}
