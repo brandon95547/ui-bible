@@ -7,7 +7,6 @@ import {
 import { Button, IconButton } from '@/ui/Button'
 import { Avatar } from '@/ui/Display'
 import { AppBar, type AppBarAlign } from '@/ui/Navigation'
-import { Select } from '@/ui/Select'
 import { Checkbox, Segmented } from '@/ui/Toggle'
 import { DEVICE_CONTROLS_SLOT, PreviewContext, devicePath } from '../framework/preview-context'
 import { storedViewport } from '../framework/DeviceView'
@@ -218,14 +217,19 @@ function Playground() {
       <div className="rounded-[var(--radius-xl)] border border-[var(--ds-border)] bg-[var(--ds-surface)]">
         {/* The section above already says this is the live preview, so the
             panel is knobs and nothing else. */}
-        <div className="flex flex-wrap items-start gap-x-8 gap-y-6 p-5">
-          <Knob label="Title alignment">
-            <Select
+        <div className="flex flex-wrap items-start gap-x-4 gap-y-5 p-4">
+          <Knob label="Alignment">
+            <Segmented
               aria-label="Title alignment"
-              options={ALIGN_OPTIONS}
               value={align}
-              onChange={(v) => setAlign(v as AppBarAlign)}
-              className="w-[11.5rem]"
+              onChange={setAlign}
+              options={ALIGN_OPTIONS.map((o) => ({
+                value: o.value as AppBarAlign,
+                // The icon already says left/centre/right. Spelling it out
+                // again costs 70px of a row that has none to spare.
+                label: <span className="sr-only">{o.label}</span>,
+                icon: o.icon,
+              }))}
             />
           </Knob>
 
@@ -238,7 +242,7 @@ function Playground() {
             />
           </Knob>
 
-          <Knob label="Direction">
+          <Knob label="Dir">
             <RtlToggle rtl={rtl} onChange={setRtl} />
           </Knob>
 
@@ -257,7 +261,7 @@ function Playground() {
           </Knob>
 
           <Knob label="Options">
-            <div className="grid grid-cols-2 gap-x-6 gap-y-2.5">
+            <div className="grid grid-cols-2 gap-x-4 gap-y-2.5">
               <Checkbox
                 size="sm"
                 label="Elevated"
@@ -279,25 +283,35 @@ function Playground() {
             </div>
           </Knob>
 
-          <div className="ms-auto flex items-center gap-2 self-center">
+          <div className="ms-auto flex items-center gap-1.5 self-center">
             {/* A real link under the popup: if the browser refuses a sized
                 window, the href still opens the same route in a new tab.
                 Doing nothing is the one outcome this must not have. */}
+            {/* Glyphs, not labels: the same two controls the Bible's own
+                preview toolbar carries, and the row has no width to spend on
+                spelling them out. Both keep a name for the screen reader and
+                a tooltip for everyone else. */}
             <a
               href={devicePath('app-bar')}
               target="_blank"
               rel="noreferrer"
+              aria-label="Pop out into a real viewport"
+              title="Pop out into a real viewport"
               onClick={(e) => {
                 if (openNative()) e.preventDefault()
               }}
-              className="relative inline-flex h-9 select-none items-center justify-center gap-2 whitespace-nowrap rounded-[var(--radius-md)] border border-[var(--ds-border-interactive)] px-3.5 text-label font-medium text-[var(--ds-fg)] transition-colors duration-[120ms] hover:border-[var(--ds-border-strong)] hover:bg-[var(--ds-layer-hover)] active:bg-[var(--ds-layer-active)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ds-focus-ring)] after:pointer-events-none after:absolute after:left-0 after:top-1/2 after:h-11 after:w-full after:-translate-y-1/2 after:content-['']"
+              className="relative grid h-9 w-9 select-none place-items-center rounded-[var(--radius-md)] border border-[var(--ds-border-interactive)] text-[var(--ds-fg)] transition-colors duration-[120ms] hover:border-[var(--ds-border-strong)] hover:bg-[var(--ds-layer-hover)] active:bg-[var(--ds-layer-active)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ds-focus-ring)]"
             >
               <MonitorSmartphone size={16} />
-              Pop out
             </a>
-            <Button variant="outlined" size="md" startIcon={<RotateCcw />} onClick={reset}>
-              Reset
-            </Button>
+            <IconButton
+              label="Reset the playground"
+              title="Reset the playground"
+              icon={<RotateCcw />}
+              variant="outlined"
+              size="md"
+              onClick={reset}
+            />
           </div>
         </div>
       </div>
@@ -339,7 +353,7 @@ function Playground() {
 
         <p className="mt-4 text-caption text-[var(--ds-fg-muted)]">
           The bar reflows on its own width, not the window's. At the mobile frame it drops to 56px
-          and sheds the third utility — the same reflow a phone gets, for the same reason. Pop out
+          and sheds the third utility — the same reflow a phone gets, for the same reason. Pop it out
           to see it against a real viewport, where <code>100dvh</code>, the safe-area insets and a
           coarse pointer are all true rather than simulated. RTL mirrors the whole bar, so the
           alignment names describe where things sit reading left to right — in Arabic or Hebrew,
