@@ -679,154 +679,154 @@ export function MegaMenu({
 
 /* ===========================================================================
    APP BAR
-   The top region of a screen: where you are, the way back, and the two or
-   three things you can do here.
+   The top edge of the product: who you are looking at, and the two or three
+   things you can do from anywhere in it.
 
-   The arrangement is Material's, because Material solved this one and the
-   solution is now what a phone user expects. Three sizes, and the size is a
-   statement about the title:
+   THE BASIC BAR IS ONE ROW, 64px, AND FOUR SLOTS
+     leading   the drawer trigger or the way back, always first, always in
+               the same place on every screen.
+     brand     the mark plus the product name. This is the "you are in this
+               product" anchor, and it is the only thing in the bar allowed
+               to carry colour.
+     actions   the global utilities — help, notifications, settings. Three at
+               the widest, two on a phone. A fourth stops being read and
+               starts being scanned.
+     account   the person, at the far end, on its own. It is not an action;
+               it is the door to everything about the signed-in user, which
+               is why it sits apart from the action cluster.
 
-     small   64px   one row. The title shares the row with the icons, so it
-                    has to stay short. This is the default and should stay
-                    the default — it costs the least content.
-     medium  112px  the title drops to its own line under the icons, where it
-                    can be read as a heading rather than as a label between
-                    two buttons.
-     large   152px  the same arrangement with the title at display weight.
-                    For the first screen of a section, where the title IS the
-                    content of the header.
+   ALIGNMENT IS A DECISION ABOUT WHAT THE PRODUCT IS
+     left    an application. The brand anchors the same left edge as the
+             content under it. This is the default and it is almost always
+             right.
+     center  a document or a phone screen. Centring is genuinely centred in
+             the BAR, not between the icons, so it survives a lopsided action
+             cluster without drifting.
+     right   a chrome-light layout where the left edge belongs to a sidebar
+             and the bar is only a strip above it.
 
-   `align="center"` is the fourth arrangement and only applies to `small`.
-   It reads as a phone screen — iOS has centred titles, and a centred title
-   in a one-row bar is what tells a user this is a page and not a document.
-   Center a title only with one leading and at most one trailing icon: it is
-   centred in the BAR, not between the icons, so a crowded row pushes the
-   title off-centre visually even though it is not.
+   ELEVATION IS TWO DIFFERENT THINGS IN TWO THEMES
+     A raised bar is lighter than the page in dark and shadowed in light,
+     because those are the only directions each theme has. `elevated` asks
+     for the separation; the tokens decide how it is spent.
 
-   Everything below the title row is the caller's. The bar never holds page
-   content, and it never holds more than three trailing actions — past that
-   they stop being read and start being scanned.
+   The bar never holds page content, never holds a search field it does not
+   own, and never grows a second row of tabs. Those are separate components
+   sitting under it.
    ======================================================================== */
 
-export type AppBarSize = 'small' | 'medium' | 'large'
-export type AppBarAlign = 'start' | 'center'
+export type AppBarAlign = 'left' | 'center' | 'right'
 
 export interface AppBarProps {
-  /** The screen's name. One line — the bar truncates rather than wraps. */
+  /** The product name. One line — the bar truncates rather than wraps. */
   title: React.ReactNode
-  /**
-   * A second line under the title, at half its weight. For the thing that
-   * qualifies the title — a count, a status, the parent it belongs to — and
-   * never for a sentence.
-   */
-  subtitle?: React.ReactNode
-  /** 64px one row / 112px title below / 152px title below at display size. */
-  size?: AppBarSize
-  /** `center` is small-only; medium and large always start-align. */
+  /** The mark that sits before the title. Square, and it owns the accent. */
+  logo?: React.ReactNode
+  /** Where the brand block sits in the bar. `left` unless you know otherwise. */
   align?: AppBarAlign
-  /** The back arrow or the drawer trigger. Omit on a root screen with no drawer. */
+  /** The drawer trigger or the back arrow. First slot, every screen. */
   leading?: React.ReactNode
-  /** Up to three. The overflow menu is the third one, not the fourth. */
+  /** Global utilities. Three at desktop width, two on a phone. */
   actions?: React.ReactNode
+  /** The signed-in user. Last slot, separated from the actions. */
+  account?: React.ReactNode
+  /** Lift the bar off the page: lighter in dark, shadowed in light. */
+  elevated?: boolean
+  /** A hairline along the bottom edge. Use it INSTEAD of elevation, not with it. */
+  bordered?: boolean
   /**
-   * Content has scrolled beneath the bar. Material changes the CONTAINER
-   * COLOUR rather than adding a shadow, which is what keeps a flat design
-   * flat while still separating two scrolling planes.
+   * Run the bar's contents out to the window edges: no content cap, and the
+   * gutter drops to the minimum that keeps an icon target off the edge. Off
+   * by default, because a bar whose brand sits 4px from the edge of a 27"
+   * monitor has left the content column it is supposed to be heading.
    */
-  scrolled?: boolean
+  fullBleed?: boolean
+  /** The content column the bar aligns to when it is not full-bleed. */
+  maxWidth?: number
   /** Sticks to the top of its scroll container. On by default. */
   sticky?: boolean
   className?: string
 }
 
-// Material's three, kept as the literal numbers because on this component the
-// number IS the spec: 64 is one row, 112 is that row plus a line for the title,
-// 152 is that row plus a line for a title at display size.
-const APP_BAR_HEIGHT: Record<AppBarSize, string> = {
-  small: 'h-[64px]',
-  medium: 'h-[112px]',
-  large: 'h-[152px]',
+/** left/right share a track layout; center needs equal side tracks to be true. */
+const ALIGN_COLS: Record<AppBarAlign, string> = {
+  left: 'grid-cols-[auto_1fr_auto]',
+  center: 'grid-cols-[1fr_auto_1fr]',
+  right: 'grid-cols-[auto_1fr_auto]',
+}
+
+const ALIGN_BRAND: Record<AppBarAlign, string> = {
+  left: 'justify-start',
+  center: 'justify-center',
+  right: 'justify-end',
 }
 
 export function AppBar({
   title,
-  subtitle,
-  size = 'small',
-  align = 'start',
+  logo,
+  align = 'left',
   leading,
   actions,
-  scrolled = false,
+  account,
+  elevated = false,
+  bordered = false,
+  fullBleed = false,
+  maxWidth = 1280,
   sticky = true,
   className,
 }: AppBarProps) {
-  // Centring is a one-row idea. In a two-row bar the title sits under the
-  // icons with the whole width to itself, and centring it there would break
-  // the left edge every other line of the screen is aligned to.
-  const centred = align === 'center' && size === 'small'
-  const stacked = size !== 'small'
-
-  const titleBlock = (
-    <div className={cn('flex min-w-0 flex-col justify-center', centred && 'items-center text-center')}>
-      <h1
-        className={cn(
-          'truncate text-[var(--ds-fg)]',
-          size === 'large' ? 'text-h1' : size === 'medium' ? 'text-h2' : 'text-h3',
-        )}
-      >
-        {title}
-      </h1>
-      {subtitle && (
-        <p className="truncate text-body-sm text-[var(--ds-fg-secondary)]">{subtitle}</p>
-      )}
-    </div>
-  )
-
   return (
     <header
       role="banner"
+      // @container, not a media query: the bar reflows on ITS OWN width, so a
+      // bar inside a 390px panel is compact for the same reason a bar in a
+      // 390px window is. Width is the only input either one actually has.
       className={cn(
-        'flex w-full flex-col',
-        APP_BAR_HEIGHT[size],
+        '@container w-full',
         sticky && 'sticky top-0 z-10',
-        // The colour IS the elevation. Material dropped the shadow here in
-        // favour of a container-colour change, and it survives dark mode and
-        // a busy page better than a shadow does.
-        scrolled ? 'bg-[var(--ds-surface-raised)]' : 'bg-[var(--ds-canvas)]',
-        'transition-[background-color,block-size] duration-[160ms] ease-[cubic-bezier(0.2,0,0,1)]',
-        'px-1 pe-1.5',
+        // Dark raises by lightness, light raises by shadow. Same request,
+        // two honest answers — see the theme tiers in tokens.css.
+        elevated ? 'bg-[var(--ds-surface)] shadow-e2' : 'bg-[var(--ds-canvas)]',
+        bordered && 'border-b border-[var(--ds-border-subtle)]',
+        'transition-[background-color,box-shadow] duration-[160ms] ease-[cubic-bezier(0.2,0,0,1)]',
         className,
       )}
       {...inspect('AppBar', {
-        tokens: ['--ds-canvas', '--ds-surface-raised', '--text-h1', '--text-h2', '--text-h3'],
-        why: 'Three heights, and the height is a statement about the title: 64px shares a row with the icons, 112px and 152px give the title its own line. On scroll the container colour changes rather than a shadow appearing — the same separation without adding a plane.',
-        a11y: 'header[role=banner] with the title as the page h1. The leading control is a real button with a label; a bare chevron announces as "button".',
+        tokens: ['--ds-canvas', '--ds-surface', '--shadow-e2', '--ds-border-subtle', '--text-h3'],
+        why: 'One row, 64px, four slots: leading, brand, actions, account. It drops to 56px below a 640px container because that is where a phone stops having room for both a comfortable target and a title. Elevation is spent as surface lightness in dark and as shadow in light — the two themes are not inversions of each other. The default 24px gutter is what lines the brand up with the content column under it; full-bleed gives that up on purpose.',
+        a11y: 'header[role=banner]. Every icon in the bar is a real button with a name; the account control names the person rather than announcing "button". At 64px the icon targets are 44px minimum on coarse pointers.',
       })}
     >
-      {/* The icon row. In a small bar it also holds the title; in the taller
-          two, it is icons only and the title lives under it. */}
-      <div className={cn('flex shrink-0 items-center gap-1', stacked ? 'h-16' : 'h-full', centred && 'relative')}>
-        <span className="flex h-12 w-12 shrink-0 items-center justify-center">{leading}</span>
-
-        {!stacked && !centred && <div className="flex min-w-0 flex-1 flex-col justify-center">{titleBlock}</div>}
-
-        {centred && (
-          // Absolutely centred, and pointer-transparent, so an extra trailing
-          // icon moves the icons and never the title. Capped at 60% so it
-          // truncates before it can collide with either side.
-          <div className="pointer-events-none absolute inset-x-0 mx-auto flex max-w-[60%] flex-col items-center">
-            {titleBlock}
-          </div>
+      <div
+        className={cn(
+          'mx-auto grid h-16 w-full items-center gap-2',
+          '@max-[640px]:h-14 @max-[640px]:gap-1',
+          // The gutter is the visible half of full-bleed. The cap is the half
+          // you only see on a wide monitor, which is exactly where it matters.
+          fullBleed ? 'px-2 @max-[640px]:px-1' : 'px-6 @max-[640px]:px-3',
+          ALIGN_COLS[align],
         )}
+        style={fullBleed ? undefined : { maxWidth }}
+      >
+        {/* Slot 1 — the way out. Empty and still present, so the brand does
+            not shuffle sideways between a screen that has a back arrow and
+            one that does not. */}
+        <div className="flex min-w-0 items-center justify-start">{leading}</div>
 
-        <span className={cn('flex items-center gap-0.5', centred || stacked ? 'ms-auto' : '')}>{actions}</span>
+        {/* Slot 2 — the brand. min-w-0 is what lets a long product name
+            truncate instead of shoving the actions off the end. */}
+        <div className={cn('flex min-w-0 items-center gap-2.5', ALIGN_BRAND[align])}>
+          {logo && <span className="flex shrink-0 items-center">{logo}</span>}
+          <span className="truncate text-h3 text-[var(--ds-fg)] @max-[640px]:text-h4">{title}</span>
+        </div>
+
+        {/* Slots 3 and 4 — utilities, then the person. The wider gap is the
+            separation: the account is not the fourth action. */}
+        <div className="flex items-center justify-end gap-0.5">
+          {actions}
+          {account && <span className="ms-1.5 flex items-center @max-[640px]:ms-1">{account}</span>}
+        </div>
       </div>
-
-      {stacked && (
-        // Bottom-aligned, not centred in the space: the title reads as the
-        // heading of the content under it, so it sits as close to that
-        // content as the padding allows.
-        <div className="flex min-w-0 flex-1 items-end px-3 pb-4">{titleBlock}</div>
-      )}
     </header>
   )
 }
