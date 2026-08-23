@@ -86,9 +86,40 @@ const DEFAULTS = {
   align: 'left' as AppBarAlign,
   theme: 'dark' as 'dark' | 'light',
   view: 'desktop' as ViewId,
+  rtl: false,
   elevated: true,
   bordered: false,
   fullBleed: false,
+}
+
+/**
+ * The direction toggle.
+ *
+ * The bar is built out of logical properties — inline-start, inline-end,
+ * justify-start — so `dir` is the whole implementation. Nothing here is
+ * mirrored by hand, and that is the test: if a bar needs a special case to
+ * survive RTL, it was using a physical edge where it should not have been.
+ */
+function RtlToggle({
+  rtl,
+  onChange,
+  size = 'md',
+}: {
+  rtl: boolean
+  onChange: (v: boolean) => void
+  size?: 'sm' | 'md'
+}) {
+  return (
+    <Button
+      size={size === 'sm' ? 'xs' : 'md'}
+      variant={rtl ? 'tonal' : 'outlined'}
+      aria-pressed={rtl}
+      onClick={() => onChange(!rtl)}
+      title={rtl ? 'Right to left — click for left to right' : 'Preview right to left'}
+    >
+      RTL
+    </Button>
+  )
 }
 
 /** A labelled control group in the panel. */
@@ -146,6 +177,7 @@ function Playground() {
   const [align, setAlign] = React.useState(DEFAULTS.align)
   const [theme, setTheme] = React.useState(DEFAULTS.theme)
   const [view, setView] = React.useState(DEFAULTS.view)
+  const [rtl, setRtl] = React.useState(DEFAULTS.rtl)
   const [elevated, setElevated] = React.useState(DEFAULTS.elevated)
   const [bordered, setBordered] = React.useState(DEFAULTS.bordered)
   const [fullBleed, setFullBleed] = React.useState(DEFAULTS.fullBleed)
@@ -154,6 +186,7 @@ function Playground() {
     setAlign(DEFAULTS.align)
     setTheme(DEFAULTS.theme)
     setView(DEFAULTS.view)
+    setRtl(DEFAULTS.rtl)
     setElevated(DEFAULTS.elevated)
     setBordered(DEFAULTS.bordered)
     setFullBleed(DEFAULTS.fullBleed)
@@ -167,6 +200,8 @@ function Playground() {
       <NativeView
         align={align}
         setAlign={setAlign}
+        rtl={rtl}
+        setRtl={setRtl}
         elevated={elevated}
         setElevated={setElevated}
         bordered={bordered}
@@ -201,6 +236,10 @@ function Playground() {
               variant="outlined"
               onClick={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))}
             />
+          </Knob>
+
+          <Knob label="Direction">
+            <RtlToggle rtl={rtl} onChange={setRtl} />
           </Knob>
 
           <Knob label="View">
@@ -283,6 +322,7 @@ function Playground() {
                 an attribute. See tokens.css. */}
             <div
               data-theme={theme}
+              dir={rtl ? 'rtl' : 'ltr'}
               className="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--ds-border-subtle)] bg-[var(--ds-canvas)]"
               style={device.width ? { maxWidth: device.width } : undefined}
             >
@@ -301,7 +341,9 @@ function Playground() {
           The bar reflows on its own width, not the window's. At the mobile frame it drops to 56px
           and sheds the third utility — the same reflow a phone gets, for the same reason. Pop out
           to see it against a real viewport, where <code>100dvh</code>, the safe-area insets and a
-          coarse pointer are all true rather than simulated.
+          coarse pointer are all true rather than simulated. RTL mirrors the whole bar, so the
+          alignment names describe where things sit reading left to right — in Arabic or Hebrew,
+          “Left” is the right-hand edge, because that is where the line starts.
         </p>
       </div>
     </div>
@@ -319,10 +361,12 @@ function Playground() {
    ======================================================================== */
 
 function NativeView({
-  align, setAlign, elevated, setElevated, bordered, setBordered, fullBleed, setFullBleed,
+  align, setAlign, rtl, setRtl, elevated, setElevated, bordered, setBordered, fullBleed, setFullBleed,
 }: {
   align: AppBarAlign
   setAlign: (v: AppBarAlign) => void
+  rtl: boolean
+  setRtl: (v: boolean) => void
   elevated: boolean
   setElevated: (v: boolean) => void
   bordered: boolean
@@ -334,6 +378,16 @@ function NativeView({
   // found on the first pass. One extra pass, then it sticks.
   const [slot, setSlot] = React.useState<HTMLElement | null>(null)
   React.useEffect(() => setSlot(document.getElementById(DEVICE_CONTROLS_SLOT)), [])
+
+  // The whole window flips, not a box inside it: on a real device RTL is the
+  // document's direction, and a bar mirrored inside an LTR page would be
+  // answering an easier question than the one being asked.
+  React.useEffect(() => {
+    document.documentElement.dir = rtl ? 'rtl' : 'ltr'
+    return () => {
+      document.documentElement.dir = 'ltr'
+    }
+  }, [rtl])
 
   return (
     <>
@@ -364,6 +418,7 @@ function NativeView({
                 icon: o.icon,
               }))}
             />
+            <RtlToggle rtl={rtl} onChange={setRtl} size="sm" />
             <Checkbox
               size="sm"
               label="Elevated"

@@ -250,7 +250,10 @@ function DeviceBar({
     width === (landscape ? device.h : device.w) && height === (landscape ? device.w : device.h)
 
   return (
-    <div className="fixed inset-x-0 bottom-3 z-[200] flex justify-center px-3">
+    // Always LTR. A preview that flips the document to RTL is testing the
+    // specimen, not this bar — and a mirrored "390 × 844" readout reads as
+    // the wrong number, which is the one thing a readout may not do.
+    <div dir="ltr" className="fixed inset-x-0 bottom-3 z-[200] flex justify-center px-3">
       {open ? (
         <div className="flex max-w-full flex-col gap-1.5 rounded-[var(--radius-lg)] border border-[var(--ds-border)] bg-[var(--ds-surface-overlay)]/95 p-1.5 shadow-e4 backdrop-blur-xl">
         <div className="flex flex-wrap items-center gap-1.5">
