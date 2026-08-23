@@ -113,18 +113,9 @@ function Playground() {
     <div className="flex flex-col gap-8">
       {/* ---- The panel ------------------------------------------------- */}
       <div className="rounded-[var(--radius-xl)] border border-[var(--ds-border)] bg-[var(--ds-surface)]">
-        <div className="flex flex-col gap-7 p-6 lg:flex-row lg:items-start lg:gap-10">
-          <div className="shrink-0 lg:w-[15rem]">
-            <h3 className="text-h3 text-[var(--ds-fg)]">App Bar Playground</h3>
-            <p className="mt-1.5 text-body-sm text-[var(--ds-fg-secondary)]">
-              Customize the app bar appearance and preview it in different views.
-            </p>
-          </div>
-
-          {/* Everything that is not the heading wraps as one group, so a
-              narrow column breaks the panel into tidy rows rather than
-              stranding a knob under the description. */}
-          <div className="flex flex-1 flex-wrap items-start gap-x-8 gap-y-6">
+        {/* The section above already says this is the live preview, so the
+            panel is knobs and nothing else. */}
+        <div className="flex flex-wrap items-start gap-x-8 gap-y-6 p-5">
           <Knob label="Title alignment">
             <Select
               aria-label="Title alignment"
@@ -186,24 +177,24 @@ function Playground() {
               Reset
             </Button>
           </div>
-          </div>
         </div>
       </div>
 
       {/* ---- The preview ----------------------------------------------- */}
       <div>
-        <h3 className="text-h4 text-[var(--ds-fg)]">Preview</h3>
+        {/* The band rides the heading rather than a column beside the frame:
+            the bar's whole argument is what it does with the width it is
+            given, so nothing takes width away from it. */}
+        <div className="flex items-baseline justify-between gap-4">
+          <h3 className="text-h4 text-[var(--ds-fg)]">Preview</h3>
+          <span className="flex items-center gap-2 text-caption text-[var(--ds-fg-muted)]">
+            <span className="text-[var(--ds-fg-muted)]">{device.icon}</span>
+            {device.name} · {device.band}
+          </span>
+        </div>
 
-        <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-start sm:gap-8">
-          <div className="flex shrink-0 items-center gap-2.5 sm:w-40 sm:flex-col sm:items-start sm:gap-1 sm:pt-5">
-            <span className="flex items-center gap-2 text-body-sm text-[var(--ds-fg)]">
-              <span className="text-[var(--ds-fg-muted)]">{device.icon}</span>
-              {device.name}
-            </span>
-            <span className="text-caption text-[var(--ds-fg-muted)]">({device.band})</span>
-          </div>
-
-          <div className="min-w-0 flex-1">
+        <div className="mt-4">
+          <div className="min-w-0">
             {/* data-theme re-themes this subtree only — the tokens are bound
                 with `inline`, so a light island inside the dark docs is just
                 an attribute. See tokens.css. */}
