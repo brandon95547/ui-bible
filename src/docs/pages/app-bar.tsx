@@ -1,16 +1,18 @@
 import * as React from 'react'
 import { createPortal } from 'react-dom'
 import {
-  AlignCenter, AlignLeft, AlignRight, Bell, Box, ChevronDown, HelpCircle, Menu, Monitor,
-  MonitorSmartphone, Moon, RotateCcw, Settings, Smartphone, Sun, Tablet,
+  AlignCenter, AlignLeft, AlignRight, Bell, BookOpen, Box, ChevronDown, Folder, HelpCircle,
+  Home, Layers, LayoutGrid, LayoutTemplate, LogOut, Menu, Monitor, MonitorSmartphone, Moon,
+  RotateCcw, Settings, Smartphone, Sun, Tablet,
 } from 'lucide-react'
+import { cn } from '@/lib/cn'
 import { Button, IconButton } from '@/ui/Button'
 import { Avatar } from '@/ui/Display'
-import { AppBar, type AppBarAlign } from '@/ui/Navigation'
+import { AppBar, NavItem, type AppBarAlign } from '@/ui/Navigation'
 import { Checkbox, Segmented } from '@/ui/Toggle'
 import { DEVICE_CONTROLS_SLOT, PreviewContext, devicePath } from '../framework/preview-context'
 import { storedViewport } from '../framework/DeviceView'
-import { defineDoc } from '../framework/kit'
+import { SubHeading, defineDoc } from '../framework/kit'
 
 /* ===========================================================================
    THE BASIC BAR
@@ -155,13 +157,15 @@ interface BarState {
 }
 
 /** The specimen. Identical in the page and in the popped-out window. */
-function Bar({ align, elevated, bordered, fullBleed, sticky }: BarState & { sticky?: boolean }) {
+function Bar({
+  align, elevated, bordered, fullBleed, sticky, leading,
+}: BarState & { sticky?: boolean; leading?: React.ReactNode }) {
   return (
     <AppBar
       title="UI Bible"
       logo={logo}
       align={align}
-      leading={<IconButton label="Open navigation" icon={<Menu />} size="md" />}
+      leading={leading ?? <IconButton label="Open navigation" icon={<Menu />} size="md" />}
       actions={utilities}
       account={<Account />}
       elevated={elevated}
@@ -172,11 +176,122 @@ function Bar({ align, elevated, bordered, fullBleed, sticky }: BarState & { stic
   )
 }
 
+/* ===========================================================================
+   VERSION 2 — WITH NAVIGATION
+
+   The same bar, now doing the job its first slot exists for. Everything about
+   the bar is unchanged; what the drawer trigger opens is the whole addition.
+   ======================================================================== */
+
+const NAV_PRIMARY = [
+  { icon: <Home size={16} />, label: 'Dashboard' },
+  { icon: <Layers size={16} />, label: 'Components' },
+  { icon: <LayoutGrid size={16} />, label: 'Patterns' },
+  { icon: <LayoutTemplate size={16} />, label: 'Templates' },
+  { icon: <BookOpen size={16} />, label: 'Guidelines' },
+  { icon: <Folder size={16} />, label: 'Resources' },
+]
+
+const NAV_SECONDARY = [
+  { icon: <Settings size={16} />, label: 'Settings' },
+  { icon: <HelpCircle size={16} />, label: 'Help & Support' },
+  { icon: <LogOut size={16} />, label: 'Sign Out' },
+]
+
+const NAV_W = 260
+
+/**
+ * The drawer.
+ *
+ * One element, two behaviours, chosen by the container's width rather than the
+ * window's — a persistent column where there is room beside the content, an
+ * overlay over it where there is not. The switch is at 768px because that is
+ * where 260px of navigation stops being a fifth of the screen and starts being
+ * two thirds of it.
+ *
+ * It moves on `margin-inline-start`, not a transform, so RTL costs nothing:
+ * the logical property already knows which edge it is leaving from.
+ */
+function NavDrawer({ open, onDismiss, current }: { open: boolean; onDismiss: () => void; current: string }) {
+  return (
+    <>
+      {/* The scrim belongs to the overlay behaviour only. A persistent column
+          has nothing to dim — the content beside it is still usable. */}
+      <div
+        aria-hidden
+        onClick={onDismiss}
+        className={cn(
+          'absolute inset-0 z-10 bg-[var(--ds-layer-scrim)] transition-opacity duration-[200ms] @min-[768px]:hidden',
+          open ? 'opacity-100' : 'pointer-events-none opacity-0',
+        )}
+      />
+      <nav
+        aria-label="Primary"
+        aria-hidden={!open}
+        style={{ width: NAV_W, marginInlineStart: open ? 0 : -NAV_W }}
+        className={cn(
+          // inset-y, not inset-block: the block axis is vertical in both
+          // directions here, and Tailwind has no inset-block utility.
+          'absolute inset-y-0 start-0 z-20 flex shrink-0 flex-col overflow-y-auto',
+          'border-e border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] p-2',
+          'transition-[margin-inline-start] duration-[220ms] ease-[cubic-bezier(0.2,0,0,1)]',
+          '@min-[768px]:static @min-[768px]:z-auto',
+        )}
+      >
+        <div className="flex flex-col gap-0.5">
+          {NAV_PRIMARY.map((it) => (
+            <NavItem key={it.label} icon={it.icon} label={it.label} active={it.label === current} />
+          ))}
+        </div>
+
+        {/* The rule is a divider, not a heading: the group below is "about you
+            and the app", which does not need naming to be understood. */}
+        <div className="my-3 h-px shrink-0 bg-[var(--ds-border-subtle)]" />
+
+        <div className="flex flex-col gap-0.5">
+          {NAV_SECONDARY.map((it) => (
+            <NavItem key={it.label} icon={it.icon} label={it.label} />
+          ))}
+        </div>
+      </nav>
+    </>
+  )
+}
+
+/**
+ * The window each version is shown in.
+ *
+ * `data-theme` re-themes this subtree only — the tokens are bound with
+ * `inline`, so a light island inside the dark docs is just an attribute. It is
+ * also the container the drawer measures itself against, which is what lets a
+ * 390px frame behave like a 390px phone.
+ */
+function Frame({
+  theme, rtl, width, children,
+}: {
+  theme: 'dark' | 'light'
+  rtl: boolean
+  width: number | null
+  children: React.ReactNode
+}) {
+  return (
+    <div
+      data-theme={theme}
+      dir={rtl ? 'rtl' : 'ltr'}
+      className="@container overflow-hidden rounded-[var(--radius-lg)] border border-[var(--ds-border-subtle)] bg-[var(--ds-canvas)]"
+      style={width ? { maxWidth: width } : undefined}
+    >
+      {children}
+    </div>
+  )
+}
+
 function Playground() {
   const [align, setAlign] = React.useState(DEFAULTS.align)
   const [theme, setTheme] = React.useState(DEFAULTS.theme)
   const [view, setView] = React.useState(DEFAULTS.view)
   const [rtl, setRtl] = React.useState(DEFAULTS.rtl)
+  const [navOpen, setNavOpen] = React.useState(true)
   const [elevated, setElevated] = React.useState(DEFAULTS.elevated)
   const [bordered, setBordered] = React.useState(DEFAULTS.bordered)
   const [fullBleed, setFullBleed] = React.useState(DEFAULTS.fullBleed)
@@ -329,29 +444,56 @@ function Playground() {
           </span>
         </div>
 
-        <div className="mt-4">
-          <div className="min-w-0">
-            {/* data-theme re-themes this subtree only — the tokens are bound
-                with `inline`, so a light island inside the dark docs is just
-                an attribute. See tokens.css. */}
-            <div
-              data-theme={theme}
-              dir={rtl ? 'rtl' : 'ltr'}
-              className="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--ds-border-subtle)] bg-[var(--ds-canvas)]"
-              style={device.width ? { maxWidth: device.width } : undefined}
-            >
-              <Bar
-                align={align}
-                elevated={elevated}
-                bordered={bordered}
-                fullBleed={fullBleed}
-                sticky={false}
-              />
+        <div className="mt-5">
+          <SubHeading description="The bar on its own: the way out, the brand, the utilities, the person. Every knob above changes an arrangement or a plane — none of them add a part.">
+            Basic
+          </SubHeading>
+          <Frame theme={theme} rtl={rtl} width={device.width}>
+            <Bar
+              align={align}
+              elevated={elevated}
+              bordered={bordered}
+              fullBleed={fullBleed}
+              sticky={false}
+            />
+          </Frame>
+
+          <SubHeading description="The same bar with the drawer its first slot exists to open. Wide enough and the drawer is a column beside the content; narrow and it is an overlay over it — decided by the container's width, not the window's.">
+            With navigation
+          </SubHeading>
+          <Frame theme={theme} rtl={rtl} width={device.width}>
+            <Bar
+              align={align}
+              elevated={elevated}
+              bordered={bordered}
+              fullBleed={fullBleed}
+              sticky={false}
+              leading={
+                <IconButton
+                  label={navOpen ? 'Close navigation' : 'Open navigation'}
+                  aria-expanded={navOpen}
+                  icon={<Menu />}
+                  size="md"
+                  onClick={() => setNavOpen((o) => !o)}
+                />
+              }
+            />
+            <div className="relative flex h-[400px] overflow-hidden">
+              <NavDrawer open={navOpen} onDismiss={() => setNavOpen(false)} current="Dashboard" />
+              <div className="min-w-0 flex-1 space-y-3 overflow-y-auto p-4">
+                {Array.from({ length: 10 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="h-3 rounded-full bg-[var(--ds-layer-active)]"
+                    style={{ width: `${[92, 78, 88, 64, 84, 72][i % 6]}%` }}
+                  />
+                ))}
+              </div>
             </div>
-          </div>
+          </Frame>
         </div>
 
-        <p className="mt-4 text-caption text-[var(--ds-fg-muted)]">
+        <p className="mt-6 text-caption text-[var(--ds-fg-muted)]">
           The bar reflows on its own width, not the window's. At the mobile frame it drops to 56px
           and sheds the third utility — the same reflow a phone gets, for the same reason. Pop it out
           to see it against a real viewport, where <code>100dvh</code>, the safe-area insets and a
@@ -388,6 +530,10 @@ function NativeView({
   fullBleed: boolean
   setFullBleed: (v: boolean) => void
 }) {
+  // Closed is the resting state on a phone: an overlay that covers the screen
+  // the moment the page loads is showing the drawer, not the screen.
+  const [navOpen, setNavOpen] = React.useState(false)
+
   // The slot is a sibling that commits alongside this render, so it cannot be
   // found on the first pass. One extra pass, then it sticks.
   const [slot, setSlot] = React.useState<HTMLElement | null>(null)
@@ -403,19 +549,40 @@ function NativeView({
     }
   }, [rtl])
 
+  // The navigation version, because it is the superset: the basic bar is in
+  // it, and the drawer is the part that most needs a real viewport — an
+  // overlay, a scrim and a thumb reaching the trigger.
   return (
-    <>
-      <Bar align={align} elevated={elevated} bordered={bordered} fullBleed={fullBleed} sticky />
-      {/* Something under the bar, so it is judged as the top of a screen
-          rather than as a strip floating in an empty viewport. */}
-      <div className="space-y-3 p-4">
-        {Array.from({ length: 14 }).map((_, i) => (
-          <div
-            key={i}
-            className="h-3 rounded-full bg-[var(--ds-layer-active)]"
-            style={{ width: `${[92, 78, 88, 64, 84, 72][i % 6]}%` }}
+    <div className="@container relative flex min-h-dvh flex-col">
+      <Bar
+        align={align}
+        elevated={elevated}
+        bordered={bordered}
+        fullBleed={fullBleed}
+        sticky
+        leading={
+          <IconButton
+            label={navOpen ? 'Close navigation' : 'Open navigation'}
+            aria-expanded={navOpen}
+            icon={<Menu />}
+            size="md"
+            onClick={() => setNavOpen((o) => !o)}
           />
-        ))}
+        }
+      />
+      <div className="relative flex min-h-0 flex-1 overflow-hidden">
+        <NavDrawer open={navOpen} onDismiss={() => setNavOpen(false)} current="Dashboard" />
+        {/* Something under the bar, so it is judged as the top of a screen
+            rather than as a strip floating in an empty viewport. */}
+        <div className="min-w-0 flex-1 space-y-3 overflow-y-auto p-4 pb-32">
+          {Array.from({ length: 14 }).map((_, i) => (
+            <div
+              key={i}
+              className="h-3 rounded-full bg-[var(--ds-layer-active)]"
+              style={{ width: `${[92, 78, 88, 64, 84, 72][i % 6]}%` }}
+            />
+          ))}
+        </div>
       </div>
 
       {slot &&
@@ -454,7 +621,7 @@ function NativeView({
           </>,
           slot,
         )}
-    </>
+    </div>
   )
 }
 

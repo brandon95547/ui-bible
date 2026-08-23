@@ -425,9 +425,9 @@ export function NavItem({
       type={href ? undefined : 'button'}
       onClick={onClick}
       aria-current={active ? 'page' : undefined}
-      style={{ paddingLeft: `${10 + depth * 14}px` }}
+      style={{ paddingInlineStart: `${10 + depth * 14}px` }}
       className={cn(
-        'group relative flex w-full items-center gap-2.5 rounded-[var(--radius-md)] pr-2 text-left',
+        'group relative flex w-full items-center gap-2.5 rounded-[var(--radius-md)] pe-2 text-start',
         'transition-[background-color,color] duration-[120ms] ease-[cubic-bezier(0.2,0,0,1)]',
         'focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--ds-focus-ring)]',
         compact ? 'h-7 text-label-sm' : 'h-8 text-label',
@@ -442,7 +442,7 @@ export function NavItem({
       {active && (
         <span
           aria-hidden
-          className="absolute left-0 top-1/2 h-[15px] w-[2px] -translate-y-1/2 rounded-r-full bg-[var(--ds-accent)]"
+          className="absolute start-0 top-1/2 h-[15px] w-[2px] -translate-y-1/2 rounded-e-full bg-[var(--ds-accent)]"
         />
       )}
       {icon && (
