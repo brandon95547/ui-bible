@@ -201,27 +201,42 @@ const NAV_SECONDARY = [
 const NAV_W = 260
 
 /**
- * The drawer.
+ * The drawer, in its two variations.
  *
- * One element, two behaviours, chosen by the container's width rather than the
- * window's — a persistent column where there is room beside the content, an
- * overlay over it where there is not. The switch is at 768px because that is
- * where 260px of navigation stops being a fifth of the screen and starts being
- * two thirds of it.
+ * `responsive` — the Navigation Drawer. A persistent column where there is
+ * room beside the content, an overlay over it where there is not. The switch
+ * is at 768px, because that is where 260px of navigation stops being a fifth
+ * of the screen and starts being two thirds of it.
  *
- * It moves on `margin-inline-start`, not a transform, so RTL costs nothing:
+ * `overlay` — the Overlay Drawer. Over the content at every width, always with
+ * a scrim, always closed until asked for. It never takes a column, so the
+ * content is full width on a 27" monitor and on a phone alike.
+ *
+ * Both move on `margin-inline-start`, not a transform, so RTL costs nothing:
  * the logical property already knows which edge it is leaving from.
  */
-function NavDrawer({ open, onDismiss, current }: { open: boolean; onDismiss: () => void; current: string }) {
+type DrawerMode = 'responsive' | 'overlay'
+
+function NavDrawer({
+  open, onDismiss, current, mode,
+}: {
+  open: boolean
+  onDismiss: () => void
+  current: string
+  mode: DrawerMode
+}) {
   return (
     <>
-      {/* The scrim belongs to the overlay behaviour only. A persistent column
-          has nothing to dim — the content beside it is still usable. */}
+      {/* The scrim goes with the overlay behaviour. A persistent column has
+          nothing to dim — the content beside it is still usable — so the
+          responsive drawer drops the scrim at the width where it becomes
+          one. */}
       <div
         aria-hidden
         onClick={onDismiss}
         className={cn(
-          'absolute inset-0 z-10 bg-[var(--ds-layer-scrim)] transition-opacity duration-[200ms] @min-[768px]:hidden',
+          'absolute inset-0 z-10 bg-[var(--ds-layer-scrim)] transition-opacity duration-[200ms]',
+          mode === 'responsive' && '@min-[768px]:hidden',
           open ? 'opacity-100' : 'pointer-events-none opacity-0',
         )}
       />
@@ -235,7 +250,11 @@ function NavDrawer({ open, onDismiss, current }: { open: boolean; onDismiss: () 
           'absolute inset-y-0 start-0 z-20 flex shrink-0 flex-col overflow-y-auto',
           'border-e border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] p-2',
           'transition-[margin-inline-start] duration-[220ms] ease-[cubic-bezier(0.2,0,0,1)]',
-          '@min-[768px]:static @min-[768px]:z-auto',
+          // The whole difference between the two variations: one is allowed to
+          // become a column, the other never is.
+          mode === 'responsive' && '@min-[768px]:static @min-[768px]:z-auto',
+          // An overlay floats, so it carries the shadow a column does not need.
+          mode === 'overlay' && 'shadow-e3',
         )}
       >
         <div className="flex flex-col gap-0.5">
@@ -286,12 +305,66 @@ function Frame({
   )
 }
 
+/**
+ * A bar over a screen that has navigation. The only thing the two variations
+ * disagree about is whether the drawer is ever allowed to be a column, so
+ * everything else lives here once.
+ */
+function NavigatedScreen({
+  bar, mode, defaultOpen, height,
+}: {
+  bar: BarState
+  mode: DrawerMode
+  defaultOpen: boolean
+  height: number
+}) {
+  const [open, setOpen] = React.useState(defaultOpen)
+  return (
+    <>
+      <Bar
+        {...bar}
+        sticky={false}
+        leading={
+          <IconButton
+            label={open ? 'Close navigation' : 'Open navigation'}
+            aria-expanded={open}
+            icon={<Menu />}
+            size="md"
+            onClick={() => setOpen((o) => !o)}
+          />
+        }
+      />
+      <div className="relative flex overflow-hidden" style={{ height }}>
+        <NavDrawer open={open} onDismiss={() => setOpen(false)} current="Dashboard" mode={mode} />
+        <div className="min-w-0 flex-1 space-y-3 overflow-y-auto p-4">
+          {Array.from({ length: 10 }).map((_, i) => (
+            <div
+              key={i}
+              className="h-3 rounded-full bg-[var(--ds-layer-active)]"
+              style={{ width: `${[92, 78, 88, 64, 84, 72][i % 6]}%` }}
+            />
+          ))}
+        </div>
+      </div>
+    </>
+  )
+}
+
+/** The label above one variation inside a family. */
+function Variation({ title, note }: { title: string; note: string }) {
+  return (
+    <div className="mb-2.5 mt-6 flex flex-col gap-0.5">
+      <span className="text-label text-[var(--ds-fg)]">{title}</span>
+      <span className="max-w-[62ch] text-caption text-[var(--ds-fg-muted)]">{note}</span>
+    </div>
+  )
+}
+
 function Playground() {
   const [align, setAlign] = React.useState(DEFAULTS.align)
   const [theme, setTheme] = React.useState(DEFAULTS.theme)
   const [view, setView] = React.useState(DEFAULTS.view)
   const [rtl, setRtl] = React.useState(DEFAULTS.rtl)
-  const [navOpen, setNavOpen] = React.useState(true)
   const [elevated, setElevated] = React.useState(DEFAULTS.elevated)
   const [bordered, setBordered] = React.useState(DEFAULTS.bordered)
   const [fullBleed, setFullBleed] = React.useState(DEFAULTS.fullBleed)
@@ -308,6 +381,7 @@ function Playground() {
 
   const device = VIEWS.find((v) => v.id === view)!
   const bare = React.useContext(PreviewContext)?.bare
+  const barState: BarState = { align, elevated, bordered, fullBleed }
 
   if (bare) {
     return (
@@ -449,47 +523,27 @@ function Playground() {
             Basic
           </SubHeading>
           <Frame theme={theme} rtl={rtl} width={device.width}>
-            <Bar
-              align={align}
-              elevated={elevated}
-              bordered={bordered}
-              fullBleed={fullBleed}
-              sticky={false}
-            />
+            <Bar {...barState} sticky={false} />
           </Frame>
 
-          <SubHeading description="The same bar with the drawer its first slot exists to open. Wide enough and the drawer is a column beside the content; narrow and it is an overlay over it — decided by the container's width, not the window's.">
+          <SubHeading description="The same bar, now doing the job its first slot exists for. The bar does not change between these; what the drawer trigger opens is the whole difference.">
             With navigation
           </SubHeading>
+
+          <Variation
+            title="Navigation Drawer"
+            note="A column where there is room beside the content, an overlay where there is not — decided by the container's width, not the window's. The default for a product whose navigation is the spine of the screen: on a desktop it is always in view and costs no gesture, and it gets out of the way by itself on a phone."
+          />
           <Frame theme={theme} rtl={rtl} width={device.width}>
-            <Bar
-              align={align}
-              elevated={elevated}
-              bordered={bordered}
-              fullBleed={fullBleed}
-              sticky={false}
-              leading={
-                <IconButton
-                  label={navOpen ? 'Close navigation' : 'Open navigation'}
-                  aria-expanded={navOpen}
-                  icon={<Menu />}
-                  size="md"
-                  onClick={() => setNavOpen((o) => !o)}
-                />
-              }
-            />
-            <div className="relative flex h-[400px] overflow-hidden">
-              <NavDrawer open={navOpen} onDismiss={() => setNavOpen(false)} current="Dashboard" />
-              <div className="min-w-0 flex-1 space-y-3 overflow-y-auto p-4">
-                {Array.from({ length: 10 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="h-3 rounded-full bg-[var(--ds-layer-active)]"
-                    style={{ width: `${[92, 78, 88, 64, 84, 72][i % 6]}%` }}
-                  />
-                ))}
-              </div>
-            </div>
+            <NavigatedScreen bar={barState} mode="responsive" defaultOpen height={400} />
+          </Frame>
+
+          <Variation
+            title="Overlay Drawer"
+            note="Over the content at every width, always with a scrim, always closed until asked for. Choose it when the content deserves the full width on every screen, or when the navigation is deep enough to be visited rather than scanned — the cost is a gesture on every trip, paid even on a monitor with room to spare."
+          />
+          <Frame theme={theme} rtl={rtl} width={device.width}>
+            <NavigatedScreen bar={barState} mode="overlay" defaultOpen={false} height={400} />
           </Frame>
         </div>
 
@@ -571,7 +625,14 @@ function NativeView({
         }
       />
       <div className="relative flex min-h-0 flex-1 overflow-hidden">
-        <NavDrawer open={navOpen} onDismiss={() => setNavOpen(false)} current="Dashboard" />
+        {/* The responsive one: the popped-out window is a real viewport, so
+            768px is the real switch rather than a simulated one. */}
+        <NavDrawer
+          open={navOpen}
+          onDismiss={() => setNavOpen(false)}
+          current="Dashboard"
+          mode="responsive"
+        />
         {/* Something under the bar, so it is judged as the top of a screen
             rather than as a strip floating in an empty viewport. */}
         <div className="min-w-0 flex-1 space-y-3 overflow-y-auto p-4 pb-32">
