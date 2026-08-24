@@ -487,6 +487,70 @@ export interface MegaMenuGroup {
   featured?: React.ReactNode
 }
 
+/**
+ * The inside of a mega panel: the columns, and the featured card if there is
+ * one. It is exported because a mega panel is not only ever opened from a menu
+ * bar — the App Bar hangs the same body off a hamburger — and a second copy of
+ * this markup would have drifted from the first by its second edit.
+ *
+ * Columns are `flex-1` with a floor rather than a fixed grid, so a narrow
+ * panel wraps them into rows instead of squeezing four labels into 90px.
+ */
+export function MegaPanel({
+  columns,
+  featured,
+  className,
+}: {
+  columns: MegaMenuColumn[]
+  featured?: React.ReactNode
+  className?: string
+}) {
+  return (
+    <div className={cn('flex flex-wrap gap-x-8 gap-y-6', className)}>
+      {columns.map((col) => (
+        <div key={col.title} className="flex min-w-[11rem] flex-1 flex-col gap-2">
+          <span className="text-overline uppercase text-[var(--ds-fg-muted)]">{col.title}</span>
+          <ul className="flex flex-col gap-0.5">
+            {col.items.map((it) => (
+              <li key={it.label}>
+                <a
+                  href={it.href ?? '#'}
+                  className={cn(
+                    'flex items-start gap-2.5 rounded-[var(--radius-md)] px-2 py-1.5',
+                    'transition-colors duration-[120ms] hover:bg-[var(--ds-layer-hover)]',
+                    'focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--ds-focus-ring)]',
+                  )}
+                >
+                  {it.icon && (
+                    <span className="mt-px shrink-0 text-[var(--ds-fg-muted)]" aria-hidden>
+                      {it.icon}
+                    </span>
+                  )}
+                  <span className="flex min-w-0 flex-col">
+                    <span className="text-label text-[var(--ds-fg)]">{it.label}</span>
+                    {it.description && (
+                      <span className="text-caption text-[var(--ds-fg-muted)]">
+                        {it.description}
+                      </span>
+                    )}
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+      {featured && (
+        // Alpha, so it lifts off whatever the panel is. The well token is two
+        // rungs below the overlay this sits inside.
+        <div className="min-w-[13rem] flex-1 rounded-[var(--radius-lg)] bg-[var(--ds-layer-active)] p-4">
+          {featured}
+        </div>
+      )}
+    </div>
+  )
+}
+
 export function MegaMenu({
   groups,
   openDelay = 120,
@@ -627,50 +691,7 @@ export function MegaMenu({
             'animate-[fade-in_140ms_ease-out_both]',
           )}
         >
-          <div className="flex flex-wrap gap-x-8 gap-y-6">
-            {groups[open].columns.map((col) => (
-              <div key={col.title} className="flex min-w-[11rem] flex-1 flex-col gap-2">
-                <span className="text-overline uppercase text-[var(--ds-fg-muted)]">
-                  {col.title}
-                </span>
-                <ul className="flex flex-col gap-0.5">
-                  {col.items.map((it) => (
-                    <li key={it.label}>
-                      <a
-                        href={it.href ?? '#'}
-                        className={cn(
-                          'flex items-start gap-2.5 rounded-[var(--radius-md)] px-2 py-1.5',
-                          'transition-colors duration-[120ms] hover:bg-[var(--ds-layer-hover)]',
-                          'focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--ds-focus-ring)]',
-                        )}
-                      >
-                        {it.icon && (
-                          <span className="mt-px shrink-0 text-[var(--ds-fg-muted)]" aria-hidden>
-                            {it.icon}
-                          </span>
-                        )}
-                        <span className="flex min-w-0 flex-col">
-                          <span className="text-label text-[var(--ds-fg)]">{it.label}</span>
-                          {it.description && (
-                            <span className="text-caption text-[var(--ds-fg-muted)]">
-                              {it.description}
-                            </span>
-                          )}
-                        </span>
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-            {groups[open].featured && (
-              // Alpha, so it lifts off whatever the panel is. The well token
-              // is two rungs below the overlay this sits inside.
-              <div className="min-w-[13rem] flex-1 rounded-[var(--radius-lg)] bg-[var(--ds-layer-active)] p-4">
-                {groups[open].featured}
-              </div>
-            )}
-          </div>
+          <MegaPanel columns={groups[open].columns} featured={groups[open].featured} />
         </div>
       )}
     </div>

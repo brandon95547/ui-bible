@@ -1,15 +1,17 @@
 import * as React from 'react'
 import { createPortal } from 'react-dom'
 import {
-  AlignCenter, AlignLeft, AlignRight, Bell, BookOpen, Box, ChevronDown, Folder, HelpCircle,
-  Home, Layers, LayoutGrid, LayoutTemplate, LogOut, Menu, Monitor, MonitorSmartphone, Moon,
-  RotateCcw, Settings, Smartphone, Sun, Tablet,
+  Accessibility, AlignCenter, AlignLeft, AlignRight, Bell, BookOpen, Box, ChevronDown, Download,
+  Folder, HelpCircle, History, Home, Layers, LayoutGrid, LayoutTemplate, LifeBuoy, LogOut, Menu,
+  Monitor, MonitorSmartphone, Moon, Palette, RotateCcw, Settings, Shapes, Smartphone, Sun, Tablet,
 } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import { useDismissable } from '@/lib/hooks'
 import { Button, IconButton } from '@/ui/Button'
 import { Avatar } from '@/ui/Display'
-import { AppBar, NavItem, type AppBarAlign } from '@/ui/Navigation'
+import {
+  AppBar, MegaPanel, NavItem, type AppBarAlign, type MegaMenuColumn,
+} from '@/ui/Navigation'
 import { Checkbox, Segmented } from '@/ui/Toggle'
 import { DEVICE_CONTROLS_SLOT, PreviewContext, devicePath } from '../framework/preview-context'
 import { storedViewport } from '../framework/DeviceView'
@@ -279,45 +281,60 @@ function NavDrawer({
 }
 
 /* ---------------------------------------------------------------------------
-   The third variation is not a drawer at all, so it does not share one.
+   The floating variations. Neither is a drawer, so neither shares one: they
+   hang off the button rather than off an edge of the screen, and the only
+   thing they disagree about is how much they can afford to say.
    --------------------------------------------------------------------------- */
 
-const MENU_W = 232
+const MENU_W = '232px'
+// A cap, then whatever the bar can afford. `cqw` is the bar's own width — the
+// same input every other decision on this page is made from — so the panel is
+// never wider than the frame it is opening inside.
+const MEGA_W = 'min(680px, calc(100cqw - 24px))'
 
 /**
- * The Dropdown. A small menu hung off the button that opened it, rather than a
- * panel hung off the edge of the screen: it grows out of the hamburger's own
- * corner and covers a few hundred pixels of the content instead of a third
- * of it.
+ * The shell both floating variations share: the hamburger, and a surface
+ * anchored to it.
  *
- * The trigger ships inside this component because the anchoring is the whole
- * idea — the menu is positioned against the button's box, so it stays under
- * the hamburger at 390px and at 1440px without anyone measuring the bar. The
- * offset is `start-0` on a wrapper, so RTL costs nothing here either: the menu
- * hangs from whichever edge the reading order started at.
+ * The trigger ships in here because the anchoring is the whole idea — the
+ * surface is positioned against the button's box, so it stays under the
+ * hamburger at 390px and at 1440px without anyone measuring the bar. The
+ * offset is `start-0` on the wrapper, so RTL costs nothing here either: the
+ * surface hangs from whichever edge the reading order started at.
  *
  * It is a disclosure, not a `role="menu"`. These are destinations, and the
  * menu role would promise arrow-key semantics that site navigation should not
  * be asking a keyboard user to learn. `aria-expanded` on the trigger says what
  * is true, and Tab reaches the items because they are the next thing in the
  * DOM — which is also why focus does not jump on open.
+ *
+ * `open` is the screen's state, not this component's: on a phone the mega
+ * panel is a drawer instead, and one hamburger cannot open two things from two
+ * different pieces of state.
  */
-function NavMenu({ current, defaultOpen }: { current: string; defaultOpen: boolean }) {
-  const [open, setOpen] = React.useState(defaultOpen)
+function AnchoredNav({
+  open, setOpen, width, surface, children,
+}: {
+  open: boolean
+  setOpen: (fn: (o: boolean) => boolean) => void
+  width: string
+  surface: string
+  children: (close: () => void) => React.ReactNode
+}) {
   const wrapRef = React.useRef<HTMLDivElement>(null)
-  const menuRef = React.useRef<HTMLDivElement>(null)
+  const panelRef = React.useRef<HTMLDivElement>(null)
   const triggerRef = React.useRef<HTMLButtonElement>(null)
-  const menuId = React.useId()
+  const panelId = React.useId()
 
-  // Closing has to put focus back where it came from: Escape out of the menu
+  // Closing has to put focus back where it came from: Escape out of the panel
   // must not drop a keyboard user at the top of the document. A dismissal that
-  // did not come from inside the menu — a click on the content — leaves the
-  // focus that click chose alone.
+  // did not come from inside it — a click on the content — leaves the focus
+  // that click chose alone.
   const close = () => {
-    if (menuRef.current?.contains(document.activeElement)) triggerRef.current?.focus()
-    setOpen(false)
+    if (panelRef.current?.contains(document.activeElement)) triggerRef.current?.focus()
+    setOpen(() => false)
   }
-  useDismissable(open, close, [wrapRef, menuRef])
+  useDismissable(open, close, [wrapRef, panelRef])
 
   return (
     <div ref={wrapRef} className="relative inline-flex">
@@ -325,20 +342,24 @@ function NavMenu({ current, defaultOpen }: { current: string; defaultOpen: boole
         ref={triggerRef}
         label={open ? 'Close navigation' : 'Open navigation'}
         aria-expanded={open}
-        aria-controls={menuId}
+        aria-controls={panelId}
         icon={<Menu />}
         size="md"
         onClick={() => setOpen((o) => !o)}
       />
       <div
-        ref={menuRef}
-        id={menuId}
-        style={{ width: MENU_W }}
+        ref={panelRef}
+        id={panelId}
+        style={{ width }}
         className={cn(
-          // 8px off the bar: near enough to read as attached to the button,
-          // far enough that the trigger's focus ring is not clipped by it.
-          'absolute top-[calc(100%+8px)] start-0 z-30 flex flex-col',
-          'rounded-[var(--radius-lg)] border border-[var(--ds-border)] p-1.5',
+          'absolute start-0 z-30 flex flex-col',
+          // The gap is measured from the bar's bottom edge, not the button's:
+          // a 36px button in a 64px row leaves 14px of bar below it, and 10px
+          // once the bar reflows to 56px. Eight more on top of that — near
+          // enough to read as attached to the trigger, far enough that its
+          // focus ring is not clipped by this.
+          'top-[calc(100%+22px)] @max-[640px]:top-[calc(100%+18px)]',
+          'border border-[var(--ds-border)]',
           // An overlay surface and the shadow to match: this floats over the
           // content with nothing dimmed behind it, so the plane has to do the
           // separating on its own.
@@ -347,33 +368,129 @@ function NavMenu({ current, defaultOpen }: { current: string; defaultOpen: boole
           // out of the hamburger rather than to arrive over it.
           'origin-top-left rtl:origin-top-right',
           'transition-[opacity,transform,visibility] duration-[160ms] ease-[cubic-bezier(0.2,0,0,1)]',
-          // `visibility`, not `aria-hidden`: it takes the closed menu out of
+          // `visibility`, not `aria-hidden`: it takes the closed surface out of
           // the tab order and the accessibility tree at the same time, and it
-          // still transitions, so the menu can fade on the way out.
+          // still transitions, so it can fade on the way out.
           open ? 'visible scale-100 opacity-100' : 'invisible scale-95 opacity-0',
+          surface,
         )}
       >
-        <nav aria-label="Primary" className="flex flex-col gap-0.5">
-          {NAV_PRIMARY.map((it) => (
-            <NavItem
-              key={it.label}
-              icon={it.icon}
-              label={it.label}
-              active={it.label === current}
-              onClick={close}
-            />
-          ))}
-        </nav>
-
-        <div className="my-1.5 h-px shrink-0 bg-[var(--ds-border-subtle)]" />
-
-        <div className="flex flex-col gap-0.5">
-          {NAV_SECONDARY.map((it) => (
-            <NavItem key={it.label} icon={it.icon} label={it.label} onClick={close} />
-          ))}
-        </div>
+        {children(close)}
       </div>
     </div>
+  )
+}
+
+/**
+ * The Dropdown. A small menu, one column, the same list the drawer carries.
+ */
+function NavMenu({ current, close }: { current: string; close: () => void }) {
+  return (
+    <>
+      <nav aria-label="Primary" className="flex flex-col gap-0.5">
+        {NAV_PRIMARY.map((it) => (
+          <NavItem
+            key={it.label}
+            icon={it.icon}
+            label={it.label}
+            active={it.label === current}
+            onClick={close}
+          />
+        ))}
+      </nav>
+
+      <div className="my-1.5 h-px shrink-0 bg-[var(--ds-border-subtle)]" />
+
+      <div className="flex flex-col gap-0.5">
+        {NAV_SECONDARY.map((it) => (
+          <NavItem key={it.label} icon={it.icon} label={it.label} onClick={close} />
+        ))}
+      </div>
+    </>
+  )
+}
+
+const MEGA_ICON = { size: 15 } as const
+
+/**
+ * What the mega panel carries. The extra width is only worth taking if it buys
+ * something a single column could not: headings that group the destinations,
+ * and a line of description under each one. A wide panel of bare labels is a
+ * dropdown that has been stretched.
+ */
+const MEGA_COLUMNS: MegaMenuColumn[] = [
+  {
+    title: 'Build',
+    items: [
+      { label: 'Dashboard', description: 'Your work at a glance', icon: <Home {...MEGA_ICON} /> },
+      { label: 'Components', description: '48 in the library', icon: <Layers {...MEGA_ICON} /> },
+      { label: 'Patterns', description: 'Compositions that recur', icon: <LayoutGrid {...MEGA_ICON} /> },
+      { label: 'Templates', description: 'Screens, ready to fork', icon: <LayoutTemplate {...MEGA_ICON} /> },
+    ],
+  },
+  {
+    title: 'Learn',
+    items: [
+      { label: 'Guidelines', description: 'Why, not just what', icon: <BookOpen {...MEGA_ICON} /> },
+      { label: 'Foundations', description: 'Colour, type, space', icon: <Palette {...MEGA_ICON} /> },
+      { label: 'Accessibility', description: 'What we test, and how', icon: <Accessibility {...MEGA_ICON} /> },
+      { label: 'Changelog', description: 'What moved, and when', icon: <History {...MEGA_ICON} /> },
+    ],
+  },
+  {
+    title: 'Resources',
+    items: [
+      { label: 'Kits & assets', description: 'Figma, fonts, logos', icon: <Folder {...MEGA_ICON} /> },
+      { label: 'Icons', description: '1,200, one grid', icon: <Shapes {...MEGA_ICON} /> },
+      { label: 'Downloads', description: 'Tokens as JSON and CSS', icon: <Download {...MEGA_ICON} /> },
+      { label: 'Support', description: 'Ask a maintainer', icon: <LifeBuoy {...MEGA_ICON} /> },
+    ],
+  },
+]
+
+/**
+ * The Mega Menu. The same anchored surface as the dropdown, given enough width
+ * to group what it holds.
+ *
+ * The columns come from the Bible's own MegaMenu, so a panel opened from a
+ * hamburger and one opened from a menu bar are the same panel — only the thing
+ * that opens them differs.
+ */
+function NavMega({ close }: { close: () => void }) {
+  return (
+    <nav
+      aria-label="Primary"
+      // Delegation, so the close does not have to be threaded through every
+      // link in the panel. `closest` is what keeps a click on a column heading
+      // from counting as a destination.
+      onClick={(e) => {
+        if (!(e.target as HTMLElement).closest('a')) return
+        // Nowhere to go in a doc, and a hash jump would throw the page to the
+        // top of the article the reader is in the middle of.
+        e.preventDefault()
+        close()
+      }}
+    >
+      <MegaPanel columns={MEGA_COLUMNS} />
+
+      {/* The same "about you and the app" group the drawers put under a rule.
+          It is a row rather than a fourth column, because it is not a peer of
+          the three — it is what you do when you are done navigating. */}
+      <div className="mt-5 flex flex-wrap items-center gap-x-1 gap-y-1 border-t border-[var(--ds-border-subtle)] pt-3">
+        {NAV_SECONDARY.map((it) => (
+          <a
+            key={it.label}
+            href="#"
+            className="flex items-center gap-2 rounded-[var(--radius-md)] px-2 py-1.5 text-label text-[var(--ds-fg-secondary)] transition-colors duration-[120ms] hover:bg-[var(--ds-layer-hover)] hover:text-[var(--ds-fg)] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--ds-focus-ring)]"
+          >
+            <span className="text-[var(--ds-fg-muted)]" aria-hidden>
+              {it.icon}
+            </span>
+            {it.label}
+          </a>
+        ))}
+      </div>
+    </nav>
   )
 }
 
@@ -406,7 +523,7 @@ function Frame({
 }
 
 /** Every way the bar's first slot is allowed to open navigation. */
-type NavMode = DrawerMode | 'dropdown'
+type NavMode = DrawerMode | 'dropdown' | 'mega'
 
 /**
  * A bar over a screen that has navigation. What the variations disagree about
@@ -422,9 +539,9 @@ function NavigatedScreen({
   height: number
 }) {
   const [open, setOpen] = React.useState(defaultOpen)
-  // The dropdown owns its own trigger — the button is the anchor, so the two
-  // cannot be separated the way a drawer and its hamburger can.
-  const anchored = mode === 'dropdown'
+  // The floating variations own their trigger — the button is the anchor, so
+  // the two cannot be separated the way a drawer and its hamburger can.
+  const anchored = mode === 'dropdown' || mode === 'mega'
   return (
     <>
       <Bar
@@ -432,7 +549,25 @@ function NavigatedScreen({
         sticky={false}
         leading={
           anchored ? (
-            <NavMenu current="Dashboard" defaultOpen={defaultOpen} />
+            <AnchoredNav
+              open={open}
+              setOpen={setOpen}
+              width={mode === 'mega' ? MEGA_W : MENU_W}
+              surface={cn(
+                mode === 'mega'
+                  ? 'rounded-[var(--radius-xl)] p-5'
+                  : 'rounded-[var(--radius-lg)] p-1.5',
+                // Below 768px there is no room for columns, so the panel is
+                // not offered at all — the drawer below takes over. Same
+                // width the Navigation Drawer gives up its column at, for the
+                // same reason: that is where the layout stops fitting.
+                mode === 'mega' && '@max-[767px]:hidden',
+              )}
+            >
+              {(close) =>
+                mode === 'mega' ? <NavMega close={close} /> : <NavMenu current="Dashboard" close={close} />
+              }
+            </AnchoredNav>
           ) : (
             <IconButton
               label={open ? 'Close navigation' : 'Open navigation'}
@@ -447,6 +582,19 @@ function NavigatedScreen({
       <div className="relative flex overflow-hidden" style={{ height }}>
         {!anchored && (
           <NavDrawer open={open} onDismiss={() => setOpen(false)} current="Dashboard" mode={mode} />
+        )}
+        {/* A phone gets the drawer instead. The wrapper is static, so the
+            drawer's own absolute positioning still resolves against the row —
+            all this div does is carry the query that switches them. */}
+        {mode === 'mega' && (
+          <div className="@min-[768px]:hidden">
+            <NavDrawer
+              open={open}
+              onDismiss={() => setOpen(false)}
+              current="Dashboard"
+              mode="overlay"
+            />
+          </div>
         )}
         <div className="min-w-0 flex-1 space-y-3 overflow-y-auto p-4">
           {Array.from({ length: 10 }).map((_, i) => (
@@ -660,10 +808,18 @@ function Playground() {
 
           <Variation
             title="Dropdown"
-            note="A small menu hung off the hamburger rather than a panel hung off the edge of the screen. It opens where the finger already is, covers a corner of the content instead of a third of it, and carries no scrim because nothing behind it is blocked. Choose it when the navigation is short enough to take in at a glance — past seven or eight destinations it becomes a list scrolling inside a floating box, which is a drawer that has forgotten it is one."
+            note="A small menu hung off the hamburger rather than a panel hung off the edge of the screen. It opens where the finger already is, covers a corner of the content instead of a third of it, and carries no scrim because nothing behind it is blocked. Choose it when the navigation is short enough to take in at a glance — past seven or eight destinations it becomes a list scrolling inside a floating box, which is a drawer that has forgotten it is one. Spend the width and group it, or take the drawer."
           />
           <Frame theme={theme} rtl={rtl} width={device.width}>
             <NavigatedScreen bar={barState} mode="dropdown" defaultOpen={false} height={400} />
+          </Frame>
+
+          <Variation
+            title="Mega Menu"
+            note="The same anchored surface, given enough width to group what it holds: columns with headings, and a line under each destination saying what it is. Choose it when the navigation is broad rather than deep — thirty places that fall into four groups, where the grouping is half the answer. It is the one variation with a floor as well as a ceiling: below 768px there is no room for columns, so the panel is not offered at all and the same hamburger opens the Overlay Drawer instead."
+          />
+          <Frame theme={theme} rtl={rtl} width={device.width}>
+            <NavigatedScreen bar={barState} mode="mega" defaultOpen={false} height={400} />
           </Frame>
         </div>
 
