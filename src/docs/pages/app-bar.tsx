@@ -10,7 +10,8 @@ import { useDismissable } from '@/lib/hooks'
 import { Button, IconButton } from '@/ui/Button'
 import { Avatar } from '@/ui/Display'
 import {
-  AppBar, MegaPanel, NavItem, type AppBarAlign, type MegaMenuColumn,
+  APP_BAR_MAX_WIDTH, AppBar, MegaPanel, NavItem, TabPanel, Tabs, appBarGutter,
+  type AppBarAlign, type MegaMenuColumn, type TabSpec,
 } from '@/ui/Navigation'
 import { Checkbox, Segmented } from '@/ui/Toggle'
 import { DEVICE_CONTROLS_SLOT, PreviewContext, devicePath } from '../framework/preview-context'
@@ -161,10 +162,11 @@ interface BarState {
 
 /** The specimen. Identical in the page and in the popped-out window. */
 function Bar({
-  align, elevated, bordered, fullBleed, sticky, leading,
-}: BarState & { sticky?: boolean; leading?: React.ReactNode }) {
+  align, elevated, bordered, fullBleed, sticky, leading, className,
+}: BarState & { sticky?: boolean; leading?: React.ReactNode; className?: string }) {
   return (
     <AppBar
+      className={className}
       title="UI Bible"
       logo={logo}
       align={align}
@@ -610,6 +612,97 @@ function NavigatedScreen({
   )
 }
 
+/* ===========================================================================
+   VERSION 3 — WITH TABS
+
+   The second row. Navigation moves you between screens; tabs move you between
+   views OF one screen — which is why they are under the bar rather than in it,
+   and why the bar above them does not change as you switch.
+   ======================================================================== */
+
+const SECTION_TABS: TabSpec[] = [
+  { value: 'overview', label: 'Overview' },
+  { value: 'activity', label: 'Activity', count: 12 },
+  { value: 'members', label: 'Members' },
+  { value: 'integrations', label: 'Integrations' },
+  { value: 'settings', label: 'Settings' },
+]
+
+/**
+ * A bar with a tab row under it.
+ *
+ * The elevated thing is the masthead — both rows together — not the bar. Left
+ * to lift itself, the bar would cast its shadow onto the tabs and draw a seam
+ * across the middle of a block that is meant to read as one. So the plane
+ * moves out here and the bar inside it is flat.
+ *
+ * The tab row is not given a bottom border either: the underline variant
+ * already carries the rail the active tab breaks, and it is the same hairline
+ * token the bar's own border uses. Two of them stacked is a 2px line nobody
+ * asked for — which is why the Border knob has nothing to do in this version.
+ */
+function TabbedScreen({ bar, height }: { bar: BarState; height: number }) {
+  const [tab, setTab] = React.useState(SECTION_TABS[0].value)
+  const seed = SECTION_TABS.findIndex((t) => t.value === tab)
+
+  return (
+    <>
+      <div
+        className={cn(
+          '@container',
+          bar.elevated ? 'bg-[var(--ds-surface)] shadow-e2' : 'bg-[var(--ds-canvas)]',
+        )}
+      >
+        {/* Transparent, not unelevated: an unelevated bar still paints its own
+            plane — canvas — and would lay a second colour over the masthead's
+            surface, which is the seam this whole arrangement exists to avoid.
+            The block below it owns the plane; the bar is a row in it. */}
+        <Bar
+          {...bar}
+          elevated={false}
+          bordered={false}
+          sticky={false}
+          className="bg-transparent"
+        />
+
+        {/* The same cap and the same gutter the bar uses, off the same two
+            exports — the tabs line up with the brand above them, not with the
+            edge of the window. */}
+        <div
+          className={cn('mx-auto w-full', appBarGutter(bar.fullBleed))}
+          style={bar.fullBleed ? undefined : { maxWidth: APP_BAR_MAX_WIDTH }}
+        >
+          {/* Scroll rather than wrap or squeeze: a second row of tabs is a new
+              layout, and a row of squeezed labels is unreadable in both. The
+              list is `w-max` so the rail runs the full scrollable width, and
+              `min-w-full` so it still spans the row when the tabs do not. */}
+          <div className="scrollbar-none overflow-x-auto">
+            <Tabs
+              tabs={SECTION_TABS}
+              value={tab}
+              onChange={setTab}
+              aria-label="Workspace views"
+              className="w-max min-w-full"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="overflow-y-auto p-4" style={{ height }}>
+        <TabPanel value={tab} active className="space-y-3">
+          {Array.from({ length: 10 }).map((_, i) => (
+            <div
+              key={i}
+              className="h-3 rounded-full bg-[var(--ds-layer-active)]"
+              style={{ width: `${[92, 78, 88, 64, 84, 72][(i + seed) % 6]}%` }}
+            />
+          ))}
+        </TabPanel>
+      </div>
+    </>
+  )
+}
+
 /** The label above one variation inside a family. */
 function Variation({ title, note }: { title: string; note: string }) {
   return (
@@ -779,48 +872,75 @@ function Playground() {
         </div>
 
         <div className="mt-5">
-          <SubHeading description="The bar on its own: the way out, the brand, the utilities, the person. Every knob above changes an arrangement or a plane — none of them add a part.">
-            Basic
-          </SubHeading>
-          <Frame theme={theme} rtl={rtl} width={device.width}>
-            <Bar {...barState} sticky={false} />
-          </Frame>
+          {/* Each block below is an anchor as well as a specimen: "On this page"
+              lists the variations, and the id has to sit on the whole block
+              rather than on its label, or the sidebar stops tracking the moment
+              the label scrolls off. */}
+          <div id="basic" className="scroll-mt-28">
+            <SubHeading description="The bar on its own: the way out, the brand, the utilities, the person. Every knob above changes an arrangement or a plane — none of them add a part.">
+              Basic
+            </SubHeading>
+            <Frame theme={theme} rtl={rtl} width={device.width}>
+              <Bar {...barState} sticky={false} />
+            </Frame>
+          </div>
 
-          <SubHeading description="The same bar, now doing the job its first slot exists for. The bar does not change between these; what the drawer trigger opens is the whole difference.">
-            With navigation
-          </SubHeading>
+          <div id="with-navigation" className="mt-8 scroll-mt-28">
+            <SubHeading description="The same bar, now doing the job its first slot exists for. The bar does not change between these; what the drawer trigger opens is the whole difference.">
+              With navigation
+            </SubHeading>
 
-          <Variation
-            title="Navigation Drawer"
-            note="A column where there is room beside the content, an overlay where there is not — decided by the container's width, not the window's. The default for a product whose navigation is the spine of the screen: on a desktop it is always in view and costs no gesture, and it gets out of the way by itself on a phone."
-          />
-          <Frame theme={theme} rtl={rtl} width={device.width}>
-            <NavigatedScreen bar={barState} mode="responsive" defaultOpen height={400} />
-          </Frame>
+            <div id="navigation-drawer" className="scroll-mt-28">
+              <Variation
+                title="Navigation Drawer"
+                note="A column where there is room beside the content, an overlay where there is not — decided by the container's width, not the window's. The default for a product whose navigation is the spine of the screen: on a desktop it is always in view and costs no gesture, and it gets out of the way by itself on a phone."
+              />
+              <Frame theme={theme} rtl={rtl} width={device.width}>
+                <NavigatedScreen bar={barState} mode="responsive" defaultOpen height={400} />
+              </Frame>
+            </div>
 
-          <Variation
-            title="Overlay Drawer"
-            note="Over the content at every width, always with a scrim, always closed until asked for. Choose it when the content deserves the full width on every screen, or when the navigation is deep enough to be visited rather than scanned — the cost is a gesture on every trip, paid even on a monitor with room to spare."
-          />
-          <Frame theme={theme} rtl={rtl} width={device.width}>
-            <NavigatedScreen bar={barState} mode="overlay" defaultOpen={false} height={400} />
-          </Frame>
+            <div id="overlay-drawer" className="scroll-mt-28">
+              <Variation
+                title="Overlay Drawer"
+                note="Over the content at every width, always with a scrim, always closed until asked for. Choose it when the content deserves the full width on every screen, or when the navigation is deep enough to be visited rather than scanned — the cost is a gesture on every trip, paid even on a monitor with room to spare."
+              />
+              <Frame theme={theme} rtl={rtl} width={device.width}>
+                <NavigatedScreen bar={barState} mode="overlay" defaultOpen={false} height={400} />
+              </Frame>
+            </div>
 
-          <Variation
-            title="Dropdown"
-            note="A small menu hung off the hamburger rather than a panel hung off the edge of the screen. It opens where the finger already is, covers a corner of the content instead of a third of it, and carries no scrim because nothing behind it is blocked. Choose it when the navigation is short enough to take in at a glance — past seven or eight destinations it becomes a list scrolling inside a floating box, which is a drawer that has forgotten it is one. Spend the width and group it, or take the drawer."
-          />
-          <Frame theme={theme} rtl={rtl} width={device.width}>
-            <NavigatedScreen bar={barState} mode="dropdown" defaultOpen={false} height={400} />
-          </Frame>
+            <div id="dropdown" className="scroll-mt-28">
+              <Variation
+                title="Dropdown"
+                note="A small menu hung off the hamburger rather than a panel hung off the edge of the screen. It opens where the finger already is, covers a corner of the content instead of a third of it, and carries no scrim because nothing behind it is blocked. Choose it when the navigation is short enough to take in at a glance — past seven or eight destinations it becomes a list scrolling inside a floating box, which is a drawer that has forgotten it is one. Spend the width and group it, or take the drawer."
+              />
+              <Frame theme={theme} rtl={rtl} width={device.width}>
+                <NavigatedScreen bar={barState} mode="dropdown" defaultOpen={false} height={400} />
+              </Frame>
+            </div>
 
-          <Variation
-            title="Mega Menu"
-            note="The same anchored surface, given enough width to group what it holds: columns with headings, and a line under each destination saying what it is. Choose it when the navigation is broad rather than deep — thirty places that fall into four groups, where the grouping is half the answer. It is the one variation with a floor as well as a ceiling: below 768px there is no room for columns, so the panel is not offered at all and the same hamburger opens the Overlay Drawer instead."
-          />
-          <Frame theme={theme} rtl={rtl} width={device.width}>
-            <NavigatedScreen bar={barState} mode="mega" defaultOpen={false} height={400} />
-          </Frame>
+            <div id="mega-menu" className="scroll-mt-28">
+              <Variation
+                title="Mega Menu"
+                note="The same anchored surface, given enough width to group what it holds: columns with headings, and a line under each destination saying what it is. Choose it when the navigation is broad rather than deep — thirty places that fall into four groups, where the grouping is half the answer. It is the one variation with a floor as well as a ceiling: below 768px there is no room for columns, so the panel is not offered at all and the same hamburger opens the Overlay Drawer instead."
+              />
+              <Frame theme={theme} rtl={rtl} width={device.width}>
+                <NavigatedScreen bar={barState} mode="mega" defaultOpen={false} height={400} />
+              </Frame>
+            </div>
+          </div>
+
+          <div id="with-tabs" className="mt-8 scroll-mt-28">
+            <SubHeading
+              description="A second row under the bar. Navigation moves you between screens; tabs move you between views of one screen — so the bar above them does not change as you switch, and neither does the URL's first segment. Five is about the ceiling: past that the row is a menu that has been unrolled. The two rows are one block, so the elevation belongs to the pair rather than to the bar, and the tab rail is the bottom edge — which leaves the Border knob nothing to do here."
+            >
+              With tabs
+            </SubHeading>
+            <Frame theme={theme} rtl={rtl} width={device.width}>
+              <TabbedScreen bar={barState} height={360} />
+            </Frame>
+          </div>
         </div>
 
         <p className="mt-6 text-caption text-[var(--ds-fg-muted)]">
@@ -973,5 +1093,17 @@ export default defineDoc({
 
   preview: {
     render: <Playground />,
+    // The page is one comparison from top to bottom, so the sidebar lists the
+    // things being compared. Arriving at "Mega Menu" from a link should not
+    // mean scrolling past three other variations to find it.
+    contents: [
+      { id: 'basic', title: 'Basic' },
+      { id: 'with-navigation', title: 'With navigation' },
+      { id: 'navigation-drawer', title: 'Navigation Drawer', depth: 2 },
+      { id: 'overlay-drawer', title: 'Overlay Drawer', depth: 2 },
+      { id: 'dropdown', title: 'Dropdown', depth: 2 },
+      { id: 'mega-menu', title: 'Mega Menu', depth: 2 },
+      { id: 'with-tabs', title: 'With tabs' },
+    ],
   },
 })

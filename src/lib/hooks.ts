@@ -168,26 +168,68 @@ export function useScrollLock(active: boolean) {
   }, [active])
 }
 
-/** Tracks which of a set of headings is currently the "active" one. */
-export function useScrollSpy(ids: string[], rootMargin = '-88px 0px -70% 0px') {
+/** The nearest ancestor that actually scrolls, or null when the page does. */
+function scrollParent(el: HTMLElement | null) {
+  for (let n = el; n; n = n.parentElement) {
+    const o = getComputedStyle(n).overflowY
+    if ((o === 'auto' || o === 'scroll') && n.scrollHeight > n.clientHeight + 1) return n
+  }
+  return null
+}
+
+/**
+ * Which anchor owns the top of the reading area.
+ *
+ * Geometry, not intersection. An observer reports WHETHER an element is on
+ * screen, and once anchors nest — a section, and the blocks inside it — several
+ * are on screen at once, so "the first visible one" is decided by whichever the
+ * list happens to name first rather than by where the reader is. What a table
+ * of contents actually asks is "what have I most recently scrolled into", and
+ * that is the last anchor whose top has crossed the reading line.
+ *
+ * `ids` must be in document order. The line sits just below the app bar, and an
+ * anchor scrolled to by a link lands above it — so following a link and reading
+ * your way to the same place give the same answer.
+ *
+ * The exception is the end of the scroll, where the last anchor can never reach
+ * the line no matter how hard the reader scrolls. There, everything left is on
+ * screen, so the bottom-most anchor that has started is the one they are in.
+ */
+export function useScrollSpy(ids: string[], line = 200) {
   const [active, setActive] = useState<string | null>(ids[0] ?? null)
   useEffect(() => {
     if (ids.length === 0) return
-    const seen = new Map<string, boolean>()
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => seen.set(e.target.id, e.isIntersecting))
-        const firstVisible = ids.find((id) => seen.get(id))
-        if (firstVisible) setActive(firstVisible)
-      },
-      { rootMargin, threshold: 0 },
-    )
-    const nodes = ids
-      .map((id) => document.getElementById(id))
-      .filter((n): n is HTMLElement => Boolean(n))
-    nodes.forEach((n) => observer.observe(n))
-    return () => observer.disconnect()
-  }, [ids.join('|'), rootMargin]) // eslint-disable-line react-hooks/exhaustive-deps
+    let frame = 0
+    const pick = () => {
+      frame = 0
+      const box = scrollParent(document.getElementById(ids[0]))
+      const atEnd = box
+        ? box.scrollHeight - box.clientHeight - box.scrollTop <= 2
+        : window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2
+      const limit = atEnd ? (box ? box.getBoundingClientRect().bottom : window.innerHeight) : line
+      let found = ids[0]
+      for (const id of ids) {
+        const el = document.getElementById(id)
+        if (el && el.getBoundingClientRect().top <= limit) found = id
+      }
+      setActive(found)
+    }
+    // One read per frame: scroll fires far faster than anything can be painted,
+    // and every read in here forces a layout.
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(pick)
+    }
+    pick()
+    // Capture, because scroll does not bubble. The docs body scrolls inside a
+    // container, and a listener bound to the window hears about it no other way.
+    window.addEventListener('scroll', onScroll, { passive: true, capture: true })
+    window.addEventListener('resize', onScroll)
+    return () => {
+      if (frame) cancelAnimationFrame(frame)
+      window.removeEventListener('scroll', onScroll, { capture: true })
+      window.removeEventListener('resize', onScroll)
+    }
+  }, [ids.join('|'), line]) // eslint-disable-line react-hooks/exhaustive-deps
   return active
 }
 

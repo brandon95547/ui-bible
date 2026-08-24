@@ -782,6 +782,20 @@ const ALIGN_BRAND: Record<AppBarAlign, string> = {
   right: 'justify-end',
 }
 
+/**
+ * The content cap and the gutter, exported together because anything that has
+ * to line up UNDER the bar — a tab row, a breadcrumb strip — has to use the
+ * same two numbers. Read off the same source, the alignment is a fact; copied,
+ * it is a coincidence waiting for one of them to change.
+ */
+export const APP_BAR_MAX_WIDTH = 1280
+
+export function appBarGutter(fullBleed?: boolean) {
+  // The gutter is the visible half of full-bleed. The cap is the half you only
+  // see on a wide monitor, which is exactly where it matters.
+  return fullBleed ? 'px-2 @max-[640px]:px-1' : 'px-6 @max-[640px]:px-3'
+}
+
 export function AppBar({
   title,
   logo,
@@ -792,7 +806,7 @@ export function AppBar({
   elevated = false,
   bordered = false,
   fullBleed = false,
-  maxWidth = 1280,
+  maxWidth = APP_BAR_MAX_WIDTH,
   sticky = true,
   className,
 }: AppBarProps) {
@@ -822,9 +836,7 @@ export function AppBar({
         className={cn(
           'mx-auto grid h-16 w-full items-center gap-2',
           '@max-[640px]:h-14 @max-[640px]:gap-1',
-          // The gutter is the visible half of full-bleed. The cap is the half
-          // you only see on a wide monitor, which is exactly where it matters.
-          fullBleed ? 'px-2 @max-[640px]:px-1' : 'px-6 @max-[640px]:px-3',
+          appBarGutter(fullBleed),
           ALIGN_COLS[align],
         )}
         style={fullBleed ? undefined : { maxWidth }}

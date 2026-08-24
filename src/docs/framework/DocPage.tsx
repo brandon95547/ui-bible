@@ -60,8 +60,14 @@ export function DocPage({
   const aliases = navEntry?.aliases ?? []
 
   const sections = React.useMemo(() => {
-    const out: { id: string; title: string }[] = []
-    if (spec.preview) out.push({ id: 'preview', title: 'Live preview' })
+    const out: { id: string; title: string; depth?: 1 | 2 }[] = []
+    if (spec.preview) {
+      out.push({ id: 'preview', title: 'Live preview' })
+      // A preview that is one long comparison can list its own parts. They sit
+      // under Live preview rather than beside it: they are places inside a
+      // section, not sections, and numbering them would say otherwise.
+      spec.preview.contents?.forEach((c) => out.push({ ...c, depth: c.depth ?? 1 }))
+    }
     if (spec.anatomy) out.push({ id: 'anatomy', title: 'Anatomy' })
     if (spec.palette) out.push({ id: 'palette', title: 'Color palette' })
     if (spec.tokens?.length) out.push({ id: 'tokens', title: 'Design tokens' })
@@ -75,9 +81,13 @@ export function DocPage({
     return out
   }, [spec])
 
+  // Document order, which is the order the spy reads as reading order.
   const ids = React.useMemo(() => sections.map((s) => s.id), [sections])
   const activeSection = useScrollSpy(ids)
-  const num = (id: string) => sections.findIndex((s) => s.id === id) + 1
+  // Only the sections themselves are numbered, so a preview that lists its
+  // parts does not push Anatomy from 02 to 09.
+  const numbered = React.useMemo(() => sections.filter((s) => !s.depth).map((s) => s.id), [sections])
+  const num = (id: string) => numbered.indexOf(id) + 1
 
   // Arriving on `#/colors#tokens` — pasted, bookmarked, or reloaded — has to
   // land on the section. The page's chunk resolves after the hash is read, so
@@ -374,7 +384,7 @@ export function DocPage({
           <nav aria-label="On this page" className="sticky top-8 flex flex-col gap-2">
             <h2 className="px-2 text-overline uppercase text-[var(--ds-fg-muted)]">On this page</h2>
             <ul className="flex flex-col gap-px border-l border-[var(--ds-border-subtle)]">
-              {sections.map((s, i) => {
+              {sections.map((s) => {
                 const active = activeSection === s.id
                 return (
                   <li key={s.id}>
@@ -382,7 +392,13 @@ export function DocPage({
                       href={sectionHref(s.id)}
                       onClick={() => requestAnimationFrame(() => scrollToSection(s.id))}
                       className={cn(
-                        'relative flex items-baseline gap-2 py-1.5 pl-3 pr-2 text-caption transition-colors',
+                        'relative flex items-baseline gap-2 py-1.5 pr-2 text-caption transition-colors',
+                        // A child starts where its parent's title starts — past
+                        // the number column — so the indent reads as belonging
+                        // rather than as a smaller margin.
+                        !s.depth && 'pl-3',
+                        s.depth === 1 && 'pl-8',
+                        s.depth === 2 && 'pl-11',
                         active
                           ? 'text-[var(--ds-fg)]'
                           : 'text-[var(--ds-fg-muted)] hover:text-[var(--ds-fg-secondary)]',
@@ -394,9 +410,11 @@ export function DocPage({
                           className="absolute -left-px top-1/2 h-4 w-[2px] -translate-y-1/2 rounded-full bg-[var(--ds-accent)]"
                         />
                       )}
-                      <span className="font-mono text-[10px] tabular-nums text-[var(--ds-fg-disabled)]">
-                        {String(i + 1).padStart(2, '0')}
-                      </span>
+                      {!s.depth && (
+                        <span className="font-mono text-[10px] tabular-nums text-[var(--ds-fg-disabled)]">
+                          {String(num(s.id)).padStart(2, '0')}
+                        </span>
+                      )}
                       {s.title}
                     </a>
                   </li>

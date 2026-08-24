@@ -46,6 +46,14 @@ export interface PreviewSpec {
   render: ReactNode
   /** Named example blocks shown under the playground. */
   examples?: { id: string; title: string; description?: string; render: ReactNode }[]
+  /**
+   * Anchors inside the playground that "On this page" should list under Live
+   * preview. A page whose preview is one long comparison otherwise gets a
+   * single entry pointing at the top of all of it, and the reader who came for
+   * the fourth variation has to find it by scrolling. `depth: 2` nests one
+   * under another. Every id must exist on an element in the render.
+   */
+  contents?: { id: string; title: string; depth?: 1 | 2 }[]
   /** The interaction-state matrix. Each cell shows one state, rendered live. */
   states?: { label: string; note?: string; render: ReactNode }[]
 }
