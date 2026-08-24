@@ -16,7 +16,7 @@ import {
 import { Checkbox, Segmented } from '@/ui/Toggle'
 import { DEVICE_CONTROLS_SLOT, PreviewContext, devicePath } from '../framework/preview-context'
 import { storedViewport } from '../framework/DeviceView'
-import { SubHeading, defineDoc } from '../framework/kit'
+import { Marker, SubHeading, defineDoc } from '../framework/kit'
 
 /* ===========================================================================
    THE BASIC BAR
@@ -1082,6 +1082,116 @@ function NativeView({
   )
 }
 
+/* ===========================================================================
+   ANATOMY
+
+   The markers ride inside the slots rather than being positioned over the bar,
+   so they cannot drift out of alignment when the grid changes. The specimen is
+   the real AppBar for the same reason: a hand-drawn diagram of a component is a
+   second implementation that nothing keeps honest.
+   ======================================================================== */
+
+/** One slot's box, dashed, so the four-track grid is visible rather than implied. */
+function Slot({
+  children,
+  className,
+}: {
+  children: React.ReactNode
+  className?: string
+}) {
+  return (
+    <div
+      className={cn('relative flex h-11 items-center rounded-md px-1.5', className)}
+      style={{
+        outline: '1px dashed color-mix(in srgb, var(--ds-accent) 50%, transparent)',
+        outlineOffset: -1,
+      }}
+    >
+      {children}
+    </div>
+  )
+}
+
+/** A stand-in for one icon control, at the size the real one occupies. */
+function Ghost({ icon }: { icon: React.ReactNode }) {
+  return (
+    <span className="grid h-9 w-9 place-items-center rounded-[var(--radius-md)] text-[var(--ds-fg-muted)]">
+      {icon}
+    </span>
+  )
+}
+
+/**
+ * The anatomy diagram is drawn rather than rendered, and that is a deliberate
+ * exception to this page's rule of always showing the real component.
+ *
+ * AppBar reflows on its OWN container width at 640px. The anatomy layout gives
+ * the diagram whatever is left beside a 20rem parts column — about 620px on a
+ * 1680px monitor and 340px on a 1280px one — so a real bar dropped in here
+ * renders the compact variant at every viewport anyone actually uses. The
+ * diagram would then permanently document 56px and two utilities while the
+ * notes beside it described 64px and three.
+ *
+ * So this is a mock: no container query, the same measurements at any width,
+ * and every slot visible at once. The live bar directly above is the real one —
+ * this is the labelled drawing of it.
+ */
+function AnatomySpecimen() {
+  return (
+    <div className="relative w-full max-w-[560px] py-6 ps-7">
+      <div className="overflow-hidden rounded-[var(--radius-lg)] bg-[var(--ds-surface)] shadow-e2">
+        <div className="grid h-16 grid-cols-[auto_1fr_auto] items-center gap-2 px-6">
+          <Slot>
+            <Ghost icon={<Menu size={18} />} />
+            <Marker n={2} className="absolute -start-3 -top-3.5" />
+          </Slot>
+
+          <Slot className="min-w-0 gap-2.5">
+            <Box size={22} className="shrink-0 text-[var(--ds-accent-text)]" />
+            <span className="truncate text-h3 text-[var(--ds-fg)]">UI Bible</span>
+            <Marker n={3} tone="success" className="absolute -start-3 -top-3.5" />
+          </Slot>
+
+          <div className="flex items-center justify-end">
+            <Slot className="gap-0.5">
+              <Ghost icon={<HelpCircle size={18} />} />
+              <Ghost icon={<Bell size={18} />} />
+              <Ghost icon={<Settings size={18} />} />
+              <Marker n={4} tone="warning" className="absolute -top-3.5 start-2" />
+            </Slot>
+            <Slot className="ms-1.5 gap-1">
+              <span className="h-8 w-8 rounded-full bg-[var(--ds-layer-active)]" />
+              <ChevronDown size={16} className="text-[var(--ds-fg-muted)]" />
+              <Marker n={5} tone="info" className="absolute -end-3 -top-3.5" />
+            </Slot>
+          </div>
+        </div>
+      </div>
+
+      {/* Height guide — 64px, and true here because the mock does not reflow. */}
+      <span
+        aria-hidden
+        className="absolute -start-0 top-6 flex h-16 w-6 flex-col items-center justify-between"
+      >
+        <span className="h-px w-4 bg-[var(--ds-accent)]" />
+        <span className="font-mono text-[10px] text-[var(--ds-accent-text)]">64</span>
+        <span className="h-px w-4 bg-[var(--ds-accent)]" />
+      </span>
+      <Marker n={1} tone="info" className="absolute -start-2.5 top-4" />
+
+      {/* Gutter guide, drawn on the bar's own 24px inline padding. */}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute bottom-2 start-7 top-6 w-6 border-e border-dashed border-[var(--ds-accent)]/50"
+      />
+      <span className="absolute -bottom-0 start-8 font-mono text-[10px] text-[var(--ds-accent-text)]">
+        24
+      </span>
+      <Marker n={6} className="absolute -bottom-2.5 start-[3.25rem]" />
+    </div>
+  )
+}
+
 export default defineDoc({
   meta: {
     id: 'app-bar',
@@ -1104,6 +1214,181 @@ export default defineDoc({
       { id: 'dropdown', title: 'Dropdown', depth: 2 },
       { id: 'mega-menu', title: 'Mega Menu', depth: 2 },
       { id: 'with-tabs', title: 'With tabs' },
+    ],
+  },
+
+  anatomy: {
+    render: <AnatomySpecimen />,
+    caption:
+      'Four slots on one 64px row, drawn at desktop width. Slot 1 stays in the layout even when it holds nothing, so the brand does not shuffle sideways between a screen with a back arrow and one without. The live bar above is the real component — resize it to watch the row drop to 56px and the third utility leave.',
+    parts: [
+      {
+        n: 1,
+        label: 'Row height',
+        value: '64px · 56px compact',
+        kind: 'size',
+        note: 'Drops to 56px below a 640px CONTAINER, not viewport — the bar reflows on its own width, so one inside a 390px panel is compact for the same reason one in a 390px window is. 640px is where a phone stops having room for both a comfortable target and a legible title.',
+      },
+      {
+        n: 2,
+        label: 'Slot 1 — leading',
+        value: 'Always present',
+        kind: 'space',
+        note: 'The way out: a drawer trigger, a back arrow, or nothing. It holds its track when empty, which is what keeps the brand from moving between screens.',
+      },
+      {
+        n: 3,
+        label: 'Slot 2 — brand',
+        value: '--text-h3, 10px gap',
+        kind: 'type',
+        note: 'Mark plus product name. The mark is the one thing in the bar allowed to carry the accent. The title truncates rather than wraps — min-w-0 on this track is what makes it give way instead of shoving the actions off the end.',
+      },
+      {
+        n: 4,
+        label: 'Slot 3 — utilities',
+        value: '3 desktop · 2 compact',
+        kind: 'space',
+        note: 'Three is the whole desktop budget; the third is dropped by a container query below 640px. If a fourth is being argued for, it belongs in the account menu or on the page.',
+      },
+      {
+        n: 5,
+        label: 'Slot 4 — account',
+        value: '6px separation',
+        kind: 'space',
+        note: 'The signed-in person, set apart by a gap wider than the 2px between utilities. That gap is the whole statement: the account is not the fourth action. Avatar and chevron are one button, so the disclosure never becomes a separate 24px target.',
+      },
+      {
+        n: 6,
+        label: 'Gutter and content cap',
+        value: '24px · 12px compact · 1280px cap',
+        kind: 'space',
+        note: 'The gutter is what lines the brand up with the content column beneath it. The cap stops the bar spanning a 27" monitor while the page under it does not. fullBleed gives both up — gutter to 8px, no cap — which is right for an editor chrome and wrong for a document.',
+      },
+    ],
+  },
+
+  tokens: [
+    // Planes. The elevated/flat choice is a swap of background token, not an
+    // overlay, because dark raises by lightness and light raises by shadow.
+    { category: 'color', group: 'Planes', token: '--ds-canvas', usedFor: 'Bar background when flat — the same plane as the page' },
+    { category: 'color', group: 'Planes', token: '--ds-surface', usedFor: 'Bar background when elevated' },
+    { category: 'color', group: 'Planes', token: '--ds-border-subtle', usedFor: 'The bordered hairline. Use instead of elevation, never with it' },
+    { category: 'shadow', group: 'Planes', token: '--shadow-e2', usedFor: 'Elevation in the light theme; in dark the lift is carried by surface lightness alone' },
+    { category: 'color', group: 'Foreground', token: '--ds-fg', usedFor: 'Product title' },
+    { category: 'color', group: 'Foreground', token: '--ds-fg-muted', usedFor: 'Account chevron and idle utility glyphs' },
+    { category: 'color', group: 'Foreground', token: '--ds-accent-text', usedFor: 'The brand mark — the only accent in the bar' },
+    { category: 'color', group: 'Interaction', token: '--ds-layer-hover', usedFor: 'Hover fill on any control in the bar' },
+    { category: 'color', group: 'Interaction', token: '--ds-layer-active', usedFor: 'Pressed fill, and the current item in a nav panel' },
+    { category: 'color', group: 'Interaction', token: '--ds-focus-ring', usedFor: 'Focus outline, 2px at 2px offset' },
+    { category: 'typography', group: 'Foreground', token: '--text-h3', value: '19px', usedFor: 'Title at full width' },
+    { category: 'typography', group: 'Foreground', token: '--text-h4', value: '16px', usedFor: 'Title below a 640px container' },
+    { category: 'radius', group: 'Navigation panels', token: '--radius-lg', value: '12px', usedFor: 'Dropdown panel corners' },
+    { category: 'radius', group: 'Navigation panels', token: '--radius-xl', value: '16px', usedFor: 'Mega-menu panel corners' },
+    { category: 'motion', group: 'Planes', token: '--ease-standard', value: 'cubic-bezier(0.2, 0, 0, 1)', usedFor: 'The 160ms background and shadow transition when elevation changes' },
+  ],
+
+  code: {
+    usage: {
+      lang: 'tsx',
+      caption:
+        'AppBar has no nav prop, and that is deliberate — the bar is the same component in all six cases. What changes is what its leading slot opens and what sits under it, so one parameter drives both.',
+      code: `// 'none'     basic bar — no navigation at all
+// 'drawer'   Navigation Drawer: a column beside content ≥768px, overlay below
+// 'overlay'  Overlay Drawer: over the content at every width, always scrimmed
+// 'dropdown' a menu hanging off the trigger
+// 'mega'     a multi-column panel; falls back to an overlay drawer <768px
+// 'tabs'     a second row UNDER the bar, never inside it
+type Nav = 'none' | 'drawer' | 'overlay' | 'dropdown' | 'mega' | 'tabs'
+
+function Header({ nav = 'none' }: { nav?: Nav }) {
+  const [open, setOpen] = React.useState(false)
+  const [tab, setTab] = React.useState('overview')
+
+  // Anchored panels own their trigger: the button IS the anchor, so the two
+  // cannot be separated the way a hamburger can be from a drawer.
+  const anchored = nav === 'dropdown' || nav === 'mega'
+
+  return (
+    <>
+      <AppBar
+        title="UI Bible"
+        logo={<Box size={22} className="text-[var(--ds-accent-text)]" />}
+        align="left"        // 'left' | 'center' | 'right'
+        elevated            // surface + shadow. Use INSTEAD of bordered
+        // fullBleed        // drop the 1280px cap and the 24px gutter
+        leading={
+          nav === 'none' ? undefined
+            : anchored ? (
+                <AnchoredNav
+                  open={open}
+                  setOpen={setOpen}
+                  width={nav === 'mega' ? 720 : 240}
+                >
+                  {(close) =>
+                    nav === 'mega'
+                      ? <MegaPanel columns={MEGA} onNavigate={close} />
+                      : <NavMenu items={NAV} onNavigate={close} />}
+                </AnchoredNav>
+              )
+            : (
+                <IconButton
+                  label={open ? 'Close navigation' : 'Open navigation'}
+                  icon={<Menu />}
+                  aria-expanded={open}
+                  onClick={() => setOpen((o) => !o)}
+                />
+              )
+        }
+        actions={
+          <>
+            <IconButton label="Help" icon={<HelpCircle />} />
+            <IconButton label="Notifications" icon={<Bell />} />
+            {/* third utility drops on a narrow container, not a narrow window */}
+            <span className="@max-[640px]:hidden">
+              <IconButton label="Settings" icon={<Settings />} />
+            </span>
+          </>
+        }
+        account={<AccountButton user={user} />}
+      />
+
+      {/* Drawer modes render a SIBLING of the bar. Anchored modes do not —
+          their panel is already inside the trigger above. */}
+      {(nav === 'drawer' || nav === 'overlay') && (
+        <NavDrawer
+          open={open}
+          onDismiss={() => setOpen(false)}
+          mode={nav === 'drawer' ? 'responsive' : 'overlay'}
+        />
+      )}
+
+      {/* Tabs are a row under the bar. Putting them inside it makes the bar
+          two rows tall and gives the brand a second job. */}
+      {nav === 'tabs' && (
+        <Tabs tabs={TABS} value={tab} onChange={setTab} aria-label="Sections" />
+      )}
+    </>
+  )
+}`,
+    },
+
+    api: [
+      {
+        name: 'AppBar',
+        props: [
+          { name: 'title', type: 'ReactNode', required: true, description: 'The product name. One line — the bar truncates rather than wraps.' },
+          { name: 'logo', type: 'ReactNode', description: 'The mark before the title. Square, and the only thing in the bar that carries the accent.' },
+          { name: 'align', type: "'left' | 'center' | 'right'", default: "'left'", description: 'Where the brand block sits. Center switches the grid to equal side tracks so it is centred against the bar rather than against whatever the slots happen to weigh.' },
+          { name: 'leading', type: 'ReactNode', description: 'Slot 1: the drawer trigger, back arrow, or an anchored nav trigger. The slot holds its track even when this is undefined.' },
+          { name: 'actions', type: 'ReactNode', description: 'Slot 3: global utilities. Three at desktop width, two below a 640px container.' },
+          { name: 'account', type: 'ReactNode', description: 'Slot 4: the signed-in person, separated from the actions by a wider gap.' },
+          { name: 'elevated', type: 'boolean', default: 'false', description: 'Lifts the bar off the page: --ds-surface plus --shadow-e2. Dark raises by lightness, light by shadow.' },
+          { name: 'bordered', type: 'boolean', default: 'false', description: 'A hairline along the bottom edge. Use it INSTEAD of elevation — both together reads as a seam.' },
+          { name: 'fullBleed', type: 'boolean', default: 'false', description: 'Runs the contents to the window edges: no content cap, gutter down to 8px. Right for editor chrome, wrong for a bar heading a document column.' },
+          { name: 'maxWidth', type: 'number', default: '1280', description: 'The content column the bar aligns to when it is not full-bleed. Exported as APP_BAR_MAX_WIDTH so anything sitting under the bar lines up from the same number rather than a copy of it.' },
+          { name: 'sticky', type: 'boolean', default: 'true', description: 'Sticks to the top of its scroll container at z-10.' },
+        ],
+      },
     ],
   },
 })
