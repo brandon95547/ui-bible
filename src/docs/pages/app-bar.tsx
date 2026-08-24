@@ -6,6 +6,7 @@ import {
   RotateCcw, Settings, Smartphone, Sun, Tablet,
 } from 'lucide-react'
 import { cn } from '@/lib/cn'
+import { useDismissable } from '@/lib/hooks'
 import { Button, IconButton } from '@/ui/Button'
 import { Avatar } from '@/ui/Display'
 import { AppBar, NavItem, type AppBarAlign } from '@/ui/Navigation'
@@ -277,6 +278,105 @@ function NavDrawer({
   )
 }
 
+/* ---------------------------------------------------------------------------
+   The third variation is not a drawer at all, so it does not share one.
+   --------------------------------------------------------------------------- */
+
+const MENU_W = 232
+
+/**
+ * The Dropdown. A small menu hung off the button that opened it, rather than a
+ * panel hung off the edge of the screen: it grows out of the hamburger's own
+ * corner and covers a few hundred pixels of the content instead of a third
+ * of it.
+ *
+ * The trigger ships inside this component because the anchoring is the whole
+ * idea — the menu is positioned against the button's box, so it stays under
+ * the hamburger at 390px and at 1440px without anyone measuring the bar. The
+ * offset is `start-0` on a wrapper, so RTL costs nothing here either: the menu
+ * hangs from whichever edge the reading order started at.
+ *
+ * It is a disclosure, not a `role="menu"`. These are destinations, and the
+ * menu role would promise arrow-key semantics that site navigation should not
+ * be asking a keyboard user to learn. `aria-expanded` on the trigger says what
+ * is true, and Tab reaches the items because they are the next thing in the
+ * DOM — which is also why focus does not jump on open.
+ */
+function NavMenu({ current, defaultOpen }: { current: string; defaultOpen: boolean }) {
+  const [open, setOpen] = React.useState(defaultOpen)
+  const wrapRef = React.useRef<HTMLDivElement>(null)
+  const menuRef = React.useRef<HTMLDivElement>(null)
+  const triggerRef = React.useRef<HTMLButtonElement>(null)
+  const menuId = React.useId()
+
+  // Closing has to put focus back where it came from: Escape out of the menu
+  // must not drop a keyboard user at the top of the document. A dismissal that
+  // did not come from inside the menu — a click on the content — leaves the
+  // focus that click chose alone.
+  const close = () => {
+    if (menuRef.current?.contains(document.activeElement)) triggerRef.current?.focus()
+    setOpen(false)
+  }
+  useDismissable(open, close, [wrapRef, menuRef])
+
+  return (
+    <div ref={wrapRef} className="relative inline-flex">
+      <IconButton
+        ref={triggerRef}
+        label={open ? 'Close navigation' : 'Open navigation'}
+        aria-expanded={open}
+        aria-controls={menuId}
+        icon={<Menu />}
+        size="md"
+        onClick={() => setOpen((o) => !o)}
+      />
+      <div
+        ref={menuRef}
+        id={menuId}
+        style={{ width: MENU_W }}
+        className={cn(
+          // 8px off the bar: near enough to read as attached to the button,
+          // far enough that the trigger's focus ring is not clipped by it.
+          'absolute top-[calc(100%+8px)] start-0 z-30 flex flex-col',
+          'rounded-[var(--radius-lg)] border border-[var(--ds-border)] p-1.5',
+          // An overlay surface and the shadow to match: this floats over the
+          // content with nothing dimmed behind it, so the plane has to do the
+          // separating on its own.
+          'bg-[var(--ds-surface-overlay)] shadow-e4',
+          // The origin is the corner it is anchored to, so it appears to come
+          // out of the hamburger rather than to arrive over it.
+          'origin-top-left rtl:origin-top-right',
+          'transition-[opacity,transform,visibility] duration-[160ms] ease-[cubic-bezier(0.2,0,0,1)]',
+          // `visibility`, not `aria-hidden`: it takes the closed menu out of
+          // the tab order and the accessibility tree at the same time, and it
+          // still transitions, so the menu can fade on the way out.
+          open ? 'visible scale-100 opacity-100' : 'invisible scale-95 opacity-0',
+        )}
+      >
+        <nav aria-label="Primary" className="flex flex-col gap-0.5">
+          {NAV_PRIMARY.map((it) => (
+            <NavItem
+              key={it.label}
+              icon={it.icon}
+              label={it.label}
+              active={it.label === current}
+              onClick={close}
+            />
+          ))}
+        </nav>
+
+        <div className="my-1.5 h-px shrink-0 bg-[var(--ds-border-subtle)]" />
+
+        <div className="flex flex-col gap-0.5">
+          {NAV_SECONDARY.map((it) => (
+            <NavItem key={it.label} icon={it.icon} label={it.label} onClick={close} />
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 /**
  * The window each version is shown in.
  *
@@ -305,37 +405,49 @@ function Frame({
   )
 }
 
+/** Every way the bar's first slot is allowed to open navigation. */
+type NavMode = DrawerMode | 'dropdown'
+
 /**
- * A bar over a screen that has navigation. The only thing the two variations
- * disagree about is whether the drawer is ever allowed to be a column, so
- * everything else lives here once.
+ * A bar over a screen that has navigation. What the variations disagree about
+ * is only whether navigation may become a column, and whether it hangs off the
+ * screen's edge or off the button — so everything else lives here once.
  */
 function NavigatedScreen({
   bar, mode, defaultOpen, height,
 }: {
   bar: BarState
-  mode: DrawerMode
+  mode: NavMode
   defaultOpen: boolean
   height: number
 }) {
   const [open, setOpen] = React.useState(defaultOpen)
+  // The dropdown owns its own trigger — the button is the anchor, so the two
+  // cannot be separated the way a drawer and its hamburger can.
+  const anchored = mode === 'dropdown'
   return (
     <>
       <Bar
         {...bar}
         sticky={false}
         leading={
-          <IconButton
-            label={open ? 'Close navigation' : 'Open navigation'}
-            aria-expanded={open}
-            icon={<Menu />}
-            size="md"
-            onClick={() => setOpen((o) => !o)}
-          />
+          anchored ? (
+            <NavMenu current="Dashboard" defaultOpen={defaultOpen} />
+          ) : (
+            <IconButton
+              label={open ? 'Close navigation' : 'Open navigation'}
+              aria-expanded={open}
+              icon={<Menu />}
+              size="md"
+              onClick={() => setOpen((o) => !o)}
+            />
+          )
         }
       />
       <div className="relative flex overflow-hidden" style={{ height }}>
-        <NavDrawer open={open} onDismiss={() => setOpen(false)} current="Dashboard" mode={mode} />
+        {!anchored && (
+          <NavDrawer open={open} onDismiss={() => setOpen(false)} current="Dashboard" mode={mode} />
+        )}
         <div className="min-w-0 flex-1 space-y-3 overflow-y-auto p-4">
           {Array.from({ length: 10 }).map((_, i) => (
             <div
@@ -544,6 +656,14 @@ function Playground() {
           />
           <Frame theme={theme} rtl={rtl} width={device.width}>
             <NavigatedScreen bar={barState} mode="overlay" defaultOpen={false} height={400} />
+          </Frame>
+
+          <Variation
+            title="Dropdown"
+            note="A small menu hung off the hamburger rather than a panel hung off the edge of the screen. It opens where the finger already is, covers a corner of the content instead of a third of it, and carries no scrim because nothing behind it is blocked. Choose it when the navigation is short enough to take in at a glance — past seven or eight destinations it becomes a list scrolling inside a floating box, which is a drawer that has forgotten it is one."
+          />
+          <Frame theme={theme} rtl={rtl} width={device.width}>
+            <NavigatedScreen bar={barState} mode="dropdown" defaultOpen={false} height={400} />
           </Frame>
         </div>
 
