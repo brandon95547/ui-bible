@@ -8,9 +8,21 @@ reasoning, the measurements and the working code behind every surface we ship.
 ```bash
 npm install
 npm run dev      # http://localhost:5180
-npm run build    # typecheck + production build
+npm run build    # typecheck, client bundle, SSR bundle, prerender
 npm run preview
 ```
+
+`build` runs four steps, not one. After the browser bundle, it builds a second
+Node-loadable bundle from `src/entry-server.tsx` and `scripts/prerender.mjs` walks every
+route calling `renderToString`, writing `dist/<page>/index.html` — plus `sitemap.xml`,
+`robots.txt` and `404.html`. The client then hydrates those files rather than rendering
+from scratch, so the pages a crawler reads and the pages a reader clicks through are the
+same pages.
+
+One caveat when checking the output: `npm run preview` has an SPA fallback that answers
+every path with the root `index.html`, which hides the per-page files. To see what nginx
+will actually serve, serve `dist/` as plain static files instead —
+`cd dist && python3 -m http.server 4182`.
 
 ## Deploying
 

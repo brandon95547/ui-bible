@@ -1,25 +1,47 @@
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import {
+  useCallback,
+  useEffect,
+  useId as useReactId,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react'
 
 /** SSR-safe layout effect. */
 export const useIsoLayoutEffect =
   typeof window !== 'undefined' ? useLayoutEffect : useEffect
 
 /**
- * localStorage-backed state. Reads once on mount; writes are debounced by the
- * browser's own microtask batching, which is enough for our write volume.
+ * localStorage-backed state. Writes are debounced by the browser's own
+ * microtask batching, which is enough for our write volume.
+ *
+ * The stored value is adopted in a layout effect rather than in the state
+ * initialiser, and that ordering is the whole subtlety. Pages are prerendered,
+ * and the machine that prerendered them had no localStorage — so a first
+ * client render that reads storage disagrees with the HTML it is hydrating
+ * wherever the reader has ever changed a setting, and React throws the whole
+ * subtree away and re-renders it. Starting from `initial` makes the first pass
+ * identical by construction; a layout effect then applies the stored value
+ * before the browser paints, so nobody sees the default.
  */
 export function usePersistentState<T>(key: string, initial: T) {
-  const [value, setValue] = useState<T>(() => {
-    if (typeof window === 'undefined') return initial
+  const [value, setValue] = useState<T>(initial)
+  const hydrated = useRef(false)
+
+  useIsoLayoutEffect(() => {
     try {
       const raw = window.localStorage.getItem(key)
-      return raw === null ? initial : (JSON.parse(raw) as T)
+      if (raw !== null) setValue(JSON.parse(raw) as T)
     } catch {
-      return initial
+      /* unreadable storage — the default stands */
     }
-  })
+    hydrated.current = true
+  }, [key])
 
   useEffect(() => {
+    // Never before the stored value has been read, or the first commit would
+    // write the default straight over what the reader had saved.
+    if (!hydrated.current) return
     try {
       window.localStorage.setItem(key, JSON.stringify(value))
     } catch {
@@ -39,12 +61,27 @@ export function useEvent<A extends unknown[], R>(fn: (...args: A) => R) {
   return useCallback((...args: A) => ref.current(...args), [])
 }
 
-/** Media query subscription. */
-export function useMediaQuery(query: string) {
-  const [matches, setMatches] = useState(() =>
-    typeof window === 'undefined' ? false : window.matchMedia(query).matches,
-  )
-  useEffect(() => {
+/**
+ * Media query subscription.
+ *
+ * `ssrDefault` is the answer given where there is no `matchMedia` — during
+ * prerendering. It is per-call rather than a blanket value because the honest
+ * default differs by question: a prerendered page should assume a desktop
+ * viewport, because that is what a crawler and most first visits are, but it
+ * must not assume `prefers-reduced-motion`. Whatever is chosen here is what
+ * lands in the static HTML, so the client corrects it on hydration.
+ */
+export function useMediaQuery(query: string, ssrDefault = false) {
+  // `ssrDefault` on the first render in BOTH environments, not just on the
+  // server. Reading matchMedia in the initialiser would make the client's
+  // first pass disagree with the prerendered HTML it is hydrating, which React
+  // reports as a hydration error on every load at a viewport the prerender did
+  // not assume. Agreeing first and correcting immediately after is what makes
+  // the mismatch impossible rather than merely tolerated.
+  const [matches, setMatches] = useState(ssrDefault)
+  // A layout effect, so the correction is committed before the browser paints
+  // — the reader never sees the assumed value, only the true one.
+  useIsoLayoutEffect(() => {
     const mql = window.matchMedia(query)
     const onChange = () => setMatches(mql.matches)
     onChange()
@@ -308,9 +345,18 @@ export function useElementSize<T extends HTMLElement>() {
   return { ref, ...size }
 }
 
-let idSeq = 0
-/** Deterministic-enough unique id for aria wiring in demo components. */
+/**
+ * Unique id for aria wiring, prefixed so it is readable in the inspector.
+ *
+ * Delegates to React's own useId, which derives the id from the component's
+ * position in the tree and therefore produces the same value on the server as
+ * on the client. The counter this used to keep could not: the prerenderer
+ * renders 108 pages into one process, so its counter was at some arbitrary
+ * number by the time it reached any given page, while the browser's always
+ * started at one — and every label/input pair wired this way disagreed on
+ * hydration. Punctuation is stripped because React's ids contain characters
+ * that are legal in an id attribute but awkward in a CSS selector.
+ */
 export function useId(prefix = 'ds') {
-  const [id] = useState(() => `${prefix}-${++idSeq}`)
-  return id
+  return `${prefix}-${useReactId().replace(/[^a-zA-Z0-9]/g, '')}`
 }

@@ -39,6 +39,16 @@ function Picker({
   compact?: boolean
 }) {
   const [draft, setDraft] = React.useState(value)
+  // Detected in an effect, not during render — and for two reasons. The page
+  // is prerendered, where `window` does not exist at all; and even in the
+  // browser, deciding this while rendering makes the server's answer (no
+  // button) disagree with the client's (a button), which is a hydration
+  // mismatch. State that starts false and turns true after mount is the only
+  // form of feature detection that survives both. The sample further down this
+  // page already guards with `typeof window !== 'undefined'`; this demo did
+  // not follow its own advice.
+  const [hasEyeDropper, setHasEyeDropper] = React.useState(false)
+  React.useEffect(() => setHasEyeDropper('EyeDropper' in window), [])
   React.useEffect(() => setDraft(value), [value])
 
   const valid = /^#[0-9a-f]{6}$/i.test(draft)
@@ -105,7 +115,7 @@ function Picker({
             className="font-mono uppercase"
           />
         </div>
-        {'EyeDropper' in window && (
+        {hasEyeDropper && (
           <button
             type="button"
             aria-label="Pick a colour from the screen"

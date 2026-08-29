@@ -1,5 +1,6 @@
 import { ArrowRight, ArrowUpRight } from 'lucide-react'
 import { cn } from '@/lib/cn'
+import { PageLink } from '@/app/PageLink'
 import { iconByName } from '@/app/icons'
 import { ComponentPreview } from '@/app/ComponentPreview'
 import { IMPLEMENTED } from '@/docs/registry'
@@ -94,9 +95,9 @@ export function SectionBlock({
 
 function PageCard({ page, onNavigate }: { page: NavPage; onNavigate: (id: string) => void }) {
   return (
-    <button
-      type="button"
-      onClick={() => onNavigate(page.id)}
+    <PageLink
+      to={page.id}
+      onNavigate={onNavigate}
       className={cn(
         'group flex flex-col gap-1 rounded-[var(--radius-lg)] border border-[var(--ds-border-subtle)]',
         'bg-[var(--ds-surface)] p-3.5 text-left transition-all duration-[160ms]',
@@ -131,7 +132,7 @@ function PageCard({ page, onNavigate }: { page: NavPage; onNavigate: (id: string
           Also called {page.aliases.join(', ')}
         </span>
       )}
-    </button>
+    </PageLink>
   )
 }
 
@@ -146,9 +147,9 @@ function PageCard({ page, onNavigate }: { page: NavPage; onNavigate: (id: string
  */
 function PreviewCard({ page, onNavigate }: { page: NavPage; onNavigate: (id: string) => void }) {
   return (
-    <button
-      type="button"
-      onClick={() => onNavigate(page.id)}
+    <PageLink
+      to={page.id}
+      onNavigate={onNavigate}
       title={page.blurb}
       className={cn(
         'group flex flex-col overflow-hidden rounded-[var(--radius-lg)] border border-[var(--ds-border-subtle)]',
@@ -173,7 +174,7 @@ function PreviewCard({ page, onNavigate }: { page: NavPage; onNavigate: (id: str
       <span className="flex min-h-[188px] flex-1 items-center justify-center overflow-hidden p-5">
         <ComponentPreview id={page.id} />
       </span>
-    </button>
+    </PageLink>
   )
 }
 

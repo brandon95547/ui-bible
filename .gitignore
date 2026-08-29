@@ -25,3 +25,6 @@ dist.old
 *.njsproj
 *.sln
 *.sw?
+
+# SSR bundle — an intermediate of the prerender, not a deliverable
+dist-server

@@ -4,6 +4,7 @@ import { iconByName } from '@/app/icons'
 import { SectionBlock } from '@/app/SectionBlock'
 import { IMPLEMENTED } from '@/docs/registry'
 import type { NavSection } from '@/docs/nav'
+import { hrefFor } from '@/lib/router'
 
 /**
  * The index for one section — the contents that used to sit on the home page,
@@ -25,7 +26,10 @@ export function SectionOverview({
     <div className="mx-auto max-w-[76rem] px-6 pb-24 pt-6 sm:px-10">
       <header className="flex flex-col gap-2.5 border-b border-[var(--ds-border-subtle)] pb-6">
         <Breadcrumbs
-          items={[{ label: 'UI Bible', onClick: () => onNavigate('home') }, { label: section.title }]}
+          items={[
+            { label: 'UI Bible', href: hrefFor('home'), onClick: () => onNavigate('home') },
+            { label: section.title },
+          ]}
         />
         <div className="flex flex-wrap items-center gap-3">
           <span className="grid h-9 w-9 shrink-0 place-items-center rounded-[var(--radius-lg)] bg-[var(--ds-accent-subtle)] text-[var(--ds-accent-text)]">

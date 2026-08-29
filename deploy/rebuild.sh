@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 #
-# Rebuild the static bundle nginx serves at ui.skylanex.com.
+# Rebuild the static site nginx serves at ui.skylanex.com.
+#
+# "Static" is now literal: the build prerenders every page to its own
+# directory, so `/button` is a real button/index.html rather than a shell that
+# fills itself in with JavaScript.
 #
 # This is the deploy step: `dist/` is gitignored, so a `git pull` on its own
 # changes nothing a visitor can see. Run it through systemd —
@@ -38,14 +42,28 @@ fi
 
 echo "==> building into $(basename "$STAGE")"
 rm -rf "$STAGE"
-# Args land at the end of the `build` script, i.e. on `vite build`. tsc runs
-# first and a type error aborts before anything is written.
-npm run build -- --outDir "$STAGE"
+# OUT_DIR rather than `--outDir`: the build is now four commands — tsc, the
+# client bundle, the SSR bundle, and the prerender that turns the second into
+# 108 static pages using the first — and CLI args appended by npm would only
+# reach the last of them. vite.config.ts and scripts/prerender.mjs both read
+# this variable. tsc still runs first, so a type error aborts before anything
+# is written.
+OUT_DIR="$STAGE" npm run build
 
-# Refuse to publish an empty directory. Cheap insurance against a build that
-# exits 0 having produced nothing.
-if [[ ! -s "$STAGE/index.html" ]]; then
-  echo "!! $STAGE/index.html is missing or empty — refusing to swap" >&2
+# Refuse to publish a build that is missing its point. index.html alone is no
+# longer evidence of a good build: the client bundle can succeed while the
+# prerender produces nothing, and the result would be the empty shell the
+# prerender exists to replace. So check one prerendered page and the sitemap
+# too, and check that the page actually contains rendered markup rather than a
+# bare <div id="root">.
+for required in index.html button/index.html sitemap.xml robots.txt 404.html; do
+  if [[ ! -s "$STAGE/$required" ]]; then
+    echo "!! $STAGE/$required is missing or empty — refusing to swap" >&2
+    exit 1
+  fi
+done
+if grep -q '<div id="root"></div>' "$STAGE/button/index.html"; then
+  echo "!! $STAGE/button/index.html was not prerendered — refusing to swap" >&2
   exit 1
 fi
 

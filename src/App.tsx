@@ -2,6 +2,7 @@ import * as React from 'react'
 import { Crosshair, FileQuestion, Menu, Moon, PanelLeftClose, PanelLeftOpen, Sun } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import { useMediaQuery, usePersistentState } from '@/lib/hooks'
+import { useRoute } from '@/lib/router'
 import { Button, IconButton } from '@/ui/Button'
 import { Tooltip } from '@/ui/Display'
 import { EmptyState, ToastProvider } from '@/ui/Feedback'
@@ -16,38 +17,8 @@ import { DeviceView } from '@/docs/framework/DeviceView'
 import { currentSectionId } from '@/docs/framework/anchors'
 import { loadPage } from '@/docs/registry'
 import { PAGE_BY_ID, neighbours, overviewSection } from '@/docs/nav'
+import { metaFor } from '@/docs/meta'
 import type { DocSpec } from '@/docs/framework/types'
-
-/* ===========================================================================
-   ROUTING
-   Hash routing, deliberately. It survives being opened from a static bucket,
-   an intranet path, or any host with no rewrite rules — which is every place
-   an internal design system actually gets deployed.
-   ======================================================================== */
-
-function useHashRoute() {
-  const read = () => window.location.hash.replace(/^#\/?/, '').split('#')[0] || 'home'
-  const [route, setRoute] = React.useState(read)
-
-  React.useEffect(() => {
-    const onHash = () => setRoute(read())
-    window.addEventListener('hashchange', onHash)
-    return () => window.removeEventListener('hashchange', onHash)
-  }, [])
-
-  const navigate = React.useCallback((id: string) => {
-    window.location.hash = id === 'home' ? '' : `/${id}`
-    // Anchor jumps inside a page are the browser's job; a page *change* should
-    // always start at the top. Pages that arrive as their own chunk reset again
-    // once their content mounts — see resetScroll in DocRoute — because this
-    // frame still belongs to the loading skeleton.
-    requestAnimationFrame(() => {
-      document.getElementById('main')?.scrollTo({ top: 0, behavior: 'auto' })
-    })
-  }, [])
-
-  return [route, navigate] as const
-}
 
 /* ===========================================================================
    PAGE LOADER
@@ -58,17 +29,36 @@ function DocRoute({
   onNavigate,
   favorites,
   onToggleFavorite,
+  initialSpec,
 }: {
   id: string
   onNavigate: (id: string) => void
   favorites: string[]
   onToggleFavorite: (id: string) => void
+  /**
+   * Resolved ahead of render, by the prerenderer or by main.tsx before it
+   * hydrates. Three states, deliberately: `undefined` means nobody resolved it
+   * and the effect should; a spec means ready; `null` means it was resolved and
+   * there is no such page. Without the third case a page that has not been
+   * written yet would prerender as its loading skeleton.
+   */
+  initialSpec?: DocSpec | null
 }) {
-  const [spec, setSpec] = React.useState<DocSpec | null>(null)
-  const [state, setState] = React.useState<'loading' | 'ready' | 'missing'>('loading')
+  const [spec, setSpec] = React.useState<DocSpec | null>(initialSpec ?? null)
+  const [state, setState] = React.useState<'loading' | 'ready' | 'missing'>(
+    initialSpec === undefined ? 'loading' : initialSpec ? 'ready' : 'missing',
+  )
+  // DocRoute is keyed by route, so `id` never changes within an instance and
+  // this only ever skips the load that hydration would otherwise repeat —
+  // which would blank the prerendered page for a frame.
+  const seeded = React.useRef(initialSpec !== undefined)
 
   React.useEffect(() => {
     let cancelled = false
+    if (seeded.current) {
+      seeded.current = false
+      return
+    }
     setState('loading')
     setSpec(null)
     const loader = loadPage(id)
@@ -157,13 +147,24 @@ function DocRoute({
    SHELL
    ======================================================================== */
 
-function Shell() {
-  const [route, navigateTo] = useHashRoute()
+function Shell({ initialSpec }: { initialSpec?: DocSpec | null }) {
+  const [route, navigateTo] = useRoute()
+  // The seeded spec belongs to the route that was current when the tree first
+  // rendered, and to no other. Handing it to every route means the first
+  // client navigation mounts a DocRoute that believes it is already resolved,
+  // skips its own load, and renders the previous page's content under the new
+  // URL. Coming back to the original route may reuse it — that is the same
+  // page, so it is still the right spec.
+  const seededRoute = React.useRef(route)
   const [paletteOpen, setPaletteOpen] = React.useState(false)
   // The lg breakpoint, which is where the Bible itself puts this: a 268px
   // sidebar plus a readable content column needs about 1024px, and below that
   // the sidebar has to stop taking a column of its own. See Breakpoints.
-  const isDesktop = useMediaQuery('(min-width: 1024px)')
+  // True while prerendering: the sidebar is the site's entire link graph — 104
+  // pages — and a static file that omits it gives a crawler three outgoing
+  // links from every page. It is hidden below lg in CSS rather than by this
+  // flag (see Sidebar), so a phone never paints it before hydration.
+  const isDesktop = useMediaQuery('(min-width: 1024px)', true)
   // Two different states, deliberately. Pinning is a lasting preference and is
   // remembered; the drawer is a momentary thing and is not — a nav panel that
   // restores itself open over the content on a phone is a bug, not a courtesy.
@@ -177,6 +178,14 @@ function Shell() {
   React.useEffect(() => {
     document.documentElement.dataset.theme = theme
   }, [theme])
+
+  // The prerendered document arrives with the right title; a client navigation
+  // has to keep it right. Without this the tab, and every history entry the
+  // reader creates, is labelled with whichever page they happened to land on
+  // first.
+  React.useEffect(() => {
+    document.title = metaFor(route).title
+  }, [route])
 
   // Growing past lg turns the drawer back into a column. Without this the panel
   // is left behind as a fixed overlay sitting on top of the page it is now
@@ -349,6 +358,7 @@ function Shell() {
               onNavigate={navigate}
               favorites={favorites}
               onToggleFavorite={toggleFavorite}
+              initialSpec={route === seededRoute.current ? initialSpec : undefined}
             />
           )}
         </main>
@@ -379,8 +389,8 @@ function isTypingTarget(t: EventTarget | null) {
   )
 }
 
-export default function App() {
-  const [route] = useHashRoute()
+export default function App({ initialSpec }: { initialSpec?: DocSpec | null } = {}) {
+  const [route] = useRoute()
 
   // A device window loads the same bundle at its own address and renders one
   // preview, without the shell around it — the whole point is that its viewport
@@ -389,7 +399,7 @@ export default function App() {
 
   return (
     <InspectorProvider>
-      <ToastProvider>{device ? <DeviceView route={route} /> : <Shell />}</ToastProvider>
+      <ToastProvider>{device ? <DeviceView route={route} /> : <Shell initialSpec={initialSpec} />}</ToastProvider>
     </InspectorProvider>
   )
 }

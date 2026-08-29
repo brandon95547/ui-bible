@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { ArrowRight, Crosshair, Command as CommandIcon } from 'lucide-react'
 import { cn } from '@/lib/cn'
+import { PageLink } from '@/app/PageLink'
 import { Badge, Kbd } from '@/ui/Display'
 import { Button } from '@/ui/Button'
 import { iconByName } from '@/app/icons'
@@ -155,10 +156,10 @@ export function Home({ onNavigate, onOpenPalette }: { onNavigate: (id: string) =
             ['Bottom Sheet, Side Sheet', 'drawer', 'Drawer'],
             ['Navigation Rail, Side Nav', 'sidebar', 'Sidebar'],
           ].map(([from, id, to]) => (
-            <button
+            <PageLink
               key={id}
-              type="button"
-              onClick={() => onNavigate(id)}
+              to={id}
+              onNavigate={onNavigate}
               className={cn(
                 'flex items-center gap-2 rounded-[var(--radius-lg)] border border-[var(--ds-border-subtle)]',
                 'bg-[var(--ds-surface)] px-3.5 py-3 text-left transition-colors',
@@ -171,7 +172,7 @@ export function Home({ onNavigate, onOpenPalette }: { onNavigate: (id: string) =
               </span>
               <ArrowRight size={12} className="shrink-0 text-[var(--ds-fg-muted)]" />
               <span className="shrink-0 text-label-sm text-[var(--ds-accent-text)]">{to}</span>
-            </button>
+            </PageLink>
           ))}
         </div>
       </section>
@@ -196,10 +197,10 @@ export function Home({ onNavigate, onOpenPalette }: { onNavigate: (id: string) =
               ? section.groups.reduce((n, g) => n + g.pages.length, 0)
               : (section.pages?.length ?? 0)
             return (
-              <button
+              <PageLink
                 key={section.id}
-                type="button"
-                onClick={() => onNavigate(section.id)}
+                to={section.id}
+                onNavigate={onNavigate}
                 className={cn(
                   'group flex items-center gap-3 rounded-[var(--radius-lg)] border border-[var(--ds-border-subtle)]',
                   'bg-[var(--ds-surface)] px-4 py-3.5 text-left transition-colors',
@@ -225,7 +226,7 @@ export function Home({ onNavigate, onOpenPalette }: { onNavigate: (id: string) =
                   size={14}
                   className="shrink-0 -translate-x-1 text-[var(--ds-fg-disabled)] opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100"
                 />
-              </button>
+              </PageLink>
             )
           })}
         </div>

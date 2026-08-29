@@ -1,36 +1,27 @@
 /**
- * In-page anchors have to survive the hash router.
+ * In-page anchors.
  *
- * `useHashRoute` in App.tsx reads the hash as `#/<pageId>`, splitting anything
- * after a second `#` off as an in-page anchor. A bare `href="#tokens"` replaces
- * the *whole* hash, so the router resolves "tokens" as a page id, finds no such
- * page, and renders "Page not found". Every section link must therefore carry
- * the page segment: `#/colors#tokens`.
+ * These used to carry the page segment — `#/colors#tokens` — because the hash
+ * router owned the fragment, and a bare `href="#tokens"` would replace the
+ * whole hash and navigate to a page called "tokens". With path routing the
+ * fragment belongs to the document again, so an anchor is just an anchor and
+ * the browser resolves it natively.
  */
 
-/** The page segment of the current hash — 'colors' for `#/colors#tokens`. */
-export function currentPageId() {
-  return window.location.hash.replace(/^#\/?/, '').split('#')[0]
-}
-
-/** The anchor segment of the current hash, or '' when there is none. */
+/** The anchor segment of the current URL, or '' when there is none. */
 export function currentSectionId() {
-  return window.location.hash.replace(/^#\/?/, '').split('#')[1] ?? ''
+  if (typeof window === 'undefined') return ''
+  return window.location.hash.replace(/^#/, '')
 }
 
-/**
- * Builds `#/colors#tokens` — safe to copy, bookmark, and paste. Read off the
- * live hash rather than passed down, so a section heading nested anywhere in
- * the tree can link to itself without the page threading its id through.
- */
+/** Safe to copy, bookmark and paste, and resolvable without JavaScript. */
 export function sectionHref(sectionId: string) {
-  const page = currentPageId()
-  return page ? `#/${page}#${sectionId}` : `#${sectionId}`
+  return `#${sectionId}`
 }
 
 /**
- * A browser cannot resolve a compound fragment — it looks for an element whose
- * id is literally `/colors#tokens` — so the scroll is ours to perform.
+ * Still ours to perform: the reading area is a scroll container, not the
+ * document, so the browser's own fragment scroll lands in the wrong box.
  */
 export function scrollToSection(sectionId: string, behavior: ScrollBehavior = 'smooth') {
   const el = document.getElementById(sectionId)

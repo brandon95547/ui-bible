@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { BookMarked, ChevronRight, Command, LayoutList, Search, SearchX, Star, X } from 'lucide-react'
 import { cn } from '@/lib/cn'
+import { PageLink } from '@/app/PageLink'
 import { useFocusTrap, usePersistentState } from '@/lib/hooks'
 import { IconButton } from '@/ui/Button'
 import { Kbd } from '@/ui/Display'
@@ -132,7 +133,15 @@ export function Sidebar({
         if (isDrawer && e.key === 'Escape') onClose?.()
       }}
       className={cn(
-        'relative z-40 flex h-dvh shrink-0 flex-col border-r border-[var(--ds-border-subtle)] bg-[var(--ds-surface)]',
+        'relative z-40 h-dvh shrink-0 flex-col border-r border-[var(--ds-border-subtle)] bg-[var(--ds-surface)]',
+        // The breakpoint is CSS, not JavaScript. The prerendered HTML always
+        // contains this column so that crawlers — and readers before the
+        // bundle arrives — get the full navigation; below lg the same markup
+        // is display:none, so a phone never paints a sidebar it is about to
+        // unmount. `flex` is set per-variant rather than in the base, because
+        // `hidden` and a bare `flex` set the same property and their order in
+        // the stylesheet, not in this list, would decide the winner.
+        isDrawer ? 'flex' : 'hidden lg:flex',
         isDrawer &&
           'fixed inset-y-0 left-0 z-[75] w-[min(19rem,calc(100vw-3rem))] shadow-e5 outline-none animate-[drawer-in-left_260ms_cubic-bezier(0.32,0.72,0,1)_both]',
       )}
@@ -141,13 +150,10 @@ export function Sidebar({
       <div className="flex h-14 shrink-0 items-center gap-2.5 border-b border-[var(--ds-border-subtle)] px-2.5">
         {/* A real anchor, not a button: the brand is navigation, so ⌘-click and
             middle-click have to open home in a new tab like any other link. */}
-        <a
-          href="#"
+        <PageLink
+          to="home"
+          onNavigate={onNavigate}
           aria-label="UI Bible — home"
-          onClick={(e) => {
-            e.preventDefault()
-            onNavigate('home')
-          }}
           className="flex min-w-0 items-center gap-2.5 rounded-[var(--radius-md)] px-1.5 py-1 text-left transition-colors hover:bg-[var(--ds-layer-hover)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ds-focus-ring)]"
         >
           <span
@@ -164,7 +170,7 @@ export function Sidebar({
               v1.0 · Design System
             </span>
           </span>
-        </a>
+        </PageLink>
 
         {/* A modal surface needs a visible way out that is not a gesture. The
             header's own toggle is behind the scrim once the drawer is open. */}
@@ -308,7 +314,8 @@ export function Sidebar({
                 <OverviewRow
                   section={section.title}
                   active={currentId === section.id}
-                  onClick={() => onNavigate(section.id)}
+                  to={section.id}
+                  onNavigate={onNavigate}
                 />
               )}
               {section.groups
@@ -469,17 +476,19 @@ function TreeNode({
 function OverviewRow({
   section,
   active,
-  onClick,
+  to,
+  onNavigate,
 }: {
   section: string
   active: boolean
-  onClick: () => void
+  to: string
+  onNavigate: (id: string) => void
 }) {
   return (
-    <button
+    <PageLink
       data-nav-item
-      type="button"
-      onClick={onClick}
+      to={to}
+      onNavigate={onNavigate}
       aria-current={active ? 'page' : undefined}
       aria-label={`${section} overview`}
       className={cn(
@@ -499,7 +508,7 @@ function OverviewRow({
       )}
       <LayoutList size={11} aria-hidden className="shrink-0" />
       <span className={cn('truncate text-label-sm italic', active && 'font-medium')}>Overview</span>
-    </button>
+    </PageLink>
   )
 }
 
@@ -519,10 +528,10 @@ function NavRow({
   const implemented = IMPLEMENTED.has(page.id)
   return (
     <div className="group/row relative flex items-center">
-      <button
+      <PageLink
         data-nav-item
-        type="button"
-        onClick={() => onNavigate(page.id)}
+        to={page.id}
+        onNavigate={onNavigate}
         aria-current={active ? 'page' : undefined}
         title={page.aliases?.length ? `Also called ${page.aliases.join(', ')}` : undefined}
         className={cn(
@@ -549,7 +558,7 @@ function NavRow({
             soon
           </span>
         )}
-      </button>
+      </PageLink>
       <button
         type="button"
         onClick={() => onToggleFavorite(page.id)}

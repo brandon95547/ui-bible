@@ -1,6 +1,8 @@
 import * as React from 'react'
 import { ArrowLeft, ArrowRight, Star } from 'lucide-react'
 import { cn } from '@/lib/cn'
+import { PageLink } from '@/app/PageLink'
+import { hrefFor } from '@/lib/router'
 import { useScrollSpy } from '@/lib/hooks'
 import { Badge } from '@/ui/Display'
 import { Breadcrumbs } from '@/ui/Navigation'
@@ -116,7 +118,7 @@ export function DocPage({
           <div className="flex items-center justify-between gap-4">
             <Breadcrumbs
               items={[
-                { label: 'UI Bible', onClick: () => onNavigate('home') },
+                { label: 'UI Bible', href: hrefFor('home'), onClick: () => onNavigate('home') },
                 ...trail.map((label) => ({ label })),
                 { label: meta.title },
               ]}
@@ -346,30 +348,30 @@ export function DocPage({
               className="mt-6 grid gap-3 border-t border-[var(--ds-border-subtle)] pt-6 sm:grid-cols-2"
             >
               {prev ? (
-                <button
-                  type="button"
-                  onClick={() => onNavigate(prev.id)}
+                <PageLink
+                  to={prev.id}
+                  onNavigate={onNavigate}
                   className="group flex flex-col gap-1 rounded-[var(--radius-lg)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] p-3.5 text-left transition-all hover:border-[var(--ds-border)] hover:bg-[var(--ds-layer-hover)]"
                 >
                   <span className="flex items-center gap-1.5 text-caption text-[var(--ds-fg-muted)]">
                     <ArrowLeft size={12} /> Previous
                   </span>
                   <span className="text-label text-[var(--ds-fg)]">{prev.title}</span>
-                </button>
+                </PageLink>
               ) : (
                 <span />
               )}
               {next && (
-                <button
-                  type="button"
-                  onClick={() => onNavigate(next.id)}
+                <PageLink
+                  to={next.id}
+                  onNavigate={onNavigate}
                   className="group flex flex-col items-end gap-1 rounded-[var(--radius-lg)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] p-3.5 text-right transition-all hover:border-[var(--ds-border)] hover:bg-[var(--ds-layer-hover)]"
                 >
                   <span className="flex items-center gap-1.5 text-caption text-[var(--ds-fg-muted)]">
                     Next <ArrowRight size={12} />
                   </span>
                   <span className="text-label text-[var(--ds-fg)]">{next.title}</span>
-                </button>
+                </PageLink>
               )}
             </nav>
           )}

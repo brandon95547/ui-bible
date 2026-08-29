@@ -37,7 +37,7 @@ import { cn } from '@/lib/cn'
 
      1. Semantic tokens only. These render inside light and dark without a
         second definition, exactly like everything else in the system.
-     2. Spans only. The card is a <button>, whose content model is phrasing
+     2. Spans only. The card is an <a>, whose content model is phrasing
         content — so every primitive here is a span that has been told how to
         lay out. Divs would render, and would be invalid.
    ========================================================================= */
