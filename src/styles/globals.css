@@ -32,8 +32,11 @@
     background-color: var(--ds-canvas);
     color: var(--ds-fg);
     font-family: var(--font-sans);
-    font-size: 0.9375rem;
-    line-height: 1.66;
+    /* The inherited default for everything that does not name a style, in rem
+       so a reader who raises their browser's base size raises the whole app
+       with it. A px value here would ignore that setting outright. */
+    font-size: var(--text-body); /* 1rem / 16px */
+    line-height: var(--text-body--line-height);
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11', 'ss03';
     font-variant-ligatures: contextual;
     -webkit-font-smoothing: antialiased;

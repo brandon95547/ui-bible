@@ -537,9 +537,21 @@
   --text-body-lg--line-height: 1.62;
   --text-body-lg--letter-spacing: -0.004em;
 
-  --text-body: 0.9375rem; /* 15 */
-  --text-body--line-height: 1.66;
+  /* 16px, not 15. Primary reading text and anything typed into — a value the
+     user has to read back and check is a value they should not have to lean in
+     for, and 16px is also the size below which iOS zooms the page on focus. */
+  --text-body: 1rem; /* 16 */
+  --text-body--line-height: 1.6;
   --text-body--letter-spacing: -0.002em;
+
+  /* Interface chrome: navigation rows, menu items, list rows — text you click
+     rather than read. One step under body because it is scanned, never below
+     15px because it is the text a product is actually operated through. The
+     line height is 21px, which is what keeps a 32px row from feeling packed. */
+  --text-ui: 0.9375rem; /* 15 */
+  --text-ui--line-height: 1.4; /* 21px */
+  --text-ui--letter-spacing: -0.001em;
+  --text-ui--font-weight: 470;
 
   --text-body-sm: 0.8125rem; /* 13 */
   --text-body-sm--line-height: 1.6;
@@ -559,7 +571,10 @@
   --text-caption--line-height: 1.45;
   --text-caption--letter-spacing: 0.002em;
 
-  --text-overline: 0.6875rem; /* 11 */
+  /* 12px is the floor of the whole scale, and an eyebrow set in caps needs it
+     more than most: uppercase strips the ascenders and descenders the eye reads
+     word shapes by, so 11px caps are effectively smaller than 11px again. */
+  --text-overline: 0.75rem; /* 12 */
   --text-overline--line-height: 1.2;
   --text-overline--letter-spacing: 0.09em;
   --text-overline--font-weight: 600;

@@ -99,9 +99,9 @@ const FOUNDATIONS: NavPage[] = [
   {
     id: 'typography',
     title: 'Typography',
-    blurb: 'The type scale, measure, rhythm, and why 15px body text.',
+    blurb: 'The type scale, the four units, measure, rhythm, and the sizes nothing goes under.',
     aliases: ['Text', 'Heading', 'Type Scale'],
-    keywords: ['font', 'line height', 'measure', 'leading', 'tracking'],
+    keywords: ['font', 'line height', 'measure', 'leading', 'tracking', 'rem', 'em', 'ch', 'units', 'font size'],
   },
   {
     id: 'spacing',
@@ -936,6 +936,28 @@ const PATTERNS: NavPage[] = [
 ]
 
 const PRINCIPLES: NavPage[] = [
+  {
+    id: 'readable-type',
+    title: 'Readable Type',
+    blurb:
+      'The smallest a size is allowed to be, and what a breakpoint may change. 16 body, 15 UI, 12 floor — at every width.',
+    aliases: ['Minimum Font Size', 'Legibility'],
+    keywords: [
+      'minimum font size',
+      'legibility',
+      'readability',
+      'responsive typography',
+      'mobile text size',
+      'small text',
+      'clamp',
+      'rem',
+      'zoom',
+      'resize text',
+      '16px input',
+      'ios zoom',
+      'accessibility',
+    ],
+  },
   {
     id: 'visual-hierarchy',
     title: 'Visual Hierarchy',

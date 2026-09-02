@@ -430,7 +430,12 @@ export function NavItem({
         'group relative flex w-full items-center gap-2.5 rounded-[var(--radius-md)] pe-2 text-start',
         'transition-[background-color,color] duration-[120ms] ease-[cubic-bezier(0.2,0,0,1)]',
         'focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--ds-focus-ring)]',
-        compact ? 'h-7 text-label-sm' : 'h-8 text-label',
+        // Navigation text is 15px (--text-ui) — a destination is read at a
+        // glance, from across a column, by someone who is not looking directly
+        // at it yet. Compact steps the label down to 13px rather than the row
+        // height alone, because a 15px label in a 28px row has nowhere to sit;
+        // it is a density mode, and 13px is as low as a destination label goes.
+        compact ? 'h-7 text-label' : 'h-8 text-ui',
         active
           ? 'bg-[var(--ds-layer-selected)] font-medium text-[var(--ds-fg)]'
           : 'text-[var(--ds-fg-secondary)] hover:bg-[var(--ds-layer-hover)] hover:text-[var(--ds-fg)]',

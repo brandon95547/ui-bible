@@ -166,7 +166,7 @@ export function Sidebar({
             <span className="truncate text-label font-semibold leading-tight text-[var(--ds-fg)]">
               UI Bible
             </span>
-            <span className="truncate text-[10px] leading-tight text-[var(--ds-fg-muted)]">
+            <span className="truncate text-caption leading-tight text-[var(--ds-fg-muted)]">
               v1.0 · Design System
             </span>
           </span>
@@ -218,8 +218,11 @@ export function Sidebar({
               // A field, not a well. This input sits on the nav column's own
               // --ds-surface; on the well token it was darker than the panel
               // holding it and read as switched off.
-              'h-8 w-full rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-field)]',
-              'pl-8 pr-14 text-body-sm text-[var(--ds-fg)] placeholder:text-[var(--ds-fg-muted)]',
+              // 16px, like every other field in the system: an input is read back
+              // and checked, and below 16px iOS zooms the page on focus — which
+              // on the drawer variant leaves the reader scrolled sideways.
+              'h-9 w-full rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-field)]',
+              'pl-8 pr-14 text-body text-[var(--ds-fg)] placeholder:text-[var(--ds-fg-muted)]',
               'transition-[border-color,box-shadow] duration-[120ms]',
               'focus:border-[var(--ds-accent)] focus:shadow-[0_0_0_3px_var(--ds-accent-subtle)] focus:outline-none',
             )}
@@ -442,17 +445,22 @@ function TreeNode({
         <span className="shrink-0 text-[var(--ds-fg-muted)]">
           <GroupIcon name={icon} size={depth === 0 ? 13 : 12} />
         </span>
+        {/* Both levels are category labels, and both are set at 12px / 600 — the
+            size the scale reserves for text that names a group rather than
+            being read. The section is uppercased and tracked on top of that,
+            which is the only thing separating the two levels typographically;
+            the indent and the icon carry the rest. */}
         <span
           className={cn(
             'flex-1 truncate',
             depth === 0
               ? 'text-overline uppercase text-[var(--ds-fg)]'
-              : 'text-label-sm text-[var(--ds-fg-secondary)]',
+              : 'text-label-sm font-semibold text-[var(--ds-fg-secondary)]',
           )}
         >
           {title}
         </span>
-        <span className="shrink-0 font-mono text-[10px] tabular-nums text-[var(--ds-fg-disabled)]">
+        <span className="shrink-0 font-mono text-caption tabular-nums text-[var(--ds-fg-disabled)]">
           {count}
         </span>
       </button>
@@ -492,7 +500,7 @@ function OverviewRow({
       aria-current={active ? 'page' : undefined}
       aria-label={`${section} overview`}
       className={cn(
-        'nav-row relative flex h-7 min-w-0 items-center gap-1.5 rounded-[var(--radius-sm)] px-2.5 text-left',
+        'nav-row relative flex h-8 min-w-0 items-center gap-1.5 rounded-[var(--radius-sm)] px-2.5 text-left',
         'transition-[background-color,color] duration-[100ms]',
         'focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--ds-focus-ring)]',
         active
@@ -506,8 +514,8 @@ function OverviewRow({
           className="absolute -left-[14px] top-1/2 h-4 w-[2px] -translate-y-1/2 rounded-r-full bg-[var(--ds-accent)]"
         />
       )}
-      <LayoutList size={11} aria-hidden className="shrink-0" />
-      <span className={cn('truncate text-label-sm italic', active && 'font-medium')}>Overview</span>
+      <LayoutList size={13} aria-hidden className="shrink-0" />
+      <span className={cn('truncate text-ui italic', active && 'font-medium')}>Overview</span>
     </PageLink>
   )
 }
@@ -535,7 +543,10 @@ function NavRow({
         aria-current={active ? 'page' : undefined}
         title={page.aliases?.length ? `Also called ${page.aliases.join(', ')}` : undefined}
         className={cn(
-          'nav-row relative flex h-7 min-w-0 flex-1 items-center gap-2 rounded-[var(--radius-sm)] pl-2.5 pr-7 text-left',
+          // 32px, not 28. The label is 15px on a 21px line box, and the four
+          // pixels the old row had left over above and below it read as a list
+          // that had been squeezed to fit rather than one that was measured.
+          'nav-row relative flex h-8 min-w-0 flex-1 items-center gap-2 rounded-[var(--radius-sm)] pl-2.5 pr-7 text-left',
           'transition-[background-color,color] duration-[100ms]',
           'focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--ds-focus-ring)]',
           active
@@ -549,11 +560,15 @@ function NavRow({
             className="absolute -left-[14px] top-1/2 h-4 w-[2px] -translate-y-1/2 rounded-r-full bg-[var(--ds-accent)]"
           />
         )}
-        <span className={cn('truncate text-label-sm', active && 'font-medium')}>{page.title}</span>
+        {/* text-ui is 15px / 21px / 470. This is the text the whole Bible is
+            operated through, and it was 12px at 540 — a caption doing a
+            destination's job. The active row goes to 500, which is a weight
+            step you can see without it reading as a different typeface. */}
+        <span className={cn('truncate text-ui', active && 'font-medium')}>{page.title}</span>
         {!implemented && (
           <span
             title="Not yet written"
-            className="ml-auto shrink-0 rounded-full bg-[var(--ds-layer-active)] px-1.5 text-[9px] uppercase text-[var(--ds-fg-muted)]"
+            className="ml-auto shrink-0 rounded-full bg-[var(--ds-layer-active)] px-1.5 text-caption uppercase leading-4 text-[var(--ds-fg-muted)]"
           >
             soon
           </span>
@@ -571,7 +586,7 @@ function NavRow({
             : 'text-[var(--ds-fg-muted)] opacity-0 hover:bg-[var(--ds-layer-active)] hover:text-[var(--ds-fg)] focus-visible:opacity-100 group-hover/row:opacity-100',
         )}
       >
-        <Star size={11} fill={favorite ? 'currentColor' : 'none'} />
+        <Star size={12} fill={favorite ? 'currentColor' : 'none'} />
       </button>
     </div>
   )
