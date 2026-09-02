@@ -154,7 +154,8 @@ export function DocPage({
             // it from contrast rules precisely because nothing readable may
             // use it.
             <p className="max-w-[68ch] text-caption text-[var(--ds-fg-muted)]">
-              Also called {aliases.join(', ')} — in this system all of them are{' '}
+              Also called {aliases.join(', ')} — in this system{' '}
+              {aliases.length > 1 ? 'all of them are' : 'that is'}{' '}
               <span className="text-[var(--ds-fg-secondary)]">{meta.title}</span>.
             </p>
           )}

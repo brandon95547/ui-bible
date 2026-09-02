@@ -767,8 +767,12 @@ export interface AppBarProps {
    * monitor has left the content column it is supposed to be heading.
    */
   fullBleed?: boolean
-  /** The content column the bar aligns to when it is not full-bleed. */
-  maxWidth?: number
+  /**
+   * The content column the bar aligns to when it is not full-bleed. Defaults to
+   * the layout token, so overriding it is how a bar heads a narrower column —
+   * a settings page capped at 48rem, say — not how it invents a width.
+   */
+  maxWidth?: string | number
   /** Sticks to the top of its scroll container. On by default. */
   sticky?: boolean
   className?: string
@@ -793,12 +797,26 @@ const ALIGN_BRAND: Record<AppBarAlign, string> = {
  * same two numbers. Read off the same source, the alignment is a fact; copied,
  * it is a coincidence waiting for one of them to change.
  */
-export const APP_BAR_MAX_WIDTH = 1280
+/**
+ * The content column and its gutters, read straight off the layout tokens.
+ *
+ * Not App Bar numbers — they belong to Grid & Layout, and the bar's only claim
+ * on them is that it must agree with the column beneath it. A bar with its own
+ * cap lines up with the page by coincidence and stops the moment either side
+ * is edited.
+ */
+export const LAYOUT_CONTAINER = 'var(--ds-layout-container)'
 
 export function appBarGutter(fullBleed?: boolean) {
   // The gutter is the visible half of full-bleed. The cap is the half you only
   // see on a wide monitor, which is exactly where it matters.
-  return fullBleed ? 'px-2 @max-[640px]:px-1' : 'px-6 @max-[640px]:px-3'
+  //
+  // Container queries, not media queries: the switch is the bar's own width, so
+  // a bar in a 390px panel gets the narrow gutter for the same reason a bar in
+  // a 390px window does.
+  return fullBleed
+    ? 'px-2 @max-[640px]:px-1'
+    : 'px-[var(--ds-layout-gutter-lg)] @max-[640px]:px-[var(--ds-layout-gutter)]'
 }
 
 export function AppBar({
@@ -811,7 +829,7 @@ export function AppBar({
   elevated = false,
   bordered = false,
   fullBleed = false,
-  maxWidth = APP_BAR_MAX_WIDTH,
+  maxWidth = LAYOUT_CONTAINER,
   sticky = true,
   className,
 }: AppBarProps) {
@@ -833,7 +851,7 @@ export function AppBar({
       )}
       {...inspect('AppBar', {
         tokens: ['--ds-canvas', '--ds-surface', '--shadow-e2', '--ds-border-subtle', '--text-h3'],
-        why: 'One row, 64px, four slots: leading, brand, actions, account. It drops to 56px below a 640px container because that is where a phone stops having room for both a comfortable target and a title. Elevation is spent as surface lightness in dark and as shadow in light — the two themes are not inversions of each other. The default 24px gutter is what lines the brand up with the content column under it; full-bleed gives that up on purpose.',
+        why: 'One row, 64px, four slots: leading, brand, actions, account. It drops to 56px below a 640px container because that is where a phone stops having room for both a comfortable target and a title. Elevation is spent as surface lightness in dark and as shadow in light — the two themes are not inversions of each other. The cap and gutters come from the layout tokens (Grid & Layout), which is what lines the brand up with the content column under it; full-bleed gives that up on purpose.',
         a11y: 'header[role=banner]. Every icon in the bar is a real button with a name; the account control names the person rather than announcing "button". At 64px the icon targets are 44px minimum on coarse pointers.',
       })}
     >

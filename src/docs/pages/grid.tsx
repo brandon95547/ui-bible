@@ -247,11 +247,11 @@ export default defineDoc({
   },
 
   tokens: [
-    { category: 'spacing', token: 'gutter-sm', value: '24px', usedFor: 'Page padding below 640px' },
-    { category: 'spacing', token: 'gutter-lg', value: '40px', usedFor: 'Page padding at 640px and above' },
+    { category: 'spacing', token: '--ds-layout-gutter', value: '24px', usedFor: 'Page padding below 640px' },
+    { category: 'spacing', token: '--ds-layout-gutter-lg', value: '40px', usedFor: 'Page padding at 640px and above' },
     { category: 'spacing', token: 'gap-4', value: '16px', usedFor: 'Default grid gap' },
     { category: 'spacing', token: 'gap-6', value: '24px', usedFor: 'Grid gap on wide layouts' },
-    { category: 'spacing', token: 'container', value: '76rem', usedFor: 'Maximum content width' },
+    { category: 'spacing', token: '--ds-layout-container', value: '76rem', usedFor: 'Maximum content width. The App Bar reads this token rather than carrying its own cap' },
     { category: 'spacing', token: 'sidebar', value: '208–400px', usedFor: 'Resizable navigation rail' },
     { category: 'spacing', token: 'topbar', value: '56px', usedFor: 'Application header height' },
     { category: 'spacing', token: 'toc-rail', value: '208px', usedFor: 'On-this-page rail, hidden below 1280px' },

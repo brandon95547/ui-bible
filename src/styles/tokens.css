@@ -398,6 +398,22 @@
 }
 
 /* ---------------------------------------------------------------------------
+   LAYOUT
+   The page frame, and the only copy of it. Theme-independent, so it sits
+   outside both semantic blocks: a container width does not change colour.
+
+   These belong to Grid & Layout, not to any component. The App Bar reads them
+   so its brand lines up with the first column of the content beneath it —
+   a bar carrying its own cap and its own gutter is a bar that agrees with the
+   page by coincidence, and stops agreeing the moment either number moves.
+   ------------------------------------------------------------------------ */
+:root {
+  --ds-layout-container: 76rem; /* 1216 — the content column cap */
+  --ds-layout-gutter: 1.5rem;   /* 24 — page padding below 640 */
+  --ds-layout-gutter-lg: 2.5rem;/* 40 — page padding at 640 and above */
+}
+
+/* ---------------------------------------------------------------------------
    TAILWIND THEME BINDING
    `inline` keeps the var() reference in the generated utility instead of
    resolving it at build time. That is what lets `[data-theme]` re-theme any

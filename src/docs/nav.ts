@@ -182,9 +182,16 @@ const NAVIGATION: NavPage[] = [
     id: 'app-bar',
     title: 'App Bar',
     blurb:
-      'The persistent bar that names the current screen and carries its top-level actions. Top by default, bottom within thumb reach on touch.',
-    aliases: ['Top App Bar', 'Bottom App Bar', 'Navbar', 'Header', 'Masthead', 'Title Bar'],
-    keywords: ['scroll behaviour', 'sticky', 'elevation on scroll', 'brand', 'account menu'],
+      'The persistent top row: the way into navigation, what you are looking at, and the actions that apply everywhere.',
+    // Only the name that means this exact component. "Navbar", "header" and
+    // "masthead" are searchable below, but they are not claimed as the same
+    // thing: a masthead is a publication's brand block, a title bar is window
+    // chrome, and a bottom app bar is Bottom Navigation.
+    aliases: ['Top App Bar'],
+    keywords: [
+      'navbar', 'header', 'masthead', 'title bar', 'banner', 'top bar',
+      'scroll behaviour', 'sticky', 'elevation on scroll', 'brand', 'account menu', 'global actions',
+    ],
   },
   {
     id: 'sidebar',

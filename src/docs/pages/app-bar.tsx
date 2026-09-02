@@ -1,40 +1,103 @@
 import * as React from 'react'
 import { createPortal } from 'react-dom'
 import {
-  Accessibility, AlignCenter, AlignLeft, AlignRight, Bell, BookOpen, Box, ChevronDown, Download,
-  Folder, HelpCircle, History, Home, Layers, LayoutGrid, LayoutTemplate, LifeBuoy, LogOut, Menu,
-  Monitor, MonitorSmartphone, Moon, Palette, RotateCcw, Settings, Shapes, Smartphone, Sun, Tablet,
+  AlignCenter, AlignLeft, AlignRight, Bell, Box, ChevronDown, HelpCircle, Home, Layers,
+  LayoutGrid, Menu, Monitor, MonitorSmartphone, Moon, RotateCcw, Settings, Smartphone, Sun, Tablet,
 } from 'lucide-react'
 import { cn } from '@/lib/cn'
-import { useDismissable } from '@/lib/hooks'
 import { Button, IconButton } from '@/ui/Button'
 import { Avatar } from '@/ui/Display'
 import {
-  APP_BAR_MAX_WIDTH, AppBar, MegaPanel, NavItem, TabPanel, Tabs, appBarGutter,
-  type AppBarAlign, type MegaMenuColumn, type TabSpec,
+  AppBar, LAYOUT_CONTAINER, NavItem, TabPanel, Tabs, appBarGutter,
+  type AppBarAlign, type TabSpec,
 } from '@/ui/Navigation'
 import { Checkbox, Segmented } from '@/ui/Toggle'
 import { DEVICE_CONTROLS_SLOT, PreviewContext, devicePath } from '../framework/preview-context'
 import { storedViewport } from '../framework/DeviceView'
-import { Marker, SubHeading, defineDoc } from '../framework/kit'
+import { Marker, Row, SubHeading, defineDoc } from '../framework/kit'
 
 /* ===========================================================================
-   THE BASIC BAR
+   APP BAR
 
-   One row, four slots, nothing else. Every knob in the playground changes an
-   arrangement or a plane — none of them add a part — because the argument of
-   this page is that the bar is defined by what it refuses to hold.
+   One row at the top of a screen: the way into navigation, what you are
+   looking at, and the handful of actions that apply everywhere.
+
+   The page documents the bar and links out for everything the bar OPENS.
+   A drawer, a menu and a tab row each have their own contract, their own
+   failure modes and their own page; explaining them here would mean two
+   descriptions of each, drifting apart from the day they were written.
+   ======================================================================== */
+
+/** Where a reader goes for the parts this page deliberately does not teach. */
+const RELATED = [
+  { id: 'sidebar', name: 'Sidebar', why: 'Navigation that stays on screen as a column beside the content.' },
+  { id: 'drawer', name: 'Drawer', why: 'Navigation that slides over the content and is dismissed after use.' },
+  { id: 'menu', name: 'Menu', why: 'A short list of destinations or commands hung off a trigger in the bar.' },
+  { id: 'mega-menu', name: 'Mega Menu', why: 'A wide multi-column panel for navigation that is broad rather than deep.' },
+  { id: 'tabs', name: 'Tabs', why: 'Switching between views of the screen you are already on.' },
+  { id: 'toolbar', name: 'Toolbar', why: 'Controls that act on the content of one screen. Most things proposed for an App Bar belong here.' },
+  { id: 'bottom-navigation', name: 'Bottom Navigation', why: 'Top-level destinations within thumb reach on touch. A separate component, not the App Bar moved down.' },
+  { id: 'breadcrumbs', name: 'Breadcrumbs', why: 'Where the current screen sits in a hierarchy, when a title alone cannot say it.' },
+]
+
+/**
+ * The orientation card.
+ *
+ * It exists because the industry uses six words for the top of a screen and
+ * only some of them mean this component. Naming the neighbours — and where
+ * each one is documented — is what stops this page growing a section about
+ * drawers every time someone asks where the drawer rules went.
+ */
+function RelatedComponents() {
+  return (
+    <section
+      aria-label="Related components"
+      className="rounded-[var(--radius-xl)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] p-5"
+    >
+      <h3 className="text-h4 text-[var(--ds-fg)]">Related components</h3>
+      <p className="mt-1 max-w-[72ch] text-body-sm leading-relaxed text-[var(--ds-fg-secondary)]">
+        An App Bar frequently opens or sits above these. Each is its own component with its own
+        rules — this page shows only how the bar connects to them.
+      </p>
+      <ul className="mt-4 grid gap-x-8 gap-y-2.5 sm:grid-cols-2">
+        {RELATED.map((r) => (
+          <li key={r.id} className="flex flex-col">
+            <a
+              href={`/${r.id}`}
+              className="w-fit text-ui text-[var(--ds-accent-text)] underline decoration-[var(--ds-accent-border)] underline-offset-[3px] hover:decoration-[var(--ds-accent)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ds-focus-ring)]"
+            >
+              {r.name}
+            </a>
+            <span className="max-w-[52ch] text-body-sm leading-relaxed text-[var(--ds-fg-muted)]">
+              {r.why}
+            </span>
+          </li>
+        ))}
+      </ul>
+      <p className="mt-4 max-w-[72ch] text-body-sm leading-relaxed text-[var(--ds-fg-muted)]">
+        A <span className="text-[var(--ds-fg-secondary)]">title bar</span> is the operating
+        system's window chrome and a <span className="text-[var(--ds-fg-secondary)]">masthead</span>{' '}
+        is a publication's brand block. Neither is this component, and neither is something we
+        ship.
+      </p>
+    </section>
+  )
+}
+
+/* ===========================================================================
+   THE SPECIMEN
    ======================================================================== */
 
 /** The mark. The one thing in the bar allowed to carry the accent. */
 const logo = <Box size={22} className="text-[var(--ds-accent-text)]" />
 
 /**
- * Global utilities. Three is the desktop budget; a phone gets two.
+ * Global utilities.
  *
- * The third one is dropped by a container query rather than by the page, so it
- * goes at the same width in a 390px frame and on a 390px phone — the docs and
- * the real thing cannot disagree about where the budget runs out.
+ * Three is the desktop budget. The third is dropped by a container query
+ * rather than by the page, so it goes at the same width in a 390px frame and
+ * on a 390px phone — the docs and the real thing cannot disagree about where
+ * the budget runs out.
  */
 const utilities = (
   <>
@@ -56,7 +119,7 @@ function Account() {
       type="button"
       aria-label="Account menu, Ada Lovelace"
       aria-haspopup="menu"
-      className="flex items-center gap-1 rounded-full py-1 pe-1 ps-1 transition-colors hover:bg-[var(--ds-layer-hover)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ds-focus-ring)]"
+      className="flex items-center gap-1 rounded-full p-1 transition-colors hover:bg-[var(--ds-layer-hover)] active:bg-[var(--ds-layer-active)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ds-focus-ring)]"
     >
       <Avatar name="User" size="md" />
       <ChevronDown size={16} className="text-[var(--ds-fg-muted)]" />
@@ -64,8 +127,36 @@ function Account() {
   )
 }
 
+interface BarState {
+  align: AppBarAlign
+  elevated: boolean
+  bordered: boolean
+  fullBleed: boolean
+}
+
+/** The specimen. Identical in the page and in the popped-out window. */
+function Bar({
+  align, elevated, bordered, fullBleed, sticky, leading, className,
+}: BarState & { sticky?: boolean; leading?: React.ReactNode; className?: string }) {
+  return (
+    <AppBar
+      className={className}
+      title="UI Bible"
+      logo={logo}
+      align={align}
+      leading={leading ?? <IconButton label="Open navigation" icon={<Menu />} size="md" />}
+      actions={utilities}
+      account={<Account />}
+      elevated={elevated}
+      bordered={bordered}
+      fullBleed={fullBleed}
+      sticky={sticky}
+    />
+  )
+}
+
 /* ===========================================================================
-   PLAYGROUND
+   PLAYGROUND CONTROLS
    ======================================================================== */
 
 type ViewId = 'desktop' | 'tablet' | 'mobile'
@@ -76,9 +167,9 @@ type ViewId = 'desktop' | 'tablet' | 'mobile'
  * fluid one, and pinning it to 1440 inside a 1024px column would be a lie.
  */
 const VIEWS: { id: ViewId; name: string; band: string; icon: React.ReactNode; width: number | null }[] = [
-  { id: 'desktop', name: 'Desktop', band: '1440px+', icon: <Monitor size={16} />, width: null },
-  { id: 'tablet', name: 'Tablet', band: '768px – 1199px', icon: <Tablet size={16} />, width: 834 },
-  { id: 'mobile', name: 'Mobile', band: '< 768px', icon: <Smartphone size={16} />, width: 390 },
+  { id: 'desktop', name: 'Desktop', band: '1024px+', icon: <Monitor size={16} />, width: null },
+  { id: 'tablet', name: 'Tablet', band: '640 – 1023px', icon: <Tablet size={16} />, width: 834 },
+  { id: 'mobile', name: 'Mobile', band: '< 640px', icon: <Smartphone size={16} />, width: 390 },
 ]
 
 const ALIGN_OPTIONS = [
@@ -106,9 +197,7 @@ const DEFAULTS = {
  * survive RTL, it was using a physical edge where it should not have been.
  */
 function RtlToggle({
-  rtl,
-  onChange,
-  size = 'md',
+  rtl, onChange, size = 'md',
 }: {
   rtl: boolean
   onChange: (v: boolean) => void
@@ -153,355 +242,12 @@ function openNative() {
   return true
 }
 
-interface BarState {
-  align: AppBarAlign
-  elevated: boolean
-  bordered: boolean
-  fullBleed: boolean
-}
-
-/** The specimen. Identical in the page and in the popped-out window. */
-function Bar({
-  align, elevated, bordered, fullBleed, sticky, leading, className,
-}: BarState & { sticky?: boolean; leading?: React.ReactNode; className?: string }) {
-  return (
-    <AppBar
-      className={className}
-      title="UI Bible"
-      logo={logo}
-      align={align}
-      leading={leading ?? <IconButton label="Open navigation" icon={<Menu />} size="md" />}
-      actions={utilities}
-      account={<Account />}
-      elevated={elevated}
-      bordered={bordered}
-      fullBleed={fullBleed}
-      sticky={sticky}
-    />
-  )
-}
-
-/* ===========================================================================
-   VERSION 2 — WITH NAVIGATION
-
-   The same bar, now doing the job its first slot exists for. Everything about
-   the bar is unchanged; what the drawer trigger opens is the whole addition.
-   ======================================================================== */
-
-const NAV_PRIMARY = [
-  { icon: <Home size={16} />, label: 'Dashboard' },
-  { icon: <Layers size={16} />, label: 'Components' },
-  { icon: <LayoutGrid size={16} />, label: 'Patterns' },
-  { icon: <LayoutTemplate size={16} />, label: 'Templates' },
-  { icon: <BookOpen size={16} />, label: 'Guidelines' },
-  { icon: <Folder size={16} />, label: 'Resources' },
-]
-
-const NAV_SECONDARY = [
-  { icon: <Settings size={16} />, label: 'Settings' },
-  { icon: <HelpCircle size={16} />, label: 'Help & Support' },
-  { icon: <LogOut size={16} />, label: 'Sign Out' },
-]
-
-const NAV_W = 260
-
 /**
- * The drawer, in its two variations.
- *
- * `responsive` — the Navigation Drawer. A persistent column where there is
- * room beside the content, an overlay over it where there is not. The switch
- * is at 768px, because that is where 260px of navigation stops being a fifth
- * of the screen and starts being two thirds of it.
- *
- * `overlay` — the Overlay Drawer. Over the content at every width, always with
- * a scrim, always closed until asked for. It never takes a column, so the
- * content is full width on a 27" monitor and on a phone alike.
- *
- * Both move on `margin-inline-start`, not a transform, so RTL costs nothing:
- * the logical property already knows which edge it is leaving from.
- */
-type DrawerMode = 'responsive' | 'overlay'
-
-function NavDrawer({
-  open, onDismiss, current, mode,
-}: {
-  open: boolean
-  onDismiss: () => void
-  current: string
-  mode: DrawerMode
-}) {
-  return (
-    <>
-      {/* The scrim goes with the overlay behaviour. A persistent column has
-          nothing to dim — the content beside it is still usable — so the
-          responsive drawer drops the scrim at the width where it becomes
-          one. */}
-      <div
-        aria-hidden
-        onClick={onDismiss}
-        className={cn(
-          'absolute inset-0 z-10 bg-[var(--ds-layer-scrim)] transition-opacity duration-[200ms]',
-          mode === 'responsive' && '@min-[768px]:hidden',
-          open ? 'opacity-100' : 'pointer-events-none opacity-0',
-        )}
-      />
-      <nav
-        aria-label="Primary"
-        aria-hidden={!open}
-        style={{ width: NAV_W, marginInlineStart: open ? 0 : -NAV_W }}
-        className={cn(
-          // inset-y, not inset-block: the block axis is vertical in both
-          // directions here, and Tailwind has no inset-block utility.
-          'absolute inset-y-0 start-0 z-20 flex shrink-0 flex-col overflow-y-auto',
-          'border-e border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] p-2',
-          'transition-[margin-inline-start] duration-[220ms] ease-[cubic-bezier(0.2,0,0,1)]',
-          // The whole difference between the two variations: one is allowed to
-          // become a column, the other never is.
-          mode === 'responsive' && '@min-[768px]:static @min-[768px]:z-auto',
-          // An overlay floats, so it carries the shadow a column does not need.
-          mode === 'overlay' && 'shadow-e3',
-        )}
-      >
-        <div className="flex flex-col gap-0.5">
-          {NAV_PRIMARY.map((it) => (
-            <NavItem key={it.label} icon={it.icon} label={it.label} active={it.label === current} />
-          ))}
-        </div>
-
-        {/* The rule is a divider, not a heading: the group below is "about you
-            and the app", which does not need naming to be understood. */}
-        <div className="my-3 h-px shrink-0 bg-[var(--ds-border-subtle)]" />
-
-        <div className="flex flex-col gap-0.5">
-          {NAV_SECONDARY.map((it) => (
-            <NavItem key={it.label} icon={it.icon} label={it.label} />
-          ))}
-        </div>
-      </nav>
-    </>
-  )
-}
-
-/* ---------------------------------------------------------------------------
-   The floating variations. Neither is a drawer, so neither shares one: they
-   hang off the button rather than off an edge of the screen, and the only
-   thing they disagree about is how much they can afford to say.
-   --------------------------------------------------------------------------- */
-
-const MENU_W = '232px'
-// A cap, then whatever the bar can afford. `cqw` is the bar's own width — the
-// same input every other decision on this page is made from — so the panel is
-// never wider than the frame it is opening inside.
-const MEGA_W = 'min(680px, calc(100cqw - 24px))'
-
-/**
- * The shell both floating variations share: the hamburger, and a surface
- * anchored to it.
- *
- * The trigger ships in here because the anchoring is the whole idea — the
- * surface is positioned against the button's box, so it stays under the
- * hamburger at 390px and at 1440px without anyone measuring the bar. The
- * offset is `start-0` on the wrapper, so RTL costs nothing here either: the
- * surface hangs from whichever edge the reading order started at.
- *
- * It is a disclosure, not a `role="menu"`. These are destinations, and the
- * menu role would promise arrow-key semantics that site navigation should not
- * be asking a keyboard user to learn. `aria-expanded` on the trigger says what
- * is true, and Tab reaches the items because they are the next thing in the
- * DOM — which is also why focus does not jump on open.
- *
- * `open` is the screen's state, not this component's: on a phone the mega
- * panel is a drawer instead, and one hamburger cannot open two things from two
- * different pieces of state.
- */
-function AnchoredNav({
-  open, setOpen, width, surface, children,
-}: {
-  open: boolean
-  setOpen: (fn: (o: boolean) => boolean) => void
-  width: string
-  surface: string
-  children: (close: () => void) => React.ReactNode
-}) {
-  const wrapRef = React.useRef<HTMLDivElement>(null)
-  const panelRef = React.useRef<HTMLDivElement>(null)
-  const triggerRef = React.useRef<HTMLButtonElement>(null)
-  const panelId = React.useId()
-
-  // Closing has to put focus back where it came from: Escape out of the panel
-  // must not drop a keyboard user at the top of the document. A dismissal that
-  // did not come from inside it — a click on the content — leaves the focus
-  // that click chose alone.
-  const close = () => {
-    if (panelRef.current?.contains(document.activeElement)) triggerRef.current?.focus()
-    setOpen(() => false)
-  }
-  useDismissable(open, close, [wrapRef, panelRef])
-
-  return (
-    <div ref={wrapRef} className="relative inline-flex">
-      <IconButton
-        ref={triggerRef}
-        label={open ? 'Close navigation' : 'Open navigation'}
-        aria-expanded={open}
-        aria-controls={panelId}
-        icon={<Menu />}
-        size="md"
-        onClick={() => setOpen((o) => !o)}
-      />
-      <div
-        ref={panelRef}
-        id={panelId}
-        style={{ width }}
-        className={cn(
-          'absolute start-0 z-30 flex flex-col',
-          // The gap is measured from the bar's bottom edge, not the button's:
-          // a 36px button in a 64px row leaves 14px of bar below it, and 10px
-          // once the bar reflows to 56px. Eight more on top of that — near
-          // enough to read as attached to the trigger, far enough that its
-          // focus ring is not clipped by this.
-          'top-[calc(100%+22px)] @max-[640px]:top-[calc(100%+18px)]',
-          'border border-[var(--ds-border)]',
-          // An overlay surface and the shadow to match: this floats over the
-          // content with nothing dimmed behind it, so the plane has to do the
-          // separating on its own.
-          'bg-[var(--ds-surface-overlay)] shadow-e4',
-          // The origin is the corner it is anchored to, so it appears to come
-          // out of the hamburger rather than to arrive over it.
-          'origin-top-left rtl:origin-top-right',
-          'transition-[opacity,transform,visibility] duration-[160ms] ease-[cubic-bezier(0.2,0,0,1)]',
-          // `visibility`, not `aria-hidden`: it takes the closed surface out of
-          // the tab order and the accessibility tree at the same time, and it
-          // still transitions, so it can fade on the way out.
-          open ? 'visible scale-100 opacity-100' : 'invisible scale-95 opacity-0',
-          surface,
-        )}
-      >
-        {children(close)}
-      </div>
-    </div>
-  )
-}
-
-/**
- * The Dropdown. A small menu, one column, the same list the drawer carries.
- */
-function NavMenu({ current, close }: { current: string; close: () => void }) {
-  return (
-    <>
-      <nav aria-label="Primary" className="flex flex-col gap-0.5">
-        {NAV_PRIMARY.map((it) => (
-          <NavItem
-            key={it.label}
-            icon={it.icon}
-            label={it.label}
-            active={it.label === current}
-            onClick={close}
-          />
-        ))}
-      </nav>
-
-      <div className="my-1.5 h-px shrink-0 bg-[var(--ds-border-subtle)]" />
-
-      <div className="flex flex-col gap-0.5">
-        {NAV_SECONDARY.map((it) => (
-          <NavItem key={it.label} icon={it.icon} label={it.label} onClick={close} />
-        ))}
-      </div>
-    </>
-  )
-}
-
-const MEGA_ICON = { size: 15 } as const
-
-/**
- * What the mega panel carries. The extra width is only worth taking if it buys
- * something a single column could not: headings that group the destinations,
- * and a line of description under each one. A wide panel of bare labels is a
- * dropdown that has been stretched.
- */
-const MEGA_COLUMNS: MegaMenuColumn[] = [
-  {
-    title: 'Build',
-    items: [
-      { label: 'Dashboard', description: 'Your work at a glance', icon: <Home {...MEGA_ICON} /> },
-      { label: 'Components', description: '48 in the library', icon: <Layers {...MEGA_ICON} /> },
-      { label: 'Patterns', description: 'Compositions that recur', icon: <LayoutGrid {...MEGA_ICON} /> },
-      { label: 'Templates', description: 'Screens, ready to fork', icon: <LayoutTemplate {...MEGA_ICON} /> },
-    ],
-  },
-  {
-    title: 'Learn',
-    items: [
-      { label: 'Guidelines', description: 'Why, not just what', icon: <BookOpen {...MEGA_ICON} /> },
-      { label: 'Foundations', description: 'Colour, type, space', icon: <Palette {...MEGA_ICON} /> },
-      { label: 'Accessibility', description: 'What we test, and how', icon: <Accessibility {...MEGA_ICON} /> },
-      { label: 'Changelog', description: 'What moved, and when', icon: <History {...MEGA_ICON} /> },
-    ],
-  },
-  {
-    title: 'Resources',
-    items: [
-      { label: 'Kits & assets', description: 'Figma, fonts, logos', icon: <Folder {...MEGA_ICON} /> },
-      { label: 'Icons', description: '1,200, one grid', icon: <Shapes {...MEGA_ICON} /> },
-      { label: 'Downloads', description: 'Tokens as JSON and CSS', icon: <Download {...MEGA_ICON} /> },
-      { label: 'Support', description: 'Ask a maintainer', icon: <LifeBuoy {...MEGA_ICON} /> },
-    ],
-  },
-]
-
-/**
- * The Mega Menu. The same anchored surface as the dropdown, given enough width
- * to group what it holds.
- *
- * The columns come from the Bible's own MegaMenu, so a panel opened from a
- * hamburger and one opened from a menu bar are the same panel — only the thing
- * that opens them differs.
- */
-function NavMega({ close }: { close: () => void }) {
-  return (
-    <nav
-      aria-label="Primary"
-      // Delegation, so the close does not have to be threaded through every
-      // link in the panel. `closest` is what keeps a click on a column heading
-      // from counting as a destination.
-      onClick={(e) => {
-        if (!(e.target as HTMLElement).closest('a')) return
-        // Nowhere to go in a doc, and a hash jump would throw the page to the
-        // top of the article the reader is in the middle of.
-        e.preventDefault()
-        close()
-      }}
-    >
-      <MegaPanel columns={MEGA_COLUMNS} />
-
-      {/* The same "about you and the app" group the drawers put under a rule.
-          It is a row rather than a fourth column, because it is not a peer of
-          the three — it is what you do when you are done navigating. */}
-      <div className="mt-5 flex flex-wrap items-center gap-x-1 gap-y-1 border-t border-[var(--ds-border-subtle)] pt-3">
-        {NAV_SECONDARY.map((it) => (
-          <a
-            key={it.label}
-            href="#"
-            className="flex items-center gap-2 rounded-[var(--radius-md)] px-2 py-1.5 text-label text-[var(--ds-fg-secondary)] transition-colors duration-[120ms] hover:bg-[var(--ds-layer-hover)] hover:text-[var(--ds-fg)] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--ds-focus-ring)]"
-          >
-            <span className="text-[var(--ds-fg-muted)]" aria-hidden>
-              {it.icon}
-            </span>
-            {it.label}
-          </a>
-        ))}
-      </div>
-    </nav>
-  )
-}
-
-/**
- * The window each version is shown in.
+ * The window each variant is shown in.
  *
  * `data-theme` re-themes this subtree only — the tokens are bound with
  * `inline`, so a light island inside the dark docs is just an attribute. It is
- * also the container the drawer measures itself against, which is what lets a
+ * also the container the bar measures itself against, which is what lets a
  * 390px frame behave like a 390px phone.
  */
 function Frame({
@@ -524,122 +270,115 @@ function Frame({
   )
 }
 
-/** Every way the bar's first slot is allowed to open navigation. */
-type NavMode = DrawerMode | 'dropdown' | 'mega'
+/** Filler, so a bar is judged as the top of a screen rather than as a strip. */
+function Content({ lines = 10 }: { lines?: number }) {
+  return (
+    <div className="min-w-0 flex-1 space-y-3 overflow-y-auto p-4">
+      {Array.from({ length: lines }).map((_, i) => (
+        <div
+          key={i}
+          className="h-3 rounded-full bg-[var(--ds-layer-active)]"
+          style={{ width: `${[92, 78, 88, 64, 84, 72][i % 6]}%` }}
+        />
+      ))}
+    </div>
+  )
+}
 
-/**
- * A bar over a screen that has navigation. What the variations disagree about
- * is only whether navigation may become a column, and whether it hangs off the
- * screen's edge or off the button — so everything else lives here once.
- */
-function NavigatedScreen({
-  bar, mode, defaultOpen, height,
-}: {
-  bar: BarState
-  mode: NavMode
-  defaultOpen: boolean
-  height: number
-}) {
-  const [open, setOpen] = React.useState(defaultOpen)
-  // The floating variations own their trigger — the button is the anchor, so
-  // the two cannot be separated the way a drawer and its hamburger can.
-  const anchored = mode === 'dropdown' || mode === 'mega'
+/* ===========================================================================
+   WITH NAVIGATION
+
+   The bar's contribution is the trigger and the state it carries — pressed,
+   expanded, controlling something. What opens is a Drawer, and the Drawer page
+   owns everything about it: widths, scrim, dismissal, focus return. The panel
+   below is the smallest one that makes the connection visible.
+   ======================================================================== */
+
+const NAV_ITEMS = [
+  { icon: <Home size={16} />, label: 'Dashboard' },
+  { icon: <Layers size={16} />, label: 'Components' },
+  { icon: <LayoutGrid size={16} />, label: 'Patterns' },
+  { icon: <Settings size={16} />, label: 'Settings' },
+]
+
+const PANEL_W = 240
+
+function NavigatedScreen({ bar, height }: { bar: BarState; height: number }) {
+  const [open, setOpen] = React.useState(false)
+  const panelId = React.useId()
+
   return (
     <>
       <Bar
         {...bar}
         sticky={false}
         leading={
-          anchored ? (
-            <AnchoredNav
-              open={open}
-              setOpen={setOpen}
-              width={mode === 'mega' ? MEGA_W : MENU_W}
-              surface={cn(
-                mode === 'mega'
-                  ? 'rounded-[var(--radius-xl)] p-5'
-                  : 'rounded-[var(--radius-lg)] p-1.5',
-                // Below 768px there is no room for columns, so the panel is
-                // not offered at all — the drawer below takes over. Same
-                // width the Navigation Drawer gives up its column at, for the
-                // same reason: that is where the layout stops fitting.
-                mode === 'mega' && '@max-[767px]:hidden',
-              )}
-            >
-              {(close) =>
-                mode === 'mega' ? <NavMega close={close} /> : <NavMenu current="Dashboard" close={close} />
-              }
-            </AnchoredNav>
-          ) : (
-            <IconButton
-              label={open ? 'Close navigation' : 'Open navigation'}
-              aria-expanded={open}
-              icon={<Menu />}
-              size="md"
-              onClick={() => setOpen((o) => !o)}
-            />
-          )
+          <IconButton
+            label={open ? 'Close navigation' : 'Open navigation'}
+            // The two attributes that make a trigger a trigger: what state it
+            // is in, and what it owns. Without them the button announces
+            // "Open navigation, button" and never mentions that it worked.
+            aria-expanded={open}
+            aria-controls={panelId}
+            icon={<Menu />}
+            size="md"
+            onClick={() => setOpen((o) => !o)}
+          />
         }
       />
       <div className="relative flex overflow-hidden" style={{ height }}>
-        {!anchored && (
-          <NavDrawer open={open} onDismiss={() => setOpen(false)} current="Dashboard" mode={mode} />
-        )}
-        {/* A phone gets the drawer instead. The wrapper is static, so the
-            drawer's own absolute positioning still resolves against the row —
-            all this div does is carry the query that switches them. */}
-        {mode === 'mega' && (
-          <div className="@min-[768px]:hidden">
-            <NavDrawer
-              open={open}
-              onDismiss={() => setOpen(false)}
-              current="Dashboard"
-              mode="overlay"
-            />
-          </div>
-        )}
-        <div className="min-w-0 flex-1 space-y-3 overflow-y-auto p-4">
-          {Array.from({ length: 10 }).map((_, i) => (
-            <div
-              key={i}
-              className="h-3 rounded-full bg-[var(--ds-layer-active)]"
-              style={{ width: `${[92, 78, 88, 64, 84, 72][i % 6]}%` }}
-            />
+        <div
+          aria-hidden
+          onClick={() => setOpen(false)}
+          className={cn(
+            'absolute inset-0 z-10 bg-[var(--ds-layer-scrim)] transition-opacity duration-[200ms]',
+            open ? 'opacity-100' : 'pointer-events-none opacity-0',
+          )}
+        />
+        <nav
+          id={panelId}
+          aria-label="Primary"
+          aria-hidden={!open}
+          style={{ width: PANEL_W, marginInlineStart: open ? 0 : -PANEL_W }}
+          className={cn(
+            'absolute inset-y-0 start-0 z-20 flex shrink-0 flex-col gap-0.5 overflow-y-auto p-2',
+            'border-e border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] shadow-e3',
+            'transition-[margin-inline-start] duration-[220ms] ease-[cubic-bezier(0.2,0,0,1)]',
+          )}
+        >
+          {NAV_ITEMS.map((it) => (
+            <NavItem key={it.label} icon={it.icon} label={it.label} active={it.label === 'Dashboard'} />
           ))}
-        </div>
+        </nav>
+        <Content />
       </div>
     </>
   )
 }
 
 /* ===========================================================================
-   VERSION 3 — WITH TABS
+   WITH TABS
 
-   The second row. Navigation moves you between screens; tabs move you between
-   views OF one screen — which is why they are under the bar rather than in it,
-   and why the bar above them does not change as you switch.
+   Navigation moves you between screens; tabs move you between views of one
+   screen. That is why they are a row UNDER the bar rather than a second row
+   inside it: the bar keeps saying where you are while the tabs change what
+   you see, and neither has to grow a second job.
    ======================================================================== */
 
 const SECTION_TABS: TabSpec[] = [
   { value: 'overview', label: 'Overview' },
   { value: 'activity', label: 'Activity', count: 12 },
   { value: 'members', label: 'Members' },
-  { value: 'integrations', label: 'Integrations' },
   { value: 'settings', label: 'Settings' },
 ]
 
 /**
  * A bar with a tab row under it.
  *
- * The elevated thing is the masthead — both rows together — not the bar. Left
- * to lift itself, the bar would cast its shadow onto the tabs and draw a seam
- * across the middle of a block that is meant to read as one. So the plane
- * moves out here and the bar inside it is flat.
- *
- * The tab row is not given a bottom border either: the underline variant
- * already carries the rail the active tab breaks, and it is the same hairline
- * token the bar's own border uses. Two of them stacked is a 2px line nobody
- * asked for — which is why the Border knob has nothing to do in this version.
+ * The elevated thing is both rows together, not the bar. Left to lift itself,
+ * the bar would cast its shadow onto the tabs and draw a seam across the middle
+ * of a block that is meant to read as one. So the plane moves out here and the
+ * bar inside it is flat.
  */
 function TabbedScreen({ bar, height }: { bar: BarState; height: number }) {
   const [tab, setTab] = React.useState(SECTION_TABS[0].value)
@@ -654,28 +393,19 @@ function TabbedScreen({ bar, height }: { bar: BarState; height: number }) {
         )}
       >
         {/* Transparent, not unelevated: an unelevated bar still paints its own
-            plane — canvas — and would lay a second colour over the masthead's
-            surface, which is the seam this whole arrangement exists to avoid.
-            The block below it owns the plane; the bar is a row in it. */}
-        <Bar
-          {...bar}
-          elevated={false}
-          bordered={false}
-          sticky={false}
-          className="bg-transparent"
-        />
+            plane — canvas — and would lay a second colour over the block's
+            surface, which is the seam this arrangement exists to avoid. */}
+        <Bar {...bar} elevated={false} bordered={false} sticky={false} className="bg-transparent" />
 
         {/* The same cap and the same gutter the bar uses, off the same two
-            exports — the tabs line up with the brand above them, not with the
-            edge of the window. */}
+            exports — so the first tab starts exactly where the bar's first slot
+            does, rather than at the edge of the window. */}
         <div
           className={cn('mx-auto w-full', appBarGutter(bar.fullBleed))}
-          style={bar.fullBleed ? undefined : { maxWidth: APP_BAR_MAX_WIDTH }}
+          style={bar.fullBleed ? undefined : { maxWidth: LAYOUT_CONTAINER }}
         >
           {/* Scroll rather than wrap or squeeze: a second row of tabs is a new
-              layout, and a row of squeezed labels is unreadable in both. The
-              list is `w-max` so the rail runs the full scrollable width, and
-              `min-w-full` so it still spans the row when the tabs do not. */}
+              layout, and a row of squeezed labels is unreadable in both. */}
           <div className="scrollbar-none overflow-x-auto">
             <Tabs
               tabs={SECTION_TABS}
@@ -703,15 +433,9 @@ function TabbedScreen({ bar, height }: { bar: BarState; height: number }) {
   )
 }
 
-/** The label above one variation inside a family. */
-function Variation({ title, note }: { title: string; note: string }) {
-  return (
-    <div className="mb-2.5 mt-6 flex flex-col gap-0.5">
-      <span className="text-label text-[var(--ds-fg)]">{title}</span>
-      <span className="max-w-[62ch] text-caption text-[var(--ds-fg-muted)]">{note}</span>
-    </div>
-  )
-}
+/* ===========================================================================
+   PLAYGROUND
+   ======================================================================== */
 
 function Playground() {
   const [align, setAlign] = React.useState(DEFAULTS.align)
@@ -739,26 +463,21 @@ function Playground() {
   if (bare) {
     return (
       <NativeView
-        align={align}
-        setAlign={setAlign}
-        rtl={rtl}
-        setRtl={setRtl}
-        elevated={elevated}
-        setElevated={setElevated}
-        bordered={bordered}
-        setBordered={setBordered}
-        fullBleed={fullBleed}
-        setFullBleed={setFullBleed}
+        align={align} setAlign={setAlign}
+        rtl={rtl} setRtl={setRtl}
+        elevated={elevated} setElevated={setElevated}
+        bordered={bordered} setBordered={setBordered}
+        fullBleed={fullBleed} setFullBleed={setFullBleed}
       />
     )
   }
 
   return (
     <div className="flex flex-col gap-8">
+      <RelatedComponents />
+
       {/* ---- The panel ------------------------------------------------- */}
       <div className="rounded-[var(--radius-xl)] border border-[var(--ds-border)] bg-[var(--ds-surface)]">
-        {/* The section above already says this is the live preview, so the
-            panel is knobs and nothing else. */}
         <div className="flex flex-wrap items-start gap-x-4 gap-y-5 p-4">
           <Knob label="Alignment">
             <Segmented
@@ -805,21 +524,15 @@ function Playground() {
           <Knob label="Options">
             <div className="grid grid-cols-2 gap-x-4 gap-y-2.5">
               <Checkbox
-                size="sm"
-                label="Elevated"
-                checked={elevated}
+                size="sm" label="Elevated" checked={elevated}
                 onChange={(e) => setElevated(e.currentTarget.checked)}
               />
               <Checkbox
-                size="sm"
-                label="Border"
-                checked={bordered}
+                size="sm" label="Border" checked={bordered}
                 onChange={(e) => setBordered(e.currentTarget.checked)}
               />
               <Checkbox
-                size="sm"
-                label="Full bleed"
-                checked={fullBleed}
+                size="sm" label="Full bleed" checked={fullBleed}
                 onChange={(e) => setFullBleed(e.currentTarget.checked)}
               />
             </div>
@@ -827,12 +540,7 @@ function Playground() {
 
           <div className="ms-auto flex items-center gap-1.5 self-center">
             {/* A real link under the popup: if the browser refuses a sized
-                window, the href still opens the same route in a new tab.
-                Doing nothing is the one outcome this must not have. */}
-            {/* Glyphs, not labels: the same two controls the Bible's own
-                preview toolbar carries, and the row has no width to spend on
-                spelling them out. Both keep a name for the screen reader and
-                a tooltip for everyone else. */}
+                window, the href still opens the same route in a new tab. */}
             <a
               href={devicePath('app-bar')}
               target="_blank"
@@ -858,7 +566,7 @@ function Playground() {
         </div>
       </div>
 
-      {/* ---- The preview ----------------------------------------------- */}
+      {/* ---- The variants ---------------------------------------------- */}
       <div>
         {/* The band rides the heading rather than a column beside the frame:
             the bar's whole argument is what it does with the width it is
@@ -873,12 +581,12 @@ function Playground() {
 
         <div className="mt-5">
           {/* Each block below is an anchor as well as a specimen: "On this page"
-              lists the variations, and the id has to sit on the whole block
+              lists the variants, and the id has to sit on the whole block
               rather than on its label, or the sidebar stops tracking the moment
               the label scrolls off. */}
-          <div id="basic" className="scroll-mt-28">
-            <SubHeading description="The bar on its own: the way out, the brand, the utilities, the person. Every knob above changes an arrangement or a plane — none of them add a part.">
-              Basic
+          <div id="default" className="scroll-mt-28">
+            <SubHeading description="The bar on its own: a navigation trigger, the brand, two or three global utilities, and the signed-in account. Every control above changes an arrangement or a plane — none of them add a part.">
+              Default
             </SubHeading>
             <Frame theme={theme} rtl={rtl} width={device.width}>
               <Bar {...barState} sticky={false} />
@@ -886,70 +594,47 @@ function Playground() {
           </div>
 
           <div id="with-navigation" className="mt-8 scroll-mt-28">
-            <SubHeading description="The same bar, now doing the job its first slot exists for. The bar does not change between these; what the drawer trigger opens is the whole difference.">
+            <SubHeading description="The leading slot holds the trigger; the panel it opens is a Drawer. The bar's whole part in this is the button, its accessible name, and the aria-expanded / aria-controls pair that says what it owns.">
               With navigation
             </SubHeading>
-
-            <div id="navigation-drawer" className="scroll-mt-28">
-              <Variation
-                title="Navigation Drawer"
-                note="A column where there is room beside the content, an overlay where there is not — decided by the container's width, not the window's. The default for a product whose navigation is the spine of the screen: on a desktop it is always in view and costs no gesture, and it gets out of the way by itself on a phone."
-              />
-              <Frame theme={theme} rtl={rtl} width={device.width}>
-                <NavigatedScreen bar={barState} mode="responsive" defaultOpen height={400} />
-              </Frame>
-            </div>
-
-            <div id="overlay-drawer" className="scroll-mt-28">
-              <Variation
-                title="Overlay Drawer"
-                note="Over the content at every width, always with a scrim, always closed until asked for. Choose it when the content deserves the full width on every screen, or when the navigation is deep enough to be visited rather than scanned — the cost is a gesture on every trip, paid even on a monitor with room to spare."
-              />
-              <Frame theme={theme} rtl={rtl} width={device.width}>
-                <NavigatedScreen bar={barState} mode="overlay" defaultOpen={false} height={400} />
-              </Frame>
-            </div>
-
-            <div id="dropdown" className="scroll-mt-28">
-              <Variation
-                title="Dropdown"
-                note="A small menu hung off the hamburger rather than a panel hung off the edge of the screen. It opens where the finger already is, covers a corner of the content instead of a third of it, and carries no scrim because nothing behind it is blocked. Choose it when the navigation is short enough to take in at a glance — past seven or eight destinations it becomes a list scrolling inside a floating box, which is a drawer that has forgotten it is one. Spend the width and group it, or take the drawer."
-              />
-              <Frame theme={theme} rtl={rtl} width={device.width}>
-                <NavigatedScreen bar={barState} mode="dropdown" defaultOpen={false} height={400} />
-              </Frame>
-            </div>
-
-            <div id="mega-menu" className="scroll-mt-28">
-              <Variation
-                title="Mega Menu"
-                note="The same anchored surface, given enough width to group what it holds: columns with headings, and a line under each destination saying what it is. Choose it when the navigation is broad rather than deep — thirty places that fall into four groups, where the grouping is half the answer. It is the one variation with a floor as well as a ceiling: below 768px there is no room for columns, so the panel is not offered at all and the same hamburger opens the Overlay Drawer instead."
-              />
-              <Frame theme={theme} rtl={rtl} width={device.width}>
-                <NavigatedScreen bar={barState} mode="mega" defaultOpen={false} height={400} />
-              </Frame>
-            </div>
+            <Frame theme={theme} rtl={rtl} width={device.width}>
+              <NavigatedScreen bar={barState} height={340} />
+            </Frame>
+            <p className="mt-3 max-w-[72ch] text-body-sm leading-relaxed text-[var(--ds-fg-muted)]">
+              What opens is a choice this page does not make. See{' '}
+              <a href="/drawer" className="text-[var(--ds-accent-text)] underline underline-offset-2">Drawer</a> for
+              navigation that slides over the content,{' '}
+              <a href="/sidebar" className="text-[var(--ds-accent-text)] underline underline-offset-2">Sidebar</a> for
+              a column that stays,{' '}
+              <a href="/menu" className="text-[var(--ds-accent-text)] underline underline-offset-2">Menu</a> for a
+              short list hung off the trigger, and{' '}
+              <a href="/mega-menu" className="text-[var(--ds-accent-text)] underline underline-offset-2">Mega Menu</a>{' '}
+              for a wide grouped panel.
+            </p>
           </div>
 
           <div id="with-tabs" className="mt-8 scroll-mt-28">
-            <SubHeading
-              description="A second row under the bar. Navigation moves you between screens; tabs move you between views of one screen — so the bar above them does not change as you switch, and neither does the URL's first segment. Five is about the ceiling: past that the row is a menu that has been unrolled. The two rows are one block, so the elevation belongs to the pair rather than to the bar, and the tab rail is the bottom edge — which leaves the Border knob nothing to do here."
-            >
+            <SubHeading description="Tabs switch between views of the screen you are already on, so they sit in a row under the bar and the bar does not change as you move between them. Their own rules — counts, overflow, keyboard model — are on the Tabs page.">
               With tabs
             </SubHeading>
             <Frame theme={theme} rtl={rtl} width={device.width}>
-              <TabbedScreen bar={barState} height={360} />
+              <TabbedScreen bar={barState} height={300} />
             </Frame>
+            <p className="mt-3 max-w-[72ch] text-body-sm leading-relaxed text-[var(--ds-fg-muted)]">
+              The two rows are one block, so the elevation belongs to the pair rather than to the
+              bar, and the tab rail is the bottom edge — which leaves the Border option nothing to
+              do here. See{' '}
+              <a href="/tabs" className="text-[var(--ds-accent-text)] underline underline-offset-2">Tabs</a>.
+            </p>
           </div>
         </div>
 
-        <p className="mt-6 text-caption text-[var(--ds-fg-muted)]">
-          The bar reflows on its own width, not the window's. At the mobile frame it drops to 56px
-          and sheds the third utility — the same reflow a phone gets, for the same reason. Pop it out
-          to see it against a real viewport, where <code>100dvh</code>, the safe-area insets and a
-          coarse pointer are all true rather than simulated. RTL mirrors the whole bar, so the
-          alignment names describe where things sit reading left to right — in Arabic or Hebrew,
-          “Left” is the right-hand edge, because that is where the line starts.
+        <p className="mt-6 max-w-[72ch] text-caption leading-relaxed text-[var(--ds-fg-muted)]">
+          The bar reflows on its own width, not the window's, so a bar inside a 390px panel is
+          compact for the same reason one in a 390px window is. Pop it out to see it against a real
+          viewport, where <code>100dvh</code>, the safe-area insets and a coarse pointer are all
+          true rather than simulated. RTL mirrors the whole bar, so the alignment names describe
+          where things sit reading left to right.
         </p>
       </div>
     </div>
@@ -961,9 +646,7 @@ function Playground() {
 
    What the pop-out window renders. The panel does not come with it: theme and
    device belong to that window's own floating bar, and a simulated width is
-   meaningless inside a viewport that already is one. What survives — alignment
-   and the three container options — goes into that bar, so the viewport under
-   test keeps every pixel.
+   meaningless inside a viewport that already is one.
    ======================================================================== */
 
 function NativeView({
@@ -980,10 +663,6 @@ function NativeView({
   fullBleed: boolean
   setFullBleed: (v: boolean) => void
 }) {
-  // Closed is the resting state on a phone: an overlay that covers the screen
-  // the moment the page loads is showing the drawer, not the screen.
-  const [navOpen, setNavOpen] = React.useState(false)
-
   // The slot is a sibling that commits alongside this render, so it cannot be
   // found on the first pass. One extra pass, then it sticks.
   const [slot, setSlot] = React.useState<HTMLElement | null>(null)
@@ -999,48 +678,12 @@ function NativeView({
     }
   }, [rtl])
 
-  // The navigation version, because it is the superset: the basic bar is in
-  // it, and the drawer is the part that most needs a real viewport — an
-  // overlay, a scrim and a thumb reaching the trigger.
   return (
     <div className="@container relative flex min-h-dvh flex-col">
-      <Bar
-        align={align}
-        elevated={elevated}
-        bordered={bordered}
-        fullBleed={fullBleed}
-        sticky
-        leading={
-          <IconButton
-            label={navOpen ? 'Close navigation' : 'Open navigation'}
-            aria-expanded={navOpen}
-            icon={<Menu />}
-            size="md"
-            onClick={() => setNavOpen((o) => !o)}
-          />
-        }
+      <NavigatedScreen
+        bar={{ align, elevated, bordered, fullBleed }}
+        height={typeof window === 'undefined' ? 600 : window.innerHeight - 64}
       />
-      <div className="relative flex min-h-0 flex-1 overflow-hidden">
-        {/* The responsive one: the popped-out window is a real viewport, so
-            768px is the real switch rather than a simulated one. */}
-        <NavDrawer
-          open={navOpen}
-          onDismiss={() => setNavOpen(false)}
-          current="Dashboard"
-          mode="responsive"
-        />
-        {/* Something under the bar, so it is judged as the top of a screen
-            rather than as a strip floating in an empty viewport. */}
-        <div className="min-w-0 flex-1 space-y-3 overflow-y-auto p-4 pb-32">
-          {Array.from({ length: 14 }).map((_, i) => (
-            <div
-              key={i}
-              className="h-3 rounded-full bg-[var(--ds-layer-active)]"
-              style={{ width: `${[92, 78, 88, 64, 84, 72][i % 6]}%` }}
-            />
-          ))}
-        </div>
-      </div>
 
       {slot &&
         createPortal(
@@ -1058,21 +701,15 @@ function NativeView({
             />
             <RtlToggle rtl={rtl} onChange={setRtl} size="sm" />
             <Checkbox
-              size="sm"
-              label="Elevated"
-              checked={elevated}
+              size="sm" label="Elevated" checked={elevated}
               onChange={(e) => setElevated(e.currentTarget.checked)}
             />
             <Checkbox
-              size="sm"
-              label="Border"
-              checked={bordered}
+              size="sm" label="Border" checked={bordered}
               onChange={(e) => setBordered(e.currentTarget.checked)}
             />
             <Checkbox
-              size="sm"
-              label="Full bleed"
-              checked={fullBleed}
+              size="sm" label="Full bleed" checked={fullBleed}
               onChange={(e) => setFullBleed(e.currentTarget.checked)}
             />
           </>,
@@ -1083,22 +720,38 @@ function NativeView({
 }
 
 /* ===========================================================================
-   ANATOMY
+   STATES
 
-   The markers ride inside the slots rather than being positioned over the bar,
-   so they cannot drift out of alignment when the grid changes. The specimen is
-   the real AppBar for the same reason: a hand-drawn diagram of a component is a
-   second implementation that nothing keeps honest.
+   Every state is forced with the same class the real interaction applies, so
+   what is drawn here is what ships rather than a picture of it.
    ======================================================================== */
 
-/** One slot's box, dashed, so the four-track grid is visible rather than implied. */
-function Slot({
-  children,
-  className,
-}: {
-  children: React.ReactNode
-  className?: string
-}) {
+/** One control, held in a state it would normally only pass through. */
+function StateSpecimen({ className, disabled }: { className?: string; disabled?: boolean }) {
+  return (
+    <IconButton
+      label="Notifications"
+      icon={<Bell />}
+      size="md"
+      disabled={disabled}
+      className={className}
+    />
+  )
+}
+
+/* ===========================================================================
+   ANATOMY
+
+   Drawn rather than rendered, and that is a deliberate exception to this
+   page's rule of showing the real component. AppBar reflows on its OWN width
+   at 640px, and the anatomy layout gives the diagram whatever is left beside a
+   20rem parts column — so a real bar dropped in here would render the compact
+   variant at every viewport anyone actually uses, and permanently document
+   56px while the notes beside it described 64px.
+   ======================================================================== */
+
+/** One slot's box, dashed, so the grid is visible rather than implied. */
+function Slot({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
     <div
       className={cn('relative flex h-11 items-center rounded-md px-1.5', className)}
@@ -1121,26 +774,16 @@ function Ghost({ icon }: { icon: React.ReactNode }) {
   )
 }
 
-/**
- * The anatomy diagram is drawn rather than rendered, and that is a deliberate
- * exception to this page's rule of always showing the real component.
- *
- * AppBar reflows on its OWN container width at 640px. The anatomy layout gives
- * the diagram whatever is left beside a 20rem parts column — about 620px on a
- * 1680px monitor and 340px on a 1280px one — so a real bar dropped in here
- * renders the compact variant at every viewport anyone actually uses. The
- * diagram would then permanently document 56px and two utilities while the
- * notes beside it described 64px and three.
- *
- * So this is a mock: no container query, the same measurements at any width,
- * and every slot visible at once. The live bar directly above is the real one —
- * this is the labelled drawing of it.
- */
 function AnatomySpecimen() {
   return (
-    <div className="relative w-full max-w-[560px] py-6 ps-7">
+    // Fixed width inside a scroller, not a fluid box. The diagram sits beside a
+    // 20rem parts column, so on anything under a wide monitor a fluid mock runs
+    // out of room and squeezes the brand out of a drawing whose whole job is to
+    // label the brand. A labelled drawing has one geometry; it scrolls.
+    <div className="w-full overflow-x-auto pb-1">
+    <div className="relative w-[520px] min-w-[520px] py-6 ps-7">
       <div className="overflow-hidden rounded-[var(--radius-lg)] bg-[var(--ds-surface)] shadow-e2">
-        <div className="grid h-16 grid-cols-[auto_1fr_auto] items-center gap-2 px-6">
+        <div className="grid h-16 grid-cols-[auto_1fr_auto] items-center gap-2 px-10">
           <Slot>
             <Ghost icon={<Menu size={18} />} />
             <Marker n={2} className="absolute -start-3 -top-3.5" />
@@ -1174,20 +817,22 @@ function AnatomySpecimen() {
         className="absolute -start-0 top-6 flex h-16 w-6 flex-col items-center justify-between"
       >
         <span className="h-px w-4 bg-[var(--ds-accent)]" />
-        <span className="font-mono text-[10px] text-[var(--ds-accent-text)]">64</span>
+        <span className="font-mono text-caption text-[var(--ds-accent-text)]">64</span>
         <span className="h-px w-4 bg-[var(--ds-accent)]" />
       </span>
       <Marker n={1} tone="info" className="absolute -start-2.5 top-4" />
 
-      {/* Gutter guide, drawn on the bar's own 24px inline padding. */}
+      {/* Gutter guide, drawn on the bar's own inline padding — 40px at this
+          width, and the same 40px the page under it uses. */}
       <span
         aria-hidden
-        className="pointer-events-none absolute bottom-2 start-7 top-6 w-6 border-e border-dashed border-[var(--ds-accent)]/50"
+        className="pointer-events-none absolute bottom-2 start-7 top-6 w-10 border-e border-dashed border-[var(--ds-accent)]/50"
       />
-      <span className="absolute -bottom-0 start-8 font-mono text-[10px] text-[var(--ds-accent-text)]">
-        24
+      <span className="absolute -bottom-0 start-[2.4rem] font-mono text-caption text-[var(--ds-accent-text)]">
+        40
       </span>
-      <Marker n={6} className="absolute -bottom-2.5 start-[3.25rem]" />
+      <Marker n={6} className="absolute -bottom-2.5 start-[4.5rem]" />
+    </div>
     </div>
   )
 }
@@ -1197,23 +842,54 @@ export default defineDoc({
     id: 'app-bar',
     title: 'App Bar',
     tagline:
-      'The top edge of the product: the way out, the brand, two or three global utilities, and the person signed in. Nothing else belongs in it.',
-    keywords: ['app bar', 'top app bar', 'header', 'masthead', 'navbar', 'title bar', 'brand'],
+      'The persistent bar across the top of a screen. It holds three things: the way into navigation, what you are looking at, and the few actions that apply everywhere in the product. Anything belonging to the current screen goes below it.',
+    keywords: [
+      'app bar', 'top app bar', 'header', 'navbar', 'masthead', 'title bar', 'banner',
+      'brand', 'account menu', 'sticky', 'elevation on scroll', 'global actions',
+    ],
   },
 
   preview: {
     render: <Playground />,
-    // The page is one comparison from top to bottom, so the sidebar lists the
-    // things being compared. Arriving at "Mega Menu" from a link should not
-    // mean scrolling past three other variations to find it.
     contents: [
-      { id: 'basic', title: 'Basic' },
+      { id: 'default', title: 'Default' },
       { id: 'with-navigation', title: 'With navigation' },
-      { id: 'navigation-drawer', title: 'Navigation Drawer', depth: 2 },
-      { id: 'overlay-drawer', title: 'Overlay Drawer', depth: 2 },
-      { id: 'dropdown', title: 'Dropdown', depth: 2 },
-      { id: 'mega-menu', title: 'Mega Menu', depth: 2 },
       { id: 'with-tabs', title: 'With tabs' },
+    ],
+    // Every control in the bar is a button, so these are the button's states
+    // shown where they are actually read: on a surface that may be elevated,
+    // beside a brand, at the top of a screen.
+    states: [
+      { label: 'Default', note: 'Idle glyph, no fill', render: <StateSpecimen /> },
+      { label: 'Hover', note: '--ds-layer-hover', render: <StateSpecimen className="bg-[var(--ds-layer-hover)] text-[var(--ds-fg)]" /> },
+      { label: 'Pressed', note: '--ds-layer-active', render: <StateSpecimen className="bg-[var(--ds-layer-active)] text-[var(--ds-fg)]" /> },
+      { label: 'Focus visible', note: '2px ring, 2px offset', render: <StateSpecimen className="outline-2 outline-offset-2 outline-[var(--ds-focus-ring)]" /> },
+      { label: 'Disabled', note: 'Rare — prefer removing', render: <StateSpecimen disabled /> },
+      {
+        label: 'Trigger, expanded',
+        note: 'aria-expanded="true"',
+        render: (
+          <IconButton
+            label="Close navigation"
+            icon={<Menu />}
+            size="md"
+            aria-expanded
+            className="bg-[var(--ds-layer-active)] text-[var(--ds-fg)]"
+          />
+        ),
+      },
+      {
+        label: 'Title, truncated',
+        note: 'Never wraps to a second line',
+        render: (
+          <span className="block w-28 truncate text-h4 text-[var(--ds-fg)]">Acme Analytics Cloud</span>
+        ),
+      },
+      {
+        label: 'Account',
+        note: 'Avatar and chevron, one target',
+        render: <Account />,
+      },
     ],
   },
 
@@ -1227,28 +903,28 @@ export default defineDoc({
         label: 'Row height',
         value: '64px · 56px compact',
         kind: 'size',
-        note: 'Drops to 56px below a 640px CONTAINER, not viewport — the bar reflows on its own width, so one inside a 390px panel is compact for the same reason one in a 390px window is. 640px is where a phone stops having room for both a comfortable target and a legible title.',
+        note: 'Drops to 56px below a 640px CONTAINER, not viewport — the bar reflows on its own width, so one inside a 390px panel is compact for the same reason one in a 390px window is. 56px is the smallest row that still holds a 44px target with room around it, which is why it is the near-universal phone height.',
       },
       {
         n: 2,
         label: 'Slot 1 — leading',
-        value: 'Always present',
+        value: '36px control, always present',
         kind: 'space',
-        note: 'The way out: a drawer trigger, a back arrow, or nothing. It holds its track when empty, which is what keeps the brand from moving between screens.',
+        note: 'The way out: a navigation trigger, a back arrow, or nothing. It holds its track when empty, which is what keeps the brand from moving between screens.',
       },
       {
         n: 3,
-        label: 'Slot 2 — brand',
-        value: '--text-h3, 10px gap',
+        label: 'Slot 2 — brand or title',
+        value: '--text-h3 · --text-h4 compact',
         kind: 'type',
-        note: 'Mark plus product name. The mark is the one thing in the bar allowed to carry the accent. The title truncates rather than wraps — min-w-0 on this track is what makes it give way instead of shoving the actions off the end.',
+        note: 'Mark plus product name, or the screen title. The mark is the one thing in the bar allowed to carry the accent. min-w-0 on this track is what makes the title truncate instead of shoving the actions off the end.',
       },
       {
         n: 4,
-        label: 'Slot 3 — utilities',
-        value: '3 desktop · 2 compact',
+        label: 'Slot 3 — actions',
+        value: '2px gap between controls',
         kind: 'space',
-        note: 'Three is the whole desktop budget; the third is dropped by a container query below 640px. If a fourth is being argued for, it belongs in the account menu or on the page.',
+        note: 'Global utilities only. Three fit comfortably at desktop width and two below 640px; past that, move the rest into a menu rather than shrinking the controls.',
       },
       {
         n: 5,
@@ -1260,90 +936,237 @@ export default defineDoc({
       {
         n: 6,
         label: 'Gutter and content cap',
-        value: '24px · 12px compact · 1280px cap',
+        value: 'From Grid & Layout',
         kind: 'space',
-        note: 'The gutter is what lines the brand up with the content column beneath it. The cap stops the bar spanning a 27" monitor while the page under it does not. fullBleed gives both up — gutter to 8px, no cap — which is right for an editor chrome and wrong for a document.',
+        note: 'The bar reads --ds-layout-gutter (24px), --ds-layout-gutter-lg (40px) and --ds-layout-container (76rem) — the same three values the page under it uses, which is what lines the brand up with the first column of content. Full-bleed gives both up: right for editor chrome, wrong for a bar heading a document.',
       },
     ],
   },
 
   tokens: [
-    // Planes. The elevated/flat choice is a swap of background token, not an
-    // overlay, because dark raises by lightness and light raises by shadow.
+    { category: 'spacing', group: 'Layout', token: '--ds-layout-container', value: '76rem', usedFor: 'Content cap. Owned by Grid & Layout — the bar aligns to it rather than declaring one' },
+    { category: 'spacing', group: 'Layout', token: '--ds-layout-gutter-lg', value: '40px', usedFor: 'Inline padding at a 640px container and above' },
+    { category: 'spacing', group: 'Layout', token: '--ds-layout-gutter', value: '24px', usedFor: 'Inline padding below a 640px container' },
+    { category: 'spacing', group: 'Layout', token: 'row height', value: '64 / 56px', usedFor: 'Regular and compact' },
+
     { category: 'color', group: 'Planes', token: '--ds-canvas', usedFor: 'Bar background when flat — the same plane as the page' },
     { category: 'color', group: 'Planes', token: '--ds-surface', usedFor: 'Bar background when elevated' },
     { category: 'color', group: 'Planes', token: '--ds-border-subtle', usedFor: 'The bordered hairline. Use instead of elevation, never with it' },
     { category: 'shadow', group: 'Planes', token: '--shadow-e2', usedFor: 'Elevation in the light theme; in dark the lift is carried by surface lightness alone' },
-    { category: 'color', group: 'Foreground', token: '--ds-fg', usedFor: 'Product title' },
-    { category: 'color', group: 'Foreground', token: '--ds-fg-muted', usedFor: 'Account chevron and idle utility glyphs' },
+
+    { category: 'typography', group: 'Foreground', token: '--text-h3', value: '19px / 600', usedFor: 'Title at full width' },
+    { category: 'typography', group: 'Foreground', token: '--text-h4', value: '16px / 600', usedFor: 'Title below a 640px container' },
+    { category: 'color', group: 'Foreground', token: '--ds-fg', usedFor: 'Title' },
+    { category: 'color', group: 'Foreground', token: '--ds-fg-muted', usedFor: 'Idle icon glyphs and the account chevron' },
     { category: 'color', group: 'Foreground', token: '--ds-accent-text', usedFor: 'The brand mark — the only accent in the bar' },
+
     { category: 'color', group: 'Interaction', token: '--ds-layer-hover', usedFor: 'Hover fill on any control in the bar' },
-    { category: 'color', group: 'Interaction', token: '--ds-layer-active', usedFor: 'Pressed fill, and the current item in a nav panel' },
+    { category: 'color', group: 'Interaction', token: '--ds-layer-active', usedFor: 'Pressed fill, and a trigger while its panel is open' },
     { category: 'color', group: 'Interaction', token: '--ds-focus-ring', usedFor: 'Focus outline, 2px at 2px offset' },
-    { category: 'typography', group: 'Foreground', token: '--text-h3', value: '19px', usedFor: 'Title at full width' },
-    { category: 'typography', group: 'Foreground', token: '--text-h4', value: '16px', usedFor: 'Title below a 640px container' },
-    { category: 'radius', group: 'Navigation panels', token: '--radius-lg', value: '12px', usedFor: 'Dropdown panel corners' },
-    { category: 'radius', group: 'Navigation panels', token: '--radius-xl', value: '16px', usedFor: 'Mega-menu panel corners' },
-    { category: 'motion', group: 'Planes', token: '--ease-standard', value: 'cubic-bezier(0.2, 0, 0, 1)', usedFor: 'The 160ms background and shadow transition when elevation changes' },
+    { category: 'motion', group: 'Interaction', token: '--ease-standard', value: 'cubic-bezier(0.2, 0, 0, 1)', usedFor: 'The 160ms background and shadow transition when elevation changes' },
   ],
+
+  sizes: [
+    {
+      name: 'Desktop',
+      height: '64px',
+      padding: '40px gutter',
+      type: '19px title',
+      use: 'Container ≥ 640px. Three utilities plus the account. The row caps at 76rem and centres with the content column beneath it.',
+    },
+    {
+      name: 'Tablet',
+      height: '64px',
+      padding: '40px gutter',
+      type: '19px title',
+      touch: '44px tall',
+      use: 'The same row as desktop — the bar has one breakpoint, not three. What changes is the pointer: coarse input grows the targets, width does not.',
+    },
+    {
+      name: 'Mobile',
+      height: '56px',
+      padding: '24px gutter',
+      type: '16px title',
+      touch: '44px tall',
+      use: 'Container < 640px. Two utilities plus the account; anything further moves into a menu. Navigation is a trigger, never a visible row of destinations.',
+    },
+    {
+      name: 'Full bleed',
+      height: '64 / 56px',
+      padding: '8px gutter',
+      use: 'No content cap. For editor and tool chrome that owns the whole window — wrong for a bar heading a document column.',
+    },
+  ],
+
+  do: [
+    {
+      title: 'Let the title truncate; keep the actions',
+      why: 'The brand track is min-w-0 so it gives way first. A title that wraps makes the bar two rows tall and moves every control below the fold; a title that pushes the actions off the end loses them silently. One line, an ellipsis, and the full string in the accessible name.',
+      render: (
+        <div className="flex w-full max-w-[22rem] items-center gap-2 rounded-[var(--radius-md)] bg-[var(--ds-surface)] px-3 py-2">
+          <Box size={18} className="shrink-0 text-[var(--ds-accent-text)]" />
+          <span className="min-w-0 flex-1 truncate text-h4 text-[var(--ds-fg)]">
+            Acme Analytics Cloud — Production
+          </span>
+          <Ghost icon={<Bell size={16} />} />
+        </div>
+      ),
+    },
+    {
+      title: 'Name every icon-only control',
+      why: 'An icon with no accessible name is announced as "button" and nothing else. IconButton makes `label` required for exactly this reason, and the name is the words a person would say — "Notifications", not "bell".',
+      render: (
+        <div className="flex flex-col gap-1 font-mono text-code">
+          <span className="text-[var(--ds-success)]">{'<IconButton label="Notifications" icon={<Bell />} />'}</span>
+          <span className="text-[var(--ds-fg-muted)] line-through">{'<button><Bell /></button>'}</span>
+        </div>
+      ),
+    },
+    {
+      title: 'Keep it to actions that apply everywhere',
+      why: 'Search, notifications, help, account. If an action only makes sense on one screen, it belongs to that screen — in a Toolbar, or beside the thing it acts on. The bar is the one row that does not change, and every screen-specific control put in it takes that away.',
+      render: (
+        <Row gap="sm" align="center">
+          <Ghost icon={<HelpCircle size={16} />} />
+          <Ghost icon={<Bell size={16} />} />
+          <Ghost icon={<Settings size={16} />} />
+          <span className="text-body-sm text-[var(--ds-fg-muted)]">global only</span>
+        </Row>
+      ),
+    },
+    {
+      title: 'Choose elevation or a border, not both',
+      why: 'They answer the same question — where does the bar end and the page begin — and doing both draws a shadow under a line, which reads as a seam. Flat while the page is at the top and elevated once it scrolls is the usual pairing; a hairline is the quieter alternative for a dense tool.',
+      render: (
+        <div className="flex w-full max-w-[20rem] flex-col gap-3">
+          <span className="h-8 rounded-[var(--radius-sm)] bg-[var(--ds-surface)] shadow-e2" />
+          <span className="h-8 rounded-[var(--radius-sm)] border-b border-[var(--ds-border-subtle)] bg-[var(--ds-canvas)]" />
+        </div>
+      ),
+    },
+  ],
+
+  dont: [
+    {
+      title: 'Do not put page controls in the bar',
+      why: 'Filters, sort, save, export, view switches. They belong to one screen, and putting them in the row that is meant to be constant means the constant row changes on every navigation — which is the one thing that made it worth its 64px.',
+      render: (
+        <Row gap="sm" align="center">
+          <span className="rounded-[var(--radius-md)] bg-[var(--ds-layer-active)] px-2.5 py-1 text-label text-[var(--ds-fg-muted)]">Filter</span>
+          <span className="rounded-[var(--radius-md)] bg-[var(--ds-layer-active)] px-2.5 py-1 text-label text-[var(--ds-fg-muted)]">Sort</span>
+          <span className="rounded-[var(--radius-md)] bg-[var(--ds-layer-active)] px-2.5 py-1 text-label text-[var(--ds-fg-muted)]">Export</span>
+          <a href="/toolbar" className="text-body-sm text-[var(--ds-accent-text)] underline underline-offset-2">Toolbar</a>
+        </Row>
+      ),
+    },
+    {
+      title: 'Do not grow the bar to a second row',
+      why: 'A tab row, a breadcrumb trail or a search field stacked inside the bar makes it two rows tall and gives the brand a second job. Those are separate rows under it, each with its own component and its own alignment to the content column.',
+      render: (
+        <div className="w-full max-w-[20rem] overflow-hidden rounded-[var(--radius-md)] bg-[var(--ds-surface)]">
+          <div className="flex h-9 items-center px-3 text-label text-[var(--ds-fg)]">Acme</div>
+          <div className="flex h-9 items-center gap-3 border-t border-dashed border-[var(--ds-danger-border)] px-3 text-label text-[var(--ds-fg-muted)]">
+            Overview Activity Members
+          </div>
+        </div>
+      ),
+    },
+    {
+      title: 'Do not make the product name the page heading',
+      why: 'The bar is a banner landmark, not the document outline. Marking the brand as an h1 gives every screen in the product the same heading and leaves the actual page title one level down, which is what a screen-reader user navigates by.',
+      render: (
+        <div className="flex flex-col gap-1 font-mono text-code">
+          <span className="text-[var(--ds-fg-muted)] line-through">{'<header><h1>Acme</h1></header>'}</span>
+          <span className="text-[var(--ds-success)]">{'<header><span>Acme</span></header>  <main><h1>Deployments</h1>'}</span>
+        </div>
+      ),
+    },
+    {
+      title: 'Do not shrink controls to fit more in',
+      why: 'The fix for a crowded bar is fewer things in it, not smaller ones. Below 36px the glyphs stop being recognisable at a glance and the targets stop clearing the spacing they need — and the utility that got squeezed in was, by definition, the least important one there.',
+      render: (
+        <Row gap="sm" align="center">
+          <span className="grid h-6 w-6 place-items-center rounded-[var(--radius-sm)] text-[var(--ds-fg-muted)]"><Bell size={12} /></span>
+          <span className="grid h-7 w-7 place-items-center rounded-[var(--radius-sm)] text-[var(--ds-fg-muted)]"><Bell size={14} /></span>
+          <Ghost icon={<Bell size={18} />} />
+          <span className="text-body-sm text-[var(--ds-fg-muted)]">36px is the floor</span>
+        </Row>
+      ),
+    },
+  ],
+
+  a11y: {
+    criteria: [
+      { id: '1.3.1', name: 'Info and Relationships', level: 'A' },
+      { id: '2.1.1', name: 'Keyboard', level: 'A' },
+      { id: '2.4.1', name: 'Bypass Blocks', level: 'A' },
+      { id: '4.1.2', name: 'Name, Role, Value', level: 'A' },
+      { id: '2.4.7', name: 'Focus Visible', level: 'AA' },
+      { id: '2.5.8', name: 'Target Size (Minimum)', level: 'AA' },
+    ],
+    contrast: [
+      'Idle glyphs use --ds-fg-muted, which clears 4.5:1 on both --ds-canvas and --ds-surface. Do not drop them to --ds-fg-disabled to make the bar quieter — that token is 2.66:1 and is exempt from contrast rules precisely because nothing readable may use it.',
+      'The focus ring is 2px at 2px offset and must reach 3:1 against both the bar and whatever sits behind it. An elevated bar changes the backdrop, so check the ring in both planes.',
+      'Hover fill alone is not a state for anyone who cannot see it. Every control here also carries a name, and a trigger carries aria-expanded.',
+    ],
+    keyboard: [
+      { keys: 'Tab', does: 'Moves through the bar in reading order: leading, brand link if it is one, each action, then the account. Every control is a real button or link — nothing in the bar is reachable only by pointer.' },
+      { keys: 'Enter / Space', does: 'Activates the focused control. A trigger opens its panel and moves focus into it.' },
+      { keys: 'Escape', does: 'Closes a panel opened from the bar and returns focus to the trigger that opened it — not to the top of the document.' },
+      { keys: 'Tab (first stop)', does: 'A skip link before the bar jumps past it to the main content. Without one, every keyboard user crosses four to six controls on every page load.' },
+    ],
+    aria: [
+      { attr: 'role="banner"', on: '<header>', note: 'One per page. It is the landmark screen-reader users jump to for the product-level controls, and a second one makes both ambiguous.' },
+      { attr: 'aria-label', on: 'Icon-only buttons', note: 'Required. The name is what the control does — "Open navigation", "Notifications", "Account menu, Ada Lovelace".' },
+      { attr: 'aria-expanded + aria-controls', on: 'The navigation trigger', note: 'Says whether the panel is open and which element it is. Without the pair the button announces the same thing before and after it works.' },
+      { attr: 'aria-haspopup', on: 'The account control', note: '"menu" when it opens a menu. It tells the user a press opens something rather than navigating.' },
+      { attr: 'aria-current="page"', on: 'A link in the bar to the current screen', note: 'Only if the bar carries destinations at all. Colour alone does not say "you are here".' },
+    ],
+    focus:
+      'The ring is never removed, only restyled: 2px at 2px offset, on every control including the brand. A sticky bar also hides whatever the browser scrolls a focused element to, so the scroll container needs scroll-padding-top equal to the bar height — without it, tabbing into the page puts focus under the bar.',
+    screenReader: [
+      'The bar is a banner landmark, so it is announced as a region and can be skipped as one. Keep it that way: a <div> with a class named "app-bar" is invisible to that navigation.',
+      'The product name is not the page heading. The screen names itself in <main>, with one h1 per page.',
+      'A count on a notification icon must be in the accessible name — "Notifications, 3 unread" — not only in a badge. A badge is a picture of a number.',
+    ],
+    touch:
+      'Controls are 36×36 and the pointer target is extended to 44px tall on coarse pointers, which clears the 24×24 that WCAG 2.5.8 requires at AA with room to spare. The extension is the control\'s own width, so adjacent targets never overlap and the 2px visual gap is safe. For a touch-first product, use the lg size instead — 44×44 in a 64px row — rather than adding margin between smaller controls.',
+  },
 
   code: {
     usage: {
       lang: 'tsx',
       caption:
-        'AppBar has no nav prop, and that is deliberate — the bar is the same component in all six cases. What changes is what its leading slot opens and what sits under it, so one parameter drives both.',
-      code: `// 'none'     basic bar — no navigation at all
-// 'drawer'   Navigation Drawer: a column beside content ≥768px, overlay below
-// 'overlay'  Overlay Drawer: over the content at every width, always scrimmed
-// 'dropdown' a menu hanging off the trigger
-// 'mega'     a multi-column panel; falls back to an overlay drawer <768px
-// 'tabs'     a second row UNDER the bar, never inside it
-type Nav = 'none' | 'drawer' | 'overlay' | 'dropdown' | 'mega' | 'tabs'
-
-function Header({ nav = 'none' }: { nav?: Nav }) {
-  const [open, setOpen] = React.useState(false)
-  const [tab, setTab] = React.useState('overview')
-
-  // Anchored panels own their trigger: the button IS the anchor, so the two
-  // cannot be separated the way a hamburger can be from a drawer.
-  const anchored = nav === 'dropdown' || nav === 'mega'
+        'The bar is one component in every case. What changes is what its leading slot opens and what sits under it — neither of which is the bar\'s concern.',
+      code: `function Header() {
+  const [navOpen, setNavOpen] = React.useState(false)
 
   return (
     <>
+      {/* First tabbable thing on the page, so the bar can be skipped. */}
+      <a href="#main" className="skip-link">Skip to content</a>
+
       <AppBar
         title="UI Bible"
-        logo={<Box size={22} className="text-[var(--ds-accent-text)]" />}
-        align="left"        // 'left' | 'center' | 'right'
-        elevated            // surface + shadow. Use INSTEAD of bordered
-        // fullBleed        // drop the 1280px cap and the 24px gutter
+        logo={<Box size={22} className="text-accent-text" />}
+        align="left"          // 'left' | 'center' | 'right'
+        elevated              // surface + shadow. Use INSTEAD of bordered
+        // fullBleed          // drop the content cap and the gutters
         leading={
-          nav === 'none' ? undefined
-            : anchored ? (
-                <AnchoredNav
-                  open={open}
-                  setOpen={setOpen}
-                  width={nav === 'mega' ? 720 : 240}
-                >
-                  {(close) =>
-                    nav === 'mega'
-                      ? <MegaPanel columns={MEGA} onNavigate={close} />
-                      : <NavMenu items={NAV} onNavigate={close} />}
-                </AnchoredNav>
-              )
-            : (
-                <IconButton
-                  label={open ? 'Close navigation' : 'Open navigation'}
-                  icon={<Menu />}
-                  aria-expanded={open}
-                  onClick={() => setOpen((o) => !o)}
-                />
-              )
+          <IconButton
+            label={navOpen ? 'Close navigation' : 'Open navigation'}
+            icon={<Menu />}
+            aria-expanded={navOpen}
+            aria-controls="primary-nav"
+            onClick={() => setNavOpen((o) => !o)}
+          />
         }
         actions={
           <>
             <IconButton label="Help" icon={<HelpCircle />} />
-            <IconButton label="Notifications" icon={<Bell />} />
-            {/* third utility drops on a narrow container, not a narrow window */}
+            <IconButton label="Notifications, 3 unread" icon={<Bell />} />
+            {/* The third utility drops on a narrow CONTAINER, not a narrow
+                window — the bar reflows on its own width. */}
             <span className="@max-[640px]:hidden">
               <IconButton label="Settings" icon={<Settings />} />
             </span>
@@ -1352,43 +1175,86 @@ function Header({ nav = 'none' }: { nav?: Nav }) {
         account={<AccountButton user={user} />}
       />
 
-      {/* Drawer modes render a SIBLING of the bar. Anchored modes do not —
-          their panel is already inside the trigger above. */}
-      {(nav === 'drawer' || nav === 'overlay') && (
-        <NavDrawer
-          open={open}
-          onDismiss={() => setOpen(false)}
-          mode={nav === 'drawer' ? 'responsive' : 'overlay'}
-        />
-      )}
+      {/* What the trigger opens is a Drawer, and it is a sibling of the bar.
+          See the Drawer page — none of its rules live here. */}
+      <Drawer id="primary-nav" open={navOpen} onClose={() => setNavOpen(false)} side="left">
+        <PrimaryNav />
+      </Drawer>
 
-      {/* Tabs are a row under the bar. Putting them inside it makes the bar
-          two rows tall and gives the brand a second job. */}
-      {nav === 'tabs' && (
-        <Tabs tabs={TABS} value={tab} onChange={setTab} aria-label="Sections" />
-      )}
+      {/* Tabs are a row UNDER the bar, aligned to the same column. */}
+      <main id="main">…</main>
     </>
   )
 }`,
     },
+    css: {
+      lang: 'css',
+      caption: 'The two rules that are easy to miss: the bar aligns to the page, and a sticky bar has to be accounted for when something is scrolled into view.',
+      code: `/* The cap and the gutters are the page's, not the bar's — see Grid & Layout.
+   A bar that declares its own numbers agrees with the content column by
+   coincidence, and stops agreeing the moment either side is edited. */
+.app-bar__row {
+  max-inline-size: var(--ds-layout-container); /* 76rem */
+  margin-inline: auto;
+  padding-inline: var(--ds-layout-gutter);     /* 24px */
+  block-size: 3.5rem;                          /* 56px compact */
+}
 
+@container (min-width: 640px) {
+  .app-bar__row {
+    padding-inline: var(--ds-layout-gutter-lg); /* 40px */
+    block-size: 4rem;                           /* 64px */
+  }
+}
+
+/* A sticky bar covers whatever the browser scrolls to. Without this, tabbing
+   into the page puts the focused element underneath the bar. */
+html {
+  scroll-padding-top: 4rem;
+}`,
+    },
     api: [
       {
         name: 'AppBar',
         props: [
-          { name: 'title', type: 'ReactNode', required: true, description: 'The product name. One line — the bar truncates rather than wraps.' },
+          { name: 'title', type: 'ReactNode', required: true, description: 'The product name or screen title. One line — the bar truncates rather than wraps.' },
           { name: 'logo', type: 'ReactNode', description: 'The mark before the title. Square, and the only thing in the bar that carries the accent.' },
           { name: 'align', type: "'left' | 'center' | 'right'", default: "'left'", description: 'Where the brand block sits. Center switches the grid to equal side tracks so it is centred against the bar rather than against whatever the slots happen to weigh.' },
-          { name: 'leading', type: 'ReactNode', description: 'Slot 1: the drawer trigger, back arrow, or an anchored nav trigger. The slot holds its track even when this is undefined.' },
+          { name: 'leading', type: 'ReactNode', description: 'Slot 1: a navigation trigger or a back arrow. The slot holds its track even when this is undefined, so the brand does not move between screens.' },
           { name: 'actions', type: 'ReactNode', description: 'Slot 3: global utilities. Three at desktop width, two below a 640px container.' },
           { name: 'account', type: 'ReactNode', description: 'Slot 4: the signed-in person, separated from the actions by a wider gap.' },
           { name: 'elevated', type: 'boolean', default: 'false', description: 'Lifts the bar off the page: --ds-surface plus --shadow-e2. Dark raises by lightness, light by shadow.' },
           { name: 'bordered', type: 'boolean', default: 'false', description: 'A hairline along the bottom edge. Use it INSTEAD of elevation — both together reads as a seam.' },
           { name: 'fullBleed', type: 'boolean', default: 'false', description: 'Runs the contents to the window edges: no content cap, gutter down to 8px. Right for editor chrome, wrong for a bar heading a document column.' },
-          { name: 'maxWidth', type: 'number', default: '1280', description: 'The content column the bar aligns to when it is not full-bleed. Exported as APP_BAR_MAX_WIDTH so anything sitting under the bar lines up from the same number rather than a copy of it.' },
-          { name: 'sticky', type: 'boolean', default: 'true', description: 'Sticks to the top of its scroll container at z-10.' },
+          { name: 'maxWidth', type: 'string | number', default: 'var(--ds-layout-container)', description: 'The content column the bar aligns to. Defaults to the layout token, so overriding it is how a bar heads a narrower column — not how it invents a width.' },
+          { name: 'sticky', type: 'boolean', default: 'true', description: 'Sticks to the top of its scroll container at z-10. Pair with scroll-padding-top so focused elements are not hidden underneath.' },
         ],
       },
+    ],
+  },
+
+  notes: {
+    tips: [
+      'Flat at the top of the scroll, elevated once the page moves. It is the cheapest way to say "there is more above" and it costs one scroll listener and a 160ms transition.',
+      'Centre the title only when the bar has nothing else to hold. With a trigger on one side and three utilities on the other, a centred title is off-centre against its own slots on every screen where the two sides differ in width.',
+      'On a phone, a back arrow and a screen title are usually more useful than the brand. The brand is already established once; where you are is the question the bar is being asked.',
+      'Count the controls before adding one. Four global utilities plus an account is where a bar starts reading as a toolbar, and the fourth is almost always a candidate for the account menu.',
+    ],
+    performance: [
+      'Elevation on scroll should be driven by an IntersectionObserver on a sentinel element, not a scroll handler that runs on every frame.',
+      'The bar is sticky, not fixed: sticky stays inside the document flow, so nothing below it needs a matching top offset that can drift out of sync with the height.',
+      'Transition background-color and box-shadow only. Animating the height reflows every frame and makes the whole page jump as the bar changes size.',
+    ],
+    mistakes: [
+      'Hiding the bar on scroll down and revealing it on scroll up. It saves 64px and costs the user the one row they expected to be constant — and on a short page it can make the bar unreachable without scrolling.',
+      'Using a fixed pixel width for the content cap instead of the layout token, so the brand sits a few pixels away from the column it is supposed to head.',
+      'Icon-only controls with a `title` and no accessible name. A tooltip is not a name: it never reaches a screen reader and never appears on touch.',
+      'A bar that becomes two rows on a phone. That is the width where there is least room for it, and it is usually a sign that screen-level controls got in.',
+    ],
+    realWorld: [
+      'Tab through the page from a cold load. If you cross the whole bar before reaching the content, the skip link is missing — and it is the single highest-value fix on this component.',
+      'Open the product on a 1440px monitor and check the brand against the first column of content beneath it. If they are a few pixels apart, something is carrying its own copy of the cap.',
+      'Give the product name to a customer with a long company name before shipping. "Acme" fits everything; "Northwestern Mutual Benefits Administration" is what actually arrives.',
     ],
   },
 })
