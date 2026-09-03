@@ -197,9 +197,16 @@ const NAVIGATION: NavPage[] = [
     id: 'sidebar',
     title: 'Sidebar',
     blurb:
-      'Persistent vertical navigation. Expanded, rail, or overlay — one component at three widths, not three components.',
-    aliases: ['Navigation Drawer', 'Navigation Rail', 'Side Nav', 'Rail'],
-    keywords: ['groups', 'collapse', 'resize', 'depth limit', 'active indicator', 'persistent'],
+      'Persistent navigation beside the content, on screens wide enough to spare the column. Expanded, compact and rail.',
+    // "Side Nav" is the same component under another name. "Navigation drawer"
+    // is a Drawer holding navigation and is claimed there; "navigation rail" is
+    // this component's collapsed density rather than a separate component — so
+    // both stay searchable as keywords without being claimed as identities.
+    aliases: ['Side Nav'],
+    keywords: [
+      'navigation rail', 'rail', 'side navigation', 'left nav', 'shell',
+      'groups', 'collapse', 'resize', 'active indicator', 'persistent',
+    ],
   },
   {
     id: 'bottom-navigation',
@@ -590,8 +597,8 @@ const SURFACES: NavPage[] = [
     title: 'Drawer',
     blurb:
       'An edge-anchored panel over the page — right, left, or bottom with drag detents on touch. Modal and non-modal.',
-    aliases: ['Bottom Sheet', 'Side Sheet', 'Side Panel', 'Off-canvas', 'Slide-over', 'Action Sheet'],
-    keywords: ['edge', 'detent', 'drag to dismiss', 'detail panel', 'non-modal', 'thumb zone'],
+    aliases: ['Bottom Sheet', 'Side Sheet', 'Side Panel', 'Off-canvas', 'Slide-over', 'Action Sheet', 'Navigation Drawer'],
+    keywords: ['edge', 'detent', 'drag to dismiss', 'detail panel', 'non-modal', 'thumb zone', 'temporary navigation'],
   },
   {
     id: 'backdrop',

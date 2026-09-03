@@ -1,70 +1,154 @@
 import * as React from 'react'
 import {
-  Activity,
-  ChevronRight,
-  CreditCard,
-  LayoutDashboard,
-  Rocket,
-  Settings,
-  Users,
+  Activity, ChevronRight, CreditCard, LayoutDashboard, Menu, Rocket, Settings, Users,
 } from 'lucide-react'
+import { cn } from '@/lib/cn'
 import { NavItem } from '@/ui/Navigation'
 import { Avatar } from '@/ui/Display'
-import { Knob, KnobSelect, KnobToggle, PreviewStage, Stack, defineDoc } from '../framework/kit'
+import { Cell, Knob, KnobSelect, KnobToggle, PreviewStage, Stack, defineDoc } from '../framework/kit'
+
+/* ===========================================================================
+   SIDEBAR
+
+   Persistent navigation beside the content, for screens wide enough to spare
+   the column. This page documents the column and its densities; what the
+   navigation becomes when the column will not fit — a Drawer, a bottom bar —
+   is documented where those components live.
+   ======================================================================== */
+
+/** Where a reader goes for the neighbours this page deliberately does not teach. */
+const RELATED = [
+  { id: 'drawer', name: 'Drawer', why: 'Temporary navigation over the content, dismissed after use. What a sidebar most often becomes on a small screen.' },
+  { id: 'app-bar', name: 'App Bar', why: 'The top row, and the trigger that opens navigation once the sidebar has given up its column.' },
+  { id: 'tree-view', name: 'Tree View', why: 'Genuinely hierarchical data — files, org charts, category trees. Built for arbitrary depth, which navigation is not.' },
+  { id: 'bottom-navigation', name: 'Bottom Navigation', why: 'Three to five top-level destinations within thumb reach on touch.' },
+  { id: 'menu', name: 'Menu', why: 'A short list of destinations or commands hung off a trigger rather than pinned to the layout.' },
+  { id: 'tabs', name: 'Tabs', why: 'Moving between views of one screen. A sidebar moves between screens.' },
+  { id: 'command-palette', name: 'Command Palette', why: 'Keyboard-first jumping to any destination. Complements a sidebar in a large product; does not replace it.' },
+  { id: 'grid', name: 'Grid & Layout', why: 'The shell the sidebar is one track in — breakpoints, content width and gutters.' },
+]
+
+/**
+ * The orientation card, in the shape the App Bar page established.
+ *
+ * Several patterns put navigation down the side of a screen and the names get
+ * used interchangeably. Naming the neighbours, and where each is documented,
+ * is what keeps this page about the persistent column.
+ */
+function RelatedComponents() {
+  return (
+    <section
+      aria-label="Related components"
+      className="rounded-[var(--radius-xl)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] p-5"
+    >
+      <h3 className="text-h4 text-[var(--ds-fg)]">Related components</h3>
+      <p className="mt-1 max-w-[72ch] text-body-sm leading-relaxed text-[var(--ds-fg-secondary)]">
+        A Sidebar hands over to, or sits beside, these. Each is its own component with its own
+        rules — this page covers the persistent column and links out for the rest.
+      </p>
+      <ul className="mt-4 grid gap-x-8 gap-y-2.5 sm:grid-cols-2">
+        {RELATED.map((r) => (
+          <li key={r.id} className="flex flex-col">
+            <a
+              href={`/${r.id}`}
+              className="w-fit text-ui text-[var(--ds-accent-text)] underline decoration-[var(--ds-accent-border)] underline-offset-[3px] hover:decoration-[var(--ds-accent)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ds-focus-ring)]"
+            >
+              {r.name}
+            </a>
+            <span className="max-w-[52ch] text-body-sm leading-relaxed text-[var(--ds-fg-muted)]">
+              {r.why}
+            </span>
+          </li>
+        ))}
+      </ul>
+      <p className="mt-4 max-w-[72ch] text-body-sm leading-relaxed text-[var(--ds-fg-muted)]">
+        A <span className="text-[var(--ds-fg-secondary)]">navigation drawer</span> is a Drawer
+        holding navigation, and it is documented there. A{' '}
+        <span className="text-[var(--ds-fg-secondary)]">navigation rail</span> is this component at
+        its collapsed width — the Rail variant below — rather than a separate one.
+      </p>
+    </section>
+  )
+}
+
+/* ===========================================================================
+   THE SPECIMEN
+   ======================================================================== */
 
 const GROUPS = [
   {
     title: 'Build',
     items: [
-      { id: 'dash', label: 'Dashboard', icon: <LayoutDashboard size={14} /> },
-      { id: 'deploys', label: 'Deployments', icon: <Rocket size={14} />, count: 3 },
-      { id: 'monitor', label: 'Monitoring', icon: <Activity size={14} /> },
+      { id: 'dash', label: 'Dashboard', icon: <LayoutDashboard size={16} /> },
+      { id: 'deploys', label: 'Deployments', icon: <Rocket size={16} />, count: 3 },
+      { id: 'monitor', label: 'Monitoring', icon: <Activity size={16} /> },
     ],
   },
   {
     title: 'Workspace',
     items: [
-      { id: 'team', label: 'Team', icon: <Users size={14} /> },
-      { id: 'billing', label: 'Billing', icon: <CreditCard size={14} /> },
-      { id: 'settings', label: 'Settings', icon: <Settings size={14} /> },
+      { id: 'team', label: 'Team', icon: <Users size={16} /> },
+      { id: 'billing', label: 'Billing', icon: <CreditCard size={16} /> },
+      { id: 'settings', label: 'Settings', icon: <Settings size={16} /> },
     ],
   },
 ]
 
+type Density = 'expanded' | 'compact' | 'rail'
+
+/**
+ * The specimen, at all three densities.
+ *
+ * Interactive state is local, so the rows are buttons here. In a product they
+ * are links — see the Do section and the code below; a destination that cannot
+ * be middle-clicked or copied is a destination the browser cannot help with.
+ */
 function SidebarDemo({
-  width = 240,
-  collapsed,
-  compact,
+  width = 268,
+  density = 'expanded',
   showGroups = true,
+  className,
 }: {
   width?: number
-  collapsed?: boolean
-  compact?: boolean
+  density?: Density
   showGroups?: boolean
+  className?: string
 }) {
   const [active, setActive] = React.useState('deploys')
   const [open, setOpen] = React.useState<string[]>(['Build', 'Workspace'])
 
-  if (collapsed) {
+  if (density === 'rail') {
     return (
-      <div className="flex w-14 shrink-0 flex-col gap-1 border-r border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] p-2">
-        {GROUPS.flatMap((g) => g.items).map((i) => (
-          <button
-            key={i.id}
-            type="button"
-            title={i.label}
-            aria-label={i.label}
-            aria-current={active === i.id ? 'page' : undefined}
-            onClick={() => setActive(i.id)}
-            className={`grid h-9 w-9 place-items-center rounded-[var(--radius-md)] transition-colors ${
-              active === i.id
-                ? 'bg-[var(--ds-layer-selected)] text-[var(--ds-accent-text)]'
-                : 'text-[var(--ds-fg-muted)] hover:bg-[var(--ds-layer-hover)] hover:text-[var(--ds-fg)]'
-            }`}
-          >
-            {i.icon}
-          </button>
-        ))}
+      <div
+        className={cn(
+          'flex w-[72px] shrink-0 flex-col items-center gap-1 border-e border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] p-2',
+          className,
+        )}
+      >
+        <nav aria-label="Main" className="flex w-full flex-col items-center gap-1">
+          {GROUPS.flatMap((g) => g.items).map((i) => (
+            <button
+              key={i.id}
+              type="button"
+              // Both, and neither is optional: the name is what a screen reader
+              // reads, the tooltip is what a sighted user needs when the label
+              // is not on screen.
+              title={i.label}
+              aria-label={i.label}
+              aria-current={active === i.id ? 'page' : undefined}
+              onClick={() => setActive(i.id)}
+              className={cn(
+                'grid h-11 w-11 place-items-center rounded-[var(--radius-md)] transition-colors',
+                'focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--ds-focus-ring)]',
+                active === i.id
+                  ? 'bg-[var(--ds-layer-selected)] text-[var(--ds-accent-text)]'
+                  : 'text-[var(--ds-fg-muted)] hover:bg-[var(--ds-layer-hover)] hover:text-[var(--ds-fg)]',
+              )}
+            >
+              {i.icon}
+            </button>
+          ))}
+        </nav>
       </div>
     )
   }
@@ -72,114 +156,189 @@ function SidebarDemo({
   return (
     <div
       style={{ width }}
-      className="flex shrink-0 flex-col border-r border-[var(--ds-border-subtle)] bg-[var(--ds-surface)]"
+      className={cn(
+        'flex shrink-0 flex-col border-e border-[var(--ds-border-subtle)] bg-[var(--ds-surface)]',
+        className,
+      )}
     >
-      <div className="flex h-12 items-center gap-2 border-b border-[var(--ds-border-subtle)] px-3">
+      <div className="flex h-12 shrink-0 items-center gap-2 border-b border-[var(--ds-border-subtle)] px-3">
         <span
           aria-hidden
-          className="grid h-6 w-6 place-items-center rounded-[var(--radius-sm)] bg-gradient-to-br from-[var(--p-brand-400)] to-[var(--p-brand-700)] text-[10px] font-bold text-white"
+          className="grid h-6 w-6 place-items-center rounded-[var(--radius-sm)] bg-gradient-to-br from-[var(--p-brand-400)] to-[var(--p-brand-700)] text-caption font-bold text-white"
         >
           A
         </span>
-        <span className="truncate text-label text-[var(--ds-fg)]">Acme</span>
+        <span className="truncate text-ui font-medium text-[var(--ds-fg)]">Acme</span>
       </div>
 
-      <nav aria-label="Main" className="flex-1 overflow-y-auto p-2">
+      <nav aria-label="Main" className="min-h-0 flex-1 overflow-y-auto p-2">
         {GROUPS.map((g) => {
           const isOpen = open.includes(g.title)
+          const id = `group-${g.title}`
           return (
             <div key={g.title} className="mb-1">
               {showGroups && (
                 <button
                   type="button"
                   aria-expanded={isOpen}
+                  aria-controls={id}
                   onClick={() =>
                     setOpen((p) =>
                       p.includes(g.title) ? p.filter((x) => x !== g.title) : [...p, g.title],
                     )
                   }
-                  className="flex w-full items-center gap-1.5 rounded-[var(--radius-sm)] px-2 py-1.5 text-overline uppercase text-[var(--ds-fg-muted)] transition-colors hover:bg-[var(--ds-layer-hover)]"
+                  className="flex w-full items-center gap-1.5 rounded-[var(--radius-sm)] px-2 py-1.5 text-overline uppercase text-[var(--ds-fg-muted)] transition-colors hover:bg-[var(--ds-layer-hover)] hover:text-[var(--ds-fg-secondary)] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--ds-focus-ring)]"
                 >
                   <ChevronRight
-                    size={11}
-                    className={`transition-transform duration-[160ms] ${isOpen ? 'rotate-90' : ''}`}
+                    size={12}
+                    aria-hidden
+                    className={cn('transition-transform duration-[160ms]', isOpen && 'rotate-90')}
                   />
                   {g.title}
                 </button>
               )}
-              {(!showGroups || isOpen) && (
-                <div className="mt-0.5 flex flex-col gap-px">
-                  {g.items.map((i) => (
-                    <NavItem
-                      key={i.id}
-                      icon={i.icon}
-                      label={i.label}
-                      count={i.count}
-                      compact={compact}
-                      active={active === i.id}
-                      onClick={() => setActive(i.id)}
-                    />
-                  ))}
-                </div>
-              )}
+              <div id={id} hidden={showGroups && !isOpen} className="mt-0.5 flex flex-col gap-px">
+                {g.items.map((i) => (
+                  <NavItem
+                    key={i.id}
+                    icon={i.icon}
+                    label={i.label}
+                    count={i.count}
+                    compact={density === 'compact'}
+                    active={active === i.id}
+                    onClick={() => setActive(i.id)}
+                  />
+                ))}
+              </div>
             </div>
           )
         })}
       </nav>
 
-      <div className="flex items-center gap-2 border-t border-[var(--ds-border-subtle)] p-2">
+      {/* Outside the scroll container, so it stays reachable however long the
+          navigation gets. */}
+      <div className="flex shrink-0 items-center gap-2 border-t border-[var(--ds-border-subtle)] p-2">
         <Avatar name="Ada Lovelace" size="sm" />
         <span className="min-w-0 flex-1">
-          <span className="block truncate text-label-sm text-[var(--ds-fg)]">Ada Lovelace</span>
-          <span className="block truncate text-[10px] text-[var(--ds-fg-muted)]">Maintainer</span>
+          <span className="block truncate text-body-sm text-[var(--ds-fg)]">Ada Lovelace</span>
+          <span className="block truncate text-caption text-[var(--ds-fg-muted)]">Maintainer</span>
         </span>
       </div>
     </div>
   )
 }
 
+/** Filler, so a sidebar is judged beside content rather than in isolation. */
+function Content({ lines = 6 }: { lines?: number }) {
+  return (
+    <div className="min-w-0 flex-1 space-y-3 overflow-hidden bg-[var(--ds-canvas)] p-4">
+      {Array.from({ length: lines }).map((_, i) => (
+        <div
+          key={i}
+          className="h-3 rounded-full bg-[var(--ds-layer-active)]"
+          style={{ width: `${[92, 78, 88, 64, 84, 72][i % 6]}%` }}
+        />
+      ))}
+    </div>
+  )
+}
+
+const DENSITIES: readonly Density[] = ['expanded', 'compact', 'rail']
+
 function Playground() {
-  const [width, setWidth] = React.useState<'208' | '240' | '280' | '360'>('240')
-  const [collapsed, setCollapsed] = React.useState(false)
-  const [compact, setCompact] = React.useState(false)
+  const [width, setWidth] = React.useState<'208' | '240' | '268' | '320'>('268')
+  const [density, setDensity] = React.useState<Density>('expanded')
   const [groups, setGroups] = React.useState(true)
 
   return (
-    <PreviewStage
-      label="Playground"
-      center={false}
-      minHeight={340}
-      padded={false}
-      controls={
-        <div className="flex flex-wrap items-center gap-2.5">
-          <Knob label="Width">
-            <KnobSelect
-              value={width}
-              onChange={setWidth}
-              options={['208', '240', '280', '360'] as const}
-            />
-          </Knob>
-          <KnobToggle checked={collapsed} onChange={setCollapsed} label="Icon rail" />
-          <KnobToggle checked={compact} onChange={setCompact} label="Compact rows" />
-          <KnobToggle checked={groups} onChange={setGroups} label="Groups" />
+    <div className="flex flex-col gap-8">
+      <RelatedComponents />
+
+      <PreviewStage
+        label="Playground"
+        center={false}
+        minHeight={340}
+        padded={false}
+        controls={
+          <div className="flex flex-wrap items-center gap-2.5">
+            <Knob label="Density">
+              <KnobSelect value={density} onChange={setDensity} options={DENSITIES} />
+            </Knob>
+            <Knob label="Width">
+              <KnobSelect
+                value={width}
+                onChange={setWidth}
+                options={['208', '240', '268', '320'] as const}
+              />
+            </Knob>
+            <KnobToggle checked={groups} onChange={setGroups} label="Groups" />
+          </div>
+        }
+      >
+        <div className="flex h-[22rem] w-full overflow-hidden">
+          <SidebarDemo width={Number(width)} density={density} showGroups={groups} />
+          <Content lines={8} />
         </div>
-      }
-    >
-      <div className="flex h-[22rem] w-full overflow-hidden">
-        <SidebarDemo
-          width={Number(width)}
-          collapsed={collapsed}
-          compact={compact}
-          showGroups={groups}
-        />
-        <div className="flex-1 bg-[var(--ds-canvas)] p-5">
-          <p className="text-label text-[var(--ds-fg)]">Content</p>
-          <p className="mt-1.5 text-caption text-[var(--ds-fg-muted)]">
-            The sidebar is the only fixed track in the shell grid. Everything else is fluid.
-          </p>
+      </PreviewStage>
+    </div>
+  )
+}
+
+/* ===========================================================================
+   VARIANTS
+   ======================================================================== */
+
+function Variants() {
+  return (
+    <div className="grid w-full gap-4 lg:grid-cols-3">
+      <Cell label="Expanded" sub="Icon, label and count. The default.">
+        <div className="h-[17rem] overflow-hidden rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)]">
+          <SidebarDemo width={228} className="h-full border-e-0" />
         </div>
-      </div>
-    </PreviewStage>
+      </Cell>
+      <Cell label="Compact" sub="Same content, denser rows. Long navigation, dense tools.">
+        <div className="h-[17rem] overflow-hidden rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)]">
+          <SidebarDemo width={228} density="compact" className="h-full border-e-0" />
+        </div>
+      </Cell>
+      <Cell label="Rail" sub="Icons only, labels on hover and focus. Space is scarce.">
+        <div className="flex h-[17rem] overflow-hidden rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)]">
+          <SidebarDemo density="rail" className="border-e-0" />
+          <Content lines={5} />
+        </div>
+      </Cell>
+    </div>
+  )
+}
+
+/* ===========================================================================
+   RESPONSIVE
+
+   Side by side rather than described, because the point is the swap: the same
+   destinations, reached two different ways, decided by whether the column fits.
+   ======================================================================== */
+
+function Responsive() {
+  return (
+    <div className="grid w-full gap-4 lg:grid-cols-2">
+      <Cell label="Wide" sub="The column fits, so it stays — no gesture to reach any destination.">
+        <div className="flex h-[15rem] overflow-hidden rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)]">
+          <SidebarDemo width={200} className="border-e" />
+          <Content lines={5} />
+        </div>
+      </Cell>
+      <Cell label="Narrow" sub="The column would take most of the screen, so navigation moves into a Drawer behind a trigger.">
+        <div className="mx-auto flex h-[15rem] w-[240px] flex-col overflow-hidden rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)]">
+          <div className="flex h-12 shrink-0 items-center gap-2 border-b border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] px-3">
+            <span className="grid h-9 w-9 place-items-center rounded-[var(--radius-md)] text-[var(--ds-fg-muted)]">
+              <Menu size={18} aria-hidden />
+            </span>
+            <span className="truncate text-ui font-medium text-[var(--ds-fg)]">Acme</span>
+          </div>
+          <Content lines={4} />
+        </div>
+      </Cell>
+    </div>
   )
 }
 
@@ -188,131 +347,112 @@ export default defineDoc({
     id: 'sidebar',
     title: 'Sidebar',
     tagline:
-      'Persistent navigation for applications with more destinations than a top bar can hold. Two levels deep, resizable, and never a place to hide the primary action.',
-    keywords: ['side nav', 'rail', 'drawer', 'menu', 'tree', 'navigation', 'collapse', 'resize'],
-  },
-
-  overview: {
-    purpose:
-      'A sidebar shows every top-level destination at once, permanently. That permanence is its entire value: users learn the positions rather than the labels, and after a week they are pointing rather than reading. It costs 240px of horizontal space on every screen, which is the price of that certainty.',
-    whenToUse: [
-      'More than about five top-level destinations — past that a top bar runs out of room.',
-      'Users move between sections frequently rather than working in one place.',
-      'The hierarchy is two levels deep and stable.',
-      'The screen is 1024px or wider. Below that it becomes a drawer.',
+      'Persistent navigation beside the content: a product’s top-level destinations, always visible and always in the same place. It is a large-screen layout — where the column will not fit, the same destinations move into a Drawer or another mobile pattern.',
+    keywords: [
+      'side nav', 'sidebar', 'navigation rail', 'rail', 'side navigation', 'left nav',
+      'groups', 'collapse', 'resize', 'active indicator', 'persistent', 'shell',
     ],
-    whenNotToUse: [
-      {
-        text: 'There are five or fewer destinations.',
-        instead: 'a Top Bar',
-        to: '#/app-bar',
-      },
-      {
-        text: 'The user is switching between views of one object.',
-        instead: 'Tabs',
-        to: '#/tabs',
-      },
-      {
-        text: 'The screen is under 1024px wide.',
-        instead: 'a Drawer, or Bottom Navigation on a phone',
-        to: '#/drawer',
-      },
-      {
-        text: 'The hierarchy is three or more levels deep.',
-        instead: 'two levels plus in-page navigation — a nav tree nobody can hold in their head is not navigation',
-      },
-    ],
-    reasoning: (
-      <>
-        <p>
-          <strong>Two levels, maximum.</strong> Group headings and their items. A third level turns
-          the sidebar into a file tree, and a file tree is something users navigate rather than
-          something they learn. If you need a third level, it belongs inside the page.
-        </p>
-        <p>
-          The active marker is a <strong>2px bar plus a background tint</strong>, not a border. A
-          border would change the row’s box model and shift every label by a pixel when it appears.
-          The tint alone is too subtle in a list of twelve rows; the bar alone disappears in
-          greyscale. Both together survive everything.
-        </p>
-        <p>
-          Resizable, with bounds and a double-click reset. Users with long project names want more
-          room; users on a laptop want less. Unbounded resize always ends with someone dragging it
-          to 4px and being unable to find the handle again — hence the 208px floor.
-        </p>
-      </>
-    ),
   },
 
   preview: {
     render: <Playground />,
+    contents: [
+      { id: 'variants', title: 'Variants' },
+      { id: 'small-screens', title: 'Small screens' },
+      { id: 'resizing', title: 'Resizing (optional)' },
+    ],
     examples: [
       {
-        id: 'states',
-        title: 'Expanded, compact and rail',
+        id: 'variants',
+        title: 'Variants',
         description:
-          'Three densities for three situations. The icon rail keeps the destinations reachable when horizontal space is scarce, at the cost of making labels a hover away.',
+          'Three densities for three situations, all showing the same destinations. Expanded is the default; compact buys rows at the cost of breathing room; the rail buys width at the cost of labels.',
         render: (
-          <PreviewStage center={false} minHeight={0} allowResize={false} padded={false}>
-            <div className="flex h-[20rem] w-full gap-4 overflow-hidden p-4">
-              <SidebarDemo width={220} />
-              <SidebarDemo width={200} compact />
-              <SidebarDemo collapsed />
-            </div>
+          <PreviewStage center={false} minHeight={0} allowResize={false}>
+            <Stack gap="md" className="w-full">
+              <Variants />
+              <p className="max-w-[72ch] text-body-sm leading-relaxed text-[var(--ds-fg-muted)]">
+                A rail only works when its icons are already familiar. Every button needs an
+                accessible name and a tooltip, and anything ambiguous should stay expanded — see{' '}
+                <a href="/icons" className="text-[var(--ds-accent-text)] underline underline-offset-2">Icons</a>.
+              </p>
+            </Stack>
           </PreviewStage>
         ),
       },
       {
-        id: 'resize',
-        title: 'Resizing',
+        id: 'small-screens',
+        title: 'Small screens',
         description:
-          'The handle is 1px visually and 9px in hit area — Fitts’ Law applied to a genuinely hard target. It has keyboard support and a double-click reset.',
+          'A persistent column needs a screen wide enough to spare it. Below roughly 1024px it usually gives way: the same destinations move into a temporary Drawer opened from the App Bar, or — for three to five of them — into Bottom Navigation.',
+        render: (
+          <PreviewStage center={false} minHeight={0} allowResize={false}>
+            <Stack gap="md" className="w-full">
+              <Responsive />
+              <p className="max-w-[72ch] text-body-sm leading-relaxed text-[var(--ds-fg-muted)]">
+                The switch is a layout decision, so it belongs to the shell rather than to this
+                component — see{' '}
+                <a href="/grid" className="text-[var(--ds-accent-text)] underline underline-offset-2">Grid &amp; Layout</a>{' '}
+                for the breakpoints,{' '}
+                <a href="/drawer" className="text-[var(--ds-accent-text)] underline underline-offset-2">Drawer</a>{' '}
+                for the panel it becomes, and{' '}
+                <a href="/bottom-navigation" className="text-[var(--ds-accent-text)] underline underline-offset-2">Bottom Navigation</a>{' '}
+                for the touch alternative. Keep the destinations and their order identical across
+                the swap; only the container changes.
+              </p>
+            </Stack>
+          </PreviewStage>
+        ),
+      },
+      {
+        id: 'resizing',
+        title: 'Resizing (optional)',
+        description:
+          'Worth adding where names are user-generated and vary in length — repositories, customers, file paths. Plenty of products do without it, and a fixed width is not a defect.',
         render: (
           <PreviewStage center={false} minHeight={0} allowResize={false}>
             <Stack gap="sm" className="w-full">
-              <div className="rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface-inset)] p-3">
-                <p className="text-label text-[var(--ds-fg)]">Try the real one</p>
-                <p className="mt-1 text-caption text-[var(--ds-fg-muted)]">
-                  The sidebar of this Bible is resizable. Drag its right edge, or focus the handle
-                  and use the arrow keys. Double-click resets it to 268px.
-                </p>
-              </div>
               <div className="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--ds-border-subtle)]">
                 <table className="w-full border-collapse text-body-sm">
                   <tbody>
                     {[
-                      ['Minimum', '208px', 'Below this, labels truncate and the rail is better.'],
-                      ['Default', '268px', 'Holds a two-word label plus an icon and a count.'],
-                      ['Maximum', '400px', 'Past this the sidebar competes with the content.'],
-                      ['Hit area', '9px', 'Visually 1px. The extra 8px is what makes it grabbable.'],
+                      ['Bounds', '208–400px', 'Somewhere to stop. Unbounded dragging ends at a width the handle cannot be found in.'],
+                      ['Reset', 'Double-click', 'One gesture back to the default, so experimenting is free.'],
+                      ['Keyboard', 'Arrow keys', 'The handle takes focus and moves in steps. Without this it is pointer-only.'],
+                      ['Persistence', 'Per user', 'A width that resets on every visit makes the handle decorative.'],
+                      ['Touch', 'Hidden', 'A drag target this thin is not usable with a finger.'],
                     ].map(([k, v, why]) => (
                       <tr key={k} className="border-b border-[var(--ds-border-subtle)] last:border-0">
-                        <td className="w-24 px-3 py-2 text-label text-[var(--ds-fg)]">{k}</td>
-                        <td className="w-20 px-3 py-2 font-mono text-[11.5px] tabular-nums text-[var(--ds-accent-text)]">{v}</td>
-                        <td className="px-3 py-2 text-[var(--ds-fg-muted)]">{why}</td>
+                        <td className="w-28 px-3 py-2 text-body-sm font-medium text-[var(--ds-fg)]">{k}</td>
+                        <td className="w-28 px-3 py-2 font-mono text-caption tabular-nums text-[var(--ds-accent-text)]">{v}</td>
+                        <td className="px-3 py-2 text-[var(--ds-fg-secondary)]">{why}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
+              <p className="max-w-[72ch] text-body-sm leading-relaxed text-[var(--ds-fg-muted)]">
+                This Bible’s own sidebar is resizable — drag its right edge, or focus the handle and
+                use the arrow keys.
+              </p>
             </Stack>
           </PreviewStage>
         ),
       },
     ],
     states: [
-      { label: 'Default', render: <div className="w-40"><NavItem icon={<Rocket size={14} />} label="Deployments" /></div> },
-      { label: 'Hover', render: <div className="w-40"><NavItem icon={<Rocket size={14} />} label="Deployments" className="bg-[var(--ds-layer-hover)] text-[var(--ds-fg)]" /></div> },
-      { label: 'Active', render: <div className="w-40 pl-1"><NavItem icon={<Rocket size={14} />} label="Deployments" active /></div> },
-      { label: 'Focus', render: <div className="w-40"><NavItem icon={<Rocket size={14} />} label="Deployments" className="outline-2 -outline-offset-2 outline-[var(--ds-focus-ring)]" /></div> },
-      { label: 'With count', render: <div className="w-40"><NavItem icon={<Rocket size={14} />} label="Deployments" count={3} /></div> },
-      { label: 'Nested', render: <div className="w-40"><NavItem label="us-east-1" depth={1} /></div> },
-      { label: 'Compact', note: '28px row, 13px label', render: <div className="w-40"><NavItem icon={<Rocket size={14} />} label="Deployments" compact /></div> },
-      { label: 'Group header', render: <span className="text-overline uppercase text-[var(--ds-fg-muted)]">Workspace</span> },
-      { label: 'Collapsed group', render: <span className="inline-flex items-center gap-1.5 text-overline uppercase text-[var(--ds-fg-muted)]"><ChevronRight size={11} /> Workspace</span> },
-      { label: 'Rail', render: <span className="grid h-9 w-9 place-items-center rounded-[var(--radius-md)] bg-[var(--ds-layer-selected)] text-[var(--ds-accent-text)]"><Rocket size={14} /></span> },
-      { label: 'Resize handle', render: <span className="block h-8 w-px bg-[var(--ds-accent)]" /> },
-      { label: 'Truncated', render: <div className="w-28"><NavItem icon={<Rocket size={14} />} label="A very long destination name" /></div> },
+      { label: 'Default', note: '15px label, 32px row', render: <div className="w-40"><NavItem icon={<Rocket size={16} />} label="Deployments" /></div> },
+      { label: 'Hover', note: '--ds-layer-hover', render: <div className="w-40"><NavItem icon={<Rocket size={16} />} label="Deployments" className="bg-[var(--ds-layer-hover)] text-[var(--ds-fg)]" /></div> },
+      { label: 'Current', note: 'aria-current="page"', render: <div className="w-40 pl-1"><NavItem icon={<Rocket size={16} />} label="Deployments" active /></div> },
+      { label: 'Focus visible', note: '2px ring, inset', render: <div className="w-40"><NavItem icon={<Rocket size={16} />} label="Deployments" className="outline-2 -outline-offset-2 outline-[var(--ds-focus-ring)]" /></div> },
+      { label: 'With count', note: 'Only when actionable', render: <div className="w-40"><NavItem icon={<Rocket size={16} />} label="Deployments" count={3} /></div> },
+      { label: 'Nested', note: 'One level in, 14px', render: <div className="w-40"><NavItem label="us-east-1" depth={1} /></div> },
+      { label: 'Compact', note: '28px row, 13px label', render: <div className="w-40"><NavItem icon={<Rocket size={16} />} label="Deployments" compact /></div> },
+      { label: 'Truncated', note: 'Ellipsis plus a title', render: <div className="w-28"><NavItem icon={<Rocket size={16} />} label="A very long destination name" /></div> },
+      { label: 'Group heading', note: '12px / 600, muted', render: <span className="text-overline uppercase text-[var(--ds-fg-muted)]">Workspace</span> },
+      { label: 'Group collapsed', note: 'aria-expanded="false"', render: <span className="inline-flex items-center gap-1.5 text-overline uppercase text-[var(--ds-fg-muted)]"><ChevronRight size={12} aria-hidden /> Workspace</span> },
+      { label: 'Rail item', note: 'Named and tooltipped', render: <span className="grid h-11 w-11 place-items-center rounded-[var(--radius-md)] bg-[var(--ds-layer-selected)] text-[var(--ds-accent-text)]"><Rocket size={16} /></span> },
+      { label: 'Resize handle', note: 'Optional. 1px, 9px target', render: <span className="block h-8 w-px bg-[var(--ds-accent)]" /> },
     ],
   },
 
@@ -320,131 +460,138 @@ export default defineDoc({
     render: (
       <div className="flex h-[18rem] overflow-hidden rounded-[var(--radius-lg)] border border-[var(--ds-border)]">
         <SidebarDemo width={240} />
-        <div className="w-40 bg-[var(--ds-canvas)]" />
+        <Content lines={5} />
       </div>
     ),
     caption:
-      'Brand row, scrollable nav with two collapsible groups, and a pinned account row. Only the nav scrolls.',
+      'A brand row, a scrolling navigation region with two collapsible groups, and a pinned account row. Only the middle region scrolls.',
     parts: [
       {
         n: 1,
         label: 'Width',
-        value: '268px default, 208–400 range',
+        value: '268px default',
         kind: 'size',
-        note: 'Holds a two-word label, a 14px icon and a count badge without truncating. Below 208px labels start clipping; above 400px it competes with the content.',
+        note: 'A system default, not a universal number: it holds a two-word label, an icon and a count without truncating. 208–400px is the range worth designing within — narrower and labels clip, wider and the column starts competing with the content.',
       },
       {
         n: 2,
         label: 'Row height',
-        value: '32px (28px compact)',
+        value: '32px · 28px compact',
         kind: 'size',
-        note: 'Denser than a button, because a sidebar is scanned vertically as a list rather than acted on as a control.',
+        note: 'Denser than a button, because a list of destinations is scanned vertically rather than acted on one at a time. Rows grow to 44px on coarse pointers.',
       },
       {
         n: 3,
-        label: 'Active marker',
-        value: '2px bar + tint',
-        kind: 'color',
-        note: 'A bar rather than a border, so the row’s box never changes and no label shifts by a pixel when the active item moves.',
+        label: 'Label',
+        value: '--text-ui · 15px / 21px',
+        kind: 'type',
+        note: 'The same size every navigation surface uses, and it does not shrink to fit more rows in. Compact steps to 13px; nothing in the sidebar goes below that. See Typography.',
       },
       {
         n: 4,
-        label: 'Indentation',
-        value: '14px per level',
-        kind: 'space',
-        note: 'Enough to read as nesting, small enough that a second level does not push the label off the edge. There is no third level.',
+        label: 'Current destination',
+        value: 'Tint + 2px marker',
+        kind: 'color',
+        note: 'The requirement is aria-current plus a cue that survives greyscale. This system spends a background tint and a 2px marker, absolutely positioned so the row’s box never changes; a left border or a heavier weight would meet the same requirement.',
       },
       {
         n: 5,
-        label: 'Group header',
-        value: '11px uppercase, muted',
+        label: 'Group heading',
+        value: '12px / 600, uppercase',
         kind: 'type',
-        note: 'Deliberately quiet. It is a divider with a name, not a destination — and it must not compete with the items beneath it.',
+        note: 'Visually secondary to the destinations under it, but still readable text: 12px is the floor of the scale, and the muted foreground it uses clears 4.5:1.',
       },
       {
         n: 6,
-        label: 'Pinned account row',
-        value: 'Bottom, above the fold',
+        label: 'Indentation',
+        value: '14px per level',
         kind: 'space',
-        note: 'Outside the scroll container, so it is always reachable regardless of how long the nav gets.',
+        note: 'Enough to read as nesting without eating the label. Every level costs width, which is the practical limit on how deep navigation can usefully go.',
+      },
+      {
+        n: 7,
+        label: 'Pinned footer',
+        value: 'Outside the scroll',
+        kind: 'space',
+        note: 'Account and settings stay reachable however long the list gets. They are what people look for when everything else has failed.',
       },
     ],
   },
 
   tokens: [
-    { category: 'color', token: '--ds-surface', usedFor: 'Sidebar background' },
-    { category: 'color', token: '--ds-border-subtle', usedFor: 'Right edge, section dividers' },
-    { category: 'color', token: '--ds-layer-selected', usedFor: 'Active row tint' },
-    { category: 'color', token: '--ds-layer-hover', usedFor: 'Hover' },
-    { category: 'color', token: '--ds-accent', usedFor: 'Active marker bar, resize handle on hover' },
-    { category: 'color', token: '--ds-fg-secondary', usedFor: 'Inactive labels' },
-    { category: 'color', token: '--ds-fg-muted', usedFor: 'Icons and group headers' },
-    { category: 'typography', token: '--text-ui', value: '15px / 21px / 470', usedFor: 'Destination labels' },
-    { category: 'typography', token: '--text-overline', value: '12px / 600', usedFor: 'Group headings' },
-    { category: 'spacing', token: 'width', value: '208 / 268 / 400px', usedFor: 'Min, default, max' },
-    { category: 'spacing', token: 'row height', value: '32 / 28px', usedFor: 'Default and compact' },
-    { category: 'spacing', token: 'indent', value: '14px per level', usedFor: 'Nesting' },
-    { category: 'radius', token: '--radius-sm', value: '6px', usedFor: 'Row corners' },
-    { category: 'motion', token: 'duration', value: '100–160ms', usedFor: 'Hover and group expand' },
+    { category: 'color', group: 'Planes', token: '--ds-surface', usedFor: 'Sidebar background' },
+    { category: 'color', group: 'Planes', token: '--ds-border-subtle', usedFor: 'Inline-end edge, section dividers' },
+    { category: 'color', group: 'Interaction', token: '--ds-layer-hover', usedFor: 'Hover fill' },
+    { category: 'color', group: 'Interaction', token: '--ds-layer-selected', usedFor: 'Current-destination tint' },
+    { category: 'color', group: 'Interaction', token: '--ds-accent', usedFor: 'Current marker, and the resize handle on hover' },
+    { category: 'color', group: 'Interaction', token: '--ds-focus-ring', usedFor: 'Focus outline, 2px inset' },
+    { category: 'color', group: 'Foreground', token: '--ds-fg', usedFor: 'Current destination, brand' },
+    { category: 'color', group: 'Foreground', token: '--ds-fg-secondary', usedFor: 'Inactive labels' },
+    { category: 'color', group: 'Foreground', token: '--ds-fg-muted', usedFor: 'Icons, group headings, footer metadata' },
+    { category: 'typography', group: 'Foreground', token: '--text-ui', value: '15px / 21px / 470', usedFor: 'Destination labels' },
+    { category: 'typography', group: 'Foreground', token: '--text-label', value: '13px', usedFor: 'Labels in the compact density' },
+    { category: 'typography', group: 'Foreground', token: '--text-overline', value: '12px / 600', usedFor: 'Group headings' },
+    { category: 'spacing', group: 'Layout', token: 'width', value: '268px default', usedFor: '208–400px is the useful range' },
+    { category: 'spacing', group: 'Layout', token: 'row height', value: '32 / 28px', usedFor: 'Default and compact; 44px on coarse pointers' },
+    { category: 'spacing', group: 'Layout', token: 'indent', value: '14px per level', usedFor: 'Nesting' },
+    { category: 'radius', group: 'Layout', token: '--radius-sm', value: '6px', usedFor: 'Row corners' },
+    { category: 'motion', group: 'Interaction', token: '--ease-standard', value: '100–160ms', usedFor: 'Hover, and group expand' },
   ],
 
   sizes: [
-    { name: 'Rail', minWidth: '56px', height: '36px rows', use: 'Icon only, with a tooltip. When horizontal space is scarce but destinations must stay visible.' },
-    { name: 'Minimum', minWidth: '208px', use: 'The floor. Below this, two-word labels truncate.' },
-    { name: 'Default', minWidth: '268px', height: '32px rows', use: 'Icon, 15px label and count with no truncation.' },
-    { name: 'Maximum', maxWidth: '400px', use: 'For long user-generated names. Past this it competes with the content.' },
-    { name: 'Compact rows', height: '28px', use: 'Twelve or more destinations, or a dense internal tool. The label steps to 13px; never below.' },
-    { name: 'Handle', minWidth: '9px hit area', use: '1px visually. The extra 8px is what makes it grabbable.' },
+    { name: 'Expanded', minWidth: '268px', height: '32px rows', type: '15px label', use: 'The default. Icon, label and count with no truncation.' },
+    { name: 'Compact', minWidth: '240px', height: '28px rows', type: '13px label', use: 'Twelve or more destinations, or a dense internal tool. 13px is as low as a destination label goes.' },
+    { name: 'Rail', minWidth: '56–80px', height: '44px targets', use: 'Icons only, each with a name and a tooltip. Only for icons the audience already knows.' },
+    { name: 'Range', minWidth: '208px', maxWidth: '400px', use: 'The band worth designing within. Below it labels clip; above it the column competes with the content.' },
+    { name: 'Touch', height: '44px rows', touch: '44px', use: 'Coarse pointers, wherever the sidebar survives as a column — usually a tablet.' },
   ],
 
   do: [
     {
-      title: 'Stop at two levels',
-      why: 'Group headings and items. A third level makes the sidebar a tree, and a tree is navigated rather than learned — which throws away the positional memory that makes a sidebar worth its 268px.',
+      title: 'Render destinations as links',
+      why: 'A link can be middle-clicked, opened in a new tab, copied and prefetched; a button can do none of those, and people do all of them in navigation. Reserve buttons for controls that act rather than navigate.',
       render: (
-        <div className="w-44">
-          <span className="px-2 text-overline uppercase text-[var(--ds-fg-muted)]">Build</span>
-          <NavItem icon={<Rocket size={14} />} label="Deployments" active />
-          <NavItem icon={<Activity size={14} />} label="Monitoring" />
+        <div className="flex flex-col gap-1 font-mono text-code">
+          <span className="text-[var(--ds-success)]">{'<a href="/deployments" aria-current="page">'}</span>
+          <span className="text-[var(--ds-fg-muted)] line-through">{'<button onClick={() => go("/deployments")}>'}</span>
         </div>
       ),
     },
     {
-      title: 'Persist width and collapse state',
-      why: 'A sidebar that resets on every visit makes the resize handle pointless. Store it per user, not per session.',
+      title: 'Mark the current destination in more than colour',
+      why: 'aria-current="page" is what tells assistive technology where the user is, and a cue that survives greyscale is what tells everyone else. A tint plus a marker, a border, or a heavier weight all qualify.',
       render: (
-        <code className="font-mono text-[11px] text-[var(--ds-success-text)]">
-          localStorage: sidebar-width, collapsed-groups
-        </code>
-      ),
-    },
-    {
-      title: 'Give the handle a real hit area',
-      why: 'A 1px target is unhittable. Nine pixels of transparent padding on either side makes it easy without changing how the divider looks — Fitts’ Law for free.',
-      render: (
-        <div className="flex h-16 items-stretch">
-          <div className="w-24 rounded-l-[var(--radius-md)] bg-[var(--ds-surface)]" />
-          <div className="group relative w-[9px] cursor-col-resize">
-            <span className="absolute inset-y-0 left-1 w-px bg-[var(--ds-border-subtle)] transition-colors group-hover:bg-[var(--ds-accent)]" />
-          </div>
-          <div className="flex-1 rounded-r-[var(--radius-md)] bg-[var(--ds-canvas)]" />
+        <div className="w-44 pl-1">
+          <NavItem icon={<Rocket size={16} />} label="Deployments" active />
+          <NavItem icon={<Activity size={16} />} label="Monitoring" />
         </div>
       ),
     },
     {
-      title: 'Pin the account row outside the scroll',
-      why: 'A sidebar with twenty destinations scrolls. The account and settings must not scroll out of reach — they are the two things users go looking for when everything else has failed.',
+      title: 'Keep the footer out of the scroll region',
+      why: 'Long navigation scrolls. Account and settings are what people reach for when they are lost, so they should not be at the bottom of a list that has scrolled away.',
       render: (
         <div className="w-44 overflow-hidden rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)]">
-          <div className="h-16 overflow-y-auto p-1">
+          <div className="h-20 overflow-y-auto p-1">
             {GROUPS[0].items.map((i) => (
               <NavItem key={i.id} icon={i.icon} label={i.label} compact />
             ))}
           </div>
           <div className="flex items-center gap-2 border-t border-[var(--ds-border-subtle)] p-2">
             <Avatar name="Ada Lovelace" size="xs" />
-            <span className="truncate text-caption text-[var(--ds-fg-secondary)]">Ada Lovelace</span>
+            <span className="truncate text-body-sm text-[var(--ds-fg-secondary)]">Ada Lovelace</span>
           </div>
+        </div>
+      ),
+    },
+    {
+      title: 'Prefer a shallow structure, and know when it is really a tree',
+      why: 'Groups plus destinations is what most products need, and it is what people learn by position. Some professional tools genuinely navigate a hierarchy — an org chart, a file system, a category tree — and once nesting is unbounded, Tree View is the component built for it: roving focus, arbitrary depth, virtualisation.',
+      render: (
+        <div className="w-44">
+          <span className="block px-2 py-1 text-overline uppercase text-[var(--ds-fg-muted)]">Build</span>
+          <NavItem icon={<Rocket size={16} />} label="Deployments" active />
+          <NavItem label="us-east-1" depth={1} />
         </div>
       ),
     },
@@ -452,47 +599,46 @@ export default defineDoc({
 
   dont: [
     {
-      title: 'Do not build a three-level tree',
-      why: 'By the third level the user is exploring rather than navigating, and the indentation has eaten most of the label width.',
+      title: 'Do not signal the current destination with colour alone',
+      why: 'It fails for anyone with a colour-vision deficiency, in greyscale, and in bright sunlight — and on its own it gives assistive technology nothing at all. Add aria-current, and a second visual cue.',
       render: (
         <div className="w-44">
-          <NavItem label="Workspace" />
-          <NavItem label="Production" depth={1} />
-          <NavItem label="api-gateway" depth={2} />
-          <NavItem label="us-east-1" depth={3} />
+          <NavItem icon={<Rocket size={16} />} label="Deployments" className="text-[var(--ds-accent-text)]" />
+          <NavItem icon={<Activity size={16} />} label="Monitoring" />
         </div>
       ),
     },
     {
-      title: 'Do not hide the primary action in the sidebar',
-      why: 'The sidebar is for destinations. A "New project" button buried among navigation rows is discovered late, and it makes every row around it ambiguous.',
+      title: 'Do not ship a rail without names',
+      why: 'A column of unlabelled icons turns recognition into guesswork and hovering. Every rail button needs an accessible name and a tooltip; if the icons are not already familiar to the audience, stay expanded.',
       render: (
-        <div className="w-44">
-          <NavItem icon={<Rocket size={14} />} label="Deployments" />
-          <NavItem icon={<Rocket size={14} />} label="+ New deployment" />
-          <NavItem icon={<Activity size={14} />} label="Monitoring" />
-        </div>
-      ),
-    },
-    {
-      title: 'Do not auto-collapse groups the user opened',
-      why: 'An accordion that closes one group when another opens fights the user. Their expansion state is a preference, and it should persist.',
-      render: (
-        <span className="text-caption text-[var(--ds-danger-text)]">
-          open Workspace → Build closes → open Build → Workspace closes
-        </span>
-      ),
-    },
-    {
-      title: 'Do not use an icon rail with unfamiliar icons',
-      why: 'A rail only works when every glyph is already learned. For anything ambiguous it becomes a row of unlabelled buttons and the user hovers each one.',
-      render: (
-        <div className="flex w-14 flex-col gap-1 rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] p-2">
+        <div className="flex w-16 flex-col items-center gap-1 rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] p-2">
           {[Activity, CreditCard, Settings, Users].map((Icon, i) => (
-            <span key={i} className="grid h-9 w-9 place-items-center text-[var(--ds-fg-muted)]">
-              <Icon size={14} />
+            <span key={i} className="grid h-11 w-11 place-items-center text-[var(--ds-fg-muted)]">
+              <Icon size={16} />
             </span>
           ))}
+        </div>
+      ),
+    },
+    {
+      title: 'Do not reorder destinations between visits',
+      why: 'Within a week people navigate by position rather than by reading. A list that sorts itself by recency or usage takes that away, and every trip becomes a search.',
+      render: (
+        <div className="flex w-44 flex-col gap-1 text-body-sm text-[var(--ds-fg-muted)]">
+          <span>Monday: Dashboard · Deployments · Team</span>
+          <span>Friday: Team · Dashboard · Deployments</span>
+        </div>
+      ),
+    },
+    {
+      title: 'Do not shrink the labels to fit more rows',
+      why: 'Density is bought with row height and grouping, not with type size. Navigation labels are read from the corner of the eye by someone deciding where to go, which is the worst possible place to save a pixel.',
+      render: (
+        <div className="w-44">
+          <span className="flex h-6 items-center px-2.5 text-[11px] text-[var(--ds-fg-muted)]">Deployments</span>
+          <span className="flex h-6 items-center px-2.5 text-[11px] text-[var(--ds-fg-muted)]">Monitoring</span>
+          <span className="mt-1 block px-2.5 text-body-sm text-[var(--ds-fg-secondary)]">11px — see Readable Type</span>
         </div>
       ),
     },
@@ -503,68 +649,78 @@ export default defineDoc({
       { id: '1.3.1', name: 'Info and Relationships', level: 'A' },
       { id: '2.1.1', name: 'Keyboard', level: 'A' },
       { id: '2.4.1', name: 'Bypass Blocks', level: 'A' },
-      { id: '3.2.3', name: 'Consistent Navigation', level: 'AA' },
       { id: '4.1.2', name: 'Name, Role, Value', level: 'A' },
+      { id: '2.4.7', name: 'Focus Visible', level: 'AA' },
+      { id: '3.2.3', name: 'Consistent Navigation', level: 'AA' },
+      { id: '2.5.8', name: 'Target Size (Minimum)', level: 'AA' },
     ],
     contrast: [
-      'Inactive labels use --ds-fg-secondary at 7.6:1. Muted would be too faint for a list this dense.',
-      'The active marker must reach 3:1 against the sidebar background — it is the primary indicator of position.',
-      'The right edge must reach 3:1 against both surfaces, or the sidebar and the content merge visually.',
+      'Inactive labels use --ds-fg-secondary. Muted is reserved for icons, group headings and metadata, and even there it must clear 4.5:1 — a group heading is readable text, not decoration.',
+      'The current-destination marker must reach 3:1 against the sidebar background: it is a non-text indicator carrying meaning.',
+      'The edge between the sidebar and the content needs enough contrast to read as a boundary in both themes, or the two planes merge.',
     ],
     keyboard: [
-      { keys: 'Tab', does: 'Enters the nav. Each destination is a stop unless roving focus is implemented.' },
-      { keys: '↑ / ↓', does: 'Moves between destinations without leaving the nav.' },
-      { keys: 'Enter', does: 'Navigates.' },
-      { keys: '← / →', does: 'Collapses and expands a group when focus is on its header.' },
-      { keys: '⌘B', does: 'Toggles the whole sidebar.' },
-      { keys: 'Arrows on the handle', does: 'Resizes by 16px. Home resets to the default.' },
+      { keys: 'Tab', does: 'Enters the navigation and moves through the destinations. Every row is reachable — nothing in the sidebar is pointer-only.' },
+      { keys: 'Enter', does: 'Follows the focused destination. Space also activates a group header, which is a button rather than a link.' },
+      { keys: '↑ / ↓', does: 'Optional: with roving focus, moves between destinations while the nav holds one tab stop. Useful once the list is long; not required.' },
+      { keys: '← / →', does: 'Collapses and expands a group when focus is on its header, matching the disclosure pattern.' },
+      { keys: 'Arrows on the handle', does: 'Where resizing exists, the handle takes focus and resizes in steps. Home returns to the default.' },
+      { keys: 'Skip link', does: 'The first tab stop on the page jumps past the navigation. Without it, every keyboard user crosses the whole list to reach the content.' },
     ],
     aria: [
-      { attr: '<nav aria-label="Main">', on: 'The nav element', note: 'A named landmark. A page with several navs needs several distinct labels.' },
-      { attr: 'aria-current="page"', on: 'The active item', note: 'The value is "page". This is what tells a screen reader where the user is.' },
-      { attr: 'aria-expanded + aria-controls', on: 'Group headers', note: 'On the header button, pointing at the group container.' },
-      { attr: 'role="separator"', on: 'The resize handle', note: 'With aria-orientation="vertical", aria-valuenow, valuemin and valuemax.' },
-      { attr: 'aria-label', on: 'Rail buttons', note: 'Required. A rail is a column of icon-only buttons and needs a name on every one.' },
-      { attr: 'title', on: 'Truncated labels', note: 'So the full destination name is available on hover.' },
+      { attr: '<nav aria-label="Main">', on: 'The navigation region', note: 'A named landmark. A page with more than one nav needs a distinct label on each.' },
+      { attr: 'aria-current="page"', on: 'The current destination', note: 'The value is "page". This is what tells assistive technology where the user is; styling alone does not.' },
+      { attr: 'aria-expanded + aria-controls', on: 'Group headings', note: 'On the header button, pointing at the container it shows and hides.' },
+      { attr: 'aria-label', on: 'Rail buttons', note: 'Required in the collapsed density — the visible label is gone, so the accessible name is all that is left.' },
+      { attr: 'title', on: 'Truncated labels', note: 'So the full destination name is available on hover. Not a substitute for an accessible name.' },
+      { attr: 'role="separator"', on: 'The resize handle, if present', note: 'With aria-orientation="vertical", aria-valuenow, aria-valuemin and aria-valuemax, so its position is announced as it moves.' },
     ],
     focus:
-      'The active item must be visible when the sidebar scrolls. Scroll it into view on route change, or a user deep in a long nav loses their position on every navigation.',
+      'The focus ring is never removed, only restyled — 2px, inset, so it is not clipped by the sidebar’s own edge. Scroll the current destination into view on navigation, or someone deep in a long list loses their place on every trip.',
     screenReader: [
-      'Groups should be real lists so the count is announced: "Build, list of 3 items".',
-      'aria-current="page" is what turns a row of links into a location indicator. Without it there is no way to know which one is active.',
-      'The skip link in the top bar must jump past the sidebar as well. Tabbing through twenty destinations to reach the content is a real barrier.',
+      'Mark groups up as lists so their size is announced: "Build, list of 3 items".',
+      'The skip link must clear the sidebar as well as the app bar. Twenty destinations is a real barrier between a keyboard user and the page.',
+      'In the rail density nothing is visible but glyphs, so the accessible name carries the whole meaning. Check it reads as a destination — "Deployments", not "rocket".',
     ],
     touch:
-      'Below 1024px the sidebar becomes a drawer. Rows are 32px on pointer and expand to 44px on coarse pointers; the resize handle is hidden entirely on touch, where it is unusable.',
+      'Rows grow to 44px on coarse pointers, which clears the 24×24 that WCAG 2.5.8 asks for at AA with room to spare, and the resize handle is hidden entirely — a drag target that thin cannot be used with a finger. Below the layout breakpoint the column usually gives way to a Drawer, where the same rules apply.',
   },
 
   code: {
     usage: {
       lang: 'tsx',
-      code: `<aside style={{ width }} className="flex h-dvh flex-col border-r border-line-subtle bg-surface">
+      caption:
+        'Real links, a named landmark, groups as disclosures, and a footer outside the scroll region. Resizing is bolted on, not built in — leave it out and nothing else changes.',
+      code: `<aside
+  style={{ inlineSize: width }}
+  className="flex h-dvh flex-col border-e border-line-subtle bg-surface"
+>
   <BrandRow />
 
+  {/* Only this region scrolls. */}
   <nav aria-label="Main" className="min-h-0 flex-1 overflow-y-auto p-2">
     {groups.map((g) => (
       <section key={g.id}>
         <button
           aria-expanded={!collapsed.includes(g.id)}
-          aria-controls={'group-' + g.id}
+          aria-controls={\`group-\${g.id}\`}
           onClick={() => toggleGroup(g.id)}
+          className="text-overline uppercase text-fg-muted"
         >
-          <ChevronRight className={!collapsed.includes(g.id) ? 'rotate-90' : ''} />
+          <ChevronRight aria-hidden />
           {g.title}
         </button>
 
-        <ul id={'group-' + g.id} hidden={collapsed.includes(g.id)}>
+        {/* A list, so the number of destinations is announced. */}
+        <ul id={\`group-\${g.id}\`} hidden={collapsed.includes(g.id)}>
           {g.items.map((item) => (
             <li key={item.id}>
               <NavItem
-                href={item.href}
+                href={item.href}                    {/* a link, not a button */}
                 icon={item.icon}
                 label={item.label}
                 count={item.count}
-                active={item.id === currentId}
+                active={item.id === currentId}      {/* sets aria-current */}
               />
             </li>
           ))}
@@ -573,18 +729,10 @@ export default defineDoc({
     ))}
   </nav>
 
-  <AccountRow />          {/* outside the scroll container */}
-
-  <ResizeHandle
-    value={width}
-    min={208}
-    max={400}
-    onChange={setWidth}
-    onReset={() => setWidth(268)}
-  />
+  <AccountRow />   {/* outside the scroll container, so it never scrolls away */}
 </aside>
 
-// Scroll the active item into view on navigation
+// Keep the current destination visible when the list is long.
 useEffect(() => {
   navRef.current
     ?.querySelector('[aria-current="page"]')
@@ -593,6 +741,7 @@ useEffect(() => {
     },
     css: {
       lang: 'css',
+      caption: 'The row, the current state, and the two responsive rules. Every value is a token.',
       code: `.ds-sidebar {
   display: flex;
   flex-direction: column;
@@ -610,14 +759,22 @@ useEffect(() => {
   block-size: 32px;
   padding-inline: 10px;
   border-radius: var(--radius-sm);
+  /* Navigation text, same as every other nav surface — see Typography. */
+  font: var(--text-ui);
   color: var(--ds-fg-secondary);
   transition: background-color 100ms var(--ease-standard);
 }
 
 .ds-nav-item:hover { background: var(--ds-layer-hover); color: var(--ds-fg); }
 
-/* Tint plus a marker. The marker is absolutely positioned so the row's
-   box never changes and no label shifts when the active item moves. */
+.ds-nav-item:focus-visible {
+  outline: 2px solid var(--ds-focus-ring);
+  outline-offset: -2px;   /* inset, so the sidebar's edge cannot clip it */
+}
+
+/* Current destination: a tint plus a marker, so it survives greyscale. The
+   marker is absolutely positioned, which keeps the row's box unchanged and
+   stops labels shifting when the current item moves. */
 .ds-nav-item[aria-current='page'] {
   background: var(--ds-layer-selected);
   color: var(--ds-fg);
@@ -636,42 +793,28 @@ useEffect(() => {
   background: var(--ds-accent);
 }
 
-/* 1px visually, 9px to grab */
-.ds-resize-handle {
-  position: absolute;
-  inset-block: 0;
-  inset-inline-end: -4px;
-  inline-size: 9px;
-  cursor: col-resize;
-  touch-action: none;
-}
-.ds-resize-handle::after {
-  content: '';
-  position: absolute;
-  inset-block: 0;
-  inset-inline-start: 4px;
-  inline-size: 1px;
-  background: transparent;
-  transition: background 120ms var(--ease-standard);
-}
-.ds-resize-handle:hover::after { background: var(--ds-accent); }
-
+/* Touch: bigger rows, and no drag handle. */
 @media (pointer: coarse) {
-  .ds-resize-handle { display: none; }
   .ds-nav-item { block-size: 44px; }
+  .ds-resize-handle { display: none; }
+}
+
+/* Narrow: the column gives way, and the same destinations open in a Drawer. */
+@media (max-width: 1023px) {
+  .ds-sidebar { display: none; }
 }`,
     },
     api: [
       {
         name: 'NavItem',
         props: [
-          { name: 'label', type: 'ReactNode', required: true, description: 'Truncates with an ellipsis. Add a title for the full name.' },
-          { name: 'icon', type: 'ReactNode', description: '14px. Muted at rest, accent when active.' },
-          { name: 'active', type: 'boolean', default: 'false', description: 'Sets aria-current="page" and shows the marker.' },
-          { name: 'count', type: 'number', description: 'Right-aligned count badge.' },
-          { name: 'depth', type: 'number', default: '0', description: 'Indent level. 0 or 1 only — there is no third level.' },
-          { name: 'compact', type: 'boolean', default: 'false', description: '28px rows for dense navigation.' },
-          { name: 'href', type: 'string', description: 'Renders an anchor instead of a button. Prefer it — links support middle-click and open-in-new-tab.' },
+          { name: 'label', type: 'ReactNode', required: true, description: 'Truncates with an ellipsis. Pass a title so the full name is available on hover.' },
+          { name: 'href', type: 'string', description: 'Renders an anchor instead of a button. Prefer it for destinations — links support middle-click, open-in-new-tab and copy.' },
+          { name: 'icon', type: 'ReactNode', description: '16px. Muted at rest, accent when current.' },
+          { name: 'active', type: 'boolean', default: 'false', description: 'Sets aria-current="page" and applies the current-destination treatment.' },
+          { name: 'count', type: 'number', description: 'Trailing count. Use it when the number is actionable rather than merely large.' },
+          { name: 'depth', type: 'number', default: '0', description: 'Indent level, 14px each. Prefer shallow structures; for genuinely deep hierarchies use Tree View.' },
+          { name: 'compact', type: 'boolean', default: 'false', description: '28px rows with a 13px label, for the compact density.' },
         ],
       },
     ],
@@ -679,29 +822,29 @@ useEffect(() => {
 
   notes: {
     tips: [
-      'Order destinations by frequency, and never reorder them dynamically. Users navigate by position within a week, and a nav that rearranges itself destroys that.',
-      'Render nav items as real links with href. A button cannot be middle-clicked, opened in a new tab, or copied — and users do all three constantly.',
-      'A count badge should only appear when the count is actionable. "Deployments 1,204" is noise; "Deployments 3" where 3 means "needs review" is a call to action.',
-      'If the sidebar needs a search box, it has too many destinations. Fix the information architecture before adding a filter to the navigation.',
+      'Order destinations by how often they are used, and then leave the order alone — position is what people learn first.',
+      'Show a count when the number is actionable. "Deployments 3" where 3 means "needs review" is useful; a running total is decoration.',
+      'A large product may benefit from search or a command palette alongside the sidebar. That is a convenience for power users, not evidence that the navigation is broken.',
+      'Persist width and collapsed groups per user. State that resets on every visit makes the controls that set it pointless.',
     ],
     performance: [
-      'The sidebar renders on every route. Memoise it and keep route state out of it, or every navigation re-renders the whole nav.',
-      'Resize with a pointermove listener that writes a CSS variable, not React state. State updates on every mousemove drop frames on a large tree.',
-      'Prefetch the destination on hover. Sidebar links are the most predictable navigation in the product.',
-      'For a very long nav, use content-visibility: auto on collapsed groups so their contents are not laid out at all.',
+      'The sidebar renders on every route. Keep route-specific state out of it and memoise it, or each navigation re-renders the whole list.',
+      'Drive a resize with a pointermove listener writing a CSS variable rather than React state — a state update per mousemove drops frames on a long list.',
+      'Prefetch on hover. Sidebar links are the most predictable navigation in a product, which makes them the cheapest to guess right.',
+      'For very long navigation, content-visibility: auto on collapsed groups skips laying out what is not shown.',
     ],
     mistakes: [
-      'Three or more levels of nesting, which turns navigation into exploration.',
-      'Not persisting the width, so the resize handle is decorative.',
-      'Using buttons instead of links, breaking middle-click, open-in-new-tab and copy-link.',
-      'A border for the active state instead of an absolutely positioned marker, so every label shifts by a pixel when the active item changes.',
-      'Forgetting to scroll the active item into view, so a user deep in a long nav loses their place on every navigation.',
+      'Buttons instead of links, which breaks middle-click, open-in-new-tab and copy-link.',
+      'A border for the current state instead of a positioned marker, so every label shifts by a pixel when the current item changes.',
+      'No aria-current, leaving the current destination visible to sighted users only.',
+      'Forgetting to scroll the current destination into view, so a long list loses the user’s place on every navigation.',
+      'A rail whose icons are not familiar, which converts a navigation column into a row of quizzes.',
     ],
     realWorld: [
-      'The sidebar is the clearest statement of what a product is. If the list does not read as a coherent product, the information architecture is the problem, not the component.',
-      'Track navigation frequency per destination. Anything under 1% either belongs in a settings page or should not exist.',
-      'When teams argue about sidebar ordering, the answer is usage data. It ends the argument in a meeting rather than a redesign.',
-      'Resizable sidebars are used by a small minority of users, but that minority is disproportionately your power users — and they notice its absence immediately.',
+      'Watch someone use the product for a week. If they still read the labels rather than pointing, either the order is unstable or the names are not distinct.',
+      'Usage data settles ordering arguments faster than opinion does, and it is the honest way to decide what belongs at the top.',
+      'Resizing is used by a minority, but that minority skews heavily towards the people who live in the product all day.',
+      'Check the sidebar at 200% browser zoom. It is the surface most likely to squeeze the content column to nothing.',
     ],
   },
 })

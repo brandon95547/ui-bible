@@ -94,7 +94,9 @@ export function Cell({
           {label && (
             <span className="text-overline uppercase text-[var(--ds-fg-secondary)]">{label}</span>
           )}
-          {sub && <span className="text-[10px] text-[var(--ds-fg-muted)]">{sub}</span>}
+          {/* 12px, the floor of the scale — see Readable Type. A specimen's
+              caption is metadata, which is what that step is for. */}
+          {sub && <span className="text-caption text-[var(--ds-fg-muted)]">{sub}</span>}
         </div>
       )}
       {children}
