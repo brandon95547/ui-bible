@@ -22,67 +22,11 @@ import { Marker, Row, SubHeading, defineDoc } from '../framework/kit'
    One row at the top of a screen: the way into navigation, what you are
    looking at, and the handful of actions that apply everywhere.
 
-   The page documents the bar and links out for everything the bar OPENS.
-   A drawer, a menu and a tab row each have their own contract, their own
-   failure modes and their own page; explaining them here would mean two
-   descriptions of each, drifting apart from the day they were written.
+   The page documents the bar and nothing the bar OPENS. A drawer, a menu
+   and a tab row each have their own contract, their own failure modes and
+   their own page; explaining them here would mean two descriptions of
+   each, drifting apart from the day they were written.
    ======================================================================== */
-
-/** Where a reader goes for the parts this page deliberately does not teach. */
-const RELATED = [
-  { id: 'sidebar', name: 'Sidebar', why: 'Navigation that stays on screen as a column beside the content.' },
-  { id: 'drawer', name: 'Drawer', why: 'Navigation that slides over the content and is dismissed after use.' },
-  { id: 'menu', name: 'Menu', why: 'A short list of destinations or commands hung off a trigger in the bar.' },
-  { id: 'mega-menu', name: 'Mega Menu', why: 'A wide multi-column panel for navigation that is broad rather than deep.' },
-  { id: 'tabs', name: 'Tabs', why: 'Switching between views of the screen you are already on.' },
-  { id: 'toolbar', name: 'Toolbar', why: 'Controls that act on the content of one screen. Most things proposed for an App Bar belong here.' },
-  { id: 'bottom-navigation', name: 'Bottom Navigation', why: 'Top-level destinations within thumb reach on touch. A separate component, not the App Bar moved down.' },
-  { id: 'breadcrumbs', name: 'Breadcrumbs', why: 'Where the current screen sits in a hierarchy, when a title alone cannot say it.' },
-]
-
-/**
- * The orientation card.
- *
- * It exists because the industry uses six words for the top of a screen and
- * only some of them mean this component. Naming the neighbours — and where
- * each one is documented — is what stops this page growing a section about
- * drawers every time someone asks where the drawer rules went.
- */
-function RelatedComponents() {
-  return (
-    <section
-      aria-label="Related components"
-      className="rounded-[var(--radius-xl)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] p-5"
-    >
-      <h3 className="text-h4 text-[var(--ds-fg)]">Related components</h3>
-      <p className="mt-1 max-w-[72ch] text-body-sm leading-relaxed text-[var(--ds-fg-secondary)]">
-        An App Bar frequently opens or sits above these. Each is its own component with its own
-        rules — this page shows only how the bar connects to them.
-      </p>
-      <ul className="mt-4 grid gap-x-8 gap-y-2.5 sm:grid-cols-2">
-        {RELATED.map((r) => (
-          <li key={r.id} className="flex flex-col">
-            <a
-              href={`/${r.id}`}
-              className="w-fit text-ui text-[var(--ds-accent-text)] underline decoration-[var(--ds-accent-border)] underline-offset-[3px] hover:decoration-[var(--ds-accent)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ds-focus-ring)]"
-            >
-              {r.name}
-            </a>
-            <span className="max-w-[52ch] text-body-sm leading-relaxed text-[var(--ds-fg-muted)]">
-              {r.why}
-            </span>
-          </li>
-        ))}
-      </ul>
-      <p className="mt-4 max-w-[72ch] text-body-sm leading-relaxed text-[var(--ds-fg-muted)]">
-        A <span className="text-[var(--ds-fg-secondary)]">title bar</span> is the operating
-        system's window chrome and a <span className="text-[var(--ds-fg-secondary)]">masthead</span>{' '}
-        is a publication's brand block. Neither is this component, and neither is something we
-        ship.
-      </p>
-    </section>
-  )
-}
 
 /* ===========================================================================
    THE SPECIMEN
@@ -474,8 +418,6 @@ function Playground() {
 
   return (
     <div className="flex flex-col gap-8">
-      <RelatedComponents />
-
       {/* ---- The panel ------------------------------------------------- */}
       <div className="rounded-[var(--radius-xl)] border border-[var(--ds-border)] bg-[var(--ds-surface)]">
         <div className="flex flex-wrap items-start gap-x-4 gap-y-5 p-4">
