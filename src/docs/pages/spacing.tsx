@@ -5,7 +5,7 @@ import { Cell, PreviewStage, Row, SpaceBar, Stack, defineDoc } from '../framewor
 const SCALE = [
   { name: 'space-0.5', px: 2, use: 'Hairline nudges. Icon optical alignment only.' },
   { name: 'space-1', px: 4, use: 'The atom. Gap between a label and its required asterisk.' },
-  { name: 'space-1.5', px: 6, use: 'Icon-to-label inside a small control.' },
+  { name: 'space-1.5', px: 6, use: 'Label to the thing it names. Icon-to-label inside a small control.' },
   { name: 'space-2', px: 8, use: 'Icon-to-label, chip gaps, tight inline groups.' },
   { name: 'space-2.5', px: 10, use: 'Compact button padding.' },
   { name: 'space-3', px: 12, use: 'Input padding, table cell padding, list row gaps.' },
@@ -290,7 +290,7 @@ export default defineDoc({
 
   tokens: [
     { category: 'spacing', token: 'gap-1', value: '4px', usedFor: 'Label to required marker' },
-    { category: 'spacing', token: 'gap-1.5', value: '6px', usedFor: 'Icon to label in small controls' },
+    { category: 'spacing', token: 'gap-1.5', value: '6px', usedFor: 'Label to what it names; icon to label in small controls' },
     { category: 'spacing', token: 'gap-2', value: '8px', usedFor: 'Icon to label, chip rows, button rows' },
     { category: 'spacing', token: 'gap-3', value: '12px', usedFor: 'Input padding, table cells' },
     { category: 'spacing', token: 'gap-4', value: '16px', usedFor: 'Default gap between related elements' },
@@ -313,6 +313,20 @@ export default defineDoc({
   ],
 
   do: [
+    {
+      title: 'Put every label 6px above the thing it names',
+      why: 'A field label over its input, a small caps heading over a list or a panel, a caption over a read-only value: they all have the same job, so they all get the same gap, on every page. A heading that introduces a whole group is a different job and takes the header gap of 16px. The gap should come from which job the text is doing, never from whichever utility was nearest to hand.',
+      render: (
+        <div className="flex w-full flex-col gap-5">
+          {['Report title', 'Selected sources'].map((l) => (
+            <div key={l} className="flex flex-col gap-1.5">
+              <span className="text-label text-[var(--ds-fg-secondary)]">{l}</span>
+              <span className="h-8 rounded-[var(--radius-md)] border border-[var(--ds-border)] bg-[var(--ds-surface)]" />
+            </div>
+          ))}
+        </div>
+      ),
+    },
     {
       title: 'Keep the group gap at least 2× the item gap',
       why: 'This single ratio is what makes grouping unambiguous. At 1.5× the eye hesitates; at 2× or more it does not have to think about it at all.',
@@ -365,6 +379,15 @@ export default defineDoc({
   ],
 
   dont: [
+    {
+      title: 'Do not space an inline label with margin',
+      why: 'A <label> or <span> is inline, and vertical margin on an inline element does nothing. So space-y or mb-* on it gives 0px, and the label touches the field while the one next to it sits 8px clear. Put the gap on a flex column around the pair, or make the label display: block.',
+      render: (
+        <code className="font-mono text-[11.5px] text-[var(--ds-danger-text)]">
+          {'<div class="space-y-1.5"><label>…</label>'}
+        </code>
+      ),
+    },
     {
       title: 'Do not use one gap for everything',
       why: 'Uniform spacing means no grouping information at all. The user has to read every label to work out the structure, which is exactly the work spacing exists to remove.',
