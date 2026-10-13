@@ -184,7 +184,7 @@ function Transfer({
         {/* Vertically centred, and every button says what it does and how many. */}
         <div className="flex shrink-0 flex-col justify-center gap-1.5">
           <IconButton
-            variant="outlined"
+            variant="secondary"
             size="sm"
             label={`Assign ${pickedLeft.length} selected`}
             icon={<ChevronRight />}
@@ -192,7 +192,7 @@ function Transfer({
             onClick={() => move(true)}
           />
           <IconButton
-            variant="text"
+            variant="tertiary"
             size="sm"
             label="Assign all"
             icon={<ChevronsRight />}
@@ -200,7 +200,7 @@ function Transfer({
             onClick={() => move(true, true)}
           />
           <IconButton
-            variant="text"
+            variant="tertiary"
             size="sm"
             label="Remove all"
             icon={<ChevronsLeft />}
@@ -208,7 +208,7 @@ function Transfer({
             onClick={() => move(false, true)}
           />
           <IconButton
-            variant="outlined"
+            variant="secondary"
             size="sm"
             label={`Remove ${pickedRight.length} selected`}
             icon={<ChevronLeft />}
@@ -253,7 +253,7 @@ function Playground() {
         <div className="flex flex-wrap items-center gap-2.5">
           <KnobToggle checked={searchable} onChange={setSearchable} label="Search" />
           <KnobToggle checked={compact} onChange={setCompact} label="Compact" />
-          <Button size="sm" variant="outlined" onClick={() => setKey((k) => k + 1)}>
+          <Button size="sm" variant="secondary" onClick={() => setKey((k) => k + 1)}>
             Reset
           </Button>
         </div>
@@ -388,10 +388,10 @@ export default defineDoc({
           <PreviewStage minHeight={0} allowResize={false} center={false}>
             <Stack gap="sm" className="items-center">
               <Row gap="sm">
-                <IconButton variant="outlined" size="sm" label="Assign selected" icon={<ChevronRight />} />
-                <IconButton variant="text" size="sm" label="Assign all" icon={<ChevronsRight />} />
-                <IconButton variant="text" size="sm" label="Remove all" icon={<ChevronsLeft />} />
-                <IconButton variant="outlined" size="sm" label="Remove selected" icon={<ChevronLeft />} />
+                <IconButton variant="secondary" size="sm" label="Assign selected" icon={<ChevronRight />} />
+                <IconButton variant="tertiary" size="sm" label="Assign all" icon={<ChevronsRight />} />
+                <IconButton variant="tertiary" size="sm" label="Remove all" icon={<ChevronsLeft />} />
+                <IconButton variant="secondary" size="sm" label="Remove selected" icon={<ChevronLeft />} />
               </Row>
               <span className="text-caption text-[var(--ds-fg-muted)]">
                 Single chevron moves the ticked items; double moves everything visible.
@@ -442,9 +442,9 @@ export default defineDoc({
           </span>
         ),
       },
-      { label: 'Move enabled', render: <IconButton variant="outlined" size="sm" label="Assign" icon={<ChevronRight />} /> },
-      { label: 'Move disabled', render: <IconButton variant="outlined" size="sm" label="Assign" icon={<ChevronRight />} disabled /> },
-      { label: 'Move all', render: <IconButton variant="text" size="sm" label="Assign all" icon={<ChevronsRight />} /> },
+      { label: 'Move enabled', render: <IconButton variant="secondary" size="sm" label="Assign" icon={<ChevronRight />} /> },
+      { label: 'Move disabled', render: <IconButton variant="secondary" size="sm" label="Assign" icon={<ChevronRight />} disabled /> },
+      { label: 'Move all', render: <IconButton variant="tertiary" size="sm" label="Assign all" icon={<ChevronsRight />} /> },
       {
         label: 'Empty pane',
         render: (

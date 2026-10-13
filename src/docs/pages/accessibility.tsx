@@ -35,13 +35,13 @@ function FocusDemo() {
           <Button className="outline-2 outline-offset-2 outline-[var(--ds-focus-ring)]">
             Focused
           </Button>
-          <Button variant="outlined">Tab to me</Button>
+          <Button variant="secondary">Tab to me</Button>
         </Row>
       </Cell>
       <Cell label="outline: none" sub="Keyboard users are now lost" tone="bad">
         <Row gap="sm">
           <Button style={{ outline: 'none' }}>Focused?</Button>
-          <Button variant="outlined" style={{ outline: 'none' }}>
+          <Button variant="secondary" style={{ outline: 'none' }}>
             Or this one?
           </Button>
         </Row>

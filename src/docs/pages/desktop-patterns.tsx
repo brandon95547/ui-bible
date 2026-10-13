@@ -108,8 +108,8 @@ function MasterDetail({
               /* Revealed on hover AND on focus-within — hover alone would
                  make these unreachable by keyboard. */
               <span className="absolute right-2 top-1.5 hidden gap-0.5 rounded-[var(--radius-sm)] bg-[var(--ds-surface-overlay)] p-0.5 shadow-e2 group-hover:flex group-focus-within:flex">
-                <IconButton label="Archive" icon={<Archive />} size="xs" variant="text" />
-                <IconButton label="Delete" icon={<Trash2 />} size="xs" variant="text" />
+                <IconButton label="Archive" icon={<Archive />} size="xs" variant="tertiary" />
+                <IconButton label="Delete" icon={<Trash2 />} size="xs" variant="tertiary" />
               </span>
             )}
           </li>
@@ -125,9 +125,9 @@ function MasterDetail({
               {MAIL[sel].from}
             </span>
           </Stack>
-          <IconButton label="Star" icon={<Star />} size="sm" variant="text" />
-          <IconButton label="Forward" icon={<Forward />} size="sm" variant="text" />
-          <IconButton label="More" icon={<MoreHorizontal />} size="sm" variant="text" />
+          <IconButton label="Star" icon={<Star />} size="sm" variant="tertiary" />
+          <IconButton label="Forward" icon={<Forward />} size="sm" variant="tertiary" />
+          <IconButton label="More" icon={<MoreHorizontal />} size="sm" variant="tertiary" />
         </header>
         <div className="min-h-0 flex-1 overflow-y-auto p-3">
           <p className="text-caption leading-relaxed text-[var(--ds-fg-secondary)]">
@@ -532,8 +532,8 @@ export default defineDoc({
         label: 'Hover actions',
         render: (
           <Row gap="sm">
-            <IconButton label="Archive" icon={<Archive />} size="xs" variant="text" />
-            <IconButton label="Delete" icon={<Trash2 />} size="xs" variant="text" />
+            <IconButton label="Archive" icon={<Archive />} size="xs" variant="tertiary" />
+            <IconButton label="Delete" icon={<Trash2 />} size="xs" variant="tertiary" />
           </Row>
         ),
       },

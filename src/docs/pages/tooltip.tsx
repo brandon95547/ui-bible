@@ -44,7 +44,7 @@ function Playground() {
       >
         {/* The label is on the button, not the tooltip. The tooltip repeats it
             for sighted pointer users; the label is what everyone else gets. */}
-        <IconButton variant="outlined" label="Archive deployment" icon={<Archive />} />
+        <IconButton variant="secondary" label="Archive deployment" icon={<Archive />} />
       </Tooltip>
     </PreviewStage>
   )
@@ -125,16 +125,16 @@ export default defineDoc({
           <PreviewStage minHeight={140}>
             <Row gap="sm">
               <Tooltip content="Bold" shortcut="⌘B">
-                <IconButton variant="outlined" label="Bold" icon={<Bold />} />
+                <IconButton variant="secondary" label="Bold" icon={<Bold />} />
               </Tooltip>
               <Tooltip content="Italic" shortcut="⌘I">
-                <IconButton variant="outlined" label="Italic" icon={<Italic />} />
+                <IconButton variant="secondary" label="Italic" icon={<Italic />} />
               </Tooltip>
               <Tooltip content="Archive deployment" shortcut="E">
-                <IconButton variant="outlined" label="Archive deployment" icon={<Archive />} />
+                <IconButton variant="secondary" label="Archive deployment" icon={<Archive />} />
               </Tooltip>
               <Tooltip content="Delete permanently">
-                <IconButton variant="outlined" label="Delete permanently" icon={<Trash2 />} />
+                <IconButton variant="secondary" label="Delete permanently" icon={<Trash2 />} />
               </Tooltip>
             </Row>
           </PreviewStage>
@@ -150,7 +150,7 @@ export default defineDoc({
             <Row gap="lg">
               {(['top', 'bottom', 'left', 'right'] as const).map((s) => (
                 <Tooltip key={s} content={`Placed ${s}`} side={s}>
-                  <Button variant="outlined" size="sm">
+                  <Button variant="secondary" size="sm">
                     {s}
                   </Button>
                 </Tooltip>
@@ -232,7 +232,7 @@ export default defineDoc({
           </span>
         ),
       },
-      { label: 'On a button', render: <Tooltip content="Archive"><IconButton variant="outlined" label="Archive" icon={<Archive />} /></Tooltip> },
+      { label: 'On a button', render: <Tooltip content="Archive"><IconButton variant="secondary" label="Archive" icon={<Archive />} /></Tooltip> },
       { label: 'On text', render: <Tooltip content="Deployment identifier"><span className="cursor-help border-b border-dotted border-[var(--ds-border-strong)] text-body-sm text-[var(--ds-fg-secondary)]">dpl_7Hq3</span></Tooltip> },
       { label: 'On a help icon', render: <Tooltip content="Optional clarification"><span className="text-[var(--ds-fg-muted)]"><Info size={15} /></span></Tooltip> },
       {
@@ -240,7 +240,7 @@ export default defineDoc({
         render: (
           <Tooltip content="You need write access to deploy">
             <span className="inline-flex">
-              <Button variant="outlined" size="sm" disabled>
+              <Button variant="secondary" size="sm" disabled>
                 Deploy
               </Button>
             </span>
@@ -254,7 +254,7 @@ export default defineDoc({
   anatomy: {
     render: (
       <Tooltip content="Archive deployment" shortcut="E">
-        <IconButton variant="outlined" label="Archive deployment" icon={<Archive />} />
+        <IconButton variant="secondary" label="Archive deployment" icon={<Archive />} />
       </Tooltip>
     ),
     caption:
@@ -349,7 +349,7 @@ export default defineDoc({
       why: 'Otherwise the tooltip does not exist for keyboard users, who are exactly the audience for the shortcut it usually contains.',
       render: (
         <Tooltip content="Appears on focus too" shortcut="E">
-          <IconButton variant="outlined" label="Focus demo" icon={<Archive />} />
+          <IconButton variant="secondary" label="Focus demo" icon={<Archive />} />
         </Tooltip>
       ),
     },
@@ -369,7 +369,7 @@ export default defineDoc({
       render: (
         <Tooltip content="You need write access to deploy">
           <span className="inline-flex" tabIndex={0}>
-            <Button variant="outlined" size="sm" disabled>
+            <Button variant="secondary" size="sm" disabled>
               Deploy
             </Button>
           </span>
@@ -415,7 +415,7 @@ export default defineDoc({
       why: 'A tooltip that says "Deploy" on a button labelled "Deploy" is pure noise, and it trains users that tooltips are not worth reading.',
       render: (
         <Tooltip content="Deploy">
-          <Button variant="outlined" size="sm">
+          <Button variant="secondary" size="sm">
             Deploy
           </Button>
         </Tooltip>

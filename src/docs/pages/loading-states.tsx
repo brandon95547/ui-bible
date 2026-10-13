@@ -40,7 +40,7 @@ function Playground() {
               options={['none', 'inline', 'skeleton', 'optimistic', 'streaming', 'progress'] as const}
             />
           </Knob>
-          <Button size="xs" variant="outlined" onClick={run}>
+          <Button size="xs" variant="secondary" onClick={run}>
             Run
           </Button>
         </div>
@@ -80,7 +80,7 @@ function StrategyDemo({ strategy, busy }: { strategy: Strategy; busy: boolean })
         <Button loading={busy} startIcon={<Send />}>
           Send invite
         </Button>
-        <Button variant="outlined" startIcon={busy ? <Spinner size={14} /> : <RefreshCw />}>
+        <Button variant="secondary" startIcon={busy ? <Spinner size={14} /> : <RefreshCw />}>
           Refresh
         </Button>
       </Row>
@@ -157,7 +157,7 @@ function OptimisticDemo() {
           )}
         </div>
       ))}
-      <Button size="sm" variant="outlined" onClick={add} className="self-start">
+      <Button size="sm" variant="secondary" onClick={add} className="self-start">
         Add service
       </Button>
     </Stack>

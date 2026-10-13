@@ -10,7 +10,7 @@ const DEPLOY_OPTIONS = [
 ]
 
 function Playground() {
-  const [variant, setVariant] = React.useState<'filled' | 'outlined' | 'elevated'>('filled')
+  const [variant, setVariant] = React.useState<'primary' | 'secondary' | 'standard'>('primary')
   const [size, setSize] = React.useState<'sm' | 'md' | 'lg'>('md')
   const [icon, setIcon] = React.useState(true)
   const [disabled, setDisabled] = React.useState(false)
@@ -26,7 +26,7 @@ function Playground() {
             <KnobSelect
               value={variant}
               onChange={setVariant}
-              options={['filled', 'outlined', 'elevated'] as const}
+              options={['primary', 'secondary', 'standard'] as const}
             />
           </Knob>
           <Knob label="Size">
@@ -137,7 +137,7 @@ export default defineDoc({
         id: 'shapes',
         title: 'The three shapes it takes',
         description:
-          'Filled for a page-level primary, outlined for a secondary, elevated where the control sits on a busy surface and needs its own edge. The variant is the same decision as for any other button — hierarchy first, the split second.',
+          'Primary for the page-level action, secondary for a real alternative to it, standard where the control should read as a button without competing. The variant is the same decision as for any other button — hierarchy first, the split second.',
         render: (
           <PreviewStage minHeight={0} allowResize={false}>
             <Row gap="lg">
@@ -149,7 +149,7 @@ export default defineDoc({
               />
               <SplitButton
                 label="Save"
-                variant="outlined"
+                variant="secondary"
                 startIcon={<Save />}
                 onAction={() => {}}
                 options={[
@@ -159,7 +159,7 @@ export default defineDoc({
               />
               <SplitButton
                 label="Send"
-                variant="elevated"
+                variant="standard"
                 size="sm"
                 startIcon={<Send />}
                 onAction={() => {}}
@@ -190,7 +190,7 @@ export default defineDoc({
               <Cell label="Split button" sub="No option above 30% of runs" tone="bad">
                 <SplitButton
                   label="Export as CSV"
-                  variant="outlined"
+                  variant="secondary"
                   onAction={() => {}}
                   options={[
                     { label: 'Export as JSON', onSelect: () => {} },
@@ -214,7 +214,7 @@ export default defineDoc({
               <Cell label="Wrong" sub="A mis-tap deletes the project" tone="bad">
                 <SplitButton
                   label="Delete project"
-                  variant="outlined"
+                  variant="secondary"
                   startIcon={<Trash2 />}
                   onAction={() => {}}
                   options={[
@@ -225,10 +225,10 @@ export default defineDoc({
               </Cell>
               <Cell label="Right" sub="Destructive actions live in a menu behind a confirm" tone="good">
                 <Row gap="sm">
-                  <Button variant="outlined" startIcon={<Archive />}>
+                  <Button variant="secondary" startIcon={<Archive />}>
                     Archive project
                   </Button>
-                  <Button variant="text" className="text-[var(--ds-danger-text)]">
+                  <Button variant="tertiary" className="text-[var(--ds-danger-text)]">
                     Delete…
                   </Button>
                 </Row>
@@ -263,12 +263,12 @@ export default defineDoc({
     states: [
       { label: 'Default', render: <SplitButton label="Deploy" size="sm" onAction={() => {}} options={DEPLOY_OPTIONS} /> },
       { label: 'With icon', render: <SplitButton label="Deploy" size="sm" startIcon={<Rocket />} onAction={() => {}} options={DEPLOY_OPTIONS} /> },
-      { label: 'Outlined', render: <SplitButton label="Save" variant="outlined" size="sm" onAction={() => {}} options={DEPLOY_OPTIONS} /> },
-      { label: 'Tonal', render: <SplitButton label="Send" variant="elevated" size="sm" onAction={() => {}} options={DEPLOY_OPTIONS} /> },
+      { label: 'Secondary', render: <SplitButton label="Save" variant="secondary" size="sm" onAction={() => {}} options={DEPLOY_OPTIONS} /> },
+      { label: 'Standard', render: <SplitButton label="Send" variant="standard" size="sm" onAction={() => {}} options={DEPLOY_OPTIONS} /> },
       { label: 'Disabled', render: <SplitButton label="Deploy" size="sm" disabled onAction={() => {}} options={DEPLOY_OPTIONS} /> },
       { label: 'Large', render: <SplitButton label="Deploy" size="lg" onAction={() => {}} options={DEPLOY_OPTIONS} /> },
-      { label: 'Two options', render: <SplitButton label="Save" variant="outlined" size="sm" onAction={() => {}} options={[{ label: 'Save as…', onSelect: () => {} }, { label: 'Save a copy', onSelect: () => {} }]} /> },
-      { label: 'Danger item', render: <SplitButton label="Archive" variant="outlined" size="sm" onAction={() => {}} options={[{ label: 'Archive', onSelect: () => {} }, { label: 'Delete permanently', danger: true, onSelect: () => {} }]} /> },
+      { label: 'Two options', render: <SplitButton label="Save" variant="secondary" size="sm" onAction={() => {}} options={[{ label: 'Save as…', onSelect: () => {} }, { label: 'Save a copy', onSelect: () => {} }]} /> },
+      { label: 'Danger item', render: <SplitButton label="Archive" variant="secondary" size="sm" onAction={() => {}} options={[{ label: 'Archive', onSelect: () => {} }, { label: 'Delete permanently', danger: true, onSelect: () => {} }]} /> },
     ],
   },
 
@@ -296,7 +296,7 @@ export default defineDoc({
         label: 'Divider',
         value: '1px at 24% alpha',
         kind: 'color',
-        note: 'Full height, inset by 6px top and bottom on filled variants. It is the only thing telling the user there are two targets here, so it must never be decorative-only contrast.',
+        note: 'Full height, inset by 6px top and bottom on a primary control. It is the only thing telling the user there are two targets here, so it must never be decorative-only contrast.',
       },
       {
         n: 3,
@@ -330,16 +330,16 @@ export default defineDoc({
   },
 
   tokens: [
-    { category: 'color', token: '--ds-accent', usedFor: 'Filled background, both halves' },
-    { category: 'color', token: '--ds-fg-on-accent', usedFor: 'Label and chevron on a filled control' },
-    { category: 'color', token: '--ds-border', usedFor: 'Outlined variant’s edge' },
+    { category: 'color', token: '--ds-btn-primary', usedFor: 'Primary fill, both halves' },
+    { category: 'color', token: '--ds-btn-primary-fg', usedFor: 'Label and chevron on a primary control' },
+    { category: 'color', token: '--ds-border', usedFor: 'The seam on a secondary or standard control' },
     { category: 'color', token: '--ds-layer-hover', usedFor: 'Hover on either half, independently' },
     { category: 'color', token: '--ds-surface-overlay', usedFor: 'Menu surface' },
     { category: 'color', token: '--ds-danger-text', usedFor: 'A destructive item inside the menu' },
     { category: 'color', token: '--ds-focus-ring', usedFor: 'Focus outline on whichever half has focus' },
     { category: 'spacing', token: 'divider inset', value: '6px', usedFor: 'Top and bottom inset of the seam' },
     { category: 'spacing', token: 'menu offset', value: '6px', usedFor: 'Gap between control and menu' },
-    { category: 'radius', token: '--radius-md', value: '8px', usedFor: 'Outer corners only' },
+    { category: 'radius', token: 'pill', value: '9999px', usedFor: 'Outer ends only — the halves take the button’s default shape' },
     { category: 'shadow', token: '--shadow-e4', usedFor: 'Menu elevation' },
     { category: 'motion', token: '--duration-fast', value: '120ms', usedFor: 'Chevron rotation and menu entrance' },
   ],
@@ -383,7 +383,7 @@ export default defineDoc({
         <Stack gap="sm" className="items-center">
           <SplitButton
             label="Deploy to staging"
-            variant="outlined"
+            variant="secondary"
             size="sm"
             onAction={() => {}}
             options={DEPLOY_OPTIONS}
@@ -398,7 +398,7 @@ export default defineDoc({
       render: (
         <SplitButton
           label="Archive project"
-          variant="outlined"
+          variant="secondary"
           size="sm"
           onAction={() => {}}
           options={[
@@ -417,7 +417,7 @@ export default defineDoc({
       render: (
         <SplitButton
           label="Export as CSV"
-          variant="outlined"
+          variant="secondary"
           size="sm"
           onAction={() => {}}
           options={[
@@ -433,7 +433,7 @@ export default defineDoc({
       render: (
         <SplitButton
           label="Delete project"
-          variant="outlined"
+          variant="secondary"
           size="sm"
           startIcon={<Trash2 />}
           onAction={() => {}}
@@ -446,7 +446,7 @@ export default defineDoc({
       why: 'Then it is a menu button with a decorative label, and a user who wanted the default action gets a menu they have to read. The two halves must do two different things.',
       render: (
         <div className="text-center">
-          <Button variant="outlined" size="sm" endIcon={<span aria-hidden>▾</span>}>
+          <Button variant="secondary" size="sm" endIcon={<span aria-hidden>▾</span>}>
             Deploy to production
           </Button>
           <p className="mt-2 text-caption text-[var(--ds-danger-text)]">
@@ -461,7 +461,7 @@ export default defineDoc({
       render: (
         <SplitButton
           label="Deploy"
-          variant="outlined"
+          variant="secondary"
           size="sm"
           onAction={() => {}}
           options={[
@@ -482,7 +482,7 @@ export default defineDoc({
     ],
     contrast: [
       'The seam between the halves must reach 3:1 against the fill. It is the only visual signal that two targets exist, so it is a meaningful boundary under 1.4.11.',
-      'The chevron must reach 3:1 against the fill it sits on. At 14px inside a saturated filled button this is easy to get wrong with a low-alpha white.',
+      'The chevron must reach 3:1 against the fill it sits on. At 14px inside a filled button this is easy to get wrong with a low-alpha tint of the label.',
       'Hover must affect only the half under the pointer. A wash across both halves erases the seam at the exact moment the user is deciding which one to hit.',
     ],
     keyboard: [
@@ -623,7 +623,7 @@ const target = TARGETS.find((t) => t.id === preferred)!
           { name: 'label', type: 'string', required: true, description: 'The default action’s own name — not the family name. Shown on the primary half.' },
           { name: 'onAction', type: '() => void', required: true, description: 'Runs on the primary half. Must never be destructive.' },
           { name: 'options', type: 'MenuItemSpec[]', required: true, description: 'Two to six variants of the same verb. Each may carry an icon, a shortcut, and a danger flag.' },
-          { name: 'variant', type: "'filled' | 'outlined' | 'elevated'", default: "'filled'", description: 'Hierarchy, decided exactly as for a plain Button.' },
+          { name: 'variant', type: "'primary' | 'secondary' | 'standard'", default: "'primary'", description: 'Hierarchy, decided exactly as for a plain Button.' },
           { name: 'size', type: "'sm' | 'md' | 'lg'", default: "'md'", description: 'The chevron half keeps a touch-sized width at every size.' },
           { name: 'startIcon', type: 'ReactNode', description: 'Leading glyph on the primary half only.' },
           { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables both halves. Disabling only one is always a bug.' },

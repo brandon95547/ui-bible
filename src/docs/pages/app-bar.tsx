@@ -150,7 +150,7 @@ function RtlToggle({
   return (
     <Button
       size={size === 'sm' ? 'xs' : 'md'}
-      variant={rtl ? 'tonal' : 'outlined'}
+      variant={rtl ? 'standard' : 'secondary'}
       aria-pressed={rtl}
       onClick={() => onChange(!rtl)}
       title={rtl ? 'Right to left — click for left to right' : 'Preview right to left'}
@@ -440,7 +440,7 @@ function Playground() {
             <IconButton
               label={theme === 'dark' ? 'Switch the preview to light' : 'Switch the preview to dark'}
               icon={theme === 'dark' ? <Moon /> : <Sun />}
-              variant="outlined"
+              variant="secondary"
               onClick={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))}
             />
           </Knob>
@@ -500,7 +500,7 @@ function Playground() {
               label="Reset the playground"
               title="Reset the playground"
               icon={<RotateCcw />}
-              variant="outlined"
+              variant="secondary"
               size="md"
               onClick={reset}
             />

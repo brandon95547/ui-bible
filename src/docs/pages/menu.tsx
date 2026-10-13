@@ -80,7 +80,7 @@ function Playground() {
             <IconButton
               label="More actions for api-gateway"
               icon={<MoreHorizontal />}
-              variant="outlined"
+              variant="secondary"
               aria-haspopup="menu"
               aria-expanded={open}
               onClick={toggle}
@@ -113,7 +113,7 @@ function CheckableDemo() {
     <PreviewStage minHeight={230} clip={false}>
       <Popover
         trigger={({ toggle: t, open }) => (
-          <Button variant="outlined" size="sm" aria-haspopup="menu" aria-expanded={open} onClick={t}>
+          <Button variant="secondary" size="sm" aria-haspopup="menu" aria-expanded={open} onClick={t}>
             Columns ({cols.length})
           </Button>
         )}
@@ -308,14 +308,14 @@ export default defineDoc({
     states: [
       {
         label: 'Trigger idle',
-        render: <IconButton size="sm" variant="outlined" label="More actions" icon={<MoreHorizontal />} />,
+        render: <IconButton size="sm" variant="secondary" label="More actions" icon={<MoreHorizontal />} />,
       },
       {
         label: 'Trigger open',
         render: (
           <IconButton
             size="sm"
-            variant="tonal"
+            variant="standard"
             label="More actions"
             icon={<MoreHorizontal />}
             aria-expanded

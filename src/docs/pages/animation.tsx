@@ -68,7 +68,7 @@ function PatternLab() {
       center={false}
       minHeight={0}
       controls={
-        <Button size="xs" variant="outlined" onClick={() => setKey((k) => k + 1)}>
+        <Button size="xs" variant="secondary" onClick={() => setKey((k) => k + 1)}>
           Replay all
         </Button>
       }
@@ -136,7 +136,7 @@ function PatternLab() {
                 {count}
               </Badge>
             </span>
-            <Button size="xs" variant="text" onClick={() => setCount((c) => c + 1)}>
+            <Button size="xs" variant="tertiary" onClick={() => setCount((c) => c + 1)}>
               increment
             </Button>
           </div>
@@ -153,7 +153,7 @@ function StaggerDemo() {
       center={false}
       minHeight={0}
       controls={
-        <Button size="xs" variant="outlined" onClick={() => setKey((k) => k + 1)}>
+        <Button size="xs" variant="secondary" onClick={() => setKey((k) => k + 1)}>
           Replay
         </Button>
       }
@@ -267,7 +267,7 @@ export default defineDoc({
           <PreviewStage minHeight={0} allowResize={false}>
             <Row gap="lg" align="center">
               <Stack gap="xs" className="items-center">
-                <IconButton label="Notifications" icon={<Bell />} variant="outlined" className="hover:[&_svg]:animate-[wiggle_400ms_ease-in-out]" />
+                <IconButton label="Notifications" icon={<Bell />} variant="secondary" className="hover:[&_svg]:animate-[wiggle_400ms_ease-in-out]" />
                 <span className="text-[10px] text-[var(--ds-fg-muted)]">hover</span>
               </Stack>
               <Stack gap="xs" className="items-center">
@@ -278,7 +278,7 @@ export default defineDoc({
                 <IconButton
                   label="Add"
                   icon={<Plus />}
-                  variant="tonal"
+                  variant="standard"
                   className="[&_svg]:transition-transform [&_svg]:duration-[220ms] hover:[&_svg]:rotate-90"
                 />
                 <span className="text-[10px] text-[var(--ds-fg-muted)]">rotate</span>
@@ -287,7 +287,7 @@ export default defineDoc({
                 <IconButton
                   label="Delete"
                   icon={<Trash2 />}
-                  variant="danger-outline"
+                  variant="secondary" tone="danger"
                   className="transition-transform hover:-translate-y-0.5"
                 />
                 <span className="text-[10px] text-[var(--ds-fg-muted)]">lift</span>
@@ -605,7 +605,7 @@ function CopyDemo() {
           <Plus className="rotate-45" />
         )
       }
-      variant="outlined"
+      variant="secondary"
       onClick={() => {
         setDone(true)
         setTimeout(() => setDone(false), 1400)

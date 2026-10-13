@@ -133,13 +133,13 @@ function Playground() {
           <Row gap="sm">
             <Button
               size="sm"
-              variant="outlined"
+              variant="secondary"
               startIcon={copied ? <Check size={14} /> : <Copy size={14} />}
               onClick={() => copy(url)}
             >
               {copied ? 'Copied' : 'Copy link'}
             </Button>
-            <Button size="sm" variant="text" startIcon={<Download size={14} />}>
+            <Button size="sm" variant="tertiary" startIcon={<Download size={14} />}>
               Save
             </Button>
           </Row>

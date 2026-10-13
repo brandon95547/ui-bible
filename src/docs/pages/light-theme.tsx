@@ -24,8 +24,8 @@ function LightSample() {
       <TextInput placeholder="Add a note…" />
       <Row gap="sm">
         <Button size="sm">Pay now</Button>
-        <Button size="sm" variant="outlined">Download PDF</Button>
-        <Button size="sm" variant="text">Dispute</Button>
+        <Button size="sm" variant="secondary">Download PDF</Button>
+        <Button size="sm" variant="tertiary">Dispute</Button>
       </Row>
     </div>
   )

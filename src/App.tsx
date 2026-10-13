@@ -119,7 +119,7 @@ function DocRoute({
           action={<Button onClick={() => onNavigate('home')}>Back to contents</Button>}
           secondaryAction={
             next ? (
-              <Button variant="text" onClick={() => onNavigate(next.id)}>
+              <Button variant="tertiary" onClick={() => onNavigate(next.id)}>
                 Go to {next.title}
               </Button>
             ) : undefined
@@ -327,7 +327,7 @@ function Shell({ initialSpec }: { initialSpec?: DocSpec | null }) {
                 label="Toggle inspector mode"
                 icon={<Crosshair />}
                 size="sm"
-                variant={inspecting ? 'tonal' : 'text'}
+                variant={inspecting ? 'standard' : 'tertiary'}
                 onClick={toggleInspector}
               />
             </Tooltip>

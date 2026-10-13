@@ -237,9 +237,9 @@ export default defineDoc({
 }
 
 /* 3 — COMPONENT. Private. References tier 2 only. */
-.ds-btn--filled {
-  --c-btn-bg: var(--ds-accent);
-  background: var(--c-btn-bg);
+.ds-fab {
+  --c-fab-bg: var(--ds-accent);
+  background: var(--c-fab-bg);
 }`}
         />
       </div>

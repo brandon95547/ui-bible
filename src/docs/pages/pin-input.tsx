@@ -760,13 +760,13 @@ function VerifyFlow() {
         <Row gap="sm" align="center">
           <Button
             size="sm"
-            variant="text"
+            variant="tertiary"
             disabled={cooldown > 0}
             onClick={() => setCooldown(30)}
           >
             {cooldown > 0 ? `Resend in ${cooldown}s` : 'Resend code'}
           </Button>
-          <Button size="sm" variant="text">
+          <Button size="sm" variant="tertiary">
             Use a different email
           </Button>
         </Row>

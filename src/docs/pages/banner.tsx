@@ -56,10 +56,14 @@ function Playground() {
           actions={
             actions ? (
               <>
-                <Button size="sm" variant={tone === 'danger' ? 'danger' : 'outlined'}>
+                <Button
+                  size="sm"
+                  variant={tone === 'danger' ? 'primary' : 'secondary'}
+                  tone={tone === 'danger' ? 'danger' : undefined}
+                >
                   {tone === 'danger' ? 'Update card' : 'Fix it'}
                 </Button>
-                <Button size="sm" variant="text">
+                <Button size="sm" variant="tertiary">
                   Learn more
                 </Button>
               </>
@@ -162,7 +166,7 @@ export default defineDoc({
                 tone="danger"
                 title="Payment declined"
                 icon={<CreditCard size={17} />}
-                actions={<Button size="sm" variant="danger">Update card</Button>}
+                actions={<Button size="sm" variant="primary" tone="danger">Update card</Button>}
               >
                 Card ending 4242 was refused. Services pause in 3 days.
               </Alert>
@@ -248,7 +252,7 @@ export default defineDoc({
       { label: 'Neutral', render: <MiniAlert tone="neutral" /> },
       { label: 'Quiet', note: 'No tinted fill', render: <div className="w-48"><Alert tone="warning" quiet title="Quiet" /></div> },
       { label: 'Title only', render: <div className="w-48"><Alert tone="info" title="Read-only project" /></div> },
-      { label: 'With actions', render: <div className="w-48"><Alert tone="danger" title="Failed" actions={<Button size="xs" variant="danger">Retry</Button>} /></div> },
+      { label: 'With actions', render: <div className="w-48"><Alert tone="danger" title="Failed" actions={<Button size="xs" variant="primary" tone="danger">Retry</Button>} /></div> },
       { label: 'Dismissible', render: <div className="w-48"><Alert tone="info" title="Dismissible" onDismiss={() => {}} /></div> },
       { label: 'Greyscale', render: <span style={{ filter: 'grayscale(1)' }}><MiniAlert tone="danger" /></span> },
       { label: 'Stacked', render: <div className="flex w-48 flex-col gap-2"><MiniAlert tone="warning" /><MiniAlert tone="info" /></div> },
@@ -265,8 +269,8 @@ export default defineDoc({
           onDismiss={() => {}}
           actions={
             <>
-              <Button size="sm" variant="danger">Update card</Button>
-              <Button size="sm" variant="text">Contact support</Button>
+              <Button size="sm" variant="primary" tone="danger">Update card</Button>
+              <Button size="sm" variant="tertiary">Contact support</Button>
             </>
           }
         >
@@ -352,7 +356,7 @@ export default defineDoc({
         <Alert
           tone="danger"
           title="Payment declined"
-          actions={<Button size="sm" variant="danger">Update card</Button>}
+          actions={<Button size="sm" variant="primary" tone="danger">Update card</Button>}
         >
           Card ending 4242 was refused by the issuer.
         </Alert>
@@ -484,7 +488,7 @@ export default defineDoc({
 <Alert
   tone="danger"
   title="Payment declined"
-  actions={<Button size="sm" variant="danger" onClick={updateCard}>Update card</Button>}
+  actions={<Button size="sm" variant="primary" tone="danger" onClick={updateCard}>Update card</Button>}
 >
   Card ending 4242 was refused. Services pause in 3 days.
 </Alert>
@@ -523,7 +527,7 @@ async function onSubmit(e) {
     <p class="ds-alert__title">Payment declined</p>
     <p class="ds-alert__body">Card ending 4242 was refused by the issuer.</p>
     <div class="ds-alert__actions">
-      <button class="ds-btn ds-btn--danger ds-btn--sm">Update card</button>
+      <button class="ds-btn ds-btn--primary ds-btn--danger ds-btn--sm">Update card</button>
     </div>
   </div>
   <button class="ds-alert__dismiss" aria-label="Dismiss payment warning">

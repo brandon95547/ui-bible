@@ -107,8 +107,8 @@ function SampleUI({ theme }: { theme: 'dark' | 'light' }) {
       </Alert>
       <Row gap="sm">
         <Button size="sm">Deploy</Button>
-        <Button size="sm" variant="outlined">Logs</Button>
-        <Button size="sm" variant="text">Cancel</Button>
+        <Button size="sm" variant="secondary">Logs</Button>
+        <Button size="sm" variant="tertiary">Cancel</Button>
       </Row>
     </div>
   )

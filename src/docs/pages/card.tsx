@@ -68,8 +68,8 @@ function Playground() {
             Three regions, twelve instances. Median response 18ms over the last hour.
           </p>
           <CardFooter>
-            <Button size="sm" variant="text">Logs</Button>
-            <Button size="sm" variant="outlined">Rollback</Button>
+            <Button size="sm" variant="tertiary">Logs</Button>
+            <Button size="sm" variant="secondary">Rollback</Button>
           </CardFooter>
         </Card>
       </div>
@@ -254,7 +254,7 @@ export default defineDoc({
                 description="Last 24 hours"
                 actions={
                   <>
-                    <Button size="xs" variant="text">View all</Button>
+                    <Button size="xs" variant="tertiary">View all</Button>
                     <IconButton label="More" icon={<MoreHorizontal />} size="xs" />
                   </>
                 }
@@ -334,8 +334,8 @@ export default defineDoc({
             Three regions, twelve instances.
           </p>
           <CardFooter>
-            <Button size="sm" variant="text">Logs</Button>
-            <Button size="sm" variant="outlined">Rollback</Button>
+            <Button size="sm" variant="tertiary">Logs</Button>
+            <Button size="sm" variant="secondary">Rollback</Button>
           </CardFooter>
         </Card>
       </div>
@@ -568,8 +568,8 @@ export default defineDoc({
   <CardHeader title="api-gateway" description="Deployed 4 minutes ago" />
   <p className="mt-3 text-body-sm text-fg-muted">Three regions, twelve instances.</p>
   <CardFooter>
-    <Button size="sm" variant="text">Logs</Button>
-    <Button size="sm" variant="outlined">Rollback</Button>
+    <Button size="sm" variant="tertiary">Logs</Button>
+    <Button size="sm" variant="secondary">Rollback</Button>
   </CardFooter>
 </Card>
 
@@ -614,8 +614,8 @@ export default defineDoc({
   <div class="ds-card__body">Three regions, twelve instances.</div>
 
   <footer class="ds-card__footer">
-    <button class="ds-btn ds-btn--text ds-btn--sm">Logs</button>
-    <button class="ds-btn ds-btn--outlined ds-btn--sm">Rollback</button>
+    <button class="ds-btn ds-btn--tertiary ds-btn--sm">Logs</button>
+    <button class="ds-btn ds-btn--secondary ds-btn--sm">Rollback</button>
   </footer>
 </article>
 

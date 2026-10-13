@@ -77,7 +77,7 @@ function Playground() {
             />
           </Knob>
           <KnobToggle checked={blur} onChange={setBlur} label="Blur" />
-          <Button size="sm" variant="outlined" onClick={() => setOpen((o) => !o)}>
+          <Button size="sm" variant="secondary" onClick={() => setOpen((o) => !o)}>
             {open ? 'Dismiss' : 'Show'}
           </Button>
         </div>

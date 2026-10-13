@@ -107,7 +107,7 @@ export default defineDoc({
     whenNotToUse: [
       {
         text: 'It performs an action rather than navigating.',
-        instead: 'a Button — even a text button looks identical and behaves correctly',
+        instead: 'a Button — even an inherit button sits in a line of text the same way and behaves correctly',
         to: '#/button',
       },
       {
@@ -242,7 +242,7 @@ export default defineDoc({
                 </A>
               </Cell>
               <Cell label="Acts" sub="Button" tone="good">
-                <Button variant="text" size="sm">
+                <Button variant="tertiary" size="sm">
                   Roll back
                 </Button>
               </Cell>
@@ -449,7 +449,7 @@ export default defineDoc({
       ),
     },
     {
-      title: 'Do not style a link as a filled button unless it is the primary action',
+      title: 'Do not style a link as a primary button unless it is the primary action',
       why: 'A page of link-buttons has no hierarchy, and users cannot tell which one is the recommendation. Inline and standalone links exist for a reason.',
       render: (
         <Row gap="sm">

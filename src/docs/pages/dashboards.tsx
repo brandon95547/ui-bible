@@ -120,7 +120,7 @@ function AnalyticsShell({ kpis = 4, dense }: { kpis?: number; dense?: boolean })
           <Badge tone="neutral" variant="subtle">
             Last 7 days
           </Badge>
-          <IconButton label="Alerts" icon={<Bell />} size="sm" variant="text" />
+          <IconButton label="Alerts" icon={<Bell />} size="sm" variant="tertiary" />
         </>
       }
       height="21rem"
@@ -166,7 +166,7 @@ function CrmShell() {
       bar={
         <>
           <SearchInput size="sm" placeholder="Search leads…" className="max-w-[12rem]" />
-          <Button size="sm" variant="outlined" startIcon={<Filter size={13} />}>
+          <Button size="sm" variant="secondary" startIcon={<Filter size={13} />}>
             Filters
           </Button>
           <span className="flex-1" />
@@ -213,7 +213,7 @@ function CrmShell() {
           </Badge>
           <Meter value={sel === 1 ? 72 : 40} label="Deal confidence" />
           <div className="mt-auto flex gap-1.5">
-            <Button size="sm" variant="outlined" className="flex-1">
+            <Button size="sm" variant="secondary" className="flex-1">
               Log call
             </Button>
             <Button size="sm" className="flex-1">

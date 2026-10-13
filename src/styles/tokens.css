@@ -288,6 +288,41 @@
   --ds-info-border: rgb(52 172 224 / 0.34);
   --ds-info-text: #73c7eb;          /* lifted 5%: 4.6:1 on its own subtle fill over an overlay */
 
+  /* Buttons. A variant is a recipe over five slots — fill, label, edge, hover
+     wash, blur — and these are the fills and washes the recipes read that no
+     other token already names. The washes are alpha for the reason the layers
+     above are: one value has to land on the page, a panel, a card and a dialog
+     and read as the same step on each.
+
+     The primary fill is not a color. It is the strongest neutral the theme
+     has, so it inverts with the theme and leaves hue free to mean something:
+     the accent selects and focuses, status colors report, and the one button
+     a view is built around is simply the brightest thing on it. */
+  --ds-btn-primary: var(--ds-fg);                /* 15.0:1 against the page it sits on */
+  --ds-btn-primary-fg: var(--ds-fg-inverse);     /* 15.0:1 on the fill */
+  --ds-btn-wash-inverse: rgb(0 0 0 / 0.08);      /* hover, over a fill LIGHTER than the page */
+  --ds-btn-quiet: rgb(255 255 255 / 0.09);       /* the standard fill: one step up from any ground */
+  --ds-btn-disabled: rgb(255 255 255 / 0.065);   /* a fill that is present and says nothing */
+
+  /* Glass. Fog lightens what is behind it and smoke darkens it; both are only
+     ever used with a 16px backdrop blur, over imagery. Thin is a resting
+     navigation pill, thick a resting glass button, dense its hover. */
+  --ds-fog-thin: rgb(255 255 255 / 0.04);
+  --ds-fog-thick: rgb(255 255 255 / 0.1);
+  --ds-fog-dense: rgb(255 255 255 / 0.3);
+  --ds-smoke-thick: rgb(16 16 16 / 0.4);
+  --ds-smoke-dense: rgb(16 16 16 / 0.6);
+
+  /* Aura — the one decorative fill in the system, pink into orange. Both stops
+     are a step deeper than the reference they were drawn from: at the reference
+     values a white label measures 3.9:1 on the pink and 3.7:1 on the orange,
+     and this fill's whole job is carrying a label. Deepened until it passes. */
+  --ds-aura-from: #d2356a;          /* white label 4.7:1 */
+  --ds-aura-to: #cb4710;            /* white label 4.7:1 */
+  --ds-aura-fg: #ffffff;
+  --ds-aura-wash: rgb(0 0 0 / 0.08);            /* hover: the fill is mid-tone in both themes */
+  --ds-aura: linear-gradient(100deg, var(--ds-aura-from) 4%, var(--ds-aura-to) 68%);
+
   /* Focus — one ring for the whole system. Users learn it once. */
   --ds-focus-ring: #8584dd;         /* 5.8:1 page · 3.3:1 field-hover — clears 3:1 everywhere */
   --ds-focus-ring-offset: #101010;
@@ -384,6 +419,26 @@
   --ds-info-subtle: rgb(46 125 246 / 0.1);
   --ds-info-border: rgb(27 98 219 / 0.28);
   --ds-info-text: #164eb0;
+
+  /* Buttons. The same recipes, pointed the other way: the primary fill is the
+     darkest neutral here, so its hover wash lightens; the quiet fill and the
+     disabled fill tint away from white, which is the only direction there is. */
+  --ds-btn-primary: var(--ds-fg);
+  --ds-btn-primary-fg: var(--ds-fg-inverse);
+  --ds-btn-wash-inverse: rgb(255 255 255 / 0.1);
+  --ds-btn-quiet: rgb(16 18 22 / 0.065);
+  --ds-btn-disabled: rgb(16 18 22 / 0.05);
+
+  /* Glass swaps direction with the theme. On a light page the label is dark,
+     so fog — the default glass — has to DARKEN what is behind it to stay a
+     surface, and smoke becomes the white one. */
+  --ds-fog-thin: rgb(23 26 32 / 0.04);
+  --ds-fog-thick: rgb(23 26 32 / 0.16);
+  --ds-fog-dense: rgb(23 26 32 / 0.26);
+  --ds-smoke-thick: rgb(255 255 255 / 0.5);
+  --ds-smoke-dense: rgb(255 255 255 / 0.75);
+
+  /* The aura does not change with the theme: it is an image, not a surface. */
 
   --ds-focus-ring: #6a55f2;
   --ds-focus-ring-offset: #ffffff;

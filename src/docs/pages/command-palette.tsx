@@ -354,7 +354,7 @@ export default defineDoc({
       },
     ],
     states: [
-      { label: 'Trigger', render: <Button variant="outlined" size="sm" startIcon={<Search size={14} />} endIcon={<Kbd>⌘K</Kbd>}>Search</Button> },
+      { label: 'Trigger', render: <Button variant="secondary" size="sm" startIcon={<Search size={14} />} endIcon={<Kbd>⌘K</Kbd>}>Search</Button> },
       {
         label: 'Row idle',
         render: (

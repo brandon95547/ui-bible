@@ -162,7 +162,7 @@ export function Dialog({
                 label="Close dialog"
                 icon={<X />}
                 size="sm"
-                variant="text"
+                variant="tertiary"
                 onClick={onClose}
                 className="-mr-2 -mt-1"
               />
@@ -282,7 +282,7 @@ export function Drawer({
               label="Close panel"
               icon={<X />}
               size="sm"
-              variant="text"
+              variant="tertiary"
               onClick={onClose}
               className="-mr-2"
             />

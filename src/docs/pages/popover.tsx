@@ -44,7 +44,7 @@ function Playground() {
   align="${align}"
   trigger={({ toggle, open }) => (
     <Button
-      variant="outlined"
+      variant="secondary"
       aria-haspopup="dialog"
       aria-expanded={open}
       onClick={toggle}
@@ -62,7 +62,7 @@ function Playground() {
         width="15rem"
         trigger={({ toggle: t, open }) => (
           <Button
-            variant="outlined"
+            variant="secondary"
             startIcon={<Settings2 size={15} />}
             aria-haspopup="dialog"
             aria-expanded={open}
@@ -151,7 +151,7 @@ function HoverCard() {
                 <MapPin size={12} /> London
                 <GitBranch size={12} className="ml-2" /> 214 deploys
               </Row>
-              <Button size="sm" variant="outlined" fullWidth className="mt-3">
+              <Button size="sm" variant="secondary" fullWidth className="mt-3">
                 View profile
               </Button>
             </span>
@@ -281,7 +281,7 @@ export default defineDoc({
               width="16rem"
               trigger={({ toggle, open }) => (
                 <Button
-                  variant="outlined"
+                  variant="secondary"
                   startIcon={<Filter size={15} />}
                   aria-haspopup="dialog"
                   aria-expanded={open}
@@ -303,7 +303,7 @@ export default defineDoc({
                 </Stack>
                 <span className="h-px bg-[var(--ds-border-subtle)]" />
                 <Row gap="sm">
-                  <Button size="sm" variant="text" className="flex-1">
+                  <Button size="sm" variant="tertiary" className="flex-1">
                     Clear
                   </Button>
                   <Button size="sm" className="flex-1">
@@ -331,7 +331,7 @@ export default defineDoc({
                   trigger={({ toggle, open }) => (
                     <Button
                       size="sm"
-                      variant="outlined"
+                      variant="secondary"
                       aria-haspopup="dialog"
                       aria-expanded={open}
                       onClick={toggle}
@@ -353,12 +353,12 @@ export default defineDoc({
     states: [
       {
         label: 'Trigger closed',
-        render: <Button variant="outlined" size="sm" startIcon={<Settings2 size={14} />}>Options</Button>,
+        render: <Button variant="secondary" size="sm" startIcon={<Settings2 size={14} />}>Options</Button>,
       },
       {
         label: 'Trigger open',
         render: (
-          <Button variant="tonal" size="sm" startIcon={<Settings2 size={14} />} aria-expanded>
+          <Button variant="standard" size="sm" startIcon={<Settings2 size={14} />} aria-expanded>
             Options
           </Button>
         ),
@@ -393,7 +393,7 @@ export default defineDoc({
           </span>
         ),
       },
-      { label: 'Icon trigger', render: <IconButton variant="outlined" size="sm" label="Filters" icon={<Filter />} /> },
+      { label: 'Icon trigger', render: <IconButton variant="secondary" size="sm" label="Filters" icon={<Filter />} /> },
       {
         label: 'Hover card',
         render: (
@@ -423,7 +423,7 @@ export default defineDoc({
         width="15rem"
         trigger={({ toggle, open }) => (
           <Button
-            variant="outlined"
+            variant="secondary"
             startIcon={<Settings2 size={15} />}
             aria-haspopup="dialog"
             aria-expanded={open}
@@ -545,7 +545,7 @@ export default defineDoc({
       render: (
         <Row gap="sm">
           <Tooltip content="Flips to top near the bottom edge">
-            <Button size="sm" variant="outlined">
+            <Button size="sm" variant="secondary">
               Near an edge
             </Button>
           </Tooltip>
@@ -659,7 +659,7 @@ export default defineDoc({
   width="15rem"
   trigger={({ toggle, open }) => (
     <Button
-      variant="outlined"
+      variant="secondary"
       // "dialog", not "menu": the announced role sets the keyboard expectation.
       aria-haspopup="dialog"
       aria-expanded={open}

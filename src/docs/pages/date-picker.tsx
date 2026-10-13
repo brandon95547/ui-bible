@@ -381,7 +381,7 @@ export default defineDoc({
           </span>
         ),
       },
-      { label: 'Preset', render: <Button size="sm" variant="text">Last 7 days</Button> },
+      { label: 'Preset', render: <Button size="sm" variant="tertiary">Last 7 days</Button> },
     ],
   },
 
@@ -484,7 +484,7 @@ export default defineDoc({
       render: (
         <Row gap="sm">
           {['Last 7 days', 'Last 30 days', 'This quarter'].map((p) => (
-            <Button key={p} size="sm" variant="outlined">
+            <Button key={p} size="sm" variant="secondary">
               {p}
             </Button>
           ))}
@@ -797,7 +797,7 @@ function RangeDemo() {
             <Button
               key={label}
               size="sm"
-              variant={preset === label ? 'tonal' : 'text'}
+              variant={preset === label ? 'standard' : 'tertiary'}
               className="justify-start"
               onClick={() => {
                 setRange({ start: s, end: e })
@@ -809,7 +809,7 @@ function RangeDemo() {
           ))}
           <Button
             size="sm"
-            variant={preset === 'Custom' ? 'tonal' : 'text'}
+            variant={preset === 'Custom' ? 'standard' : 'tertiary'}
             className="justify-start"
             onClick={() => setPreset('Custom')}
           >

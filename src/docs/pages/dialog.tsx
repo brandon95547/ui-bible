@@ -65,11 +65,11 @@ function Playground() {
           }
           footer={
             <>
-              <Button variant="text" onClick={() => setOpen(false)}>
+              <Button variant="tertiary" onClick={() => setOpen(false)}>
                 Cancel
               </Button>
               <Button
-                variant={tone === 'danger' ? 'danger' : 'filled'}
+                tone={tone === 'danger' ? 'danger' : undefined}
                 onClick={() => setOpen(false)}
               >
                 {tone === 'danger' ? 'Delete service' : 'Deploy build 4021'}
@@ -105,7 +105,7 @@ function ConfirmDemo() {
 
   return (
     <>
-      <Button variant="danger-outline" startIcon={<Trash2 />} onClick={() => setOpen(true)}>
+      <Button variant="secondary" tone="danger" startIcon={<Trash2 />} onClick={() => setOpen(true)}>
         Delete service
       </Button>
       <Dialog
@@ -121,10 +121,10 @@ function ConfirmDemo() {
         description="This removes the service, its environments and all deployment history. It cannot be undone."
         footer={
           <>
-            <Button variant="text" onClick={() => setOpen(false)}>
+            <Button variant="tertiary" onClick={() => setOpen(false)}>
               Cancel
             </Button>
-            <Button variant="danger" disabled={!ok} onClick={() => setOpen(false)}>
+            <Button variant="primary" tone="danger" disabled={!ok} onClick={() => setOpen(false)}>
               Delete service
             </Button>
           </>
@@ -299,7 +299,7 @@ export default defineDoc({
       },
     ],
     states: [
-      { label: 'Closed', render: <Button size="sm" variant="outlined">Open</Button> },
+      { label: 'Closed', render: <Button size="sm" variant="secondary">Open</Button> },
       { label: 'Scrim', render: <span className="block h-10 w-16 rounded-[var(--radius-md)] bg-[var(--ds-layer-scrim)]" /> },
       { label: 'Panel', render: <span className="block h-10 w-16 rounded-[var(--radius-lg)] border border-[var(--ds-border)] bg-[var(--ds-surface-overlay)] shadow-e5" /> },
       { label: 'Entering', note: 'scale 0.96 → 1', render: <span className="text-caption text-[var(--ds-fg-muted)]">200ms emphasized</span> },
@@ -307,7 +307,7 @@ export default defineDoc({
       { label: 'Success', render: <span className="grid h-9 w-9 place-items-center rounded-full bg-[var(--ds-success-subtle)] text-[var(--ds-success-text)]"><Check size={15} /></span> },
       { label: 'Scrollable', note: 'Header and footer pinned', render: <span className="text-caption text-[var(--ds-fg-muted)]">body scrolls</span> },
       { label: 'Non-dismissible', render: <span className="text-caption text-[var(--ds-fg-muted)]">no ×, no Esc</span> },
-      { label: 'Confirm disabled', render: <Button size="sm" variant="danger" disabled>Delete</Button> },
+      { label: 'Confirm disabled', render: <Button size="sm" variant="primary" tone="danger" disabled>Delete</Button> },
       { label: 'Submitting', render: <Button size="sm" loading>Deploy</Button> },
       { label: 'Focus trapped', render: <span className="text-caption text-[var(--ds-fg-muted)]">Tab cycles inside</span> },
       { label: 'Restored', render: <span className="text-caption text-[var(--ds-fg-muted)]">focus → trigger</span> },
@@ -330,8 +330,8 @@ export default defineDoc({
             </div>
           </div>
           <div className="flex items-center justify-end gap-2.5 px-6 pb-4 pt-5">
-            <Button size="sm" variant="text">Cancel</Button>
-            <Button size="sm" variant="danger">Delete service</Button>
+            <Button size="sm" variant="tertiary">Cancel</Button>
+            <Button size="sm" variant="primary" tone="danger">Delete service</Button>
           </div>
         </div>
       </div>
@@ -413,8 +413,8 @@ export default defineDoc({
       why: '"Delete service" tells the user what happens. "OK" forces them to re-read the dialog to reconstruct what they are agreeing to.',
       render: (
         <Row gap="sm">
-          <Button size="sm" variant="text">Cancel</Button>
-          <Button size="sm" variant="danger">Delete 3 projects</Button>
+          <Button size="sm" variant="tertiary">Cancel</Button>
+          <Button size="sm" variant="primary" tone="danger">Delete 3 projects</Button>
         </Row>
       ),
     },
@@ -462,7 +462,7 @@ export default defineDoc({
         <div className="w-full max-w-xs rounded-[var(--radius-lg)] border border-[var(--ds-border)] bg-[var(--ds-surface-overlay)] p-4 shadow-e3">
           <p className="text-label text-[var(--ds-fg)]">Save changes?</p>
           <Row gap="sm" className="mt-3 justify-end">
-            <Button size="xs" variant="text">Cancel</Button>
+            <Button size="xs" variant="tertiary">Cancel</Button>
             <Button size="xs">OK</Button>
           </Row>
         </div>
@@ -501,8 +501,8 @@ export default defineDoc({
       why: 'Do not autofocus Delete. A user pressing Enter out of habit should not destroy anything — focus the cancel action, or nothing.',
       render: (
         <Row gap="sm">
-          <Button size="sm" variant="text">Cancel</Button>
-          <Button size="sm" variant="danger" className="outline-2 outline-offset-2 outline-[var(--ds-focus-ring)]">
+          <Button size="sm" variant="tertiary">Cancel</Button>
+          <Button size="sm" variant="primary" tone="danger" className="outline-2 outline-offset-2 outline-[var(--ds-focus-ring)]">
             Delete
           </Button>
         </Row>
@@ -569,9 +569,9 @@ const [typed, setTyped] = useState('')
   description="This removes the service and all deployment history. It cannot be undone."
   footer={
     <>
-      <Button variant="text" onClick={() => setOpen(false)}>Cancel</Button>
+      <Button variant="tertiary" onClick={() => setOpen(false)}>Cancel</Button>
       <Button
-        variant="danger"
+        variant="primary" tone="danger"
         disabled={typed !== service.name}
         loading={deleting}
         onClick={confirmDelete}
@@ -617,8 +617,8 @@ useEffect(() => { open ? ref.current?.showModal() : ref.current?.close() }, [ope
   <div class="ds-dialog__body">…</div>
 
   <footer class="ds-dialog__footer">
-    <button class="ds-btn ds-btn--text">Cancel</button>
-    <button class="ds-btn ds-btn--danger">Delete service</button>
+    <button class="ds-btn ds-btn--tertiary">Cancel</button>
+    <button class="ds-btn ds-btn--primary ds-btn--danger">Delete service</button>
   </footer>
 </dialog>
 
@@ -728,7 +728,7 @@ function WizardDemo() {
 
   return (
     <>
-      <Button variant="outlined" onClick={() => { setOpen(true); setStep(0) }}>
+      <Button variant="secondary" onClick={() => { setOpen(true); setStep(0) }}>
         Open wizard
       </Button>
       <Dialog
@@ -739,12 +739,12 @@ function WizardDemo() {
         description={`Step ${step + 1} of ${steps.length} · ${steps[step]}`}
         footer={
           <>
-            <Button variant="text" onClick={() => setOpen(false)}>
+            <Button variant="tertiary" onClick={() => setOpen(false)}>
               Cancel
             </Button>
             <span className="flex-1" />
             <Button
-              variant="outlined"
+              variant="secondary"
               disabled={step === 0}
               onClick={() => setStep((s) => s - 1)}
             >

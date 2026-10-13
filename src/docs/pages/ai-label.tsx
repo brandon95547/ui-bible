@@ -88,7 +88,7 @@ function SummaryCard({ reviewed }: { reviewed?: boolean }) {
         failing fast. Rolling back to build 4019 restored the service in about eight seconds.
       </p>
       <Row gap="sm" align="center" className="mt-3">
-        <Button size="sm" variant="outlined">
+        <Button size="sm" variant="secondary">
           View the logs
         </Button>
         {!reviewed && (

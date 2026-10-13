@@ -113,7 +113,7 @@ function FormSheet() {
   const [restart, setRestart] = React.useState(true)
   return (
     <Stack gap="md" className="items-center">
-      <Button variant="outlined" onClick={() => setOpen(true)}>
+      <Button variant="secondary" onClick={() => setOpen(true)}>
         Edit deployment
       </Button>
       <BottomSheet
@@ -122,7 +122,7 @@ function FormSheet() {
         title="Edit deployment"
         footer={
           <>
-            <Button variant="text" onClick={() => setOpen(false)} className="flex-1">
+            <Button variant="tertiary" onClick={() => setOpen(false)} className="flex-1">
               Cancel
             </Button>
             <Button onClick={() => setOpen(false)} className="flex-1">

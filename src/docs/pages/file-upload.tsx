@@ -180,7 +180,7 @@ function Playground() {
             />
           </Knob>
           <KnobToggle checked={compact} onChange={setCompact} label="Compact" />
-          <Button size="sm" variant="outlined" onClick={() => setFiles(SEED)}>
+          <Button size="sm" variant="secondary" onClick={() => setFiles(SEED)}>
             Reset
           </Button>
         </div>
@@ -203,7 +203,7 @@ function Playground() {
           ) : (
             <Stack gap="sm">
               <Row gap="sm" align="center">
-                <Button variant="outlined" startIcon={<Upload size={15} />}>
+                <Button variant="secondary" startIcon={<Upload size={15} />}>
                   Choose files
                 </Button>
                 <span className="text-caption text-[var(--ds-fg-muted)]">
@@ -330,7 +330,7 @@ export default defineDoc({
               </Cell>
               <Cell label="Button" sub="Uploading is incidental" tone="good">
                 <Row gap="sm" align="center">
-                  <Button size="sm" variant="outlined" startIcon={<Upload size={14} />}>
+                  <Button size="sm" variant="secondary" startIcon={<Upload size={14} />}>
                     Attach
                   </Button>
                   <span className="text-caption text-[var(--ds-fg-muted)]">PNG or PDF, 10 MB</span>
@@ -402,7 +402,7 @@ export default defineDoc({
         label: 'Failed',
         render: <div className="w-56"><FileRow file={SEED[2]} onRemove={() => {}} onRetry={() => {}} /></div>,
       },
-      { label: 'Button', render: <Button size="sm" variant="outlined" startIcon={<Upload size={14} />}>Choose files</Button> },
+      { label: 'Button', render: <Button size="sm" variant="secondary" startIcon={<Upload size={14} />}>Choose files</Button> },
       { label: 'Progress', render: <div className="w-40"><Progress value={62} size="xs" /></div> },
       {
         label: 'Count',

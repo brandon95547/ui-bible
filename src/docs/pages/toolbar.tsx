@@ -234,16 +234,16 @@ function BulkBar() {
               {selected} selected
             </span>
             <Divider orientation="vertical" className="mx-1 h-5" />
-            <Button size="sm" variant="text" startIcon={<Tag size={14} />}>
+            <Button size="sm" variant="tertiary" startIcon={<Tag size={14} />}>
               Tag
             </Button>
-            <Button size="sm" variant="text" startIcon={<Download size={14} />}>
+            <Button size="sm" variant="tertiary" startIcon={<Download size={14} />}>
               Export
             </Button>
             {/* Destructive actions sit at the far end, past a divider, so the
                 pointer never passes over them on the way to something safe. */}
             <Divider orientation="vertical" className="mx-1 h-5" />
-            <Button size="sm" variant="text" startIcon={<Trash2 size={14} />} className="text-[var(--ds-danger-text)]">
+            <Button size="sm" variant="tertiary" startIcon={<Trash2 size={14} />} className="text-[var(--ds-danger-text)]">
               Delete
             </Button>
             <IconButton
@@ -257,7 +257,7 @@ function BulkBar() {
         ) : (
           <div className="flex items-center gap-3 rounded-[var(--radius-lg)] border border-dashed border-[var(--ds-border-subtle)] px-3 py-2">
             <span className="text-caption text-[var(--ds-fg-muted)]">Nothing selected</span>
-            <Button size="sm" variant="text" onClick={() => setSelected(4)}>
+            <Button size="sm" variant="tertiary" onClick={() => setSelected(4)}>
               Select 4 rows
             </Button>
           </div>
@@ -393,17 +393,17 @@ export default defineDoc({
         render: (
           <PreviewStage minHeight={0} allowResize={false} center={false}>
             <Toolbar label="Deployment actions">
-              <Button size="sm" variant="text" startIcon={<Download size={14} />}>
+              <Button size="sm" variant="tertiary" startIcon={<Download size={14} />}>
                 Export
               </Button>
-              <Button size="sm" variant="text" startIcon={<Tag size={14} />}>
+              <Button size="sm" variant="tertiary" startIcon={<Tag size={14} />}>
                 Add tag
               </Button>
               <Divider orientation="vertical" className="mx-1 h-5" />
-              <Button size="sm" variant="text">
+              <Button size="sm" variant="tertiary">
                 Re-run
               </Button>
-              <Button size="sm" variant="text">
+              <Button size="sm" variant="tertiary">
                 Roll back
               </Button>
             </Toolbar>
@@ -428,11 +428,11 @@ export default defineDoc({
         label: 'Overflow',
         render: <TbButton label="More options" icon={<MoreHorizontal size={15} />} />,
       },
-      { label: 'Text control', render: <Button size="sm" variant="text">Re-run</Button> },
+      { label: 'Text control', render: <Button size="sm" variant="tertiary">Re-run</Button> },
       {
         label: 'Danger',
         render: (
-          <Button size="sm" variant="text" className="text-[var(--ds-danger-text)]" startIcon={<Trash2 size={14} />}>
+          <Button size="sm" variant="tertiary" className="text-[var(--ds-danger-text)]" startIcon={<Trash2 size={14} />}>
             Delete
           </Button>
         ),

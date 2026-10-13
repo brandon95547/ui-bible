@@ -118,7 +118,7 @@ function DurationLab() {
             }}
           />
         </div>
-        <Button onClick={() => setOn((o) => !o)} variant="outlined">
+        <Button onClick={() => setOn((o) => !o)} variant="secondary">
           Play · {ms}ms · {ease.replace('--ease-', '')}
         </Button>
       </Stack>

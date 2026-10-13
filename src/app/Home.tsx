@@ -81,12 +81,12 @@ export function Home({ onNavigate, onOpenPalette }: { onNavigate: (id: string) =
           >
             Start with tokens
           </Button>
-          <Button size="lg" variant="outlined" onClick={() => onNavigate('ux-rules')}>
+          <Button size="lg" variant="secondary" onClick={() => onNavigate('ux-rules')}>
             Read the UX rules
           </Button>
           <Button
             size="lg"
-            variant="text"
+            variant="tertiary"
             startIcon={<CommandIcon />}
             onClick={onOpenPalette}
           >
@@ -110,7 +110,7 @@ export function Home({ onNavigate, onOpenPalette }: { onNavigate: (id: string) =
           </p>
         </div>
         <Button
-          variant={inspecting ? 'filled' : 'elevated'}
+          variant={inspecting ? 'primary' : 'standard'}
           onClick={toggleInspector}
           startIcon={<Crosshair />}
           className="shrink-0"

@@ -282,9 +282,9 @@ const ACTIONS: NavPage[] = [
     id: 'button',
     title: 'Button',
     blurb:
-      'Eight variants, four sizes, and the rule that governs all of them: one filled button per view.',
+      'Nine variants, four sizes, three shapes, and the rule that governs all of them: one primary button per view.',
     aliases: ['CTA', 'Icon Button', 'FAB', 'Floating Action Button', 'Link Button'],
-    keywords: ['submit', 'action', 'loading', 'destructive', 'variant', 'hierarchy'],
+    keywords: ['submit', 'action', 'loading', 'destructive', 'variant', 'hierarchy', 'pill', 'glass', 'aura'],
   },
   {
     id: 'button-group',

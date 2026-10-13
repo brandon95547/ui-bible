@@ -93,7 +93,7 @@ function Carousel({
             on touch, which is where a carousel is used most. */}
         <IconButton
           size="sm"
-          variant="elevated"
+          variant="smoked-glass"
           label="Previous slide"
           icon={<ChevronLeft />}
           disabled={index === 0}
@@ -102,7 +102,7 @@ function Carousel({
         />
         <IconButton
           size="sm"
-          variant="elevated"
+          variant="smoked-glass"
           label="Next slide"
           icon={<ChevronRight />}
           disabled={index === SLIDES.length - 1}
@@ -356,11 +356,11 @@ export default defineDoc({
           </span>
         ),
       },
-      { label: 'Prev', render: <IconButton size="sm" variant="elevated" label="Previous" icon={<ChevronLeft />} /> },
-      { label: 'Next', render: <IconButton size="sm" variant="elevated" label="Next" icon={<ChevronRight />} /> },
+      { label: 'Prev', render: <IconButton size="sm" variant="smoked-glass" label="Previous" icon={<ChevronLeft />} /> },
+      { label: 'Next', render: <IconButton size="sm" variant="smoked-glass" label="Next" icon={<ChevronRight />} /> },
       {
         label: 'At the end',
-        render: <IconButton size="sm" variant="elevated" label="Next" icon={<ChevronRight />} disabled />,
+        render: <IconButton size="sm" variant="smoked-glass" label="Next" icon={<ChevronRight />} disabled />,
       },
       {
         label: 'Dot idle',
@@ -443,7 +443,7 @@ export default defineDoc({
   tokens: [
     { category: 'color', token: '--ds-accent', usedFor: 'The active dot' },
     { category: 'color', token: '--ds-border-strong', usedFor: 'Inactive dots' },
-    { category: 'color', token: '--ds-surface-raised', usedFor: 'Elevated arrow buttons over content' },
+    { category: 'color', token: '--ds-smoke-thick', usedFor: 'Glass arrow buttons over content' },
     { category: 'color', token: '--ds-fg-muted', usedFor: 'The position counter' },
     { category: 'color', token: '--ds-focus-ring', usedFor: 'Focus outline on arrows and dots' },
     { category: 'spacing', token: '--space-3', value: '12px', usedFor: 'Gap between frames' },
@@ -483,8 +483,8 @@ export default defineDoc({
       why: 'Hover-revealed arrows do not exist on touch. Removing them at the ends shifts the layout at exactly the moment the user reaches the boundary.',
       render: (
         <Row gap="sm">
-          <IconButton size="sm" variant="elevated" label="Previous" icon={<ChevronLeft />} disabled />
-          <IconButton size="sm" variant="elevated" label="Next" icon={<ChevronRight />} />
+          <IconButton size="sm" variant="smoked-glass" label="Previous" icon={<ChevronLeft />} disabled />
+          <IconButton size="sm" variant="smoked-glass" label="Next" icon={<ChevronRight />} />
         </Row>
       ),
     },
@@ -563,7 +563,7 @@ export default defineDoc({
       { id: '4.1.3', name: 'Status Messages', level: 'AA' },
     ],
     contrast: [
-      'Arrows sit over arbitrary content, so they need their own surface — an elevated button, not a bare glyph over a photograph.',
+      'Arrows sit over arbitrary content, so they need their own surface — a smoked-glass button, not a bare glyph over a photograph.',
       'The active dot must differ from the inactive ones by more than opacity; at 8px a subtle difference is invisible.',
       'Any text over a media frame needs a scrim or a solid panel behind it. Contrast against an unknown image is not something you can assert.',
       'The counter is content and owes 4.5:1.',

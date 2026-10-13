@@ -81,7 +81,7 @@ function Playground() {
       ? `
   footer={
     <>
-      <Button variant="text" onClick={close}>Cancel</Button>
+      <Button variant="tertiary" onClick={close}>Cancel</Button>
       <Button onClick={save}>Save changes</Button>
     </>
   }`
@@ -107,7 +107,7 @@ function Playground() {
           footer={
             footer ? (
               <>
-                <Button variant="text" onClick={() => setOpen(false)}>
+                <Button variant="tertiary" onClick={() => setOpen(false)}>
                   Cancel
                 </Button>
                 <Button onClick={() => setOpen(false)}>Save changes</Button>
@@ -139,7 +139,7 @@ function FilterExample() {
   return (
     <Stack gap="md" className="w-full">
       <Row>
-        <Button variant="outlined" startIcon={<Filter size={14} />} onClick={() => setOpen(true)}>
+        <Button variant="secondary" startIcon={<Filter size={14} />} onClick={() => setOpen(true)}>
           Filters
         </Button>
         <Badge tone="accent" variant="subtle">
@@ -156,7 +156,7 @@ function FilterExample() {
         description="Applied as you change them"
         footer={
           <>
-            <Button variant="text" onClick={() => setOpen(false)}>
+            <Button variant="tertiary" onClick={() => setOpen(false)}>
               Clear all
             </Button>
             <Button onClick={() => setOpen(false)}>Done</Button>
@@ -728,7 +728,7 @@ const [selected, setSelected] = useState<Service>()
   description="Deployment settings for this service"
   footer={
     <>
-      <Button variant="text" onClick={handleClose}>Cancel</Button>
+      <Button variant="tertiary" onClick={handleClose}>Cancel</Button>
       <Button onClick={save}>Save changes</Button>
     </>
   }

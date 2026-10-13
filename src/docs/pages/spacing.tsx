@@ -238,7 +238,7 @@ export default defineDoc({
               ))}
             </div>
             <div className="mt-5 flex gap-2 border-t border-[var(--ds-border-subtle)] pt-4">
-              <Button size="sm" variant="outlined">
+              <Button size="sm" variant="secondary">
                 Logs
               </Button>
               <Button size="sm">Deploy</Button>

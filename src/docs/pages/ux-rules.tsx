@@ -300,10 +300,10 @@ function VisualWeight() {
         <Button size="sm" fullWidth>
           Save
         </Button>
-        <Button size="sm" fullWidth variant="outlined">
+        <Button size="sm" fullWidth variant="secondary">
           Duplicate
         </Button>
-        <Button size="sm" fullWidth variant="text">
+        <Button size="sm" fullWidth variant="tertiary">
           Delete
         </Button>
       </Stack>
@@ -344,7 +344,7 @@ function Disclosure() {
         <Button size="sm" startIcon={<Download size={13} />}>
           Download CSV
         </Button>
-        <Button size="sm" variant="text" onClick={() => setOpen((o) => !o)}>
+        <Button size="sm" variant="tertiary" onClick={() => setOpen((o) => !o)}>
           {open ? 'Fewer options' : 'More options'}
         </Button>
       </Row>
@@ -372,7 +372,7 @@ function Doherty() {
         <Button
           size="sm"
           startIcon={state === 'optimistic' ? <Check size={13} /> : <Star size={13} />}
-          variant={state === 'optimistic' ? 'filled' : 'outlined'}
+          variant={state === 'optimistic' ? 'primary' : 'secondary'}
           onClick={() => {
             setState('optimistic')
             window.setTimeout(() => setState('idle'), 1400)
@@ -385,7 +385,7 @@ function Doherty() {
       <Stack gap="sm" className="items-center">
         <Button
           size="sm"
-          variant="outlined"
+          variant="secondary"
           loading={state === 'slow'}
           onClick={() => {
             setState('slow')
@@ -587,8 +587,8 @@ export default defineDoc({
             Their history goes with them.
           </Alert>
           <Row className="justify-end">
-            <Button variant="text">Cancel</Button>
-            <Button variant="danger">Delete workspace</Button>
+            <Button variant="tertiary">Cancel</Button>
+            <Button variant="primary" tone="danger">Delete workspace</Button>
           </Row>
         </Stack>
       </div>

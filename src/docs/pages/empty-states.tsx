@@ -68,7 +68,7 @@ function Playground() {
   icon={<FolderPlus size={22} />}
   title="${spec.title}"
   description="${spec.description}"
-  action={<Button>${spec.action}</Button>}${spec.secondary ? `\n  secondaryAction={<Button variant="text">${spec.secondary}</Button>}` : ''}
+  action={<Button>${spec.action}</Button>}${spec.secondary ? `\n  secondaryAction={<Button variant="tertiary">${spec.secondary}</Button>}` : ''}
 />`}
     >
       <Card className="w-full" padding="none">
@@ -79,7 +79,7 @@ function Playground() {
           description={spec.description}
           action={<Button>{spec.action}</Button>}
           secondaryAction={
-            spec.secondary ? <Button variant="text">{spec.secondary}</Button> : undefined
+            spec.secondary ? <Button variant="tertiary">{spec.secondary}</Button> : undefined
           }
         />
       </Card>
@@ -193,7 +193,7 @@ export default defineDoc({
                   icon={<SearchX size={18} />}
                   title="No results"
                   description="No deployments match the current filters."
-                  action={<Button size="sm" variant="outlined">Clear filters</Button>}
+                  action={<Button size="sm" variant="secondary">Clear filters</Button>}
                 />
               </div>
               <div className="w-full max-w-xs rounded-[var(--radius-lg)] border border-[var(--ds-border-subtle)] p-4">
@@ -227,7 +227,7 @@ export default defineDoc({
                 </div>
                 <div className="flex flex-wrap items-center justify-center gap-2">
                   <Button>Connect a repository</Button>
-                  <Button variant="outlined">Deploy a sample app</Button>
+                  <Button variant="secondary">Deploy a sample app</Button>
                 </div>
                 <a
                   href="#/empty-states"
@@ -261,7 +261,7 @@ export default defineDoc({
           title="No projects yet"
           description="A project holds your services, environments and deployments."
           action={<Button>Create a project</Button>}
-          secondaryAction={<Button variant="text">Import from GitHub</Button>}
+          secondaryAction={<Button variant="tertiary">Import from GitHub</Button>}
         />
       </Card>
     ),
@@ -306,7 +306,7 @@ export default defineDoc({
       {
         n: 6,
         label: 'Secondary action',
-        value: 'Text variant, beside',
+        value: 'Tertiary variant, beside',
         kind: 'shape',
         note: 'One primary and at most one secondary. A third action turns guidance into a menu.',
       },
@@ -490,7 +490,7 @@ function DeploymentList({ items, query, filters, loading, error }) {
         title="No deployments yet"
         description="Connect a repository and we will build and deploy on every push."
         action={<Button onClick={connect}>Connect a repository</Button>}
-        secondaryAction={<Button variant="text" onClick={demo}>Deploy a sample</Button>}
+        secondaryAction={<Button variant="tertiary" onClick={demo}>Deploy a sample</Button>}
       />
     )
   }
@@ -514,8 +514,8 @@ function DeploymentList({ items, query, filters, loading, error }) {
     A project holds your services, environments and deployments.
   </p>
   <div class="ds-empty__actions">
-    <button class="ds-btn ds-btn--filled">Create a project</button>
-    <button class="ds-btn ds-btn--text">Import from GitHub</button>
+    <button class="ds-btn ds-btn--primary">Create a project</button>
+    <button class="ds-btn ds-btn--tertiary">Import from GitHub</button>
   </div>
 </div>`,
     },

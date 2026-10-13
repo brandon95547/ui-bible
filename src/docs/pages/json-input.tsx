@@ -138,7 +138,7 @@ function JsonEditor({
         {onChange && result.ok && (
           <Button
             size="sm"
-            variant="text"
+            variant="tertiary"
             startIcon={<Wand2 size={13} />}
             className="ml-auto shrink-0"
             onClick={() => onChange(JSON.stringify(JSON.parse(value), null, 2))}
@@ -167,7 +167,7 @@ function Playground() {
             <KnobSelect value={rows} onChange={setRows} options={['8', '12', '16'] as const} />
           </Knob>
           <KnobToggle checked={readOnly} onChange={setReadOnly} label="Read only" />
-          <Button size="sm" variant="outlined" onClick={() => setValue(BROKEN)}>
+          <Button size="sm" variant="secondary" onClick={() => setValue(BROKEN)}>
             Break it
           </Button>
         </div>
@@ -365,7 +365,7 @@ export default defineDoc({
       {
         label: 'Format action',
         render: (
-          <Button size="sm" variant="text" startIcon={<Wand2 size={13} />}>
+          <Button size="sm" variant="tertiary" startIcon={<Wand2 size={13} />}>
             Format
           </Button>
         ),
@@ -494,7 +494,7 @@ export default defineDoc({
       title: 'Offer Format as an explicit action',
       why: 'People paste minified JSON constantly. One press to make it readable is the highest-value affordance on the component — and it must never fire on its own.',
       render: (
-        <Button size="sm" variant="text" startIcon={<Wand2 size={13} />}>
+        <Button size="sm" variant="tertiary" startIcon={<Wand2 size={13} />}>
           Format
         </Button>
       ),

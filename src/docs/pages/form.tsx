@@ -151,7 +151,7 @@ function Playground() {
             </FieldRow>
 
             <Row className="justify-end">
-              <Button type="button" variant="text">
+              <Button type="button" variant="tertiary">
                 Cancel
               </Button>
               <Button type="submit">Create account</Button>
@@ -218,7 +218,7 @@ function Wizard() {
         </Fieldset>
 
         <Row className="justify-between">
-          <Button variant="text" disabled={step === 0} onClick={() => setStep((s) => s - 1)}>
+          <Button variant="tertiary" disabled={step === 0} onClick={() => setStep((s) => s - 1)}>
             Back
           </Button>
           <Button
@@ -640,7 +640,7 @@ export default defineDoc({
           </Fieldset>
           <Checkbox label="Email me about product changes" />
           <Row className="justify-end">
-            <Button variant="text">Cancel</Button>
+            <Button variant="tertiary">Cancel</Button>
             <Button>Save details</Button>
           </Row>
         </Stack>
@@ -710,7 +710,7 @@ export default defineDoc({
         label: 'Actions',
         value: 'Right-aligned, primary last',
         kind: 'space',
-        note: 'Primary in the bottom right, where the eye finishes. Cancel is a text button — giving it equal weight makes abandoning the form look like an equally good idea.',
+        note: 'Primary in the bottom right, where the eye finishes. Cancel is a tertiary button — giving it equal weight makes abandoning the form look like an equally good idea.',
       },
     ],
   },

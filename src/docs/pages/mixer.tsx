@@ -1252,7 +1252,7 @@ function PanelFooter({
         options={[{ value: 'a', label: 'A' }, { value: 'b', label: 'B' }]}
       />
       <Switch checked={on} onCheckedChange={onToggle} label={`${label} on`} size="sm" />
-      <Button size="xs" variant="outlined" onClick={onReset}>
+      <Button size="xs" variant="secondary" onClick={onReset}>
         <RotateCcw size={13} />
         Reset
       </Button>
@@ -1268,7 +1268,7 @@ function RecommendationBar({ text, onApply }: { text: string; onApply: () => voi
     <div className="flex flex-wrap items-center gap-2 rounded-[var(--radius-sm)] border border-[var(--ds-accent-border)] bg-[var(--ds-accent-subtle)] px-2.5 py-2">
       <Sparkles size={14} className="shrink-0 text-[var(--ds-accent-text)]" />
       <p className="min-w-0 flex-1 text-caption text-[var(--ds-accent-text)]">{text}</p>
-      <Button size="xs" variant="tonal" onClick={onApply}>
+      <Button size="xs" variant="standard" onClick={onApply}>
         Apply recommendation
       </Button>
     </div>
@@ -1917,7 +1917,7 @@ function AutoAction({
         </div>
       </div>
       {children}
-      <Button size="xs" variant="outlined" onClick={onClick} className="mt-auto">
+      <Button size="xs" variant="secondary" onClick={onClick} className="mt-auto">
         Apply
       </Button>
     </div>
@@ -2037,7 +2037,7 @@ function AutomationPanel({
                 ]}
               />
             </label>
-            <Button size="xs" variant="danger-outline" onClick={() => deletePoint(point.id)}
+            <Button size="xs" variant="secondary" tone="danger" onClick={() => deletePoint(point.id)}
               disabled={auto.points.length <= 2}>
               <Trash2 size={13} />
               Delete point
@@ -2239,7 +2239,7 @@ function StudioMixer({ running = true }: { running?: boolean }) {
             ]}
           />
           <IconButton size="sm" label="Undo" icon={<RotateCcw size={14} />} />
-          <Button size="sm" variant="filled">
+          <Button size="sm" variant="primary">
             <Sparkles size={14} />
             Apply mix
           </Button>
@@ -2299,7 +2299,7 @@ function StudioMixer({ running = true }: { running?: boolean }) {
                   <p className="min-w-0 flex-1 text-caption text-[var(--ds-fg-muted)]">
                     Auto mix ducks music beneath narration wherever there is speech.
                   </p>
-                  <Button size="xs" variant="outlined"
+                  <Button size="xs" variant="secondary"
                     onClick={() => patch({ volume: 0, pan: 0, presence: 0 })}>
                     <RotateCcw size={13} />
                     Reset

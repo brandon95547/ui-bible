@@ -143,7 +143,7 @@ function Spoiler() {
         </div>
         <Button
           size="sm"
-          variant="text"
+          variant="tertiary"
           className="mt-1 px-0"
           aria-expanded={open}
           onClick={() => setOpen((o) => !o)}
@@ -414,7 +414,7 @@ export default defineDoc({
           </span>
         ),
       },
-      { label: 'Show more', render: <Button size="sm" variant="text" className="px-0">Show more</Button> },
+      { label: 'Show more', render: <Button size="sm" variant="tertiary" className="px-0">Show more</Button> },
     ],
   },
 

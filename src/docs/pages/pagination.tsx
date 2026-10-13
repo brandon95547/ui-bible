@@ -81,7 +81,7 @@ function LoadMore() {
           ))}
         </div>
         {loaded < total ? (
-          <Button variant="outlined" onClick={more} loading={busy}>
+          <Button variant="secondary" onClick={more} loading={busy}>
             Load 20 more
           </Button>
         ) : (
@@ -105,7 +105,7 @@ function CursorDemo() {
       <Stack gap="sm" className="items-center">
         <Row gap="sm" align="center">
           <Button
-            variant="outlined"
+            variant="secondary"
             size="sm"
             startIcon={<ChevronLeft size={14} />}
             disabled={cursor === 0}
@@ -114,7 +114,7 @@ function CursorDemo() {
             Previous
           </Button>
           <Button
-            variant="outlined"
+            variant="secondary"
             size="sm"
             endIcon={<ChevronRight size={14} />}
             disabled={cursor >= pages.length - 1}
@@ -269,7 +269,7 @@ export default defineDoc({
       {
         label: 'Load more',
         render: (
-          <Button variant="outlined" size="sm">
+          <Button variant="secondary" size="sm">
             Load 20 more
           </Button>
         ),
@@ -277,7 +277,7 @@ export default defineDoc({
       {
         label: 'Loading',
         render: (
-          <Button variant="outlined" size="sm" startIcon={<Loader2 size={14} className="animate-spin" />}>
+          <Button variant="secondary" size="sm" startIcon={<Loader2 size={14} className="animate-spin" />}>
             Loading…
           </Button>
         ),
@@ -296,7 +296,7 @@ export default defineDoc({
           />
         ),
       },
-      { label: 'Cursor', render: <Row gap="sm"><Button variant="outlined" size="sm" disabled>Previous</Button><Button variant="outlined" size="sm">Next</Button></Row> },
+      { label: 'Cursor', render: <Row gap="sm"><Button variant="secondary" size="sm" disabled>Previous</Button><Button variant="secondary" size="sm">Next</Button></Row> },
     ],
   },
 

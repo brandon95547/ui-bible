@@ -171,16 +171,16 @@ export default defineDoc({
             <div className="grid w-full gap-4 sm:grid-cols-2">
               <Cell label="Labelled" sub="Readable on first encounter" tone="good">
                 <Row gap="sm">
-                  <Button size="sm" variant="outlined" startIcon={<Share2 />}>Share</Button>
-                  <Button size="sm" variant="outlined" startIcon={<Archive />}>Archive</Button>
-                  <Button size="sm" variant="outlined" startIcon={<Download />}>Export</Button>
+                  <Button size="sm" variant="secondary" startIcon={<Share2 />}>Share</Button>
+                  <Button size="sm" variant="secondary" startIcon={<Archive />}>Archive</Button>
+                  <Button size="sm" variant="secondary" startIcon={<Download />}>Export</Button>
                 </Row>
               </Cell>
               <Cell label="Unlabelled" sub="Requires prior learning" tone="bad">
                 <Row gap="sm">
-                  <IconButton label="Share" icon={<Share2 />} variant="outlined" />
-                  <IconButton label="Archive" icon={<Archive />} variant="outlined" />
-                  <IconButton label="Export" icon={<Download />} variant="outlined" />
+                  <IconButton label="Share" icon={<Share2 />} variant="secondary" />
+                  <IconButton label="Archive" icon={<Archive />} variant="secondary" />
+                  <IconButton label="Export" icon={<Download />} variant="secondary" />
                 </Row>
               </Cell>
             </div>
@@ -310,8 +310,8 @@ export default defineDoc({
       why: 'Close, search, add, more and back are learned. Everything else is a guess, and a wrong guess on a destructive action is expensive.',
       render: (
         <Row gap="sm">
-          <Button size="sm" variant="outlined" startIcon={<Archive />}>Archive</Button>
-          <IconButton label="Close" icon={<X />} variant="text" />
+          <Button size="sm" variant="secondary" startIcon={<Archive />}>Archive</Button>
+          <IconButton label="Close" icon={<X />} variant="tertiary" />
         </Row>
       ),
     },
@@ -369,9 +369,9 @@ export default defineDoc({
       why: 'Tooltips need hover, and hover does not exist on touch. On a phone an unlabelled ambiguous icon has no way at all to explain itself.',
       render: (
         <Row gap="sm">
-          <IconButton label="?" icon={<Share2 />} variant="outlined" />
-          <IconButton label="?" icon={<Upload />} variant="outlined" />
-          <IconButton label="?" icon={<Download />} variant="outlined" />
+          <IconButton label="?" icon={<Share2 />} variant="secondary" />
+          <IconButton label="?" icon={<Upload />} variant="secondary" />
+          <IconButton label="?" icon={<Download />} variant="secondary" />
         </Row>
       ),
     },

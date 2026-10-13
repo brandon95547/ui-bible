@@ -203,7 +203,7 @@ export default defineDoc({
 
               <Row gap="sm">
                 <Tooltip content="Deploy to production" shortcut="⌘⇧D">
-                  <Button variant="outlined" size="sm">
+                  <Button variant="secondary" size="sm">
                     Deploy
                   </Button>
                 </Tooltip>

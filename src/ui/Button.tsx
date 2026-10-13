@@ -11,77 +11,160 @@ import { useDismissable } from '@/lib/hooks'
    ======================================================================== */
 
 export type ButtonVariant =
-  | 'filled'
-  | 'tonal'
-  | 'outlined'
-  | 'text'
-  | 'elevated'
-  | 'danger'
-  | 'danger-outline'
-  | 'success'
+  | 'primary'
+  | 'secondary'
+  | 'tertiary'
+  | 'standard'
+  | 'aura'
+  | 'nav'
+  | 'frosted-glass'
+  | 'smoked-glass'
+  | 'inherit'
 export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg'
+export type ButtonShape = 'pill' | 'rounded' | 'rectangle'
+/** A recolor of a variant, not a variant. See `tones` below. */
+export type ButtonTone = 'danger'
 
+/* A variant never styles the button. It fills in five slots, and the base class
+   below is the only thing that reads them:
+
+     --btn-bg      the fill
+     --btn-text    the label and the icon
+     --btn-border  the edge
+     --btn-wash    what fades in over the fill on hover and press
+     (blur)        a backdrop blur, on the three variants that are glass
+
+   Which is why every variant works at every size and every shape, and why a
+   state — selected, inactive, disabled, destructive — is a second recipe over
+   the same slots rather than a new set of rules. */
 const base = [
-  'relative inline-flex select-none items-center justify-center gap-2 whitespace-nowrap',
+  'relative isolate inline-flex select-none items-center justify-center whitespace-nowrap',
   'font-medium align-middle',
-  'transition-[background-color,border-color,color,box-shadow,transform,opacity]',
+  'bg-[var(--btn-bg,transparent)] text-[var(--btn-text,currentColor)]',
+  // The edge is an inset ring, not a border, so a variant with an edge is the
+  // same size as one without and nothing in a row shifts when one is swapped.
+  'shadow-[inset_0_0_0_1px_var(--btn-border,transparent)]',
+  // The hover wash. One translucent layer over whatever the fill is, so hover
+  // is the same step on a clear button, a filled one and a gradient.
+  "before:pointer-events-none before:absolute before:inset-0 before:rounded-[inherit] before:content-['']",
+  'before:bg-[var(--btn-wash,var(--ds-layer-hover))] before:opacity-0',
+  'before:transition-opacity before:duration-[120ms]',
+  'enabled:hover:before:opacity-100 enabled:active:before:opacity-100',
+  'transition-[background-color,color,box-shadow,transform,opacity]',
   'duration-[120ms] ease-[cubic-bezier(0.2,0,0,1)]',
   'active:scale-[0.985]',
-  'disabled:pointer-events-none disabled:opacity-45 disabled:saturate-50',
+  'disabled:pointer-events-none',
   'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ds-focus-ring)]',
   // Guarantees a 44px pointer target even when the button is visually 32px.
   // Coarse pointers only, so it never eats clicks on desktop.
   "after:pointer-events-none after:absolute after:left-0 after:top-1/2 after:h-11 after:w-full after:-translate-y-1/2 after:content-['']",
 ].join(' ')
 
+/** The wash for a button whose label is its only color: a tenth of that color. */
+const washOfLabel = '[--btn-wash:color-mix(in_srgb,currentColor_10%,transparent)]'
+
 const variants: Record<ButtonVariant, string> = {
-  filled: [
-    'bg-[var(--ds-accent)] text-[var(--ds-accent-fg)] shadow-e1',
-    'hover:bg-[var(--ds-accent-hover)] hover:shadow-e2',
-    'active:bg-[var(--ds-accent-active)] active:shadow-e0',
+  // The one filled action. The strongest neutral on the page, so it inverts
+  // with the theme instead of carrying a hue.
+  primary:
+    '[--btn-bg:var(--ds-btn-primary)] [--btn-text:var(--ds-btn-primary-fg)] [--btn-wash:var(--ds-btn-wash-inverse)]',
+  // Outline. Clear until hovered, held by its edge.
+  secondary: '[--btn-text:var(--ds-fg)] [--btn-border:var(--ds-border-interactive)]',
+  // Ghost. No fill and no edge until hovered.
+  tertiary: '[--btn-text:var(--ds-fg)]',
+  // Quiet fill: one step up from whatever it is standing on.
+  standard: '[--btn-bg:var(--ds-btn-quiet)] [--btn-text:var(--ds-fg)]',
+  // The signature. The fill is an image, over its own last stop for the frame
+  // before the gradient paints.
+  aura: [
+    '[--btn-bg:var(--ds-aura-to)] [--btn-text:var(--ds-aura-fg)] [--btn-wash:var(--ds-aura-wash)]',
+    'bg-[image:var(--ds-aura)]',
   ].join(' '),
-  tonal: [
-    'bg-[var(--ds-accent-subtle)] text-[var(--ds-accent-text)]',
-    'hover:bg-[var(--ds-accent-subtle-hover)]',
-    'active:bg-[var(--ds-accent-subtle-hover)] active:brightness-95',
+  // A navigation pill. `aria-current="page"` gives it the primary look.
+  nav: ['[--btn-bg:var(--ds-fog-thin)] [--btn-text:var(--ds-fg)]', washOfLabel, 'backdrop-blur-[16px]'].join(' '),
+  // Glass that lightens what is behind it. Hover thickens the glass itself, so
+  // there is no wash.
+  'frosted-glass': [
+    '[--btn-bg:var(--ds-fog-thick)] [--btn-text:var(--ds-fg)] [--btn-border:var(--ds-border)] [--btn-wash:transparent]',
+    'backdrop-blur-[16px] enabled:hover:[--btn-bg:var(--ds-fog-dense)]',
   ].join(' '),
-  outlined: [
-    'border border-[var(--ds-border-interactive)] bg-transparent text-[var(--ds-fg)]',
-    'hover:border-[var(--ds-border-strong)] hover:bg-[var(--ds-layer-hover)]',
-    'active:bg-[var(--ds-layer-active)]',
+  // Glass that darkens it, for a control standing on bright artwork.
+  'smoked-glass': [
+    '[--btn-bg:var(--ds-smoke-thick)] [--btn-text:var(--ds-fg)] [--btn-border:var(--ds-border)] [--btn-wash:transparent]',
+    'backdrop-blur-[16px] enabled:hover:[--btn-bg:var(--ds-smoke-dense)]',
   ].join(' '),
-  text: [
-    'bg-transparent text-[var(--ds-fg-secondary)]',
-    'hover:bg-[var(--ds-layer-hover)] hover:text-[var(--ds-fg)]',
-    'active:bg-[var(--ds-layer-active)]',
-  ].join(' '),
-  elevated: [
-    'bg-[var(--ds-surface-raised)] text-[var(--ds-fg)] border border-[var(--ds-border-subtle)] shadow-e2',
-    'hover:shadow-e3 hover:bg-[var(--ds-surface-overlay)]',
-    'active:shadow-e1',
-  ].join(' '),
-  danger: [
-    'bg-[var(--ds-danger)] text-[var(--ds-danger-fg)] shadow-e1',
-    'hover:bg-[var(--ds-danger-hover)] hover:shadow-e2',
-    'active:bg-[var(--ds-danger-active)] active:shadow-e0',
-  ].join(' '),
-  'danger-outline': [
-    'border border-[var(--ds-danger-border)] bg-transparent text-[var(--ds-danger-text)]',
-    'hover:bg-[var(--ds-danger-subtle)]',
-    'active:bg-[var(--ds-danger-subtle)] active:brightness-95',
-  ].join(' '),
-  success: [
-    'bg-[var(--ds-success)] text-[var(--ds-success-fg)] shadow-e1',
-    'hover:bg-[var(--ds-success-hover)] hover:shadow-e2',
-    'active:shadow-e0',
-  ].join(' '),
+  // Takes its color from the text around it.
+  inherit: washOfLabel,
+}
+
+/* Destructive is a recolor of a variant, not a tenth and eleventh variant: the
+   same slots, pointed at the danger tokens. Primary takes the fill; the two
+   clear variants take the label, and the outline its edge. */
+const tones: Record<ButtonTone, Partial<Record<ButtonVariant, string>>> = {
+  danger: {
+    primary: '[--btn-bg:var(--ds-danger)] [--btn-text:var(--ds-danger-fg)]',
+    secondary:
+      '[--btn-text:var(--ds-danger-text)] [--btn-border:var(--ds-danger-border)] [--btn-wash:var(--ds-danger-subtle)]',
+    tertiary: '[--btn-text:var(--ds-danger-text)] [--btn-wash:var(--ds-danger-subtle)]',
+  },
+}
+
+/* Inactive: present and pressable, but not the live option — the unselected
+   half of a pair. Dimmed, never disabled, so the label still clears 4.5:1. */
+const inactiveLooks: Partial<Record<ButtonVariant, string>> = {
+  primary: '[--btn-bg:var(--ds-btn-quiet)] [--btn-text:var(--ds-fg)] [--btn-wash:var(--ds-layer-hover)]',
+  tertiary: '[--btn-text:var(--ds-fg-muted)]',
+  standard: '[--btn-text:var(--ds-fg-muted)]',
+  inherit: 'opacity-60',
+}
+
+/* Disabled replaces the recipe instead of fading it. A filled button keeps a
+   fill and a clear one keeps almost none, so a disabled control still has the
+   footprint it had — it has only stopped saying anything. Glass keeps its blur,
+   because what is behind it has not gone away. */
+const disabledFilled = '[--btn-bg:var(--ds-btn-disabled)] [--btn-text:var(--ds-fg-disabled)]'
+const disabledClear =
+  '[--btn-bg:color-mix(in_srgb,var(--ds-btn-disabled)_45%,transparent)] [--btn-text:var(--ds-fg-disabled)]'
+const disabledGlass = [
+  '[--btn-bg:color-mix(in_srgb,var(--ds-surface-raised)_30%,transparent)]',
+  '[--btn-text:color-mix(in_srgb,var(--ds-fg)_55%,transparent)] backdrop-blur-[16px]',
+].join(' ')
+const disabledLooks: Record<ButtonVariant, string> = {
+  primary: disabledFilled,
+  standard: disabledFilled,
+  aura: disabledFilled,
+  secondary: disabledClear,
+  tertiary: disabledClear,
+  inherit: disabledClear,
+  nav: disabledGlass,
+  'frosted-glass': disabledGlass,
+  'smoked-glass': disabledGlass,
 }
 
 const sizes: Record<ButtonSize, string> = {
-  xs: 'h-7 rounded-[var(--radius-sm)] px-2.5 text-label-sm gap-1.5',
-  sm: 'h-8 rounded-[var(--radius-md)] px-3 text-label gap-1.5',
-  md: 'h-9 rounded-[var(--radius-md)] px-3.5 text-label',
-  lg: 'h-11 rounded-[var(--radius-lg)] px-5 text-body-lg font-medium',
+  xs: 'h-7 px-2.5 text-label-sm gap-1.5',
+  sm: 'h-8 px-3 text-label gap-1.5',
+  md: 'h-9 px-3.5 text-label gap-2',
+  lg: 'h-11 px-5 text-body-lg font-medium gap-2',
+}
+
+/* Shape is its own axis. A pill's ends are round, so the label is given a
+   little more room before it reaches the curve; the other two shapes keep the
+   padding the size sets. */
+const shapes: Record<ButtonShape, Record<ButtonSize, string>> = {
+  pill: {
+    xs: 'rounded-full px-3',
+    sm: 'rounded-full px-3.5',
+    md: 'rounded-full px-4',
+    lg: 'rounded-full px-6',
+  },
+  rounded: {
+    xs: 'rounded-[var(--radius-sm)]',
+    sm: 'rounded-[var(--radius-md)]',
+    md: 'rounded-[var(--radius-md)]',
+    lg: 'rounded-[var(--radius-lg)]',
+  },
+  rectangle: { xs: 'rounded-none', sm: 'rounded-none', md: 'rounded-none', lg: 'rounded-none' },
 }
 
 /** Icons scale sub-linearly with the button — a 1.5× button gets a 1.2× icon. */
@@ -95,9 +178,31 @@ const iconOnly: Record<ButtonSize, string> = {
   lg: 'w-11 px-0',
 }
 
+/** The tokens the Inspector names for each variant. */
+const variantTokens: Record<ButtonVariant, string[]> = {
+  primary: ['--ds-btn-primary', '--ds-btn-primary-fg', '--ds-btn-wash-inverse'],
+  secondary: ['--ds-border-interactive', '--ds-fg', '--ds-layer-hover'],
+  tertiary: ['--ds-fg', '--ds-layer-hover'],
+  standard: ['--ds-btn-quiet', '--ds-fg', '--ds-layer-hover'],
+  aura: ['--ds-aura', '--ds-aura-fg'],
+  nav: ['--ds-fog-thin', '--ds-fg', '--ds-btn-primary'],
+  'frosted-glass': ['--ds-fog-thick', '--ds-fog-dense', '--ds-border'],
+  'smoked-glass': ['--ds-smoke-thick', '--ds-smoke-dense', '--ds-border'],
+  inherit: [],
+}
+
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant
   size?: ButtonSize
+  shape?: ButtonShape
+  /** Recolors primary, secondary and tertiary for a destructive action. */
+  tone?: ButtonTone
+  /** The selected option of a set: takes the primary look. Secondary and glass. */
+  active?: boolean
+  /** Pressable but not the live option: dimmed, not disabled. */
+  inactive?: boolean
+  /** Drops the edge of a glass variant. */
+  borderless?: boolean
   loading?: boolean
   /** Replaces the label with a check for ~1.6s after a successful action. */
   success?: boolean
@@ -111,8 +216,13 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(function Button(
   {
     className,
-    variant = 'filled',
+    variant = 'primary',
     size = 'md',
+    shape = 'pill',
+    tone,
+    active = false,
+    inactive = false,
+    borderless = false,
     loading = false,
     success = false,
     startIcon,
@@ -127,6 +237,17 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(function 
   ref,
 ) {
   const px = buttonIconSize[size]
+  // A selected option, and the navigation pill for the page you are on, are the
+  // primary recipe on another variant's geometry — not a third set of colors.
+  const selected = active || (variant === 'nav' && rest['aria-current'] === 'page')
+  const look = disabled
+    ? disabledLooks[variant]
+    : cn(
+        variants[selected ? 'primary' : variant],
+        !selected && tone && tones[tone][variant],
+        !selected && inactive && inactiveLooks[variant],
+        borderless && '[--btn-border:transparent]',
+      )
   return (
     <button
       ref={ref}
@@ -136,30 +257,34 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(function 
       data-loading={loading || undefined}
       data-variant={variant}
       data-size={size}
+      data-active={selected || undefined}
+      data-inactive={inactive || undefined}
       className={cn(
         base,
-        variants[variant],
+        look,
         sizes[size],
+        shapes[shape][size],
         isIconOnly && iconOnly[size],
         fullWidth && 'w-full',
+        // In flight is not unavailable: a loading button keeps its recipe and
+        // only steps back, where a disabled one gives the recipe up.
+        loading && !disabled && 'opacity-60',
         className,
       )}
       {...inspect(`Button · ${variant} · ${size}`, {
-        tokens:
-          variant === 'filled'
-            ? ['--ds-accent', '--ds-accent-fg', '--radius-md', '--shadow-e1']
-            : ['--ds-border-interactive', '--ds-fg', '--radius-md'],
-        why: 'Height comes from the 4px grid (36px = 9 units) so buttons align with inputs and selects on the same row. Horizontal padding is ~2× the gap between icon and label, which keeps the label optically centred.',
+        tokens: shape === 'rounded' ? [...variantTokens[variant], '--radius-md'] : variantTokens[variant],
+        why: 'Height comes from the 4px grid (36px = 9 units) so buttons align with inputs and selects on the same row. A variant only fills five slots — fill, label, edge, hover wash, blur — which is why every variant works at every size and shape.',
         a11y: 'Hit area is padded to 44×44 on coarse pointers. Focus ring is 2px at 2px offset — 3:1 against both the button and the page.',
       })}
       {...rest}
     >
       {/* Content is hidden rather than removed so the button never changes
           width when it enters the loading or success state. A button that
-          resizes under the cursor is a button you mis-click. */}
+          resizes under the cursor is a button you mis-click. `relative` puts
+          it above the hover wash. */}
       <span
         className={cn(
-          'inline-flex items-center justify-center gap-[inherit]',
+          'relative inline-flex items-center justify-center gap-[inherit]',
           (loading || success) && 'invisible',
         )}
       >
@@ -212,7 +337,7 @@ export interface IconButtonProps extends Omit<ButtonProps, 'iconOnly' | 'childre
 }
 
 export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
-  function IconButton({ label, icon, variant = 'text', size = 'md', ...rest }, ref) {
+  function IconButton({ label, icon, variant = 'tertiary', size = 'md', ...rest }, ref) {
     return (
       <Button ref={ref} iconOnly variant={variant} size={size} aria-label={label} {...rest}>
         {sizeIcon(icon, buttonIconSize[size])}
@@ -326,7 +451,7 @@ export interface SplitButtonProps {
   label: string
   onAction?: () => void
   options: { label: string; description?: string; onSelect?: () => void; danger?: boolean }[]
-  variant?: Extract<ButtonVariant, 'filled' | 'outlined' | 'elevated'>
+  variant?: Extract<ButtonVariant, 'primary' | 'secondary' | 'standard'>
   size?: ButtonSize
   startIcon?: React.ReactNode
   disabled?: boolean
@@ -336,7 +461,7 @@ export function SplitButton({
   label,
   onAction,
   options,
-  variant = 'filled',
+  variant = 'primary',
   size = 'md',
   startIcon,
   disabled,
@@ -389,7 +514,7 @@ export function SplitButton({
         aria-hidden
         className={cn(
           'w-px self-stretch my-1',
-          variant === 'filled' ? 'bg-black/25' : 'bg-[var(--ds-border)]',
+          variant === 'primary' ? 'bg-black/25' : 'bg-[var(--ds-border)]',
         )}
       />
       <Button

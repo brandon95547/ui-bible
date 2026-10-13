@@ -349,8 +349,8 @@ export default defineDoc({
           <p className="text-label text-[var(--ds-fg)]">Reassign this task?</p>
           <Row gap="sm" className="mt-2">
             <Button size="xs">Reassign</Button>
-            <Button size="xs" variant="outlined">Cancel</Button>
-            <Button size="xs" variant="text">Later</Button>
+            <Button size="xs" variant="secondary">Cancel</Button>
+            <Button size="xs" variant="tertiary">Later</Button>
           </Row>
         </div>
       ),
@@ -590,7 +590,7 @@ function UndoDemo({ compact }: { compact?: boolean }) {
           className="flex items-center justify-between rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] px-3 py-2"
         >
           <span className="font-mono text-body-sm text-[var(--ds-fg-secondary)]">{i}</span>
-          <Button size="xs" variant="danger-outline" onClick={() => remove(i)}>
+          <Button size="xs" variant="secondary" tone="danger" onClick={() => remove(i)}>
             Delete
           </Button>
         </div>
@@ -605,7 +605,7 @@ function StackDemo() {
   return (
     <Row gap="sm">
       <Button
-        variant="outlined"
+        variant="secondary"
         onClick={() => {
           setN((x) => x + 1)
           toast({ tone: 'info', title: `Event ${n + 1}` })
@@ -614,7 +614,7 @@ function StackDemo() {
         Fire one
       </Button>
       <Button
-        variant="outlined"
+        variant="secondary"
         onClick={() => {
           for (let i = 1; i <= 6; i++) {
             toast({ tone: i % 2 ? 'success' : 'info', title: `Burst event ${i}` })

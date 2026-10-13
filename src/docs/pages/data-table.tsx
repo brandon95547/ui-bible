@@ -144,10 +144,10 @@ function Playground() {
           selectedCount={selected.size}
           bulkActions={
             <>
-              <Button size="xs" variant="text" startIcon={<Download />}>
+              <Button size="xs" variant="tertiary" startIcon={<Download />}>
                 Export
               </Button>
-              <Button size="xs" variant="danger-outline" startIcon={<Trash2 />}>
+              <Button size="xs" variant="secondary" tone="danger" startIcon={<Trash2 />}>
                 Delete
               </Button>
             </>
@@ -186,7 +186,7 @@ function Playground() {
               title="No deployments match"
               description={`Nothing matches “${query}”. Try a different service name.`}
               action={
-                <Button size="sm" variant="outlined" onClick={() => setQuery('')}>
+                <Button size="sm" variant="secondary" onClick={() => setQuery('')}>
                   Clear search
                 </Button>
               }
@@ -762,7 +762,7 @@ function TableStates() {
             icon={<Search size={18} />}
             title="No results"
             description="No deployments match the current filters."
-            action={<Button size="sm" variant="outlined">Clear filters</Button>}
+            action={<Button size="sm" variant="secondary">Clear filters</Button>}
           />
         }
       />

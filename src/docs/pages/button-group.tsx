@@ -6,7 +6,7 @@ import { Cell, Grid, Knob, KnobSelect, KnobToggle, PreviewStage, Row, Stack, def
 
 function Playground() {
   const [size, setSize] = React.useState<'sm' | 'md' | 'lg'>('md')
-  const [variant, setVariant] = React.useState<'outlined' | 'filled' | 'tonal'>('outlined')
+  const [variant, setVariant] = React.useState<'secondary' | 'primary' | 'standard'>('secondary')
   const [icons, setIcons] = React.useState(false)
 
   return (
@@ -22,7 +22,7 @@ function Playground() {
             <KnobSelect
               value={variant}
               onChange={setVariant}
-              options={['outlined', 'filled', 'tonal'] as const}
+              options={['secondary', 'primary', 'standard'] as const}
             />
           </Knob>
           <KnobToggle checked={icons} onChange={setIcons} label="Icons" />
@@ -84,7 +84,7 @@ function AlignmentDemo() {
               <Button
                 key={id}
                 size="sm"
-                variant={marks.includes(id) ? 'tonal' : 'outlined'}
+                variant={marks.includes(id) ? 'standard' : 'secondary'}
                 aria-pressed={marks.includes(id)}
                 onClick={() => toggle(id)}
                 iconOnly
@@ -168,8 +168,8 @@ export default defineDoc({
           differently.
         </p>
         <p>
-          Every button in a group is the same size and the same variant. The moment one is filled
-          and the others are outlined, the group has a primary action, and a group with a primary
+          Every button in a group is the same size and the same variant. The moment one is primary
+          and the others are secondary, the group has a primary action, and a group with a primary
           action is a Split Button that has not admitted it yet.
         </p>
       </>
@@ -196,13 +196,13 @@ export default defineDoc({
             <Stack gap="md" className="items-center">
               {(['sm', 'md', 'lg'] as const).map((s) => (
                 <ButtonGroup key={s} aria-label={`Range ${s}`}>
-                  <Button size={s} variant="outlined">
+                  <Button size={s} variant="secondary">
                     Day
                   </Button>
-                  <Button size={s} variant="outlined">
+                  <Button size={s} variant="secondary">
                     Week
                   </Button>
-                  <Button size={s} variant="outlined">
+                  <Button size={s} variant="secondary">
                     Month
                   </Button>
                 </ButtonGroup>
@@ -220,13 +220,13 @@ export default defineDoc({
           <PreviewStage minHeight={0} allowResize={false}>
             <Row gap="lg">
               <ButtonGroup aria-label="Text style">
-                <IconButton variant="outlined" size="sm" label="Bold" icon={<Bold />} />
-                <IconButton variant="outlined" size="sm" label="Italic" icon={<Italic />} />
-                <IconButton variant="outlined" size="sm" label="Underline" icon={<Underline />} />
+                <IconButton variant="secondary" size="sm" label="Bold" icon={<Bold />} />
+                <IconButton variant="secondary" size="sm" label="Italic" icon={<Italic />} />
+                <IconButton variant="secondary" size="sm" label="Underline" icon={<Underline />} />
               </ButtonGroup>
               <ButtonGroup aria-label="View">
-                <IconButton variant="outlined" size="sm" label="List view" icon={<List />} />
-                <IconButton variant="outlined" size="sm" label="Grid view" icon={<Grid2x2 />} />
+                <IconButton variant="secondary" size="sm" label="List view" icon={<List />} />
+                <IconButton variant="secondary" size="sm" label="Grid view" icon={<Grid2x2 />} />
               </ButtonGroup>
             </Row>
           </PreviewStage>
@@ -242,13 +242,13 @@ export default defineDoc({
             <Grid min="16rem">
               <Cell label="Three" tone="good">
                 <ButtonGroup aria-label="Three">
-                  <Button variant="outlined" size="sm">
+                  <Button variant="secondary" size="sm">
                     Day
                   </Button>
-                  <Button variant="outlined" size="sm">
+                  <Button variant="secondary" size="sm">
                     Week
                   </Button>
-                  <Button variant="outlined" size="sm">
+                  <Button variant="secondary" size="sm">
                     Month
                   </Button>
                 </ButtonGroup>
@@ -256,7 +256,7 @@ export default defineDoc({
               <Cell label="Seven" tone="bad">
                 <ButtonGroup aria-label="Seven">
                   {['1h', '6h', '1d', '3d', '1w', '1m', '1y'].map((l) => (
-                    <Button key={l} variant="outlined" size="sm">
+                    <Button key={l} variant="secondary" size="sm">
                       {l}
                     </Button>
                   ))}
@@ -272,10 +272,10 @@ export default defineDoc({
         label: 'Default',
         render: (
           <ButtonGroup aria-label="d">
-            <Button variant="outlined" size="sm">
+            <Button variant="secondary" size="sm">
               CSV
             </Button>
-            <Button variant="outlined" size="sm">
+            <Button variant="secondary" size="sm">
               JSON
             </Button>
           </ButtonGroup>
@@ -285,17 +285,17 @@ export default defineDoc({
         label: 'One pressed',
         render: (
           <ButtonGroup aria-label="p">
-            <Button variant="tonal" size="sm" aria-pressed>
+            <Button variant="standard" size="sm" aria-pressed>
               CSV
             </Button>
-            <Button variant="outlined" size="sm">
+            <Button variant="secondary" size="sm">
               JSON
             </Button>
           </ButtonGroup>
         ),
       },
       {
-        label: 'Filled',
+        label: 'Primary',
         render: (
           <ButtonGroup aria-label="f">
             <Button size="sm">Approve</Button>
@@ -307,10 +307,10 @@ export default defineDoc({
         label: 'One disabled',
         render: (
           <ButtonGroup aria-label="dis">
-            <Button variant="outlined" size="sm">
+            <Button variant="secondary" size="sm">
               CSV
             </Button>
-            <Button variant="outlined" size="sm" disabled>
+            <Button variant="secondary" size="sm" disabled>
               Parquet
             </Button>
           </ButtonGroup>
@@ -320,10 +320,10 @@ export default defineDoc({
         label: 'Loading',
         render: (
           <ButtonGroup aria-label="l">
-            <Button variant="outlined" size="sm" loading>
+            <Button variant="secondary" size="sm" loading>
               CSV
             </Button>
-            <Button variant="outlined" size="sm">
+            <Button variant="secondary" size="sm">
               JSON
             </Button>
           </ButtonGroup>
@@ -333,8 +333,8 @@ export default defineDoc({
         label: 'Icon only',
         render: (
           <ButtonGroup aria-label="i">
-            <IconButton variant="outlined" size="sm" label="Bold" icon={<Bold />} />
-            <IconButton variant="outlined" size="sm" label="Italic" icon={<Italic />} />
+            <IconButton variant="secondary" size="sm" label="Bold" icon={<Bold />} />
+            <IconButton variant="secondary" size="sm" label="Italic" icon={<Italic />} />
           </ButtonGroup>
         ),
       },
@@ -342,10 +342,10 @@ export default defineDoc({
         label: 'Two members',
         render: (
           <ButtonGroup aria-label="two">
-            <Button variant="outlined" size="sm">
+            <Button variant="secondary" size="sm">
               Yes
             </Button>
-            <Button variant="outlined" size="sm">
+            <Button variant="secondary" size="sm">
               No
             </Button>
           </ButtonGroup>
@@ -355,10 +355,10 @@ export default defineDoc({
         label: 'Large',
         render: (
           <ButtonGroup aria-label="lg">
-            <Button variant="outlined" size="lg">
+            <Button variant="secondary" size="lg">
               Day
             </Button>
-            <Button variant="outlined" size="lg">
+            <Button variant="secondary" size="lg">
               Week
             </Button>
           </ButtonGroup>
@@ -370,11 +370,11 @@ export default defineDoc({
   anatomy: {
     render: (
       <ButtonGroup aria-label="Anatomy">
-        <Button variant="outlined">CSV</Button>
-        <Button variant="tonal" aria-pressed>
+        <Button variant="secondary">CSV</Button>
+        <Button variant="standard" aria-pressed>
           JSON
         </Button>
-        <Button variant="outlined">Parquet</Button>
+        <Button variant="secondary">Parquet</Button>
       </ButtonGroup>
     ),
     caption:
@@ -411,9 +411,9 @@ export default defineDoc({
       {
         n: 5,
         label: 'Pressed state',
-        value: 'Tonal fill + accent text',
+        value: 'Standard fill',
         kind: 'color',
-        note: 'Fill and text change together. A group where the pressed member also changes size or weight reflows the whole row on every press.',
+        note: 'The fill arrives and nothing else moves. A group where the pressed member also changes size or weight reflows the whole row on every press.',
       },
       {
         n: 6,
@@ -429,8 +429,8 @@ export default defineDoc({
     { category: 'color', token: '--ds-border', usedFor: 'The shared outline' },
     { category: 'color', token: '--ds-surface', usedFor: 'Unpressed fill' },
     { category: 'color', token: '--ds-layer-hover', usedFor: 'Hover on a member' },
-    { category: 'color', token: '--ds-accent-subtle', usedFor: 'Pressed fill' },
-    { category: 'color', token: '--ds-accent-text', usedFor: 'Pressed label' },
+    { category: 'color', token: '--ds-btn-quiet', usedFor: 'Pressed fill' },
+    { category: 'color', token: '--ds-fg', usedFor: 'Label, pressed or not' },
     { category: 'color', token: '--ds-focus-ring', usedFor: 'Focus outline on the active member' },
     { category: 'spacing', token: 'gap', value: '0px', usedFor: 'Between members' },
     { category: 'spacing', token: '--space-3', value: '12px', usedFor: 'Minimum gap to the next control' },
@@ -449,16 +449,16 @@ export default defineDoc({
   do: [
     {
       title: 'Keep every member the same size and variant',
-      why: 'The group is one object. A single filled member among outlined ones creates a primary action, and a group with a primary action should have been a split button.',
+      why: 'The group is one object. A single primary member among secondary ones creates a primary action, and a group with a primary action should have been a split button.',
       render: (
         <ButtonGroup aria-label="Consistent">
-          <Button variant="outlined" size="sm">
+          <Button variant="secondary" size="sm">
             Day
           </Button>
-          <Button variant="outlined" size="sm">
+          <Button variant="secondary" size="sm">
             Week
           </Button>
-          <Button variant="outlined" size="sm">
+          <Button variant="secondary" size="sm">
             Month
           </Button>
         </ButtonGroup>
@@ -478,17 +478,17 @@ export default defineDoc({
       why: 'A focus ring drawn under the adjacent border is clipped on one side and reads as a rendering bug. One line of z-index fixes it permanently.',
       render: (
         <ButtonGroup aria-label="Focus">
-          <Button variant="outlined" size="sm">
+          <Button variant="secondary" size="sm">
             CSV
           </Button>
           <Button
-            variant="outlined"
+            variant="secondary"
             size="sm"
             className="relative z-10 outline-2 outline-offset-2 outline-[var(--ds-focus-ring)]"
           >
             JSON
           </Button>
-          <Button variant="outlined" size="sm">
+          <Button variant="secondary" size="sm">
             Parquet
           </Button>
         </ButtonGroup>
@@ -499,10 +499,10 @@ export default defineDoc({
       why: '<code>aria-pressed</code> says "this is on". <code>aria-selected</code> says "this is the chosen one of several", which is a different and usually wrong promise.',
       render: (
         <ButtonGroup aria-label="Marks">
-          <Button variant="tonal" size="sm" aria-pressed>
+          <Button variant="standard" size="sm" aria-pressed>
             Bold
           </Button>
-          <Button variant="outlined" size="sm" aria-pressed={false}>
+          <Button variant="secondary" size="sm" aria-pressed={false}>
             Italic
           </Button>
         </ButtonGroup>
@@ -516,13 +516,13 @@ export default defineDoc({
       why: 'The shared border claims these belong together. Joining Save to Delete removes the gap that stops a mis-click and puts a destructive action inside a routine group.',
       render: (
         <ButtonGroup aria-label="Bad">
-          <Button variant="outlined" size="sm">
+          <Button variant="secondary" size="sm">
             Save
           </Button>
-          <Button variant="outlined" size="sm">
+          <Button variant="secondary" size="sm">
             Print
           </Button>
-          <Button variant="outlined" size="sm">
+          <Button variant="secondary" size="sm">
             Delete
           </Button>
         </ButtonGroup>
@@ -530,11 +530,11 @@ export default defineDoc({
     },
     {
       title: 'Do not give one member emphasis',
-      why: 'A filled member inside an outlined group is a primary action, and the joined border then tells the user the alternatives are the same weight as the recommendation. That is a split button.',
+      why: 'A primary member inside a secondary group is a primary action, and the joined border then tells the user the alternatives are the same weight as the recommendation. That is a split button.',
       render: (
         <ButtonGroup aria-label="Mixed">
           <Button size="sm">Publish</Button>
-          <Button variant="outlined" size="sm">
+          <Button variant="secondary" size="sm">
             Schedule
           </Button>
         </ButtonGroup>
@@ -546,7 +546,7 @@ export default defineDoc({
       render: (
         <ButtonGroup aria-label="Too many">
           {['1h', '6h', '1d', '3d', '1w', '1m', '1y'].map((l) => (
-            <Button key={l} variant="outlined" size="sm">
+            <Button key={l} variant="secondary" size="sm">
               {l}
             </Button>
           ))}
@@ -558,13 +558,13 @@ export default defineDoc({
       why: 'Exclusive choice is a value, and values are radios. Announcing "Left, toggle button, pressed" instead of "Left, radio button, selected, 1 of 3" hides the exclusivity from anyone not looking at the screen.',
       render: (
         <ButtonGroup aria-label="Wrong semantics">
-          <Button variant="tonal" size="sm" aria-pressed>
+          <Button variant="standard" size="sm" aria-pressed>
             Left
           </Button>
-          <Button variant="outlined" size="sm">
+          <Button variant="secondary" size="sm">
             Centre
           </Button>
-          <Button variant="outlined" size="sm">
+          <Button variant="secondary" size="sm">
             Right
           </Button>
         </ButtonGroup>
@@ -618,7 +618,7 @@ import { Segmented } from '@/ui/Toggle'
   {MARKS.map((m) => (
     <IconButton
       key={m.id}
-      variant={active.includes(m.id) ? 'tonal' : 'outlined'}
+      variant={active.includes(m.id) ? 'standard' : 'secondary'}
       aria-pressed={active.includes(m.id)}
       onClick={() => toggle(m.id)}
       label={m.label}          // required — the icon is not a name

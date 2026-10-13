@@ -179,7 +179,7 @@ export function Sidebar({
             label="Close navigation"
             icon={<X />}
             size="sm"
-            variant="text"
+            variant="tertiary"
             onClick={onClose}
             className="ml-auto"
           />

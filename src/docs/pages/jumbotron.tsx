@@ -84,7 +84,7 @@ function Jumbotron({
               Start deploying
             </Button>
             {secondary && (
-              <Button size="lg" variant="text" startIcon={<Play size={16} />}>
+              <Button size="lg" variant="tertiary" startIcon={<Play size={16} />}>
                 Watch the demo
               </Button>
             )}
@@ -138,7 +138,7 @@ function Playground() {
   eyebrow={${eyebrow}}
   heading="Deploy to twenty-four regions in one command."
   body="No build servers to manage…"
-  action={<Button size="lg">Start deploying</Button>}${secondary ? '\n  secondaryAction={<Button variant="text">Watch the demo</Button>}' : ''}
+  action={<Button size="lg">Start deploying</Button>}${secondary ? '\n  secondaryAction={<Button variant="tertiary">Watch the demo</Button>}' : ''}
 />`}
     >
       <Jumbotron align={align} media={media} eyebrow={eyebrow} secondary={secondary} />
@@ -189,8 +189,8 @@ export default defineDoc({
     reasoning: (
       <>
         <p>
-          <strong>One action carries the emphasis.</strong> Two filled buttons side by side is two
-          primary actions, which means none. The pattern is one filled button and one text button:
+          <strong>One action carries the emphasis.</strong> Two primary buttons side by side is two
+          primary actions, which means none. The pattern is one primary button and one tertiary button:
           the recommendation and the escape hatch. Adding a third turns a decision into a menu.
         </p>
         <p>
@@ -215,14 +215,14 @@ export default defineDoc({
         id: 'one-action',
         title: 'One action, not two',
         description:
-          'A filled button and a text button read as a recommendation and an alternative. Two filled buttons read as two equally important decisions, which is no decision at all.',
+          'A primary button and a tertiary button read as a recommendation and an alternative. Two primary buttons read as two equally important decisions, which is no decision at all.',
         render: (
           <PreviewStage minHeight={0} allowResize={false} center={false}>
             <Grid min="17rem">
               <Cell label="One primary" tone="good">
                 <Row gap="sm">
                   <Button endIcon={<ArrowRight />}>Start deploying</Button>
-                  <Button variant="text">Watch the demo</Button>
+                  <Button variant="tertiary">Watch the demo</Button>
                 </Row>
               </Cell>
               <Cell label="Two primaries" tone="bad">
@@ -302,7 +302,7 @@ export default defineDoc({
         ),
       },
       { label: 'Primary', render: <Button endIcon={<ArrowRight />}>Start deploying</Button> },
-      { label: 'Secondary', render: <Button variant="text" startIcon={<Play size={15} />}>Watch the demo</Button> },
+      { label: 'Secondary', render: <Button variant="tertiary" startIcon={<Play size={15} />}>Watch the demo</Button> },
       {
         label: 'Media panel',
         render: (
@@ -338,7 +338,7 @@ export default defineDoc({
   anatomy: {
     render: <Jumbotron media="gradient" />,
     caption:
-      'Eyebrow, one heading, one sentence, one filled action and one text alternative — in that order, with nothing else competing.',
+      'Eyebrow, one heading, one sentence, one primary action and one tertiary alternative — in that order, with nothing else competing.',
     parts: [
       {
         n: 1,
@@ -378,9 +378,9 @@ export default defineDoc({
       {
         n: 6,
         label: 'Actions',
-        value: 'One filled, one text',
+        value: 'One primary, one tertiary',
         kind: 'space',
-        note: 'Large size, 12px apart. Two filled buttons is two primaries, which is none.',
+        note: 'Large size, 12px apart. Two primary buttons is two primaries, which is none.',
       },
       {
         n: 7,
@@ -412,7 +412,7 @@ export default defineDoc({
     { name: 'Full-bleed', height: '64px+ padding', type: 'h1 heading', use: 'A dedicated landing page where the hero is the whole first screen.' },
     { name: 'Heading measure', maxWidth: '20ch', use: 'Much shorter than body copy. Large type wraps badly at any wider measure.' },
     { name: 'Body measure', maxWidth: '55ch', use: 'One sentence. Two is usually one too many.' },
-    { name: 'Actions', height: '44px', gap: '12px', use: 'Large buttons. One filled, one text.' },
+    { name: 'Actions', height: '44px', gap: '12px', use: 'Large buttons. One primary, one tertiary.' },
   ],
 
   do: [
@@ -463,7 +463,7 @@ export default defineDoc({
 
   dont: [
     {
-      title: 'Do not put two filled buttons in one',
+      title: 'Do not put two primary buttons in one',
       why: 'Two primaries is no primary. The user has to decide which decision to make before making it, and most decide neither.',
       render: (
         <Row gap="sm">
@@ -550,8 +550,8 @@ export default defineDoc({
   heading="Deploy to twenty-four regions in one command."
   body="No build servers to manage, no YAML to write, and a rollback that finishes in eight seconds."
   action={<Button size="lg" endIcon={<ArrowRight />}>Start deploying</Button>}
-  // One filled, one text. Two filled buttons is two primaries, which is none.
-  secondaryAction={<Button size="lg" variant="text">Watch the demo</Button>}
+  // One primary, one tertiary. Two primary buttons is two primaries, which is none.
+  secondaryAction={<Button size="lg" variant="tertiary">Watch the demo</Button>}
 />
 
 // The heading is the top of the document outline — a real h1, not a styled div.
@@ -589,8 +589,8 @@ export default defineDoc({
   </p>
 
   <div class="ds-hero__actions">
-    <a class="ds-btn ds-btn--filled" href="/start">Start deploying</a>
-    <a class="ds-btn ds-btn--text"   href="/demo">Watch the demo</a>
+    <a class="ds-btn ds-btn--primary" href="/start">Start deploying</a>
+    <a class="ds-btn ds-btn--tertiary" href="/demo">Watch the demo</a>
   </div>
 </section>`,
     },
@@ -652,8 +652,8 @@ export default defineDoc({
           { name: 'heading', type: 'ReactNode', required: true, description: 'One sentence saying what this is. Rendered as an h1 by default.' },
           { name: 'body', type: 'ReactNode', description: 'One sentence expanding the heading. Two is usually one too many.' },
           { name: 'eyebrow', type: 'ReactNode', description: 'Optional context above the heading. It must earn its line.' },
-          { name: 'action', type: 'ReactNode', description: 'The single filled action. It is the reason the section exists.' },
-          { name: 'secondaryAction', type: 'ReactNode', description: 'A text button. Never a second filled one.' },
+          { name: 'action', type: 'ReactNode', description: 'The single primary action. It is the reason the section exists.' },
+          { name: 'secondaryAction', type: 'ReactNode', description: 'A tertiary button. Never a second primary one.' },
           { name: 'media', type: 'ReactNode', description: 'A panel beside the text, or a background image. Backgrounds are automatically scrimmed.' },
           { name: 'align', type: "'left' | 'center'", default: "'left'", description: 'Centred suits a short heading and one action; left scans faster and is required with side media.' },
           { name: 'as', type: "'h1' | 'h2'", default: "'h1'", description: 'h2 when the hero is not the top of the page — the outline must stay correct.' },
@@ -677,7 +677,7 @@ export default defineDoc({
       'Fluid type with clamp() removes the layout shift that breakpoint-based font sizes cause at the moment of resize.',
     ],
     mistakes: [
-      'Two filled buttons, so neither reads as the recommendation.',
+      'Two primary buttons, so neither reads as the recommendation.',
       'A heading measure as wide as the container, making large type hard to read.',
       'Text on an unscrimmed image, with contrast dependent on the asset.',
       'A styled div instead of an h1, leaving the page with no outline entry.',

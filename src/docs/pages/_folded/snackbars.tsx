@@ -15,7 +15,7 @@ function Playground() {
             onDismiss={() => setOpen(false)}
           />
         ) : (
-          <Button variant="outlined" onClick={() => setOpen(true)}>
+          <Button variant="secondary" onClick={() => setOpen(true)}>
             Show snackbar
           </Button>
         )}

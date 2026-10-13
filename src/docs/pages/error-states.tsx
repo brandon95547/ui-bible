@@ -97,12 +97,12 @@ function Playground() {
               title="Something went wrong on our end"
               description="We have logged this and the team has been notified. Nothing you did caused it."
               action={<Button startIcon={<RefreshCw />}>Reload the page</Button>}
-              secondaryAction={<Button variant="text">Back to dashboard</Button>}
+              secondaryAction={<Button variant="tertiary">Back to dashboard</Button>}
             />
             <div className="border-t border-[var(--ds-border-subtle)] px-6 py-3 text-center">
               <span className="inline-flex items-center gap-2 font-mono text-caption text-[var(--ds-fg-muted)]">
                 Error 4f21c-8821-9de3
-                <Button size="xs" variant="text" startIcon={<Copy />}>
+                <Button size="xs" variant="tertiary" startIcon={<Copy />}>
                   Copy
                 </Button>
               </span>
@@ -117,10 +117,10 @@ function Playground() {
               title="Deployments are degraded"
               actions={
                 <>
-                  <Button size="sm" variant="danger-outline">
+                  <Button size="sm" variant="secondary" tone="danger">
                     View status page
                   </Button>
-                  <Button size="sm" variant="text">
+                  <Button size="sm" variant="tertiary">
                     Subscribe to updates
                   </Button>
                 </>
@@ -296,7 +296,7 @@ export default defineDoc({
                   {i === 1 ? (
                     <div className="mt-2 flex flex-col items-start gap-1.5">
                       <span className="text-body-sm text-[var(--ds-danger-text)]">Unavailable</span>
-                      <Button size="xs" variant="text" startIcon={<RefreshCw />}>
+                      <Button size="xs" variant="tertiary" startIcon={<RefreshCw />}>
                         Retry
                       </Button>
                     </div>
@@ -337,12 +337,12 @@ export default defineDoc({
           title="Something went wrong on our end"
           description="We have logged this and the team has been notified. Nothing you did caused it."
           action={<Button startIcon={<RefreshCw />}>Reload the page</Button>}
-          secondaryAction={<Button variant="text">Back to dashboard</Button>}
+          secondaryAction={<Button variant="tertiary">Back to dashboard</Button>}
         />
         <div className="border-t border-[var(--ds-border-subtle)] px-6 py-3 text-center">
           <span className="inline-flex items-center gap-2 font-mono text-caption text-[var(--ds-fg-muted)]">
             Error 4f21c-8821-9de3
-            <Button size="xs" variant="text" startIcon={<Copy />}>
+            <Button size="xs" variant="tertiary" startIcon={<Copy />}>
               Copy
             </Button>
           </span>
@@ -444,7 +444,7 @@ export default defineDoc({
       render: (
         <span className="inline-flex items-center gap-2 rounded-[var(--radius-sm)] bg-[var(--ds-surface-inset)] px-2.5 py-1.5 font-mono text-caption text-[var(--ds-fg-secondary)]">
           4f21c-8821-9de3
-          <Button size="xs" variant="text" startIcon={<Copy />}>
+          <Button size="xs" variant="tertiary" startIcon={<Copy />}>
             Copy
           </Button>
         </span>

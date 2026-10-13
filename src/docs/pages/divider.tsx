@@ -187,7 +187,7 @@ export default defineDoc({
         render: (
           <PreviewStage minHeight={0} allowResize={false} center={false}>
             <Stack gap="md" className="w-full max-w-xs">
-              <Button variant="outlined" fullWidth>
+              <Button variant="secondary" fullWidth>
                 Continue with Google
               </Button>
               <Divider label="or" />
@@ -240,9 +240,9 @@ export default defineDoc({
         label: 'In a toolbar',
         render: (
           <Row gap="sm" align="center">
-            <IconButton size="sm" variant="outlined" label="a" icon={<Settings2 />} />
+            <IconButton size="sm" variant="secondary" label="a" icon={<Settings2 />} />
             <Divider orientation="vertical" className="mx-1 h-5" />
-            <IconButton size="sm" variant="outlined" label="b" icon={<Archive />} />
+            <IconButton size="sm" variant="secondary" label="b" icon={<Archive />} />
           </Row>
         ),
       },

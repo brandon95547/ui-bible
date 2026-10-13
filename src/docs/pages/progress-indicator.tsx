@@ -94,7 +94,7 @@ function StepsDemo() {
           ))}
         </div>
         <Row gap="sm">
-          <Button size="sm" variant="outlined" onClick={() => setStep((s) => Math.max(0, s - 1))}>
+          <Button size="sm" variant="secondary" onClick={() => setStep((s) => Math.max(0, s - 1))}>
             Back
           </Button>
           <Button size="sm" onClick={() => setStep((s) => Math.min(steps.length, s + 1))}>

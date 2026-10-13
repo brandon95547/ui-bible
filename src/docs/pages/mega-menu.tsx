@@ -58,7 +58,7 @@ const GROUPS: MegaMenuGroup[] = [
           Fork a production database in about two seconds and throw it away when the pull request
           merges.
         </p>
-        <Button size="sm" variant="outlined">
+        <Button size="sm" variant="secondary">
           Read the post
         </Button>
       </Stack>
@@ -116,7 +116,7 @@ function Chrome({ children }: { children: React.ReactNode }) {
         <span className="text-label font-semibold text-[var(--ds-fg)]">Northwind</span>
         <div className="flex-1">{children}</div>
         <Row gap="sm">
-          <Button size="sm" variant="text">
+          <Button size="sm" variant="tertiary">
             Sign in
           </Button>
           <Button size="sm">Start free</Button>
