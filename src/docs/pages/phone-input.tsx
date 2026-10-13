@@ -459,7 +459,7 @@ export default defineDoc({
       ),
     },
     {
-      title: 'Accept any paste and normalise it',
+      title: 'Accept any paste and normalize it',
       why: 'Contact cards contain brackets, spaces, dots and a leading zero after the country code. All of them are the same number and all of them should just work.',
       render: (
         <code className="font-mono text-[11px] leading-relaxed text-[var(--ds-success-text)]">
@@ -539,7 +539,7 @@ export default defineDoc({
       { keys: 'Enter / Space / ↓', does: 'On the country button, opens the list and focuses the current country.' },
       { keys: 'A–Z', does: 'Typeahead in the country list, matching the country name — not the dial code, which nobody remembers.' },
       { keys: 'Esc', does: 'Closes the country list and returns focus to the button.' },
-      { keys: '⌘ / Ctrl + V', does: 'Pastes and normalises, including switching the country when a dial code is present.' },
+      { keys: '⌘ / Ctrl + V', does: 'Pastes and normalizes, including switching the country when a dial code is present.' },
     ],
     aria: [
       { attr: 'autocomplete="tel-national"', on: 'The number field', note: 'With autocomplete="tel-country-code" on the country control. Split tokens are what let a browser fill both halves correctly.' },

@@ -163,7 +163,7 @@ export default defineDoc({
 
   overview: {
     purpose:
-      'A rating turns a subjective judgement into a number small enough to aggregate. It exists in two forms that look identical and behave nothing alike: an interactive control that collects one person’s score, and a read-only display that summarises everyone’s. The second is far more common, and treating it as an input is the most frequent mistake made with this component.',
+      'A rating turns a subjective judgment into a number small enough to aggregate. It exists in two forms that look identical and behave nothing alike: an interactive control that collects one person’s score, and a read-only display that summarizes everyone’s. The second is far more common, and treating it as an input is the most frequent mistake made with this component.',
     whenToUse: [
       'Collecting a quick subjective score where a free-text review would be too much to ask.',
       'Displaying an aggregate score beside a product, article or service.',
@@ -171,7 +171,7 @@ export default defineDoc({
     ],
     whenNotToUse: [
       {
-        text: 'The judgement has more than one dimension.',
+        text: 'The judgment has more than one dimension.',
         instead: 'several ratings with their own labels, or a short Form',
         to: '#/form',
       },
@@ -343,7 +343,7 @@ export default defineDoc({
       </Row>
     ),
     caption:
-      'Five symbols in one radiogroup, a filled colour that is not the accent, and the word that fixes the meaning of the number.',
+      'Five symbols in one radiogroup, a filled color that is not the accent, and the word that fixes the meaning of the number.',
     parts: [
       {
         n: 1,
@@ -361,14 +361,14 @@ export default defineDoc({
       },
       {
         n: 3,
-        label: 'Filled colour',
+        label: 'Filled color',
         value: '--ds-warning',
         kind: 'color',
-        note: 'Deliberately not the accent. A rating is not a primary action, and amber is the colour users already associate with a score.',
+        note: 'Deliberately not the accent. A rating is not a primary action, and amber is the color users already associate with a score.',
       },
       {
         n: 4,
-        label: 'Empty colour',
+        label: 'Empty color',
         value: '--ds-border-strong',
         kind: 'color',
         note: 'Outlined, not hidden. The unfilled stars are what make "4 of 5" readable rather than "4 stars".',
@@ -442,7 +442,7 @@ export default defineDoc({
       why: 'Your 3 and mine differ by half a point. "Good" is the same for both of us, and it works for anyone not counting filled shapes.',
       render: (
         <Row gap="sm" align="center">
-          <Rating label="labelled" value={3} readOnly size="sm" />
+          <Rating label="labeled" value={3} readOnly size="sm" />
           <span className="text-body-sm text-[var(--ds-fg-secondary)]">Good</span>
         </Row>
       ),
@@ -516,7 +516,7 @@ export default defineDoc({
       { id: '4.1.2', name: 'Name, Role, Value', level: 'A' },
     ],
     contrast: [
-      'Filled and empty symbols must differ by more than colour. The fill itself is the second signal, which is why empty stars are outlined rather than a paler amber.',
+      'Filled and empty symbols must differ by more than color. The fill itself is the second signal, which is why empty stars are outlined rather than a paler amber.',
       'The empty outline owes 3:1 against the background — it defines the scale’s length.',
       'The text label owes 4.5:1, and it is what carries the meaning when the symbols cannot be seen at all.',
       'In forced-colors mode the fill collapses. Provide a border or shape difference so filled and empty stay distinguishable.',
@@ -631,7 +631,7 @@ function PartialStar({ fill }: { fill: number }) {
   color: var(--ds-warning);          /* not the accent: this is not an action */
 }
 
-/* Fill is the second signal, so filled/empty survives greyscale. */
+/* Fill is the second signal, so filled/empty survives grayscale. */
 .ds-rating svg[data-filled='true'] { fill: currentColor; }
 
 /* The symbols stay 20px; the TARGETS grow to 44px and swallow the gaps. */
@@ -640,7 +640,7 @@ function PartialStar({ fill }: { fill: number }) {
   .ds-rating { gap: 28px; }
 }
 
-/* Colour collapses in forced-colors: keep a shape difference. */
+/* Color collapses in forced-colors: keep a shape difference. */
 @media (forced-colors: active) {
   .ds-rating button[aria-checked='true'] { forced-color-adjust: none; }
 }
@@ -679,7 +679,7 @@ function PartialStar({ fill }: { fill: number }) {
     ],
     performance: [
       'Render read-only ratings as inline SVG rather than an icon component per star. In a list of two hundred products that is a thousand components for something that never changes.',
-      'Memoise the fill calculation on the value. It runs once per symbol per render and is trivially cacheable.',
+      'Memoize the fill calculation on the value. It runs once per symbol per render and is trivially cacheable.',
       'Submit optimistically and reconcile. A rating is low-stakes, and waiting for a round trip to show the star filled makes the control feel broken.',
     ],
     mistakes: [
@@ -689,7 +689,7 @@ function PartialStar({ fill }: { fill: number }) {
       'No text label, so the number means something different to every person.',
       'An average with no count, which cannot be compared to anything.',
       'No way to clear a rating, making a mis-click permanent.',
-      'Colour as the only difference between filled and empty, which disappears in greyscale and in forced-colors mode.',
+      'Color as the only difference between filled and empty, which disappears in grayscale and in forced-colors mode.',
     ],
     realWorld: [
       'Star ratings skew high almost everywhere — most distributions are bimodal at 5 and 1. Treat anything below 4 as a strong negative signal rather than a middling one.',

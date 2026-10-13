@@ -558,7 +558,7 @@ export default defineDoc({
           <strong>Every one of these shells is the same three regions.</strong> Persistent
           navigation, a context bar, and a content well. What changes is only what fills the well —
           tiles, a list beside a detail, a table, columns, a transcript, or a stack of settings.
-          Recognising that is what stops a product growing six unrelated layouts.
+          Recognizing that is what stops a product growing six unrelated layouts.
         </p>
         <p>
           <strong>The top-left is the most expensive real estate you own.</strong> In a
@@ -743,9 +743,9 @@ export default defineDoc({
       {
         n: 6,
         label: 'Delta',
-        value: 'sign + arrow + colour',
+        value: 'sign + arrow + color',
         kind: 'color',
-        note: 'Three signals, because a bare number cannot say whether it is good. Never colour alone — down is good for error rate and bad for revenue.',
+        note: 'Three signals, because a bare number cannot say whether it is good. Never color alone — down is good for error rate and bad for revenue.',
       },
       {
         n: 7,
@@ -844,7 +844,7 @@ export default defineDoc({
   dont: [
     {
       title: 'Do not put nine tiles in the grid',
-      why: 'Equal size means equal importance. Nine equally important things is the same as none, and the user has to do the prioritising you skipped.',
+      why: 'Equal size means equal importance. Nine equally important things is the same as none, and the user has to do the prioritizing you skipped.',
       render: (
         <span className="grid w-32 grid-cols-3 gap-1">
           {Array.from({ length: 9 }).map((_, i) => (
@@ -903,7 +903,7 @@ export default defineDoc({
       { id: '4.1.3', name: 'Status Messages', level: 'AA' },
     ],
     contrast: [
-      'Deltas must never rely on colour alone. Ours carries an arrow, a sign and a word, so red-green colour blindness — around one man in twelve — does not lose the meaning.',
+      'Deltas must never rely on color alone. Ours carries an arrow, a sign and a word, so red-green color blindness — around one man in twelve — does not lose the meaning.',
       'Sparklines and chart fills are decorative and exempt, but any line carrying meaning on its own needs 3:1 against its background.',
       'Compact density shrinks padding, never type. A 10px label to save four pixels of height fails contrast at a glance even when it passes a ratio check.',
     ],
@@ -943,7 +943,7 @@ export default defineDoc({
     focus:
       'Selecting a row in a master–detail layout must not move focus into the detail pane — the user is working down a list and needs the arrow keys to keep working. Focus moves only when they act on the detail deliberately. Never let a background refresh steal or reset focus.',
     screenReader: [
-      'A tile announces as "Revenue, $48.2 thousand, up 12.4 percent versus last week". The delta must be in the text, not only in the colour of an arrow.',
+      'A tile announces as "Revenue, $48.2 thousand, up 12.4 percent versus last week". The delta must be in the text, not only in the color of an arrow.',
       'Give every panel a heading and keep the heading levels in order. A dashboard is where heading structure most often collapses into a dozen unrelated h3s.',
       'Announce refreshes politely and specifically. "Revenue updated" beats re-reading the entire grid on a thirty-second interval.',
       'A skip link past the sidebar is not optional here — the alternative is Tabbing through the same navigation on every screen.',
@@ -1043,7 +1043,7 @@ function DashboardShell({ nav, bar, children }: ShellProps) {
         props: [
           { name: 'label', type: 'string', required: true, description: 'What the number measures. The smallest text in the tile.' },
           { name: 'value', type: 'ReactNode', required: true, description: 'The number. Largest thing in the tile, tabular figures so digits do not shift on update.' },
-          { name: 'delta', type: 'number', description: 'Percentage change. Rendered with a sign, an arrow and a colour — three signals, never colour alone.' },
+          { name: 'delta', type: 'number', description: 'Percentage change. Rendered with a sign, an arrow and a color — three signals, never color alone.' },
           { name: 'deltaLabel', type: 'string', description: 'What the delta is against. "vs last week" — without it the number is unjudgeable.' },
           { name: 'spark', type: 'number[]', description: 'Sparkline data. Shape, not precision; it answers "is this normal?".' },
         ],
@@ -1070,8 +1070,8 @@ function DashboardShell({ nav, bar, children }: ShellProps) {
       'If the shell needs a horizontal scrollbar on a laptop, the layout has already failed — that is the width most of your users have.',
     ],
     performance: [
-      'Virtualise any list past a few hundred rows. A CRM queue and an admin table both reach that quickly, and both feel broken before they look broken.',
-      'Stagger polling across panels. Twelve panels refreshing on the same interval produces a synchronised stall every thirty seconds.',
+      'Virtualize any list past a few hundred rows. A CRM queue and an admin table both reach that quickly, and both feel broken before they look broken.',
+      'Stagger polling across panels. Twelve panels refreshing on the same interval produces a synchronized stall every thirty seconds.',
       'Pause background refresh when the tab is hidden. A dashboard left open on a second monitor otherwise polls all day for nobody.',
       'Render tiles from cached values first and reconcile when the fetch lands. Perceived speed on this screen matters more than freshness by a second.',
       'Charts are the heaviest thing here. Load them below the tiles and let the numbers paint first.',
@@ -1079,7 +1079,7 @@ function DashboardShell({ nav, bar, children }: ShellProps) {
     mistakes: [
       'Nine equally sized tiles, so nothing is primary.',
       'Numbers with no comparison, which cannot be judged.',
-      'Colour-only deltas, invisible to a significant share of users.',
+      'Color-only deltas, invisible to a significant share of users.',
       'Auto-refresh that reorders rows under the cursor.',
       'A different navigation pattern on every screen.',
       'No timestamp, so stale data is trusted until it is embarrassing.',

@@ -71,7 +71,7 @@ export default defineDoc({
     whenToUse: [
       'Alongside a text label, to speed up repeat recognition of a frequent action.',
       'Alone, only for the handful of universally understood glyphs: close, search, add, more, back.',
-      'As a status marker paired with a colour and a word, so meaning survives greyscale.',
+      'As a status marker paired with a color and a word, so meaning survives grayscale.',
       'To make a dense toolbar scannable, where labels would not fit and the actions are used daily.',
     ],
     whenNotToUse: [
@@ -95,10 +95,10 @@ export default defineDoc({
     reasoning: (
       <>
         <p>
-          Icons are <strong>recognised, not read</strong>. Recognition is fast and requires prior
+          Icons are <strong>recognized, not read</strong>. Recognition is fast and requires prior
           exposure; without it the user is doing visual problem-solving. Research on toolbar
           usability has consistently found that icon-only toolbars are slower for new users and only
-          overtake labelled ones after substantial repeated use. Most of your users are not power
+          overtake labeled ones after substantial repeated use. Most of your users are not power
           users of the screen they are currently on.
         </p>
         <p>
@@ -110,7 +110,7 @@ export default defineDoc({
         <p>
           Icons need <strong>optical</strong> alignment, not mathematical alignment. A 16px icon
           next to 13px text should align on the text's cap height, not its line box; a triangle
-          inside a circular button needs to sit about 1px right of centre because its visual mass is
+          inside a circular button needs to sit about 1px right of center because its visual mass is
           on the left. These corrections are small and they are the difference between "designed"
           and "assembled".
         </p>
@@ -162,21 +162,21 @@ export default defineDoc({
         ),
       },
       {
-        id: 'labelling',
-        title: 'Labelled vs unlabelled',
+        id: 'labeling',
+        title: 'Labeled vs unlabeled',
         description:
           'The left row is unambiguous to a first-time user. The right row is a quiz. Both are the same four actions.',
         render: (
           <PreviewStage center={false} minHeight={0} allowResize={false}>
             <div className="grid w-full gap-4 sm:grid-cols-2">
-              <Cell label="Labelled" sub="Readable on first encounter" tone="good">
+              <Cell label="Labeled" sub="Readable on first encounter" tone="good">
                 <Row gap="sm">
                   <Button size="sm" variant="secondary" startIcon={<Share2 />}>Share</Button>
                   <Button size="sm" variant="secondary" startIcon={<Archive />}>Archive</Button>
                   <Button size="sm" variant="secondary" startIcon={<Download />}>Export</Button>
                 </Row>
               </Cell>
-              <Cell label="Unlabelled" sub="Requires prior learning" tone="bad">
+              <Cell label="Unlabeled" sub="Requires prior learning" tone="bad">
                 <Row gap="sm">
                   <IconButton label="Share" icon={<Share2 />} variant="secondary" />
                   <IconButton label="Archive" icon={<Archive />} variant="secondary" />
@@ -191,7 +191,7 @@ export default defineDoc({
         id: 'alignment',
         title: 'Optical alignment',
         description:
-          'Icons and text share a baseline, not a box. Centring on the line box drops the glyph roughly 1px too low at every size.',
+          'Icons and text share a baseline, not a box. Centering on the line box drops the glyph roughly 1px too low at every size.',
         render: (
           <PreviewStage center={false} minHeight={0} allowResize={false}>
             <div className="grid w-full gap-4 sm:grid-cols-2">
@@ -273,10 +273,10 @@ export default defineDoc({
       },
       {
         n: 5,
-        label: 'Optical centre',
-        value: '≈1px right of true centre',
+        label: 'Optical center',
+        value: '≈1px right of true center',
         kind: 'space',
-        note: 'Asymmetric glyphs — play triangles, send arrows — need nudging. Mathematical centring makes them look like they are drifting left.',
+        note: 'Asymmetric glyphs — play triangles, send arrows — need nudging. Mathematical centering makes them look like they are drifting left.',
       },
     ],
   },
@@ -317,7 +317,7 @@ export default defineDoc({
     },
     {
       title: 'Mute decorative icons and brighten interactive ones',
-      why: 'Colour separates "this is a signpost" from "this is a button". An icon at full foreground contrast reads as pressable whether it is or not.',
+      why: 'Color separates "this is a signpost" from "this is a button". An icon at full foreground contrast reads as pressable whether it is or not.',
       render: (
         <Row gap="lg">
           <span className="inline-flex items-center gap-2 text-body-sm text-[var(--ds-fg-secondary)]">
@@ -366,7 +366,7 @@ export default defineDoc({
     },
     {
       title: 'Do not rely on a tooltip to explain an icon',
-      why: 'Tooltips need hover, and hover does not exist on touch. On a phone an unlabelled ambiguous icon has no way at all to explain itself.',
+      why: 'Tooltips need hover, and hover does not exist on touch. On a phone an unlabeled ambiguous icon has no way at all to explain itself.',
       render: (
         <Row gap="sm">
           <IconButton label="?" icon={<Share2 />} variant="secondary" />
@@ -377,7 +377,7 @@ export default defineDoc({
     },
     {
       title: 'Do not scale a small icon up',
-      why: 'A 16px glyph rendered at 40px has a stroke that is proportionally too thin and detail that was optimised away. Use the size the family provides.',
+      why: 'A 16px glyph rendered at 40px has a stroke that is proportionally too thin and detail that was optimized away. Use the size the family provides.',
       render: (
         <Row gap="lg" align="center">
           <Bell size={40} strokeWidth={0.7} />
@@ -424,7 +424,7 @@ export default defineDoc({
     focus:
       'Icon buttons take the standard focus ring. Because they are square and small, the 2px offset matters more than usual — a flush ring on a 32px square is hard to see.',
     screenReader: [
-      'The visible label and the accessible name must match. Voice-control users say what they see, so an aria-label of "Remove item" on a button labelled "Delete" is unusable for them.',
+      'The visible label and the accessible name must match. Voice-control users say what they see, so an aria-label of "Remove item" on a button labeled "Delete" is unusable for them.',
       'Never use an emoji as a UI icon. Screen readers read the full Unicode name, which is verbose and often absurd in context.',
       'Icon fonts are announced as random characters when the font fails to load. Use SVG.',
     ],
@@ -470,7 +470,7 @@ export function Custom({ size = 16, ...props }) {
     },
     css: {
       lang: 'css',
-      code: `/* Icons inherit colour, so one rule themes every glyph */
+      code: `/* Icons inherit color, so one rule themes every glyph */
 .icon { stroke: currentColor; fill: none; }
 
 /* Optical alignment: match the cap height, not the line box */
@@ -507,7 +507,7 @@ export function Custom({ size = 16, ...props }) {
     performance: [
       'Inline SVG components are tree-shakeable and themeable with currentColor. An SVG sprite is smaller for very large sets but loses per-icon code splitting.',
       'Icon fonts should not be used at all: they block rendering, break in high-contrast mode, and announce as garbage characters if the font fails.',
-      'A component library that imports every icon at the top level ships all of them. Verify with a bundle analyser — this mistake is invisible in development.',
+      'A component library that imports every icon at the top level ships all of them. Verify with a bundle analyzer — this mistake is invisible in development.',
       'For a list of 500 rows each with three icons, render the SVG once with <use> references rather than 1,500 inline SVG nodes.',
     ],
     mistakes: [
@@ -520,7 +520,7 @@ export function Custom({ size = 16, ...props }) {
       'Test unfamiliar icons by showing five people the glyph alone and asking what it does. Under four correct answers means it needs a label.',
       'Icon-only toolbars are appropriate for tools used daily for hours. They are wrong for anything used weekly, and they are always wrong for destructive actions.',
       'When adding a new icon, check whether an existing one already carries that meaning. Most icon sprawl comes from not looking first.',
-      'In localised products, remember that icon conventions are not universal. A shopping trolley, an envelope and a thumbs-up all vary in meaning by region.',
+      'In localized products, remember that icon conventions are not universal. A shopping trolley, an envelope and a thumbs-up all vary in meaning by region.',
     ],
   },
 })

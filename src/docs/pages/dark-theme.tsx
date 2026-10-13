@@ -169,11 +169,11 @@ export default defineDoc({
           that work than the shadow does.
         </p>
         <p>
-          <strong>Saturated colours must be desaturated and lightened.</strong> A colour tuned for
+          <strong>Saturated colors must be desaturated and lightened.</strong> A color tuned for
           white backgrounds vibrates against dark ones — the chromatic aberration in the eye cannot
           focus both the background and a high-chroma foreground simultaneously. Our brand goes from{' '}
           <code>#6A55F2</code> in light to <code>#6867C9</code> in dark, and the value that carries
-          brand-coloured <em>text</em> goes lighter again, to <code>#B5B3ED</code> — the fill itself
+          brand-colored <em>text</em> goes lighter again, to <code>#B5B3ED</code> — the fill itself
           is too dark to read on. One hue, three jobs, three measured values.
         </p>
       </>
@@ -194,7 +194,7 @@ export default defineDoc({
         id: 'side-by-side',
         title: 'The same UI in both themes',
         description:
-          'Identical markup and identical component code. Only the tier-2 tokens change — and note that the dark version is not the light version with the colours flipped.',
+          'Identical markup and identical component code. Only the tier-2 tokens change — and note that the dark version is not the light version with the colors flipped.',
         render: (
           <PreviewStage center={false} minHeight={0} allowResize={false}>
             <div className="grid w-full gap-4 lg:grid-cols-2">
@@ -236,7 +236,7 @@ export default defineDoc({
         id: 'stacking',
         title: 'Stacked surfaces only go up',
         description:
-          'The single rule that decides every surface colour in dark mode: whatever sits on top of something else is lighter than the thing behind it. Depth is lightness here, so a surface that goes darker is not "recessed" — it has moved backwards, behind the page it is supposed to be sitting on.',
+          'The single rule that decides every surface color in dark mode: whatever sits on top of something else is lighter than the thing behind it. Depth is lightness here, so a surface that goes darker is not "recessed" — it has moved backward, behind the page it is supposed to be sitting on.',
         render: (
           <PreviewStage center={false} minHeight={0} allowResize={false}>
             <div className="grid w-full gap-4 lg:grid-cols-2">
@@ -254,7 +254,7 @@ export default defineDoc({
         id: 'controls-go-up',
         title: 'A control is a surface, not a hole',
         description:
-          'Material 3 puts a filled text field on surface-container-highest — the lightest container in the ramp, never a darker one. The reason is behavioural, not decorative: lightness is what reads as "in front of the page", and anything a person is meant to click or type into has to read that way. The Bible used to back fields with --ds-surface-inset and it was wrong; inset is now reserved for wells nobody interacts with.',
+          'Material 3 puts a filled text field on surface-container-highest — the lightest container in the ramp, never a darker one. The reason is behavioral, not decorative: lightness is what reads as "in front of the page", and anything a person is meant to click or type into has to read that way. The Bible used to back fields with --ds-surface-inset and it was wrong; inset is now reserved for wells nobody interacts with.',
         render: (
           <PreviewStage center={false} minHeight={0} allowResize={false}>
             <div className="grid w-full gap-4 lg:grid-cols-2">
@@ -297,7 +297,7 @@ export default defineDoc({
       },
       {
         id: 'chroma',
-        title: 'Colour has to move',
+        title: 'Color has to move',
         description:
           'The top row is the light-theme value shown on a dark canvas. The bottom row is the dark-theme value. Same role, different step of the ramp.',
         render: (
@@ -369,7 +369,7 @@ export default defineDoc({
         label: 'Surface step',
         value: '≈4–6% lightness per level',
         kind: 'color',
-        note: 'Below 3% the levels are indistinguishable; above 8% the top surface starts reading as a different colour rather than a higher one.',
+        note: 'Below 3% the levels are indistinguishable; above 8% the top surface starts reading as a different color rather than a higher one.',
       },
       {
         n: 3,
@@ -390,7 +390,7 @@ export default defineDoc({
         label: 'Border',
         value: 'white at 6–19% alpha',
         kind: 'color',
-        note: 'Alpha, so it composes over any surface. A solid grey border only matches one background and looks wrong on the other three.',
+        note: 'Alpha, so it composes over any surface. A solid gray border only matches one background and looks wrong on the other three.',
       },
       {
         n: 5,
@@ -423,7 +423,7 @@ export default defineDoc({
   do: [
     {
       title: 'Lighten to elevate',
-      why: 'Surface lightness is the primary depth channel in dark mode. It survives greyscale, high-contrast mode and a phone in sunlight; a shadow on near-black does none of those.',
+      why: 'Surface lightness is the primary depth channel in dark mode. It survives grayscale, high-contrast mode and a phone in sunlight; a shadow on near-black does none of those.',
       render: (
         <Stack gap="xs" className="w-full">
           {['--ds-canvas', '--ds-surface', '--ds-surface-raised', '--ds-surface-overlay'].map((v) => (
@@ -440,7 +440,7 @@ export default defineDoc({
     },
     {
       title: 'Use alpha for overlays and borders',
-      why: 'A 6% white border composes correctly over the canvas, a card, a menu and a coloured banner. A solid grey border is correct on exactly one of them.',
+      why: 'A 6% white border composes correctly over the canvas, a card, a menu and a colored banner. A solid gray border is correct on exactly one of them.',
       render: (
         <Stack gap="xs" className="w-full">
           {['var(--ds-surface)', 'var(--ds-accent-subtle)', 'var(--ds-danger-subtle)'].map((bg) => (
@@ -475,11 +475,11 @@ export default defineDoc({
   dont: [
     {
       title: 'Do not invert the light theme',
-      why: 'Inversion produces mid-greys with no meaningful lightness steps, a brand colour that vibrates, and shadows that are invisible. Dark mode is a separate design, not a filter.',
+      why: 'Inversion produces mid-grays with no meaningful lightness steps, a brand color that vibrates, and shadows that are invisible. Dark mode is a separate design, not a filter.',
       render: (
         <div className="w-full rounded-[var(--radius-md)] p-3" style={{ filter: 'invert(1)' }}>
           <div className="rounded-[var(--radius-sm)] bg-white p-3">
-            <p className="text-body-sm text-black">Inverted — and now the brand colour is green.</p>
+            <p className="text-body-sm text-black">Inverted — and now the brand color is green.</p>
           </div>
         </div>
       ),
@@ -495,14 +495,14 @@ export default defineDoc({
     },
     {
       title: 'Do not reuse light-theme shadows',
-      why: 'A soft grey shadow on a dark surface fogs the edge instead of defining it. Dark shadows are darker, tighter, and always paired with a hairline border.',
+      why: 'A soft gray shadow on a dark surface fogs the edge instead of defining it. Dark shadows are darker, tighter, and always paired with a hairline border.',
       render: (
         <div className="h-14 w-40 rounded-[var(--radius-lg)] bg-[var(--ds-surface-raised)]" style={{ boxShadow: '0 8px 24px rgb(140 140 150 / 0.4)' }} />
       ),
     },
     {
       title: 'Do not keep light-theme saturation',
-      why: 'High-chroma colours on dark backgrounds vibrate — the eye cannot focus both planes at once. Lighten the value and pull a little chroma out of it.',
+      why: 'High-chroma colors on dark backgrounds vibrate — the eye cannot focus both planes at once. Lighten the value and pull a little chroma out of it.',
       render: (
         <Row gap="sm">
           <span className="grid h-10 w-24 place-items-center rounded-[var(--radius-md)] text-caption text-white" style={{ background: '#4835a8' }}>
@@ -525,7 +525,7 @@ export default defineDoc({
     contrast: [
       'Dark themes need contrast checked independently — a pair that passes on white frequently fails on near-black and vice versa.',
       'Our primary text is 15.0:1, body 9.4:1 and captions 8.2:1 against the canvas. All comfortably above AA, all deliberately below 21:1. Captions are certified against --ds-field-hover, where they read 4.7:1 — the lightest ground in the system, and the one that decides whether they pass.',
-      'Alpha borders and tints must be composited against their actual surface before measuring. A 6% white border over the canvas and the same border over an overlay are different colours.',
+      'Alpha borders and tints must be composited against their actual surface before measuring. A 6% white border over the canvas and the same border over an overlay are different colors.',
     ],
     keyboard: [
       { keys: '⌘K → theme', does: 'The command palette exposes the theme switch, because a keyboard user should not have to hunt for it.' },
@@ -533,7 +533,7 @@ export default defineDoc({
     aria: [
       { attr: 'color-scheme: dark', on: ':root', note: 'Native scrollbars, caret, form controls, autofill and the browser UI all follow it.' },
       { attr: 'prefers-color-scheme', on: 'Media query', note: 'The initial default only. An explicit user choice must always win and must persist.' },
-      { attr: 'forced-colors', on: 'Media query', note: 'High Contrast Mode replaces the palette entirely. Test that layout and semantics survive without any of your colours.' },
+      { attr: 'forced-colors', on: 'Media query', note: 'High Contrast Mode replaces the palette entirely. Test that layout and semantics survive without any of your colors.' },
     ],
     focus:
       'The focus ring uses #8584DD in dark and is drawn with a 2px offset, which is what makes it legal: against the page it reads 5.8:1, while against the accent fill it would only be 1.5:1. A ring that hugs a filled button is measuring itself against the wrong thing.',
@@ -619,20 +619,20 @@ function initialTheme(): 'dark' | 'light' {
     ],
     performance: [
       'Switching a data attribute on :root invalidates style for the whole document, which is one full style recalculation — imperceptible for a deliberate theme switch, far too expensive to animate.',
-      'Do not transition colours on a theme switch. A 300ms crossfade of every element on the page is one of the most expensive things a web app can do.',
+      'Do not transition colors on a theme switch. A 300ms crossfade of every element on the page is one of the most expensive things a web app can do.',
       'OLED screens use meaningfully less power on dark pixels. For a mobile-first product that matters more than most performance work.',
     ],
     mistakes: [
       'Forgetting color-scheme, then getting white scrollbars, a white autofill background and a light date picker in an otherwise dark app.',
-      'Reusing light-theme shadow values, which look like grey fog on a dark surface.',
-      'Making the input the same colour as its card, so the field boundary disappears entirely.',
+      'Reusing light-theme shadow values, which look like gray fog on a dark surface.',
+      'Making the input the same color as its card, so the field boundary disappears entirely.',
       'Leaving one hard-coded #FFFFFF in a component. It is invisible in the light theme and glaring in the dark one.',
     ],
     realWorld: [
-      'Ship both themes from day one. Retrofitting a second theme means auditing every hard-coded colour in the product, and there are always more than anyone expects.',
+      'Ship both themes from day one. Retrofitting a second theme means auditing every hard-coded color in the product, and there are always more than anyone expects.',
       'Give users three choices — dark, light, system — and remember the choice. "System" alone is not enough for people whose OS setting does not match their preference for your app.',
       'Screenshot your product in both themes side by side and look at them for a minute. Inconsistencies that are invisible in isolation are obvious in comparison.',
-      'When a designer supplies only light-mode mockups, ask for the dark surface ramp before building. Deriving it during implementation always produces mid-greys with no hierarchy.',
+      'When a designer supplies only light-mode mockups, ask for the dark surface ramp before building. Deriving it during implementation always produces mid-grays with no hierarchy.',
     ],
   },
 })

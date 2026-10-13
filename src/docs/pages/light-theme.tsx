@@ -36,13 +36,13 @@ export default defineDoc({
     id: 'light-theme',
     title: 'Light Theme',
     tagline:
-      'The other half of the product. Every surface is white, so lightness cannot express depth — shadows and hairlines do all of the work, and the brand colour has to get darker.',
+      'The other half of the product. Every surface is white, so lightness cannot express depth — shadows and hairlines do all of the work, and the brand color has to get darker.',
     keywords: ['light mode', 'theme', 'white', 'shadow', 'hairline', 'print'],
   },
 
   overview: {
     purpose:
-      'The light theme is not a courtesy. It is what most people use in daylight, what every printed or exported artefact looks like, and what a large number of users simply prefer. It carries the same tokens with the same names, and every component works in it without a single conditional.',
+      'The light theme is not a courtesy. It is what most people use in daylight, what every printed or exported artifact looks like, and what a large number of users simply prefer. It carries the same tokens with the same names, and every component works in it without a single conditional.',
     whenToUse: [
       'As the default for content-heavy, consumer-facing and public products.',
       'For anything read for long periods in a bright environment.',
@@ -76,7 +76,7 @@ export default defineDoc({
           than anywhere else in the system.
         </p>
         <p>
-          Colour moves in the opposite direction. A brand value tuned for near-black is too light
+          Color moves in the opposite direction. A brand value tuned for near-black is too light
           for white: <code>#7C6CFF</code> gives white text only 3.3:1, which fails. The light theme
           uses <code>#6A55F2</code>, one step darker, for 5.7:1. Status <code>-text</code> tokens go
           further still, using the 700 step, because they sit on a pale tint rather than a solid
@@ -85,7 +85,7 @@ export default defineDoc({
         <p>
           The one thing light themes get wrong most often is the <strong>inset</strong>. In dark
           mode an input is darker than its card; in light mode making it darker produces a muddy
-          grey box. Our light inset is <code>#F7F8FA</code> — barely off-white, with the boundary
+          gray box. Our light inset is <code>#F7F8FA</code> — barely off-white, with the boundary
           carried by the border rather than by the fill.
         </p>
       </>
@@ -123,8 +123,8 @@ export default defineDoc({
         ),
       },
       {
-        id: 'colour-shift',
-        title: 'Colour has to darken',
+        id: 'color-shift',
+        title: 'Color has to darken',
         description:
           'Top row is the dark-theme value on white. Bottom row is the light-theme value. Same role, different ramp step, and only one of them passes contrast.',
         render: (
@@ -182,7 +182,7 @@ export default defineDoc({
         id: 'inset',
         title: 'The inset trap',
         description:
-          'A well in dark mode is darker than its container. Copying that logic into light mode produces a muddy grey box — the border should carry the boundary instead.',
+          'A well in dark mode is darker than its container. Copying that logic into light mode produces a muddy gray box — the border should carry the boundary instead.',
         render: (
           <PreviewStage center={false} minHeight={0} allowResize={false}>
             <div data-theme="light" className="grid w-full gap-4 rounded-[var(--radius-lg)] bg-[var(--ds-canvas)] p-5 sm:grid-cols-2">
@@ -219,7 +219,7 @@ export default defineDoc({
         <div className="rounded-[var(--radius-lg)] border border-[var(--ds-border-subtle)] bg-[var(--ds-surface)] p-4 shadow-e2">
           <p className="text-label text-[var(--ds-fg)]">Card on a sunken page</p>
           <p className="mt-1 text-caption text-[var(--ds-fg-muted)]">
-            The page is grey; the card is white. That is the inverse of dark mode.
+            The page is gray; the card is white. That is the inverse of dark mode.
           </p>
           <div className="mt-3 rounded-[var(--radius-md)] border border-[var(--ds-border)] bg-[var(--ds-surface-inset)] px-3 py-2">
             <span className="text-caption text-[var(--ds-fg-muted)]">Inset, barely off-white</span>
@@ -235,7 +235,7 @@ export default defineDoc({
         label: 'Sunken page',
         value: '#F4F6F8',
         kind: 'color',
-        note: 'A very slightly grey page makes a white card read as elevated with almost no shadow. It is the single cheapest depth trick in light UI.',
+        note: 'A very slightly gray page makes a white card read as elevated with almost no shadow. It is the single cheapest depth trick in light UI.',
       },
       {
         n: 2,
@@ -256,7 +256,7 @@ export default defineDoc({
         label: 'Inset',
         value: '#F7F8FA',
         kind: 'color',
-        note: 'Barely off-white. Going darker to mimic the dark theme produces a grey box that reads as disabled.',
+        note: 'Barely off-white. Going darker to mimic the dark theme produces a gray box that reads as disabled.',
       },
       {
         n: 5,
@@ -285,7 +285,7 @@ export default defineDoc({
 
   do: [
     {
-      title: 'Put white cards on a grey page',
+      title: 'Put white cards on a gray page',
       why: 'A card that is lighter than its background reads as elevated before any shadow is applied. It is the light-theme equivalent of the dark-theme surface ramp.',
       render: (
         <div data-theme="light" className="w-full rounded-[var(--radius-md)] bg-[var(--ds-sunken)] p-3">
@@ -296,8 +296,8 @@ export default defineDoc({
       ),
     },
     {
-      title: 'Darken brand and status colours',
-      why: 'White text needs 4.5:1. Most brand colours tuned for dark backgrounds land around 3:1 on white, which is a straightforward failure on the primary button.',
+      title: 'Darken brand and status colors',
+      why: 'White text needs 4.5:1. Most brand colors tuned for dark backgrounds land around 3:1 on white, which is a straightforward failure on the primary button.',
       render: (
         <Row gap="sm">
           <span className="grid h-10 w-28 place-items-center rounded-[var(--radius-md)] text-caption text-white" style={{ background: '#6a55f2' }}>
@@ -323,7 +323,7 @@ export default defineDoc({
     },
     {
       title: 'Use the 700 step for text on tints',
-      why: 'A pale 10% tint plus a 500-step text colour lands around 3:1. The 700 step is the pair that clears 4.5:1, which is why -text exists as its own token.',
+      why: 'A pale 10% tint plus a 500-step text color lands around 3:1. The 700 step is the pair that clears 4.5:1, which is why -text exists as its own token.',
       render: (
         <div data-theme="light" className="flex w-full flex-col gap-2">
           <span className="rounded-[var(--radius-sm)] px-2.5 py-1.5 text-caption" style={{ background: 'rgb(238 67 81 / 0.1)', color: '#b21c2b' }}>
@@ -340,10 +340,10 @@ export default defineDoc({
   dont: [
     {
       title: 'Do not invert the dark theme',
-      why: 'Inversion gives you a grey page, grey cards, a washed-out brand colour and shadows that are far too heavy. The two themes share names, not values.',
+      why: 'Inversion gives you a gray page, gray cards, a washed-out brand color and shadows that are far too heavy. The two themes share names, not values.',
       render: (
         <div className="w-full rounded-[var(--radius-md)] bg-[var(--ds-surface)] p-3" style={{ filter: 'invert(1)' }}>
-          <p className="text-body-sm">Inverted from dark — every surface is now mid-grey.</p>
+          <p className="text-body-sm">Inverted from dark — every surface is now mid-gray.</p>
         </div>
       ),
     },
@@ -360,7 +360,7 @@ export default defineDoc({
       ),
     },
     {
-      title: 'Do not make the inset grey',
+      title: 'Do not make the inset gray',
       why: 'A #E4E7EC input reads as disabled. In light mode the field boundary comes from the border, not from a darker fill.',
       render: (
         <div data-theme="light" className="w-full rounded-[var(--radius-md)] bg-white p-3">
@@ -393,7 +393,7 @@ export default defineDoc({
     ],
     contrast: [
       'Light themes fail on the same pairs that dark themes pass, and vice versa. Every pair must be verified independently in each theme.',
-      'The usual light-mode failure is a mid-tone brand colour with white text on the primary button. Check that one first.',
+      'The usual light-mode failure is a mid-tone brand color with white text on the primary button. Check that one first.',
       'Hairlines at 7% alpha do not meet 3:1 and do not need to — they are decorative. Any border that is the only boundary of a control must be --ds-border or stronger.',
     ],
     keyboard: [
@@ -444,13 +444,13 @@ useEffect(() => {
       code: `[data-theme='light'] {
   color-scheme: light;
 
-  /* Every surface is white. The PAGE is what goes grey. */
+  /* Every surface is white. The PAGE is what goes gray. */
   --ds-canvas:          #ffffff;
   --ds-sunken:          #f4f6f8;   /* makes white cards read as raised */
   --ds-surface:         #ffffff;
   --ds-surface-raised:  #ffffff;
   --ds-surface-overlay: #ffffff;
-  --ds-surface-inset:   #f7f8fa;   /* barely off-white, not grey */
+  --ds-surface-inset:   #f7f8fa;   /* barely off-white, not gray */
 
   /* Not pure black — 15.9:1 is plenty and far more comfortable */
   --ds-fg:           #171a20;
@@ -481,9 +481,9 @@ useEffect(() => {
 
   notes: {
     tips: [
-      'A very slightly grey page is the highest-leverage decision in a light theme. It gives every white card free elevation and costs one token.',
+      'A very slightly gray page is the highest-leverage decision in a light theme. It gives every white card free elevation and costs one token.',
       'Light mode needs more whitespace than dark mode to feel equally calm — bright surfaces read as louder, so the same density feels busier.',
-      'Check your light theme on a cheap, uncalibrated laptop screen. Subtle greys that look elegant on a good monitor frequently disappear entirely.',
+      'Check your light theme on a cheap, uncalibrated laptop screen. Subtle grays that look elegant on a good monitor frequently disappear entirely.',
       'Print styles are light-theme styles with the chrome removed. If the light theme is solid, print is almost free.',
     ],
     performance: [
@@ -492,13 +492,13 @@ useEffect(() => {
       'Do not animate the theme transition. A crossfade of every element on the page is one of the most expensive things a browser can be asked to do.',
     ],
     mistakes: [
-      'Keeping the dark-theme brand colour, so the primary button fails contrast in the theme most people actually use.',
-      'Making the inset grey, which makes every input look disabled.',
-      'Reusing dark shadow values, giving every card a heavy grey smudge instead of a lift.',
+      'Keeping the dark-theme brand color, so the primary button fails contrast in the theme most people actually use.',
+      'Making the inset gray, which makes every input look disabled.',
+      'Reusing dark shadow values, giving every card a heavy gray smudge instead of a lift.',
       'Forgetting color-scheme on a light island inside a dark app, so the native scrollbar and caret stay dark inside a white panel.',
     ],
     realWorld: [
-      'Build both themes in the same pull request. A theme added later always ships with a dozen hard-coded colours nobody noticed.',
+      'Build both themes in the same pull request. A theme added later always ships with a dozen hard-coded colors nobody noticed.',
       'Screenshot both themes side by side for every major screen and review them together. Half of all theme bugs are only visible in comparison.',
       'Ask a support team which theme customers report bugs in. It is usually the one the design team does not use daily.',
       'If you only have budget for one theme, ship light. It is what daylight, printing, screenshots and most documentation assume — but plan the token architecture so dark can arrive without a rewrite.',

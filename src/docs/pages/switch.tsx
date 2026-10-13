@@ -269,10 +269,10 @@ export default defineDoc({
       },
       {
         n: 4,
-        label: 'Track colour',
+        label: 'Track color',
         value: 'border-strong → accent',
         kind: 'color',
-        note: 'Three channels carry the state, not two: track colour, knob position, and the check inside the handle. Colour and position alone both have a reader they fail — see Accessibility.',
+        note: 'Three channels carry the state, not two: track color, knob position, and the check inside the handle. Color and position alone both have a reader they fail — see Accessibility.',
       },
       {
         n: 5,
@@ -301,7 +301,7 @@ export default defineDoc({
     { category: 'spacing', token: 'gap', value: '12px', usedFor: 'Control to label in a settings row' },
     { category: 'radius', token: 'full', usedFor: 'Track and knob' },
     { category: 'shadow', token: '--shadow-e1', usedFor: 'Knob elevation' },
-    { category: 'motion', token: '--ease-emphasized', value: '180ms', usedFor: 'Knob travel and track colour' },
+    { category: 'motion', token: '--ease-emphasized', value: '180ms', usedFor: 'Knob travel and track color' },
   ],
 
   sizes: [
@@ -380,7 +380,7 @@ export default defineDoc({
     },
     {
       title: 'Do not add On/Off text beside the switch',
-      why: 'The track colour and the knob position already say it. The label then changes meaning as you toggle, which makes the row impossible to scan.',
+      why: 'The track color and the knob position already say it. The label then changes meaning as you toggle, which makes the row impossible to scan.',
       render: (
         <div className="flex items-center gap-2">
           <Switch checked onCheckedChange={() => {}} />
@@ -399,8 +399,8 @@ export default defineDoc({
     ],
     contrast: [
       'The off track must reach 3:1 against the surface, or the control is invisible until someone hovers it.',
-      'The on track must be distinguishable from the off track in greyscale — accent against a neutral grey is a narrower luminance gap than it looks, and deuteranopia closes it further.',
-      'That is why the handle carries a check when on. Colour is one channel and knob position is the other, and position only reads as "on" when there is a second switch nearby to compare it against — a lone switch in a settings row has nothing to be compared to. The glyph is the channel that needs neither. Material offers the same thing as thumbIcon for the same reason.',
+      'The on track must be distinguishable from the off track in grayscale — accent against a neutral gray is a narrower luminance gap than it looks, and deuteranopia closes it further.',
+      'That is why the handle carries a check when on. Color is one channel and knob position is the other, and position only reads as "on" when there is a second switch nearby to compare it against — a lone switch in a settings row has nothing to be compared to. The glyph is the channel that needs neither. Material offers the same thing as thumbIcon for the same reason.',
       'The knob stays white in both themes. A knob that matches the surface disappears against the off track.',
     ],
     keyboard: [
@@ -574,7 +574,7 @@ async function toggle(next: boolean) {
       'Making the knob match the theme surface, so at rest it is invisible against the off track.',
     ],
     realWorld: [
-      'Settings screens are audited, not browsed. Optimise for scanning a column of states, not for the beauty of any single row.',
+      'Settings screens are audited, not browsed. Optimize for scanning a column of states, not for the beauty of any single row.',
       'For feature flags, show who last changed the value and when. A team-wide toggle with no history is a support conversation waiting to happen.',
       'When a switch controls something with a cost — a paid feature, extra storage — show the consequence before it applies, not after.',
       'Track toggles that get flipped back within a minute. That pattern almost always means the label did not describe what the switch actually did.',

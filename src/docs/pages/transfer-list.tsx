@@ -181,7 +181,7 @@ function Transfer({
           compact={compact}
         />
 
-        {/* Vertically centred, and every button says what it does and how many. */}
+        {/* Vertically centered, and every button says what it does and how many. */}
         <div className="flex shrink-0 flex-col justify-center gap-1.5">
           <IconButton
             variant="secondary"
@@ -394,7 +394,7 @@ export default defineDoc({
                 <IconButton variant="secondary" size="sm" label="Remove selected" icon={<ChevronLeft />} />
               </Row>
               <span className="text-caption text-[var(--ds-fg-muted)]">
-                Single chevron moves the ticked items; double moves everything visible.
+                Single chevron moves the checked items; double moves everything visible.
               </span>
             </Stack>
           </PreviewStage>
@@ -434,7 +434,7 @@ export default defineDoc({
         ),
       },
       {
-        label: 'Item ticked',
+        label: 'Item checked',
         render: (
           <span className="flex w-44 items-center gap-2.5 rounded-[var(--radius-md)] bg-[var(--ds-accent-subtle)] px-2 py-1.5 font-mono text-caption text-[var(--ds-fg)]">
             <span className="h-3.5 w-3.5 rounded-[3px] border border-[var(--ds-accent)] bg-[var(--ds-accent)]" />
@@ -478,7 +478,7 @@ export default defineDoc({
       </div>
     ),
     caption:
-      'Two panes with their own headers, counts, filters and selection, and a vertically centred column of move controls between them.',
+      'Two panes with their own headers, counts, filters and selection, and a vertically centered column of move controls between them.',
     parts: [
       {
         n: 1,
@@ -511,9 +511,9 @@ export default defineDoc({
       {
         n: 5,
         label: 'Move column',
-        value: '4 buttons, vertically centred',
+        value: '4 buttons, vertically centered',
         kind: 'space',
-        note: 'Single chevron for the ticked items, double for everything visible. Centred so the direction is unambiguous.',
+        note: 'Single chevron for the checked items, double for everything visible. Centered so the direction is unambiguous.',
       },
       {
         n: 6,
@@ -535,8 +535,8 @@ export default defineDoc({
   tokens: [
     { category: 'color', token: '--ds-surface', usedFor: 'Pane background' },
     { category: 'color', token: '--ds-border-subtle', usedFor: 'Pane edge, header and filter dividers' },
-    { category: 'color', token: '--ds-accent-subtle', usedFor: 'Ticked row fill' },
-    { category: 'color', token: '--ds-accent', usedFor: 'Ticked checkbox' },
+    { category: 'color', token: '--ds-accent-subtle', usedFor: 'Checked row fill' },
+    { category: 'color', token: '--ds-accent', usedFor: 'Checked checkbox' },
     { category: 'color', token: '--ds-layer-hover', usedFor: 'Row hover' },
     { category: 'color', token: '--ds-fg-secondary', usedFor: 'Row labels' },
     { category: 'color', token: '--ds-fg-muted', usedFor: 'Counts and empty states' },
@@ -551,7 +551,7 @@ export default defineDoc({
     { name: 'Default', height: '224px panes', minWidth: '14rem each', use: 'The default. About eight visible rows per pane.' },
     { name: 'Tall', height: '320px panes', minWidth: '16rem each', use: 'A dedicated assignment screen where this is the only control.' },
     { name: 'Row', height: '30px', padding: '0 8px', type: '12px', touch: 'Not a touch control', use: 'Dense. Both panes are scanned rather than acted on item by item.' },
-    { name: 'Move column', minWidth: '2.5rem', gap: '6px', use: 'Four 32px buttons, vertically centred between the panes.' },
+    { name: 'Move column', minWidth: '2.5rem', gap: '6px', use: 'Four 32px buttons, vertically centered between the panes.' },
   ],
 
   do: [
@@ -650,7 +650,7 @@ export default defineDoc({
       { id: '4.1.3', name: 'Status Messages', level: 'AA' },
     ],
     contrast: [
-      'A ticked row must differ from a hovered row by more than a tint — at a 30px row height a faint wash is invisible in daylight.',
+      'A checked row must differ from a hovered row by more than a tint — at a 30px row height a faint wash is invisible in daylight.',
       'Move buttons must reach 3:1 when enabled. Disabled ones may use the disabled tone, since their state is also carried by aria-disabled.',
       'Pane counts are content and owe 4.5:1 — they are the primary feedback that a transfer happened.',
       'The empty-pane message owes 4.5:1; it is the only thing distinguishing "nothing assigned" from a rendering failure.',
@@ -665,7 +665,7 @@ export default defineDoc({
     ],
     aria: [
       { attr: 'role="listbox" aria-multiselectable', on: 'Each pane', note: 'With aria-label naming the pane. Two anonymous lists side by side are indistinguishable.' },
-      { attr: 'role="option" aria-selected', on: 'Each item', note: 'Selected means ticked, not assigned. Which pane it is in carries the assignment.' },
+      { attr: 'role="option" aria-selected', on: 'Each item', note: 'Selected means checked, not assigned. Which pane it is in carries the assignment.' },
       { attr: 'aria-label', on: 'Each move button', note: '"Assign 3 selected", not "Move right". Direction is meaningless without knowing which pane is which.' },
       { attr: 'aria-live="polite"', on: 'The summary count', note: '"9 of 40 assigned". The only feedback a screen-reader user gets that a transfer landed.' },
       { attr: 'aria-disabled', on: 'A move button with nothing to move', note: 'Kept in the tab order so the column never changes size or position.' },
@@ -696,11 +696,11 @@ export default defineDoc({
 
 // Ticking queues; the chevron moves. Conflating them removes batching,
 // which is the only reason this beats a checkbox list.
-const [ticked, setTicked] = React.useState<string[]>([])
+const [checked, setChecked] = React.useState<string[]>([])
 
 function assign() {
-  onChange([...value, ...ticked])
-  setTicked([])                     // ticks mean "queued" — clear them
+  onChange([...value, ...checked])
+  setChecked([])                     // ticks mean "queued" — clear them
 }
 
 // The keyboard equivalent of a double-click. Without it, every single item
@@ -738,7 +738,7 @@ if (narrow) return <CheckboxList options={options} value={value} onChange={onCha
     </div>
 
     <ul role="listbox" aria-multiselectable="true" aria-label="Available">
-      <!-- selected = ticked, NOT assigned. The pane carries the assignment. -->
+      <!-- selected = checked, NOT assigned. The pane carries the assignment. -->
       <li role="option" aria-selected="true"  tabindex="0">deployments.write</li>
       <li role="option" aria-selected="false" tabindex="-1">billing.read</li>
     </ul>
@@ -788,7 +788,7 @@ if (narrow) return <CheckboxList options={options} value={value} onChange={onCha
 .ds-transfer__controls {
   display: flex;
   flex-direction: column;
-  justify-content: center;           /* centred: direction stays unambiguous */
+  justify-content: center;           /* centered: direction stays unambiguous */
   gap: 6px;
   flex: 0 0 auto;
 }
@@ -842,7 +842,7 @@ if (narrow) return <CheckboxList options={options} value={value} onChange={onCha
       'If most users end up with nearly everything assigned, invert the control: start with everything assigned and let them remove.',
     ],
     performance: [
-      'Virtualise both panes past roughly 200 items, and add aria-setsize and aria-posinset when you do.',
+      'Virtualize both panes past roughly 200 items, and add aria-setsize and aria-posinset when you do.',
       'Keep the assigned set in a Set for membership checks. An includes() per item per render is quadratic and shows at a few hundred options.',
       'Derive the available pane rather than storing it. Two arrays that must stay complementary will eventually disagree.',
       'Do not animate items between panes. The lists reflow and the animation lands on the wrong rows the moment a filter is active.',
@@ -851,7 +851,7 @@ if (narrow) return <CheckboxList options={options} value={value} onChange={onCha
       'Moving items on tick, which removes the ability to batch.',
       'Leaving ticks set after a transfer, so the next chevron press moves the wrong things.',
       'Panes that resize as they empty, shifting the move buttons under the pointer.',
-      'Move buttons labelled "Move right", which means nothing without knowing which pane is which.',
+      'Move buttons labeled "Move right", which means nothing without knowing which pane is which.',
       'No live count, so a screen-reader user has no feedback that anything moved.',
       'A filter on the available pane only, making the assigned list impossible to search.',
       'Shipping it below 768px, where two panes cannot fit.',

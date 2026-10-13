@@ -145,7 +145,7 @@ export default defineDoc({
       },
       {
         text: 'It is a small symbol at UI scale.',
-        instead: 'an Icon — an SVG scales and recolours; a raster does neither',
+        instead: 'an Icon — an SVG scales and recolors; a raster does neither',
         to: '#/icons',
       },
       {
@@ -237,7 +237,7 @@ export default defineDoc({
         id: 'states',
         title: 'Loading and failure',
         description:
-          'A skeleton at the correct ratio while loading, and a labelled placeholder on failure. The browser’s broken-image icon is never an acceptable outcome.',
+          'A skeleton at the correct ratio while loading, and a labeled placeholder on failure. The browser’s broken-image icon is never an acceptable outcome.',
         render: (
           <PreviewStage minHeight={0} allowResize={false} center={false}>
             <Grid min="13rem">
@@ -360,7 +360,7 @@ export default defineDoc({
 
   tokens: [
     { category: 'color', token: '--ds-surface-inset', usedFor: 'The box behind the image' },
-    { category: 'color', token: '--ds-border-subtle', usedFor: 'Optional edge, needed on images that reach the background colour' },
+    { category: 'color', token: '--ds-border-subtle', usedFor: 'Optional edge, needed on images that reach the background color' },
     { category: 'color', token: '--ds-fg-muted', usedFor: 'Caption and the failure message' },
     { category: 'color', token: '--ds-layer-active', usedFor: 'Skeleton fill while loading' },
     { category: 'spacing', token: '--space-2', value: '8px', usedFor: 'Gap from image to caption' },
@@ -414,7 +414,7 @@ export default defineDoc({
     },
     {
       title: 'Handle failure explicitly',
-      why: 'The browser’s broken-image icon looks like the product is broken. A labelled placeholder at the same size says the asset is missing and nothing else went wrong.',
+      why: 'The browser’s broken-image icon looks like the product is broken. A labeled placeholder at the same size says the asset is missing and nothing else went wrong.',
       render: <div className="w-28"><Img ratio="16 / 9" state="error" /></div>,
     },
   ],
@@ -470,7 +470,7 @@ export default defineDoc({
     ],
     contrast: [
       'Text over an image needs a scrim. Contrast against a photograph is not assertable and changes with every asset swap.',
-      'An image that carries meaning through colour alone — a red status diagram — needs that meaning in the alt text too.',
+      'An image that carries meaning through color alone — a red status diagram — needs that meaning in the alt text too.',
       'A white product photo on a white surface needs a border, or the boundaries of the image are invisible.',
       'Avoid images of text entirely. They cannot be resized, translated or read out, which is exactly what 1.4.5 is about.',
     ],
@@ -569,7 +569,7 @@ const [failed, setFailed] = React.useState(false)
   </figcaption>
 </figure>
 
-<!-- The hero is the largest contentful paint: eager, and prioritised. -->
+<!-- The hero is the largest contentful paint: eager, and prioritized. -->
 <img src="/hero.jpg" alt="…" fetchpriority="high" loading="eager" />`,
     },
     css: {
@@ -638,9 +638,9 @@ const [failed, setFailed] = React.useState(false)
 
   notes: {
     tips: [
-      'Standardise on three or four aspect ratios and use them consistently. Arbitrary ratios make a grid impossible to align without cropping every asset by hand.',
-      'Use a blurred low-quality placeholder for hero images. It gives the eye something at the right shape and colour while the full file arrives.',
-      'Prefer SVG for diagrams, logos and anything with text in it. It scales, it recolours with the theme, and it stays sharp at every density.',
+      'Standardize on three or four aspect ratios and use them consistently. Arbitrary ratios make a grid impossible to align without cropping every asset by hand.',
+      'Use a blurred low-quality placeholder for hero images. It gives the eye something at the right shape and color while the full file arrives.',
+      'Prefer SVG for diagrams, logos and anything with text in it. It scales, it recolors with the theme, and it stays sharp at every density.',
       'Serve AVIF with a WebP and JPEG fallback. The savings are large and the fallback chain is a few lines of markup.',
       'For user-uploaded images, crop and resize on the client before upload. It cuts the bandwidth and removes the entire class of "why is my photo sideways" bugs.',
     ],

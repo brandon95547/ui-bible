@@ -199,7 +199,7 @@ export default defineDoc({
     reasoning: (
       <>
         <p>
-          <strong>A list beats a clock face.</strong> Analogue clock pickers came from phones with
+          <strong>A list beats a clock face.</strong> Analog clock pickers came from phones with
           no keyboard, and even there they are slow: two dial interactions to express what "1430"
           says in four keystrokes. A stepped list scrolls, filters as you type, and works
           identically with a mouse, a keyboard and a thumb.
@@ -421,7 +421,7 @@ export default defineDoc({
       {
         n: 5,
         label: 'Initial scroll',
-        value: 'Current value centred',
+        value: 'Current value centered',
         kind: 'motion',
         note: 'A list that opens at 00:00 when the value is 17:30 makes the user scroll past thirty-five rows to see where they are.',
       },
@@ -506,7 +506,7 @@ export default defineDoc({
 
   dont: [
     {
-      title: 'Do not use an analogue clock face',
+      title: 'Do not use an analog clock face',
       why: 'Two dial interactions to express what four keystrokes say. It came from phones with no keyboard and it is slow even there.',
       render: (
         <span className="grid h-16 w-16 place-items-center rounded-full border-2 border-[var(--ds-danger-border)] text-caption text-[var(--ds-danger-text)]">
@@ -720,17 +720,17 @@ const instant = zonedTimeToUtc(setMinutes(setHours(date, h), m), zone)`,
       'Pair the picker with a duration rather than an end time where you can. "30 minutes" is easier to choose than "15:00", and it stays correct when the start moves.',
       'Show the equivalent in the viewer’s zone when scheduling across regions: "14:30 BST — 09:30 your time" prevents most double-bookings.',
       'Default to the next sensible slot rather than empty. The next half hour, or the start of business hours, removes an interaction for most users.',
-      'Show slot availability inline for booking flows. A greyed 14:30 with "fully booked" beside it is more useful than a hidden row.',
+      'Show slot availability inline for booking flows. A grayed 14:30 with "fully booked" beside it is more useful than a hidden row.',
       'On mobile, consider native input[type=time] outright — familiar, accessible, and free to maintain.',
     ],
     performance: [
-      'Generate the slot list once per range and interval, memoised. Rebuilding forty-eight rows on every keystroke while the user types is unnecessary work.',
-      'Virtualise only if you have somehow ended up with a minute-level list, which is itself the problem to fix.',
+      'Generate the slot list once per range and interval, memoized. Rebuilding forty-eight rows on every keystroke while the user types is unnecessary work.',
+      'Virtualize only if you have somehow ended up with a minute-level list, which is itself the problem to fix.',
       'Format times with a cached Intl.DateTimeFormat instance. Constructing one per row is a measurable cost in a long list.',
       'Keep the value as minutes since midnight rather than a Date. It sidesteps daylight-saving arithmetic entirely until a date is actually attached.',
     ],
     mistakes: [
-      'An analogue clock face, which is slower than typing on every device.',
+      'An analog clock face, which is slower than typing on every device.',
       'Minute-level granularity, producing a list nobody can use.',
       'A list that opens at 00:00 instead of the current value.',
       'A read-only field, so "1430" cannot be typed.',

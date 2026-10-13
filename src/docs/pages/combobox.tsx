@@ -438,7 +438,7 @@ export default defineDoc({
     ],
     contrast: [
       'The match highlight must reach 4.5:1 as text on its tint — it is the part of the row the user is reading.',
-      'The active row must be distinguishable from idle rows without relying on colour alone, since it is the only indication of what Enter will select.',
+      'The active row must be distinguishable from idle rows without relying on color alone, since it is the only indication of what Enter will select.',
       'Option descriptions are content and owe 4.5:1, even though they read as secondary.',
       'The chevron owes 3:1 — it is the only signal that a list exists behind a field that otherwise looks like plain text input.',
     ],
@@ -615,8 +615,8 @@ function onBlur() {
     performance: [
       'Debounce async requests by about 300ms and cancel in-flight ones with an AbortController. Without cancellation a fast typist has six requests racing to render.',
       'Filter client-side under about 1,000 options. A round trip to filter a list already in memory is latency for nothing.',
-      'Virtualise past roughly 200 visible rows, and add aria-setsize and aria-posinset when you do.',
-      'Memoise the filtered list on the query and the option array. Re-filtering on every render is the usual cause of a laggy combobox.',
+      'Virtualize past roughly 200 visible rows, and add aria-setsize and aria-posinset when you do.',
+      'Memoize the filtered list on the query and the option array. Re-filtering on every render is the usual cause of a laggy combobox.',
     ],
     mistakes: [
       'Moving DOM focus into the list, so typing after the first arrow key goes nowhere.',

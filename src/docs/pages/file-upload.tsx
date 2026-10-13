@@ -446,7 +446,7 @@ export default defineDoc({
         label: 'Drag-over state',
         value: 'Accent border + tinted fill',
         kind: 'color',
-        note: 'Two changes at once. A border colour alone is easy to miss with a file hovering over the cursor.',
+        note: 'Two changes at once. A border color alone is easy to miss with a file hovering over the cursor.',
       },
       {
         n: 5,
@@ -588,8 +588,8 @@ export default defineDoc({
     ],
     contrast: [
       'The dashed border owes 3:1 — it is the only thing defining the drop target.',
-      'The drag-over state changes both border and fill, so it is perceivable without relying on a colour shift alone.',
-      'Rejection reasons owe 4.5:1 and must name the cause, not just colour the row red.',
+      'The drag-over state changes both border and fill, so it is perceivable without relying on a color shift alone.',
+      'Rejection reasons owe 4.5:1 and must name the cause, not just color the row red.',
       'Progress bars owe 3:1 against the row background; at 2px tall a low-contrast fill is invisible.',
     ],
     keyboard: [
@@ -797,7 +797,7 @@ React.useEffect(() => {
     ],
     realWorld: [
       'Drag-and-drop is used far less than its visual prominence suggests. The click path is the majority path on desktop and the only path on touch — polish that first.',
-      'Users choose the wrong file constantly. A thumbnail or a clear filename in the list catches it before submit, which is much cheaper than catching it afterwards.',
+      'Users choose the wrong file constantly. A thumbnail or a clear filename in the list catches it before submit, which is much cheaper than catching it afterward.',
       'Mobile uploads mostly come straight from the camera. Make sure the accept attribute does not prevent the camera option appearing in the platform sheet.',
       'Size limits should be generous and clearly stated. A 2 MB limit in a world of 8 MP phone photos generates support tickets rather than smaller files.',
     ],

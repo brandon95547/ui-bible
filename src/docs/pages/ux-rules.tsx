@@ -224,7 +224,7 @@ function HickDemo() {
       </Row>
       <p className="text-caption leading-relaxed text-[var(--ds-fg-muted)]">
         The cost is logarithmic, not linear — four times the options is not four times the time. It
-        is also why <em>grouping</em> beats <em>deleting</em>: sixteen items in four labelled groups
+        is also why <em>grouping</em> beats <em>deleting</em>: sixteen items in four labeled groups
         is two cheap decisions instead of one expensive one.
       </p>
     </Stack>
@@ -459,7 +459,7 @@ export default defineDoc({
       },
       {
         text: 'A law contradicts what your users actually do.',
-        instead: 'your users. These are strong priors, not physics — with the honourable exception of Fitts’s law, which really is close to physics',
+        instead: 'your users. These are strong priors, not physics — with the honorable exception of Fitts’s law, which really is close to physics',
       },
     ],
     reasoning: (
@@ -479,7 +479,7 @@ export default defineDoc({
         <p>
           <strong>They conflict, constantly.</strong> Hick's law wants fewer options; Jakob's law
           wants the same options as every competitor. Progressive disclosure wants things hidden;
-          discoverability wants them visible. Recognising which law is binding in a given situation
+          discoverability wants them visible. Recognizing which law is binding in a given situation
           is most of the skill — knowing the list is the easy part.
         </p>
         <p>
@@ -509,7 +509,7 @@ export default defineDoc({
         id: 'gestalt',
         title: 'Gestalt — proximity',
         description:
-          'Nothing was added and nothing was coloured. Spacing alone created two groups, which is why a gap is a stronger grouping signal than a border.',
+          'Nothing was added and nothing was colored. Spacing alone created two groups, which is why a gap is a stronger grouping signal than a border.',
         render: (
           <PreviewStage minHeight={0} allowResize={false}>
             <Proximity />
@@ -520,7 +520,7 @@ export default defineDoc({
         id: 'weight',
         title: 'Visual weight',
         description:
-          'Emphasis is relative. Three primary buttons are three equal choices, and the user has to do the prioritising the design skipped.',
+          'Emphasis is relative. Three primary buttons are three equal choices, and the user has to do the prioritizing the design skipped.',
         render: (
           <PreviewStage minHeight={0} allowResize={false}>
             <VisualWeight />
@@ -601,7 +601,7 @@ export default defineDoc({
         label: 'Title largest',
         value: 'visual hierarchy',
         kind: 'type',
-        note: 'Size, weight and colour all point the same way, so the eye lands on the title first without being told to. Emphasis is relative — if everything is emphasised, nothing is.',
+        note: 'Size, weight and color all point the same way, so the eye lands on the title first without being told to. Emphasis is relative — if everything is emphasized, nothing is.',
       },
       {
         n: 2,
@@ -690,7 +690,7 @@ export default defineDoc({
     },
     {
       title: 'Group before you delete',
-      why: 'Hick’s law is logarithmic and applies to undifferentiated lists. Sixteen items in four labelled groups is two cheap decisions, and nobody loses a feature.',
+      why: 'Hick’s law is logarithmic and applies to undifferentiated lists. Sixteen items in four labeled groups is two cheap decisions, and nobody loses a feature.',
       render: (
         <Row gap="lg">
           <Stack gap="xs">
@@ -715,13 +715,13 @@ export default defineDoc({
       render: <Doherty />,
     },
     {
-      title: 'Emphasise exactly one thing',
+      title: 'Emphasize exactly one thing',
       why: 'Von Restorff works by contrast, so it works once. Two highlighted plans on a pricing page is the same as none, plus the noise.',
       render: <Isolation />,
     },
     {
       title: 'Recognition over recall',
-      why: 'Showing the options costs screen space; remembering them costs the user working memory they need for the actual task. A visible label beats a memorised shortcut for everyone except the daily user — who gets both.',
+      why: 'Showing the options costs screen space; remembering them costs the user working memory they need for the actual task. A visible label beats a memorized shortcut for everyone except the daily user — who gets both.',
       render: (
         <Row gap="sm">
           <span className="text-caption text-[var(--ds-fg)]">Archive</span>
@@ -803,12 +803,12 @@ export default defineDoc({
     ],
     contrast: [
       'Visual hierarchy is built from contrast, and de-emphasis has a floor. Secondary text still needs 4.5:1 — "quieter" must never mean "harder to read".',
-      'Von Restorff by colour alone excludes anyone who cannot see that colour. Pair it with size, weight, a border or a label.',
+      'Von Restorff by color alone excludes anyone who cannot see that color. Pair it with size, weight, a border or a label.',
       'Gestalt grouping by proximity works at any contrast, which is exactly why it is the more robust technique.',
     ],
     keyboard: [
       { keys: 'Tab order', does: 'Must follow the visual hierarchy. If the eye goes title → body → primary action, so should focus.' },
-      { keys: 'Shortcuts', does: 'Recognition over recall — show them beside the action rather than expecting them to be memorised.' },
+      { keys: 'Shortcuts', does: 'Recognition over recall — show them beside the action rather than expecting them to be memorized.' },
       { keys: 'Escape', does: 'Consistent identification: the same key dismisses the topmost layer everywhere, every time.' },
     ],
     aria: [
@@ -913,7 +913,7 @@ chunk('4539872146730021')   // '4539 8721 4673 0021'`,
     mistakes: [
       'Citing Hick’s law to justify removing a feature, when grouping would have solved it without the loss.',
       'Applying "seven plus or minus two" as a hard limit. It was never that, and the number is closer to four.',
-      'Emphasising several things at once, which is the same as emphasising none.',
+      'Emphasizing several things at once, which is the same as emphasizing none.',
       'Being novel in the places users are on autopilot, and conventional in the place your product is actually different.',
       'Treating these as rules rather than priors, and overriding evidence from your own users with a citation.',
       'Forgetting that visual grouping is invisible to assistive technology unless it is also semantic.',

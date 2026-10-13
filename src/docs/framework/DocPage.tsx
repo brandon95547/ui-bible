@@ -127,7 +127,7 @@ export function DocPage({
               type="button"
               onClick={onToggleFavorite}
               aria-pressed={isFavorite}
-              aria-label={isFavorite ? 'Remove from favourites' : 'Add to favourites'}
+              aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
               className={cn(
                 'grid h-7 w-7 shrink-0 place-items-center rounded-[var(--radius-md)] transition-colors',
                 isFavorite
@@ -226,7 +226,7 @@ export function DocPage({
               id="palette"
               index={num('palette')}
               title="Color palette"
-              description="Every colour in the active theme, resolved from the running stylesheet. Click any swatch to copy its value."
+              description="Every color in the active theme, resolved from the running stylesheet. Click any swatch to copy its value."
             >
               <ColorPalette />
             </Section>

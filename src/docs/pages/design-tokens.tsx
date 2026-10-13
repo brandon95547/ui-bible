@@ -104,7 +104,7 @@ export default defineDoc({
     id: 'design-tokens',
     title: 'Design Tokens',
     tagline:
-      'Three tiers, one direction of reference. Every colour, size, radius, shadow and duration in this Bible resolves to a token — and every token resolves to a reason.',
+      'Three tiers, one direction of reference. Every color, size, radius, shadow and duration in this Bible resolves to a token — and every token resolves to a reason.',
     keywords: ['variables', 'theming', 'css custom properties', 'primitives', 'semantic', 'alias'],
   },
 
@@ -127,15 +127,15 @@ export default defineDoc({
         instead: 'calc() on the existing token',
       },
       {
-        text: 'A new colour invented because none of the existing ones "felt right".',
+        text: 'A new color invented because none of the existing ones "felt right".',
         instead: 'the closest existing semantic token',
       },
     ],
     reasoning: (
       <>
         <p>
-          Most design systems fail in the same way: a component needs a colour that does not exist,
-          someone pastes a hex, and six months later there are forty greys that are all almost the
+          Most design systems fail in the same way: a component needs a color that does not exist,
+          someone pastes a hex, and six months later there are forty grays that are all almost the
           same. The three-tier model exists specifically to make that shortcut impossible to take
           accidentally.
         </p>
@@ -336,7 +336,7 @@ export default defineDoc({
     },
     {
       title: 'Use alpha for interaction layers',
-      why: 'A hover state defined as an alpha white composes correctly over a card, a table row, a menu item and a coloured banner. A hover state defined as a solid grey works on exactly one of those.',
+      why: 'A hover state defined as an alpha white composes correctly over a card, a table row, a menu item and a colored banner. A hover state defined as a solid gray works on exactly one of those.',
       render: (
         <Stack gap="xs" className="w-full">
           {['var(--ds-surface)', 'var(--ds-accent-subtle)', 'var(--ds-danger-subtle)'].map((bg) => (
@@ -413,7 +413,7 @@ export default defineDoc({
     contrast: [
       'Every foreground/background token pair we ship is verified at 4.5:1 for body text and 3:1 for large text and UI boundaries, in both themes.',
       'The -text suffix exists precisely for this: --ds-danger-text is the variant certified to sit on --ds-danger-subtle. Using --ds-danger there would fail.',
-      'Contrast is a property of a *pair*, not of a colour. A token audit that checks colours in isolation proves nothing.',
+      'Contrast is a property of a *pair*, not of a color. A token audit that checks colors in isolation proves nothing.',
       'Turn on Inspector Mode and hover any text in this app — it computes the live ratio against the composited background, including alpha layers.',
     ],
     keyboard: [
@@ -434,14 +434,14 @@ export default defineDoc({
       {
         attr: 'forced-colors',
         on: 'All tokens',
-        note: 'In Windows High Contrast Mode the OS overrides colour entirely. Never rely on a token alone to convey state — pair it with an icon, a border or text.',
+        note: 'In Windows High Contrast Mode the OS overrides color entirely. Never rely on a token alone to convey state — pair it with an icon, a border or text.',
       },
     ],
     focus:
       'One focus token, --ds-focus-ring, used by every component with no exceptions. Users learn what focus looks like exactly once, and a single change fixes it everywhere.',
     screenReader: [
       'Tokens are invisible to assistive tech, which is the point: they must never be the only carrier of meaning.',
-      'Any state expressed with a colour token also needs a text or icon equivalent — status badges pair a tone with a dot and a word.',
+      'Any state expressed with a color token also needs a text or icon equivalent — status badges pair a tone with a dot and a word.',
     ],
     touch:
       'Spacing tokens are the mechanism for hit-area compliance. The 44px minimum is enforced in the component layer using the same 4px scale, not by ad-hoc padding.',
@@ -520,8 +520,8 @@ observer.observe(document.documentElement, {
           { name: '--ds-{role}-active', type: 'semantic', description: 'Pressed variant of the base.' },
           { name: '--ds-{role}-subtle', type: 'semantic', description: 'Low-alpha fill for backgrounds behind text.' },
           { name: '--ds-{role}-border', type: 'semantic', description: 'Border pair for the subtle fill.' },
-          { name: '--ds-{role}-text', type: 'semantic', description: 'Text colour certified against the subtle fill.' },
-          { name: '--ds-{role}-fg', type: 'semantic', description: 'Text colour certified against the solid fill.' },
+          { name: '--ds-{role}-text', type: 'semantic', description: 'Text color certified against the subtle fill.' },
+          { name: '--ds-{role}-fg', type: 'semantic', description: 'Text color certified against the solid fill.' },
           { name: '--c-{component}-{prop}', type: 'component', description: 'Tier 3. Private. Must reference tier 2.' },
         ],
       },
@@ -533,7 +533,7 @@ observer.observe(document.documentElement, {
       'Write a lint rule that fails any --p-* reference outside the token file. It takes twenty minutes and it is the single highest-leverage thing you can do for a design system.',
       'When adding a semantic token, add it to every theme in the same commit. A token that exists in one theme resolves to an empty string in the other and silently renders as transparent.',
       'Alpha values compose; solid values do not. If you are unsure which to pick, ask whether the token will ever sit on more than one background.',
-      'Keep the total count small enough to memorise. Around 80 semantic tokens is the point where people stop guessing correctly and start opening the file.',
+      'Keep the total count small enough to memorize. Around 80 semantic tokens is the point where people stop guessing correctly and start opening the file.',
     ],
     performance: [
       'CSS custom properties are resolved at computed-value time and inherit. A variable defined on :root and used in 10,000 elements costs essentially nothing to read.',
@@ -551,7 +551,7 @@ observer.observe(document.documentElement, {
       'Ship tokens as the source of truth in one format (CSS custom properties) and generate everything else — Figma variables, Swift, Kotlin, JSON — from it. Two hand-maintained sources will diverge within a month.',
       'Version the token file separately from the components. Consumers can then adopt a new palette without a component upgrade.',
       'Deprecate rather than delete. Keep the old name aliased to the new one for at least one release, and log a console warning in development.',
-      'When a designer asks for "a slightly different blue", the answer is almost always an existing ramp step. Show them the ramp before adding to it — nine times out of ten one of them is the colour they meant.',
+      'When a designer asks for "a slightly different blue", the answer is almost always an existing ramp step. Show them the ramp before adding to it — nine times out of ten one of them is the color they meant.',
     ],
   },
 
@@ -565,7 +565,7 @@ observer.observe(document.documentElement, {
           <Callout title="Before you add a token, answer all five">
             <ol className="mt-1 flex list-decimal flex-col gap-1.5 pl-4">
               <li>Which existing token is closest, and precisely why is it unusable?</li>
-              <li>What role does this express? Write the name from the role, not the colour.</li>
+              <li>What role does this express? Write the name from the role, not the color.</li>
               <li>What is its value in both themes, and does each pass contrast against its pair?</li>
               <li>How many places will use it? Fewer than three is usually a no.</li>
               <li>What breaks if we remove it in a year? If nothing, it did not need a name.</li>

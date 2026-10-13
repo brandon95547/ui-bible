@@ -85,7 +85,7 @@ export default defineDoc({
     whenNotToUse: [
       {
         text: 'On a static content card that is not interactive and never moves.',
-        instead: 'a 1px border and a different surface colour',
+        instead: 'a 1px border and a different surface color',
       },
       {
         text: 'On every card in a grid, to make them "pop".',
@@ -96,7 +96,7 @@ export default defineDoc({
         instead: 'whitespace, or a divider',
       },
       {
-        text: 'As decoration on a coloured button in dark mode, where the shadow is invisible anyway.',
+        text: 'As decoration on a colored button in dark mode, where the shadow is invisible anyway.',
         instead: 'a lighter fill on hover',
       },
     ],
@@ -112,7 +112,7 @@ export default defineDoc({
         <p>
           Light mode is the reverse. Every surface is white, so lightness cannot express anything;
           the shadow does all the work, and it needs to be softer and larger than a dark-mode shadow
-          to read as height rather than as a hard edge. This is why "invert the colours" produces a
+          to read as height rather than as a hard edge. This is why "invert the colors" produces a
           dark theme that looks flat and a light theme that looks harsh.
         </p>
         <p>
@@ -136,7 +136,7 @@ export default defineDoc({
         id: 'themes',
         title: 'Why dark mode is not an inversion',
         description:
-          'The same four levels in both themes. Notice that the dark column changes background colour and the light column changes shadow — the token name is identical in both.',
+          'The same four levels in both themes. Notice that the dark column changes background color and the light column changes shadow — the token name is identical in both.',
         render: (
           <PreviewStage center={false} minHeight={0} allowResize={false}>
             <DarkVsLight />
@@ -222,7 +222,7 @@ export default defineDoc({
         label: 'Surface step',
         value: '--ds-surface → --ds-surface-raised',
         kind: 'color',
-        note: 'In dark mode this carries almost all of the perceived depth. Roughly 4–6% lightness per level is the range that reads as a step without looking like a different colour.',
+        note: 'In dark mode this carries almost all of the perceived depth. Roughly 4–6% lightness per level is the range that reads as a step without looking like a different color.',
       },
       {
         n: 4,
@@ -280,7 +280,7 @@ export default defineDoc({
       ),
     },
     {
-      title: 'Change surface colour and shadow together',
+      title: 'Change surface color and shadow together',
       why: 'Both channels carry depth, and which one dominates depends on the theme. Moving them in lockstep means the same component reads correctly in dark and light without a second design.',
       render: (
         <Stack gap="sm" className="w-full">
@@ -327,7 +327,7 @@ export default defineDoc({
     },
     {
       title: 'Do not use a light-mode shadow in dark mode',
-      why: 'A soft grey shadow on a near-black surface fogs the edge instead of defining it. Dark shadows are tighter, darker, and paired with a hairline border.',
+      why: 'A soft gray shadow on a near-black surface fogs the edge instead of defining it. Dark shadows are tighter, darker, and paired with a hairline border.',
       render: (
         <div
           className="h-16 w-40 rounded-[var(--radius-lg)] bg-[var(--ds-surface-raised)]"
@@ -361,7 +361,7 @@ export default defineDoc({
       { id: '1.4.1', name: 'Use of Color', level: 'A' },
     ],
     contrast: [
-      'A shadow is not a boundary for contrast purposes. Every elevated surface also needs a 1px border or a surface-colour difference that reaches 3:1 against what is behind it.',
+      'A shadow is not a boundary for contrast purposes. Every elevated surface also needs a 1px border or a surface-color difference that reaches 3:1 against what is behind it.',
       'In Windows High Contrast Mode shadows are removed entirely. If depth was carried only by shadow, the layering disappears — which is why the hairline border is mandatory.',
       'The scrim must be dark enough to make background text clearly inactive, and light enough that the user can still see the context. 72% in dark, 42% in light.',
     ],
@@ -466,13 +466,13 @@ createPortal(<Dialog />, document.body)`,
       'Elevating a surface without changing its background. In dark mode the shadow is nearly invisible, so the element appears completely flat.',
       'Rendering a popover inside a container that has a transform. The transform creates a containing block and position: fixed silently stops being fixed.',
       'Using the same elevation for a hover state and a dragging state, so users cannot tell whether they have picked something up.',
-      'Putting a shadow on a full-width sticky bar. The shadow is only visible at the edges and reads as a rendering artefact.',
+      'Putting a shadow on a full-width sticky bar. The shadow is only visible at the edges and reads as a rendering artifact.',
     ],
     realWorld: [
       'Export your z-index bands as a TypeScript const and forbid literal z-index values in review. It eliminates an entire category of bug permanently.',
       'Test every elevated surface in Windows High Contrast Mode. Shadows vanish, and any layering that depended on them alone disappears with them.',
       'On mobile, prefer full-screen or edge-anchored surfaces to floating ones. A floating dialog on a 375px screen wastes the margins and puts controls out of thumb reach.',
-      'When a designer asks for "more depth", the fix is usually more contrast between adjacent surface colours, not a bigger shadow. Bigger shadows read as blur, not as height.',
+      'When a designer asks for "more depth", the fix is usually more contrast between adjacent surface colors, not a bigger shadow. Bigger shadows read as blur, not as height.',
     ],
   },
 })

@@ -342,7 +342,7 @@ export default defineDoc({
       </div>
     ),
     caption:
-      'A multi-line block: language tag, line numbers, syntax colours, and the copy control in the corner nearest the reader’s exit.',
+      'A multi-line block: language tag, line numbers, syntax colors, and the copy control in the corner nearest the reader’s exit.',
     parts: [
       {
         n: 1,
@@ -512,10 +512,10 @@ export default defineDoc({
       { id: '4.1.3', name: 'Status Messages', level: 'AA' },
     ],
     contrast: [
-      'Every syntax colour must reach 4.5:1 against the inset surface, in both themes. Highlight themes ported from an editor almost never do — comments are the usual failure.',
+      'Every syntax color must reach 4.5:1 against the inset surface, in both themes. Highlight themes ported from an editor almost never do — comments are the usual failure.',
       'Comments are the one token allowed to sit at the bottom of the range, and they still owe 4.5:1. They are content, not chrome.',
       'The line-number gutter is non-content and may use the disabled tone. Nothing a user needs to read may.',
-      'The copied tick must not be the only signal of success — colour alone fails for the 8% who cannot distinguish it from the idle glyph.',
+      'The copied tick must not be the only signal of success — color alone fails for the 8% who cannot distinguish it from the idle glyph.',
     ],
     keyboard: [
       { keys: 'Tab', does: 'Reaches the copy control. It is a real button, never a click handler on a div.' },
@@ -676,8 +676,8 @@ function useCopy(timeout = 1600) {
     ],
     performance: [
       'Highlight on the server or at build time where you can. A client-side highlighter on twenty blocks is a measurable chunk of main-thread time on first paint.',
-      'Do not re-highlight on every render. Memoise on the source string and the language, or a page of snippets re-tokenises on every keystroke elsewhere.',
-      'Virtualise blocks over roughly 500 lines — but a 500-line block in a doc page is a design problem before it is a performance one.',
+      'Do not re-highlight on every render. Memoize on the source string and the language, or a page of snippets re-tokenizes on every keystroke elsewhere.',
+      'Virtualize blocks over roughly 500 lines — but a 500-line block in a doc page is a design problem before it is a performance one.',
       'The clipboard API is async and can reject on an insecure origin. Always keep the legacy fallback; failing silently on http:// is a support ticket nobody can diagnose.',
     ],
     mistakes: [
@@ -686,7 +686,7 @@ function useCopy(timeout = 1600) {
       'A visual tick with no live-region announcement, leaving screen-reader users with no feedback at all.',
       'Every copy button on the page named "Copy", so assistive tech reports six identical controls.',
       'Hover-only copy controls, which are invisible on every touch device.',
-      'Syntax colours ported straight from a code editor, where comments routinely sit around 2.5:1.',
+      'Syntax colors ported straight from a code editor, where comments routinely sit around 2.5:1.',
       'A scrollable block with no tabindex, unreachable and unscrollable by keyboard.',
     ],
     realWorld: [

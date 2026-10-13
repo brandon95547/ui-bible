@@ -1,5 +1,5 @@
 /* ===========================================================================
-   FLAT UI COLORS 2 — 14 palettes, 280 colours
+   FLAT UI COLORS 2 — 14 palettes, 280 colors
    Ahmet Sülek's collection, each palette contributed by a named designer.
    https://flatuicolors.com · MIT
 
@@ -177,7 +177,7 @@ export const FLAT_UI_PALETTES: Palette[] = [
     dribbble: 'yehsper',
     source: 'https://bit.ly/2GOcLwA',
     character:
-      'High-chroma and system-bright — sharp reds, clean cyans, two cool greys and a near-black. It reads as a mobile OS palette because it is one.',
+      'High-chroma and system-bright — sharp reds, clean cyans, two cool grays and a near-black. It reads as a mobile OS palette because it is one.',
     colors: [
       { name: 'Highlighter Pink', hex: '#ef5777', slug: 'highlighter-pink' },
       { name: 'Dark Periwinkle', hex: '#575fcf', slug: 'dark-periwinkle' },
@@ -363,7 +363,7 @@ export const FLAT_UI_PALETTES: Palette[] = [
     dribbble: 'srioz',
     source: 'https://bit.ly/3jUgAzj',
     character:
-      'The most systematic palette here: a light and a dark step for each hue, plus a real four-step cool grey. The closest thing to a working UI palette out of the box.',
+      'The most systematic palette here: a light and a dark step for each hue, plus a real four-step cool gray. The closest thing to a working UI palette out of the box.',
     colors: [
       { name: 'Fusion Red', hex: '#fc5c65', slug: 'fusion-red' },
       { name: 'Orange Hibiscus', hex: '#fd9644', slug: 'orange-hibiscus' },
@@ -394,7 +394,7 @@ export const FLAT_UI_PALETTES: Palette[] = [
     dribbble: 'wenjunliao',
     source: 'https://bit.ly/3jGkAmB',
     character:
-      'Vermillion, coral and true blue over a complete grey ramp. The only palette in the collection that ships pure white.',
+      'Vermillion, coral and true blue over a complete gray ramp. The only palette in the collection that ships pure white.',
     colors: [
       { name: 'Golden Sand', hex: '#eccc68', slug: 'golden-sand' },
       { name: 'Coral', hex: '#ff7f50', slug: 'coral' },
@@ -425,7 +425,7 @@ export const FLAT_UI_PALETTES: Palette[] = [
     dribbble: 'eatsleepvector',
     source: 'https://bit.ly/2GOdjTa',
     character:
-      'Mint, sky and lavender pastels with a grey ramp and one near-black. The most-copied palette on the internet — half the dashboards you have seen are made of it.',
+      'Mint, sky and lavender pastels with a gray ramp and one near-black. The most-copied palette on the internet — half the dashboards you have seen are made of it.',
     colors: [
       { name: 'Light Greenish Blue', hex: '#55efc4', slug: 'light-greenish-blue' },
       { name: 'Faded Poster', hex: '#81ecec', slug: 'faded-poster' },
@@ -456,7 +456,7 @@ export const FLAT_UI_PALETTES: Palette[] = [
     dribbble: 'janlosert',
     source: 'https://bit.ly/30HOqQ8',
     character:
-      'Bright primaries over cool slate. The greys are the real content: five steps from near-white to midnight blue.',
+      'Bright primaries over cool slate. The grays are the real content: five steps from near-white to midnight blue.',
     colors: [
       { name: 'Protoss Pylon', hex: '#00a8ff', slug: 'protoss-pylon' },
       { name: 'Periwinkle', hex: '#9c88ff', slug: 'periwinkle' },

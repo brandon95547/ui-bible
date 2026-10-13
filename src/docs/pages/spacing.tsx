@@ -93,7 +93,7 @@ export default defineDoc({
 
   overview: {
     purpose:
-      'Spacing is how an interface communicates structure without drawing anything. The distance between two elements tells the user whether they belong together, and it does so pre-attentively — before a single word is read. Getting the gaps right removes the need for most of the boxes, dividers and background colours a cluttered interface reaches for.',
+      'Spacing is how an interface communicates structure without drawing anything. The distance between two elements tells the user whether they belong together, and it does so pre-attentively — before a single word is read. Getting the gaps right removes the need for most of the boxes, dividers and background colors a cluttered interface reaches for.',
     whenToUse: [
       'To group related items: elements that belong together get a smaller gap than elements that do not.',
       'To create breathing room inside a container: padding is what stops content feeling trapped.',
@@ -102,7 +102,7 @@ export default defineDoc({
     ],
     whenNotToUse: [
       {
-        text: 'To vertically centre something with an eyeballed margin.',
+        text: 'To vertically center something with an eyeballed margin.',
         instead: 'flexbox or grid alignment',
       },
       {
@@ -122,7 +122,7 @@ export default defineDoc({
       <>
         <p>
           The Gestalt principle of proximity is the strongest grouping cue humans have — stronger
-          than similarity, stronger than a shared border, stronger than colour. Two labels 8px apart
+          than similarity, stronger than a shared border, stronger than color. Two labels 8px apart
           are one group. The same two labels 32px apart are two groups. No amount of boxing will
           override that impression, which is why so many interfaces are full of cards that do not
           help: the boxes are fighting the gaps.
@@ -454,13 +454,13 @@ export default defineDoc({
       {
         attr: 'role="group" + aria-labelledby',
         on: 'Visual groups',
-        note: 'Spacing conveys grouping visually. Assistive tech needs the grouping expressed structurally as well — a fieldset, a list, or a labelled group.',
+        note: 'Spacing conveys grouping visually. Assistive tech needs the grouping expressed structurally as well — a fieldset, a list, or a labeled group.',
       },
     ],
     focus:
-      'Focus rings sit at 2px offset, so any element needs at least 4px of clear space around it or the ring is clipped by a neighbour. This is a real constraint on tight layouts.',
+      'Focus rings sit at 2px offset, so any element needs at least 4px of clear space around it or the ring is clipped by a neighbor. This is a real constraint on tight layouts.',
     screenReader: [
-      'Spacing is invisible to screen readers. Every group the eye sees must also exist as a list, a fieldset, a section, or a labelled region.',
+      'Spacing is invisible to screen readers. Every group the eye sees must also exist as a list, a fieldset, a section, or a labeled region.',
       'Do not use empty elements or non-breaking spaces to create space — they are announced and they pollute the reading experience.',
     ],
     touch:
@@ -532,25 +532,25 @@ const pad = { compact: 'px-3 py-1.5', normal: 'px-3.5 py-2.5', relaxed: 'px-4 py
   notes: {
     tips: [
       'When a layout feels wrong but you cannot name why, measure the gaps. Nine times out of ten two things that belong together are further apart than two things that do not.',
-      'Squint at the screen. Whitespace should resolve into clean rectangular groups. If you see one undifferentiated grey field, the gaps are uniform and the structure is invisible.',
+      'Squint at the screen. Whitespace should resolve into clean rectangular groups. If you see one undifferentiated gray field, the gaps are uniform and the structure is invisible.',
       'Space is cheaper than borders. Before adding a divider, try doubling the gap — you usually get the same separation with less visual noise.',
       'Vertical rhythm matters more than horizontal. Users scroll, so an irregular vertical cadence is felt on every screen; an irregular horizontal one is often never noticed.',
     ],
     performance: [
       'gap on flex and grid is resolved during layout with no extra boxes. Spacer divs cost DOM nodes, layout time, and are announced by screen readers.',
       'Avoid animating padding or margin — both trigger layout on every frame. Animate transform: translate() instead, which stays on the compositor.',
-      'In a virtualised list, put the gap in the item height calculation rather than as a CSS gap, or the virtualiser will mis-measure and rows will jitter during fast scroll.',
+      'In a virtualized list, put the gap in the item height calculation rather than as a CSS gap, or the virtualizer will mis-measure and rows will jitter during fast scroll.',
     ],
     mistakes: [
       'Using margin-bottom on list items, then fighting the extra space after the last one with :last-child. gap solves this by construction.',
-      'Setting a fixed height on a container with text inside. It fails WCAG 1.4.12 the moment a user increases line-height, and it fails localisation immediately.',
+      'Setting a fixed height on a container with text inside. It fails WCAG 1.4.12 the moment a user increases line-height, and it fails localization immediately.',
       'Collapsing margins between adjacent block elements producing a gap that is neither value. Flex and grid containers do not collapse margins, which is another reason to prefer gap.',
       'Treating padding as a way to hit a target size. Padding that only exists to reach 44px is invisible and inconsistent — use a pseudo-element overlay instead.',
     ],
     realWorld: [
       'Adopt the 2× rule as a review checklist item. It is objective, it takes five seconds to check, and it catches most layout problems before they ship.',
       'For dense enterprise tables, ship compact as a preference but never as the default. New users need the relaxed version to learn the structure; power users will find the toggle.',
-      'When a stakeholder says a page "looks empty", resist filling it. The usual fix is a narrower measure and a clearer hierarchy — the same content, better organised.',
+      'When a stakeholder says a page "looks empty", resist filling it. The usual fix is a narrower measure and a clearer hierarchy — the same content, better organized.',
       'Design the mobile gutters first. 16px is too tight on a modern phone and 32px wastes a third of a 360px screen; 24px is the value that survives contact with real content.',
     ],
   },

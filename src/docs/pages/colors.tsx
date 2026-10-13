@@ -203,13 +203,13 @@ function RoleBoard() {
   )
 }
 
-function GreyscaleTest() {
+function GrayscaleTest() {
   return (
     <div className="grid w-full gap-4 sm:grid-cols-2">
       {(['', 'grayscale(1)'] as const).map((filter) => (
         <div key={filter} className="flex flex-col gap-2" style={{ filter: filter || undefined }}>
           <span className="text-overline uppercase text-[var(--ds-fg-muted)]">
-            {filter ? 'Greyscale' : 'Full colour'}
+            {filter ? 'Grayscale' : 'Full color'}
           </span>
           <Alert tone="success" title="Deployed" icon={<Check size={17} />}>
             Build 4021 is live in three regions.
@@ -233,13 +233,13 @@ export default defineDoc({
     id: 'colors',
     title: 'Colors',
     tagline:
-      'Six ramps, five semantic roles, and one rule that outranks all of them: colour is never the only thing carrying the message.',
-    keywords: ['palette', 'contrast', 'wcag', 'hue', 'status', 'brand', 'colour blindness'],
+      'Six ramps, five semantic roles, and one rule that outranks all of them: color is never the only thing carrying the message.',
+    keywords: ['palette', 'contrast', 'wcag', 'hue', 'status', 'brand', 'color blindness'],
   },
 
   overview: {
     purpose:
-      'Colour does three jobs in an interface: it identifies the brand, it separates surfaces from each other, and it signals state. It is very good at the first two and dangerously unreliable at the third, which is why every status colour in this system ships with an icon and a word attached.',
+      'Color does three jobs in an interface: it identifies the brand, it separates surfaces from each other, and it signals state. It is very good at the first two and dangerously unreliable at the third, which is why every status color in this system ships with an icon and a word attached.',
     whenToUse: [
       'To identify the single primary action on a screen.',
       'To separate layered surfaces — canvas, card, overlay — so depth is legible.',
@@ -261,15 +261,15 @@ export default defineDoc({
       },
       {
         text: 'To distinguish two adjacent chart series that a deuteranope would read as identical.',
-        instead: 'shape, dash pattern or direct labelling',
+        instead: 'shape, dash pattern or direct labeling',
       },
     ],
     reasoning: (
       <>
         <p>
-          Roughly 300 million people have some form of colour vision deficiency, and the most common
+          Roughly 300 million people have some form of color vision deficiency, and the most common
           form makes red and green converge. Add sunlight on a phone screen, a cheap projector, a
-          greyscale print-out and a user who has turned on a high-contrast OS theme, and colour
+          grayscale print-out and a user who has turned on a high-contrast OS theme, and color
           becomes the least reliable channel available. It is a{' '}
           <strong>reinforcement layer, not an information layer</strong>.
         </p>
@@ -281,8 +281,8 @@ export default defineDoc({
         </p>
         <p>
           Every status role ships as a family of five —{' '}
-          <code>base / -subtle / -border / -text / -fg</code> — because the colour you can put text
-          on is never the colour you put text in. Getting this wrong is the single most common
+          <code>base / -subtle / -border / -text / -fg</code> — because the color you can put text
+          on is never the color you put text in. Getting this wrong is the single most common
           contrast failure in production interfaces: white text on a tinted background that was
           designed as a background, not as a fill.
         </p>
@@ -324,13 +324,13 @@ export default defineDoc({
         ),
       },
       {
-        id: 'greyscale',
-        title: 'The greyscale test',
+        id: 'grayscale',
+        title: 'The grayscale test',
         description:
-          'Run any status UI through a greyscale filter. If you can still tell success from failure, colour was doing its job as reinforcement. If you cannot, colour was doing the whole job.',
+          'Run any status UI through a grayscale filter. If you can still tell success from failure, color was doing its job as reinforcement. If you cannot, color was doing the whole job.',
         render: (
           <PreviewStage center={false} minHeight={0} allowResize={false}>
-            <GreyscaleTest />
+            <GrayscaleTest />
           </PreviewStage>
         ),
       },
@@ -338,7 +338,7 @@ export default defineDoc({
         id: 'viz',
         title: 'Categorical palette',
         description:
-          'Eight hues ordered for maximum separation between neighbours, including under deuteranopia. Never used for status — a chart series that happens to be red does not mean an error.',
+          'Eight hues ordered for maximum separation between neighbors, including under deuteranopia. Never used for status — a chart series that happens to be red does not mean an error.',
         render: (
           <PreviewStage center={false} minHeight={0} allowResize={false}>
             <Grid min="7rem" className="w-full">
@@ -363,7 +363,7 @@ export default defineDoc({
         render: <Badge tone="danger" variant="solid">Critical</Badge>,
       },
       {
-        label: 'Greyscale',
+        label: 'Grayscale',
         note: 'Still legible',
         render: (
           <span style={{ filter: 'grayscale(1)' }}>
@@ -432,14 +432,14 @@ export default defineDoc({
         label: 'Body copy',
         value: '--ds-fg-secondary',
         kind: 'color',
-        note: 'Deliberately neutral. Colouring the entire message red reduces legibility and makes the severity read as louder than it is.',
+        note: 'Deliberately neutral. Coloring the entire message red reduces legibility and makes the severity read as louder than it is.',
       },
       {
         n: 5,
         label: 'Redundant encoding',
         value: 'icon + heading text',
         kind: 'shape',
-        note: 'The word "declined" and the triangle both carry the meaning. Remove the colour entirely and nothing is lost.',
+        note: 'The word "declined" and the triangle both carry the meaning. Remove the color entirely and nothing is lost.',
       },
     ],
   },
@@ -490,13 +490,13 @@ export default defineDoc({
     { category: 'color', group: 'Status', token: '--ds-{role}-subtle / -border / -text / -fg', usedFor: 'The four certified companions every role ships with' },
 
     /* -- Categorical ------------------------------------------------------- */
-    { category: 'color', group: 'Data visualisation', token: '--p-viz-1 … --p-viz-8', usedFor: 'Charts, avatars, categorical tags — never status' },
+    { category: 'color', group: 'Data visualization', token: '--p-viz-1 … --p-viz-8', usedFor: 'Charts, avatars, categorical tags — never status' },
   ],
 
   do: [
     {
-      title: 'Pair every colour with a second signal',
-      why: 'Icon, dot, word, or position. The greyscale test above is the check: if the meaning survives, colour is reinforcing. If it does not, colour is load-bearing and the design excludes people.',
+      title: 'Pair every color with a second signal',
+      why: 'Icon, dot, word, or position. The grayscale test above is the check: if the meaning survives, color is reinforcing. If it does not, color is load-bearing and the design excludes people.',
       render: (
         <Stack gap="sm">
           <Row gap="sm">
@@ -519,7 +519,7 @@ export default defineDoc({
     },
     {
       title: 'Let the surface ramp carry depth',
-      why: 'canvas → surface → raised → overlay is a four-step ladder of lightness. Depth read from surface colour survives greyscale, high-contrast mode, and a phone in direct sunlight; a drop shadow does not.',
+      why: 'canvas → surface → raised → overlay is a four-step ladder of lightness. Depth read from surface color survives grayscale, high-contrast mode, and a phone in direct sunlight; a drop shadow does not.',
       render: (
         <div className="w-full rounded-[var(--radius-lg)] bg-[var(--ds-canvas)] p-3">
           <div className="rounded-[var(--radius-md)] bg-[var(--ds-surface)] p-3">
@@ -534,7 +534,7 @@ export default defineDoc({
     },
     {
       title: 'Reserve the accent for one thing per view',
-      why: 'The brand colour is a pointer. If the nav, the badge, the link, the chart and the button are all accent-coloured, it has stopped pointing at anything and the primary action is camouflaged.',
+      why: 'The brand color is a pointer. If the nav, the badge, the link, the chart and the button are all accent-colored, it has stopped pointing at anything and the primary action is camouflaged.',
       render: (
         <Stack gap="xs" className="w-full text-body-sm">
           <span className="text-[var(--ds-fg-secondary)]">Projects</span>
@@ -549,8 +549,8 @@ export default defineDoc({
 
   dont: [
     {
-      title: 'Do not signal state with colour alone',
-      why: 'These three rows are identical to anyone with deuteranopia, anyone reading a greyscale export, and anyone whose monitor is badly calibrated. The information simply is not there.',
+      title: 'Do not signal state with color alone',
+      why: 'These three rows are identical to anyone with deuteranopia, anyone reading a grayscale export, and anyone whose monitor is badly calibrated. The information simply is not there.',
       render: (
         <Stack gap="xs" className="w-full">
           {['#35c98a', '#f7b222', '#fa6470'].map((c) => (
@@ -561,8 +561,8 @@ export default defineDoc({
       ),
     },
     {
-      title: 'Do not put solid status colour behind body text',
-      why: 'Status colours are tuned to be noticeable, not readable. A paragraph on a solid amber block fails contrast in one theme and is uncomfortable in both.',
+      title: 'Do not put solid status color behind body text',
+      why: 'Status colors are tuned to be noticeable, not readable. A paragraph on a solid amber block fails contrast in one theme and is uncomfortable in both.',
       render: (
         <div className="rounded-[var(--radius-md)] bg-[var(--ds-warning)] p-3">
           <p className="text-body-sm text-white">
@@ -572,7 +572,7 @@ export default defineDoc({
       ),
     },
     {
-      title: 'Do not invent a colour outside the ramps',
+      title: 'Do not invent a color outside the ramps',
       why: 'Every off-ramp hex is a value nobody can theme, nobody can audit for contrast, and nobody can find later. It will be copied into three more components before anyone notices.',
       render: (
         <Row gap="sm">
@@ -616,7 +616,7 @@ export default defineDoc({
       {
         attr: 'forced-colors: active',
         on: 'Media query',
-        note: 'Windows High Contrast Mode replaces your palette wholesale. Test it — anything conveyed only by background colour disappears entirely.',
+        note: 'Windows High Contrast Mode replaces your palette wholesale. Test it — anything conveyed only by background color disappears entirely.',
       },
       {
         attr: 'color-scheme',
@@ -632,11 +632,11 @@ export default defineDoc({
     focus:
       'The focus ring uses a fixed accent step chosen to clear 3:1 against every surface token in both themes — that is why it is --ds-focus-ring rather than simply reusing --ds-accent.',
     screenReader: [
-      'Screen readers do not announce colour. Any meaning encoded in a fill must also exist as text, an accessible name, or an icon with a label.',
-      'Charts need direct labels or a data table alternative; a legend that maps colour to series is useless without colour vision.',
+      'Screen readers do not announce color. Any meaning encoded in a fill must also exist as text, an accessible name, or an icon with a label.',
+      'Charts need direct labels or a data table alternative; a legend that maps color to series is useless without color vision.',
     ],
     touch:
-      'Colour has no bearing on hit area, but low-contrast controls are measurably harder to acquire — users aim more slowly at targets they can barely see, which compounds Fitts’ Law.',
+      'Color has no bearing on hit area, but low-contrast controls are measurably harder to acquire — users aim more slowly at targets they can barely see, which compounds Fitts’ Law.',
   },
 
   code: {
@@ -662,7 +662,7 @@ export default defineDoc({
   <p className="text-fg-secondary">Card ending 4242 was refused.</p>
 </div>
 
-// Categorical colour for a chart — never a status family
+// Categorical color for a chart — never a status family
 const SERIES = [1, 2, 3, 4, 5, 6, 7, 8].map(
   (i) => 'var(--p-viz-' + i + ')'
 )`,
@@ -688,7 +688,7 @@ const SERIES = [1, 2, 3, 4, 5, 6, 7, 8].map(
   --ds-danger-text:   #b21c2b;   /* darker still: sits on a tint    */
 }
 
-/* High-contrast mode strips colour entirely — keep the structure */
+/* High-contrast mode strips color entirely — keep the structure */
 @media (forced-colors: active) {
   .status { border: 1px solid; }
 }`,
@@ -697,27 +697,27 @@ const SERIES = [1, 2, 3, 4, 5, 6, 7, 8].map(
 
   notes: {
     tips: [
-      'Design the dark theme first if your product is developer-facing, and the light theme first if it is consumer-facing. Whichever you build second will expose the places where colour was doing structural work.',
-      'When you need "one more" colour, try changing lightness before changing hue. A second hue costs the user a new thing to learn; a lighter step of an existing hue costs nothing.',
-      'The accent colour should not appear in your empty states, your table borders, or your body text. If it does, it stops meaning "here is the action".',
+      'Design the dark theme first if your product is developer-facing, and the light theme first if it is consumer-facing. Whichever you build second will expose the places where color was doing structural work.',
+      'When you need "one more" color, try changing lightness before changing hue. A second hue costs the user a new thing to learn; a lighter step of an existing hue costs nothing.',
+      'The accent color should not appear in your empty states, your table borders, or your body text. If it does, it stops meaning "here is the action".',
       'Test on an OLED phone at minimum brightness and on a cheap IPS panel at maximum. Ramps that look smooth on a calibrated monitor often band badly on both.',
     ],
     performance: [
-      'color-mix() and relative colour syntax are resolved at computed-value time and are effectively free — you do not need to precompute tints into static hexes.',
+      'color-mix() and relative color syntax are resolved at computed-value time and are effectively free — you do not need to precompute tints into static hexes.',
       'Avoid animating background-color on large surfaces during scroll; paint cost scales with area. Animate opacity of an overlay instead.',
       'A gradient with many stops is more expensive to paint than a flat fill. On a full-page background, use at most two radial gradients at low alpha.',
     ],
     mistakes: [
-      'Measuring contrast against the token value instead of the composited result. A 14% alpha over a dark card is not the colour in the token.',
-      'Using the same colour for "selected" and "hover". The user cannot tell whether a row is currently selected or just under the cursor.',
-      'Assigning status colours to chart series. A red line in a revenue chart reads as a failure even when it is just Q3.',
+      'Measuring contrast against the token value instead of the composited result. A 14% alpha over a dark card is not the color in the token.',
+      'Using the same color for "selected" and "hover". The user cannot tell whether a row is currently selected or just under the cursor.',
+      'Assigning status colors to chart series. A red line in a revenue chart reads as a failure even when it is just Q3.',
       'Reusing the warning amber for a brand highlight. Now every promotional banner in the product looks like a system alert.',
     ],
     realWorld: [
-      'Ship a colour-blindness simulator in your review process. Chrome DevTools has one built in under Rendering → Emulate vision deficiencies; use it on every status screen before merge.',
+      'Ship a color-blindness simulator in your review process. Chrome DevTools has one built in under Rendering → Emulate vision deficiencies; use it on every status screen before merge.',
       'When a stakeholder asks to "make it pop", the answer is almost never more saturation. It is usually more contrast between adjacent elements, or more whitespace around the thing that matters.',
       'Keep a single page in your app that renders every semantic pair with its live contrast ratio, exactly like the audit above. It turns an abstract rule into a build-time regression test.',
-      'Brand colours from a marketing palette are almost never accessible as UI colours. Take the hue, rebuild the ramp for the screen, and give the marketing value back to marketing.',
+      'Brand colors from a marketing palette are almost never accessible as UI colors. Take the hue, rebuild the ramp for the screen, and give the marketing value back to marketing.',
     ],
   },
 

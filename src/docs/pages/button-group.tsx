@@ -163,7 +163,7 @@ export default defineDoc({
           The distinction that trips everyone is <strong>group versus segmented control</strong>.
           If the buttons are independent toggles — bold, italic, underline — each gets its own{' '}
           <code>aria-pressed</code> and the container is <code>role="group"</code>. If exactly one
-          can be active — left, centre, right — it is a single value, and it belongs in a{' '}
+          can be active — left, center, right — it is a single value, and it belongs in a{' '}
           <code>radiogroup</code>. They look nearly identical and they announce completely
           differently.
         </p>
@@ -236,7 +236,7 @@ export default defineDoc({
         id: 'count',
         title: 'Where the ceiling is',
         description:
-          'Three is comfortable, five is the ceiling, seven is a toolbar that has not been designed. Past five the group stops reading as a set of alternatives and starts reading as an unlabelled menu.',
+          'Three is comfortable, five is the ceiling, seven is a toolbar that has not been designed. Past five the group stops reading as a set of alternatives and starts reading as an unlabeled menu.',
         render: (
           <PreviewStage minHeight={0} allowResize={false}>
             <Grid min="16rem">
@@ -378,7 +378,7 @@ export default defineDoc({
       </ButtonGroup>
     ),
     caption:
-      'Three members sharing one border. The middle one is pressed, which is carried by fill and text colour rather than by a change in size.',
+      'Three members sharing one border. The middle one is pressed, which is carried by fill and text color rather than by a change in size.',
     parts: [
       {
         n: 1,
@@ -420,7 +420,7 @@ export default defineDoc({
         label: 'Focus ring',
         value: '2px, offset 2px, above siblings',
         kind: 'color',
-        note: 'The focused member is raised in z-order so its ring is not clipped by the neighbour’s border. This is the detail everyone forgets and it looks broken immediately.',
+        note: 'The focused member is raised in z-order so its ring is not clipped by the neighbor’s border. This is the detail everyone forgets and it looks broken immediately.',
       },
     ],
   },
@@ -474,7 +474,7 @@ export default defineDoc({
       ),
     },
     {
-      title: 'Raise the focused member above its neighbours',
+      title: 'Raise the focused member above its neighbors',
       why: 'A focus ring drawn under the adjacent border is clipped on one side and reads as a rendering bug. One line of z-index fixes it permanently.',
       render: (
         <ButtonGroup aria-label="Focus">
@@ -562,7 +562,7 @@ export default defineDoc({
             Left
           </Button>
           <Button variant="secondary" size="sm">
-            Centre
+            Center
           </Button>
           <Button variant="secondary" size="sm">
             Right
@@ -581,14 +581,14 @@ export default defineDoc({
     ],
     contrast: [
       'The shared border must reach 3:1 against the surface behind it — it is the only thing showing where one target ends and the next begins.',
-      'The pressed member changes fill and text colour together, so the state survives greyscale and Windows High Contrast Mode.',
+      'The pressed member changes fill and text color together, so the state survives grayscale and Windows High Contrast Mode.',
       'The seam between two members must stay visible on hover. If the hover wash covers the divider the group momentarily reads as one wide button.',
     ],
     keyboard: [
       { keys: 'Tab', does: 'Enters the group and stops on each member. A group is not a composite widget, so every button is its own tab stop.' },
       { keys: 'Space / Enter', does: 'Activates or toggles the focused member.' },
       { keys: '← / →', does: 'Only in a segmented control, where the group is a radiogroup. In a plain button group arrows do nothing, and adding them surprises people.' },
-      { keys: 'Shift + Tab', does: 'Leaves the group backwards, member by member.' },
+      { keys: 'Shift + Tab', does: 'Leaves the group backward, member by member.' },
     ],
     aria: [
       { attr: 'role="group"', on: 'The container', note: 'Plus aria-label naming what the members have in common. Without it the buttons announce as three unrelated controls.' },
@@ -599,12 +599,12 @@ export default defineDoc({
     focus:
       'The focused member must be raised above its siblings so the ring is drawn complete on all four sides. Focus order follows DOM order, which must follow visual order — never reorder a group with CSS.',
     screenReader: [
-      'A labelled group announces as "Export format, group" then "CSV, button, 1 of 3".',
+      'A labeled group announces as "Export format, group" then "CSV, button, 1 of 3".',
       'A toggle inside the group announces "Bold, toggle button, pressed" — the word "pressed" is the entire payload of aria-pressed.',
       'Never rely on the visual seam to communicate grouping. It is invisible to assistive tech; role and label are what carry it.',
     ],
     touch:
-      'Members share edges, so a mis-tap lands on a neighbour rather than on nothing. Keep icon-only members at 44px on coarse pointers, and prefer two or three members on touch — a five-member group on a phone is five 60px targets in a row and the middle three are hard to hit accurately.',
+      'Members share edges, so a mis-tap lands on a neighbor rather than on nothing. Keep icon-only members at 44px on coarse pointers, and prefer two or three members on touch — a five-member group on a phone is five 60px targets in a row and the middle three are hard to hit accurately.',
   },
 
   code: {
@@ -654,7 +654,7 @@ import { Segmented } from '@/ui/Toggle'
 <!-- Exclusive choice is a radiogroup, not a group -->
 <div role="radiogroup" aria-label="Text alignment" class="ds-btn-group">
   <button type="button" role="radio" aria-checked="true"  tabindex="0">Left</button>
-  <button type="button" role="radio" aria-checked="false" tabindex="-1">Centre</button>
+  <button type="button" role="radio" aria-checked="false" tabindex="-1">Center</button>
   <button type="button" role="radio" aria-checked="false" tabindex="-1">Right</button>
 </div>`,
     },
@@ -725,7 +725,7 @@ import { Segmented } from '@/ui/Toggle'
       'When the group controls a view, echo the current state somewhere in the content — a pressed button in the corner is easy to miss on a full screen.',
     ],
     performance: [
-      'Do not animate the width of a member on press. In a joined group every neighbour reflows, and the seam visibly jitters.',
+      'Do not animate the width of a member on press. In a joined group every neighbor reflows, and the seam visibly jitters.',
       'For toggles, keep the pressed state in one piece of state and derive each member from it. Per-button state drifts the moment someone adds a "clear all".',
       'Icon-only groups are the one place where rendering an SVG per member per row of a table becomes measurable — hoist the icons out of the map.',
     ],

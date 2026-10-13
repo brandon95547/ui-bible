@@ -269,7 +269,7 @@ export default defineDoc({
     whenNotToUse: [
       {
         text: 'The user must answer before doing anything else.',
-        instead: 'a Dialog — it is centred, so it is unmissable',
+        instead: 'a Dialog — it is centered, so it is unmissable',
         to: '#/dialog',
       },
       {
@@ -288,7 +288,7 @@ export default defineDoc({
       },
       {
         text: 'It is a short confirmation or a menu.',
-        instead: 'a Dialog or a Popover. 26rem of panel for one sentence is theatre',
+        instead: 'a Dialog or a Popover. 26rem of panel for one sentence is theater',
       },
     ],
     reasoning: (
@@ -298,7 +298,7 @@ export default defineDoc({
           sits in the middle and covers what you were looking at; a drawer takes an edge and leaves
           the list, the table or the canvas readable beside it. If the content behind is irrelevant
           to the task, you have chosen the wrong container — a drawer that covers nothing useful is
-          just an off-centre dialog with a longer animation.
+          just an off-center dialog with a longer animation.
         </p>
         <p>
           <strong>It enters from the edge it is anchored to.</strong> That is not decoration. The
@@ -621,7 +621,7 @@ export default defineDoc({
     },
     {
       title: 'Do not use one for a confirmation',
-      why: 'Confirmations need to be in the centre of vision and impossible to ignore. A panel that slides in at the edge is the wrong amount of ceremony for "are you sure?".',
+      why: 'Confirmations need to be in the center of vision and impossible to ignore. A panel that slides in at the edge is the wrong amount of ceremony for "are you sure?".',
       render: (
         <span className="text-caption text-[var(--ds-danger-text)]">
           "Delete this?" in a 26rem edge panel
@@ -669,7 +669,7 @@ export default defineDoc({
     keyboard: [
       { keys: 'Escape', does: 'Closes the drawer and returns focus to the trigger. Prompt first if the form is dirty.' },
       { keys: 'Tab', does: 'Cycles inside the panel only. The page behind is inert while the drawer is modal.' },
-      { keys: 'Shift + Tab', does: 'Cycles backwards, wrapping from the first element to the last.' },
+      { keys: 'Shift + Tab', does: 'Cycles backward, wrapping from the first element to the last.' },
       { keys: 'Enter', does: 'Submits, when the panel contains a form with a primary action.' },
     ],
     aria: [
@@ -899,7 +899,7 @@ const Panel = isPhone ? BottomSheet : Drawer`,
       'The page behind scrolling when the wheel reaches the end of the panel body.',
     ],
     realWorld: [
-      'Drawer or dialog is settled by one question: does the user need to see the page behind while they work? If the honest answer is no, use a dialog — it is simpler and it is centred.',
+      'Drawer or dialog is settled by one question: does the user need to see the page behind while they work? If the honest answer is no, use a dialog — it is simpler and it is centered.',
       'Drawer or page is settled by a second question: will anyone want to link to this? If yes, it is a page, no matter how tempting the panel is.',
       'Filter panels are the strongest case for a drawer and the most common place teams reach for a dialog instead. Watching results change as you filter is the whole interaction.',
       'Track how long panels stay open. A median over a couple of minutes means the task outgrew the container and wants a route of its own.',

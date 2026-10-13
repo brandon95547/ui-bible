@@ -32,7 +32,7 @@ function PaletteLeague() {
               Palette
             </th>
             <th scope="col" className="w-[34%] px-3 py-2 text-left text-label-sm font-medium text-[var(--ds-fg-muted)]">
-              Colours
+              Colors
             </th>
             <th scope="col" className="px-3 py-2 text-right text-label-sm font-medium text-[var(--ds-fg-muted)]">
               Text on white
@@ -72,7 +72,7 @@ function PaletteLeague() {
 /**
  * One hue lifted out of a flat palette and rebuilt as a ramp. The flat value is
  * kept in place at the step it actually lands on, so the point survives: the
- * borrowed colour is a member of the ramp, not a replacement for one.
+ * borrowed color is a member of the ramp, not a replacement for one.
  */
 const RAMP_FROM = US.colors.find((c) => c.slug === 'electron-blue')!
 const RAMP = [
@@ -150,7 +150,7 @@ function StatusMisuse() {
           <p className="text-body-sm text-white">Payment declined</p>
         </div>
         <span className="text-caption text-[var(--ds-fg-muted)]">
-          White on {flatRed.hex} is {ratio.toFixed(2)}:1. It is a lovely colour and it fails.
+          White on {flatRed.hex} is {ratio.toFixed(2)}:1. It is a lovely color and it fails.
         </span>
       </div>
     </div>
@@ -166,10 +166,10 @@ export default defineDoc({
     keywords: [
       'palette',
       'flat ui colors',
-      'borrowed colour',
+      'borrowed color',
       'ramp',
       'categorical',
-      'brand colour',
+      'brand color',
       'swatches',
     ],
   },
@@ -178,13 +178,13 @@ export default defineDoc({
     purpose:
       'A palette is twenty opinions about hue with none of the information a design system needs. This page is the conversion: what to keep, what to measure, what to throw away, and where the result belongs in the token tiers.',
     whenToUse: [
-      'Prototyping, where you need categorical colour immediately and the argument about brand can wait.',
-      'Charts, tags, avatars and calendars — anywhere colour distinguishes without meaning anything.',
+      'Prototyping, where you need categorical color immediately and the argument about brand can wait.',
+      'Charts, tags, avatars and calendars — anywhere color distinguishes without meaning anything.',
       'As a starting hue for a ramp you are going to build properly.',
     ],
     whenNotToUse: [
-      { text: 'As status colours.', instead: 'the certified --ds-{role} families' },
-      { text: 'As a brand colour, straight out of the box.', instead: 'a ramp rebuilt from that hue' },
+      { text: 'As status colors.', instead: 'the certified --ds-{role} families' },
+      { text: 'As a brand color, straight out of the box.', instead: 'a ramp rebuilt from that hue' },
       { text: 'As a replacement for the neutral ramp.', instead: 'the --p-neutral steps' },
     ],
     reasoning: (
@@ -193,7 +193,7 @@ export default defineDoc({
         side by side on a white page, at one size, with no text on it, in one theme. An interface
         palette is judged against four surfaces, at six sizes, with text on it, in two themes, by
         people who cannot all see the difference between its red and its green. Both are legitimate
-        artefacts. They are not the same artefact, and the conversion between them is work.
+        artifacts. They are not the same artifact, and the conversion between them is work.
       </p>
     ),
   },
@@ -230,7 +230,7 @@ export default defineDoc({
       },
       {
         id: 'status',
-        title: 'Why a flat red is not a danger colour',
+        title: 'Why a flat red is not a danger color',
         description:
           'The most common misuse, and the one that reaches production most often, because a red that looks like an error at a glance is very hard to argue with in review.',
         render: (
@@ -272,7 +272,7 @@ export default defineDoc({
     },
     {
       title: 'Measure before you use, not after review',
-      why: 'Every palette page in this section carries the audit table. It takes ten seconds to find out that the colour you liked is a fill, and it takes a release to find out the same thing from a user.',
+      why: 'Every palette page in this section carries the audit table. It takes ten seconds to find out that the color you liked is a fill, and it takes a release to find out the same thing from a user.',
       render: (
         <Row gap="sm">
           <Badge tone="success" size="sm">Text 4.5:1</Badge>
@@ -296,7 +296,7 @@ export default defineDoc({
 
   dont: [
     {
-      title: 'Do not adopt twenty colours because you liked one',
+      title: 'Do not adopt twenty colors because you liked one',
       why: 'A palette arrives as a set and gets used as a set. If you needed one teal, take the teal — importing the other nineteen guarantees that some of them end up on a screen, chosen for availability rather than for meaning.',
     },
     {
@@ -305,11 +305,11 @@ export default defineDoc({
     },
     {
       title: 'Do not let it become a second neutral ramp',
-      why: 'Most palettes here ship two or three greys. They will not match the neutral ramp, they will not be evenly spaced, and once both are in the codebase every border in the product is a coin flip.',
+      why: 'Most palettes here ship two or three grays. They will not match the neutral ramp, they will not be evenly spaced, and once both are in the codebase every border in the product is a coin flip.',
     },
     {
       title: 'Do not use one for data and status at once',
-      why: 'The moment a chart series is coloured with the same red that means "failed", every red mark on the screen reads as an alarm. Categorical colour and status colour must come from different sets.',
+      why: 'The moment a chart series is colored with the same red that means "failed", every red mark on the screen reads as an alarm. Categorical color and status color must come from different sets.',
     },
   ],
 
@@ -321,7 +321,7 @@ export default defineDoc({
     ],
     contrast: [
       'The three grades that matter: 4.5:1 for body text, 3:1 for large text and for any graphic or boundary that carries meaning, and nothing at all for pure decoration.',
-      'White and black are the bounds, not the targets. Your real surfaces sit between them, so a colour that scrapes 4.5:1 on white will fail on a card that is not quite white.',
+      'White and black are the bounds, not the targets. Your real surfaces sit between them, so a color that scrapes 4.5:1 on white will fail on a card that is not quite white.',
       'A palette that passes on a dark surface and fails on a light one is not "mostly fine" — it is a palette you can only ship with one theme.',
       'None of these palettes were designed against a contrast requirement. That is not a criticism of them; it is the reason the audit exists.',
     ],
@@ -331,8 +331,8 @@ export default defineDoc({
     aria: [
       {
         attr: 'Text alternative',
-        on: 'Anything encoded by colour',
-        note: 'A chart series, a category tag, a calendar block. Colour distinguishes; it never identifies.',
+        on: 'Anything encoded by color',
+        note: 'A chart series, a category tag, a calendar block. Color distinguishes; it never identifies.',
       },
       {
         attr: 'prefers-contrast: more',
@@ -341,13 +341,13 @@ export default defineDoc({
       },
     ],
     focus:
-      'A borrowed palette must never supply the focus ring. The ring has one job — clearing 3:1 against every surface in the system — and it is the one colour that cannot be chosen for how it looks.',
+      'A borrowed palette must never supply the focus ring. The ring has one job — clearing 3:1 against every surface in the system — and it is the one color that cannot be chosen for how it looks.',
     screenReader: [
-      'Nothing on a palette page is announced by its appearance. Every swatch has an accessible name carrying both the colour name and its value.',
-      'If your only distinction between two things is which palette colour they use, they are the same thing to a screen reader.',
+      'Nothing on a palette page is announced by its appearance. Every swatch has an accessible name carrying both the color name and its value.',
+      'If your only distinction between two things is which palette color they use, they are the same thing to a screen reader.',
     ],
     touch:
-      'Colour choice does not change hit area, but low-contrast controls are measurably slower to acquire — a target you can barely see is a target you aim at carefully.',
+      'Color choice does not change hit area, but low-contrast controls are measurably slower to acquire — a target you can barely see is a target you aim at carefully.',
   },
 
   code: {
@@ -357,7 +357,7 @@ export default defineDoc({
       code: `// 1. Bring it in namespaced. Never --ds-*, which means "certified".
 //    --flat-us-electron-blue: #0984e3;
 
-// 2. Categorical use is immediate and safe — no colour here means anything.
+// 2. Categorical use is immediate and safe — no color here means anything.
 const SERIES = ['electron-blue', 'mint-leaf', 'pico-8-pink', 'sour-lemon']
   .map((slug) => \`var(--flat-us-\${slug})\`)
 
@@ -372,7 +372,7 @@ import { readableOn } from '@/docs/framework/palette'
     },
     css: {
       lang: 'css',
-      caption: 'Three tiers, and where a borrowed colour is allowed to enter.',
+      caption: 'Three tiers, and where a borrowed color is allowed to enter.',
       code: `/* Tier 0 — borrowed. Namespaced by source. Read by nothing but tier 1. */
 :root {
   --flat-us-electron-blue: #0984e3;
@@ -399,25 +399,25 @@ import { readableOn } from '@/docs/framework/palette'
 
   notes: {
     tips: [
-      'Judge a palette by its extremes and its greys, not by its most attractive swatch. The attractive swatch is almost always a mid-tone, and mid-tones are the least useful part of any palette.',
+      'Judge a palette by its extremes and its grays, not by its most attractive swatch. The attractive swatch is almost always a mid-tone, and mid-tones are the least useful part of any palette.',
       'If two palettes look interchangeable as strips, they are interchangeable in your product. Pick on the audit numbers instead.',
-      'A palette is a fast way to lose an argument about colour and get on with the layout. That is a legitimate reason to use one.',
-      'Sorting by hue tells you which colours can sit next to each other; sorting by lightness tells you which ones can be read. Both orders are on every palette page.',
-      'Every palette page carries the conversion already done — surfaces, a solved text ramp, semantic roles with hover and active, chart colours and the CSS to paste. Read it as a worked example rather than a deliverable: the rules are consistent across all fifteen precisely so that they are comparable, which is not the same as being right for your product.',
+      'A palette is a fast way to lose an argument about color and get on with the layout. That is a legitimate reason to use one.',
+      'Sorting by hue tells you which colors can sit next to each other; sorting by lightness tells you which ones can be read. Both orders are on every palette page.',
+      'Every palette page carries the conversion already done — surfaces, a solved text ramp, semantic roles with hover and active, chart colors and the CSS to paste. Read it as a worked example rather than a deliverable: the rules are consistent across all fifteen precisely so that they are comparable, which is not the same as being right for your product.',
     ],
     performance: [
       'Twenty custom properties cost nothing. Twenty custom properties defined inside a component that mounts a hundred times cost something — define them once at :root.',
       'Do not ship all fifteen palettes to the browser. Each page in this section imports only its own, and your product should import only the one it uses.',
     ],
     mistakes: [
-      'Treating the palette as complete. Twenty values with no neutrals, no ramp and no dark-theme counterpart is a third of a colour system.',
+      'Treating the palette as complete. Twenty values with no neutrals, no ramp and no dark-theme counterpart is a third of a color system.',
       'Using palette order as importance order. The designer arranged those twenty for the picture, not for you.',
-      'Assuming a name describes the colour. “Light Red” in one palette is darker than “Pastel Red” in another; the names are memorable, not measured.',
+      'Assuming a name describes the color. “Light Red” in one palette is darker than “Pastel Red” in another; the names are memorable, not measured.',
       'Copying a palette into Figma and into CSS separately. They drift within a sprint.',
     ],
     realWorld: [
-      'Flat UI Colors 2 is the most-used palette collection on the web, which means these colours carry recognition. Using them says "I picked a palette" as clearly as a stock photo says "I picked a stock photo".',
-      'When a stakeholder sends you a palette link, what they usually mean is "the current colours feel wrong". Take that as the brief; the link is a symptom.',
+      'Flat UI Colors 2 is the most-used palette collection on the web, which means these colors carry recognition. Using them says "I picked a palette" as clearly as a stock photo says "I picked a stock photo".',
+      'When a stakeholder sends you a palette link, what they usually mean is "the current colors feel wrong". Take that as the brief; the link is a symptom.',
       'Keep the borrowed tier in your codebase even after you have built ramps from it. It documents where your brand hue came from, and that question gets asked about once a year, forever.',
     ],
   },

@@ -16,7 +16,7 @@ import { Cell, Knob, KnobSelect, KnobToggle, PreviewStage, Stack, defineDoc } fr
    is documented where those components live.
    ======================================================================== */
 
-/** Where a reader goes for the neighbours this page deliberately does not teach. */
+/** Where a reader goes for the neighbors this page deliberately does not teach. */
 const RELATED = [
   { id: 'drawer', name: 'Drawer', why: 'Temporary navigation over the content, dismissed after use. What a sidebar most often becomes on a small screen.' },
   { id: 'app-bar', name: 'App Bar', why: 'The top row, and the trigger that opens navigation once the sidebar has given up its column.' },
@@ -32,7 +32,7 @@ const RELATED = [
  * The orientation card, in the shape the App Bar page established.
  *
  * Several patterns put navigation down the side of a screen and the names get
- * used interchangeably. Naming the neighbours, and where each is documented,
+ * used interchangeably. Naming the neighbors, and where each is documented,
  * is what keeps this page about the persistent column.
  */
 function RelatedComponents() {
@@ -492,7 +492,7 @@ export default defineDoc({
         label: 'Current destination',
         value: 'Tint + 2px marker',
         kind: 'color',
-        note: 'The requirement is aria-current plus a cue that survives greyscale. This system spends a background tint and a 2px marker, absolutely positioned so the row’s box never changes; a left border or a heavier weight would meet the same requirement.',
+        note: 'The requirement is aria-current plus a cue that survives grayscale. This system spends a background tint and a 2px marker, absolutely positioned so the row’s box never changes; a left border or a heavier weight would meet the same requirement.',
       },
       {
         n: 5,
@@ -558,8 +558,8 @@ export default defineDoc({
       ),
     },
     {
-      title: 'Mark the current destination in more than colour',
-      why: 'aria-current="page" is what tells assistive technology where the user is, and a cue that survives greyscale is what tells everyone else. A tint plus a marker, a border, or a heavier weight all qualify.',
+      title: 'Mark the current destination in more than color',
+      why: 'aria-current="page" is what tells assistive technology where the user is, and a cue that survives grayscale is what tells everyone else. A tint plus a marker, a border, or a heavier weight all qualify.',
       render: (
         <div className="w-44 pl-1">
           <NavItem icon={<Rocket size={16} />} label="Deployments" active />
@@ -586,7 +586,7 @@ export default defineDoc({
     },
     {
       title: 'Prefer a shallow structure, and know when it is really a tree',
-      why: 'Groups plus destinations is what most products need, and it is what people learn by position. Some professional tools genuinely navigate a hierarchy — an org chart, a file system, a category tree — and once nesting is unbounded, Tree View is the component built for it: roving focus, arbitrary depth, virtualisation.',
+      why: 'Groups plus destinations is what most products need, and it is what people learn by position. Some professional tools genuinely navigate a hierarchy — an org chart, a file system, a category tree — and once nesting is unbounded, Tree View is the component built for it: roving focus, arbitrary depth, virtualization.',
       render: (
         <div className="w-44">
           <span className="block px-2 py-1 text-overline uppercase text-[var(--ds-fg-muted)]">Build</span>
@@ -599,8 +599,8 @@ export default defineDoc({
 
   dont: [
     {
-      title: 'Do not signal the current destination with colour alone',
-      why: 'It fails for anyone with a colour-vision deficiency, in greyscale, and in bright sunlight — and on its own it gives assistive technology nothing at all. Add aria-current, and a second visual cue.',
+      title: 'Do not signal the current destination with color alone',
+      why: 'It fails for anyone with a color-vision deficiency, in grayscale, and in bright sunlight — and on its own it gives assistive technology nothing at all. Add aria-current, and a second visual cue.',
       render: (
         <div className="w-44">
           <NavItem icon={<Rocket size={16} />} label="Deployments" className="text-[var(--ds-accent-text)]" />
@@ -610,7 +610,7 @@ export default defineDoc({
     },
     {
       title: 'Do not ship a rail without names',
-      why: 'A column of unlabelled icons turns recognition into guesswork and hovering. Every rail button needs an accessible name and a tooltip; if the icons are not already familiar to the audience, stay expanded.',
+      why: 'A column of unlabeled icons turns recognition into guesswork and hovering. Every rail button needs an accessible name and a tooltip; if the icons are not already familiar to the audience, stay expanded.',
       render: (
         <div className="flex w-16 flex-col items-center gap-1 rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)] p-2">
           {[Activity, CreditCard, Settings, Users].map((Icon, i) => (
@@ -772,7 +772,7 @@ useEffect(() => {
   outline-offset: -2px;   /* inset, so the sidebar's edge cannot clip it */
 }
 
-/* Current destination: a tint plus a marker, so it survives greyscale. The
+/* Current destination: a tint plus a marker, so it survives grayscale. The
    marker is absolutely positioned, which keeps the row's box unchanged and
    stops labels shifting when the current item moves. */
 .ds-nav-item[aria-current='page'] {
@@ -828,7 +828,7 @@ useEffect(() => {
       'Persist width and collapsed groups per user. State that resets on every visit makes the controls that set it pointless.',
     ],
     performance: [
-      'The sidebar renders on every route. Keep route-specific state out of it and memoise it, or each navigation re-renders the whole list.',
+      'The sidebar renders on every route. Keep route-specific state out of it and memoize it, or each navigation re-renders the whole list.',
       'Drive a resize with a pointermove listener writing a CSS variable rather than React state — a state update per mousemove drops frames on a long list.',
       'Prefetch on hover. Sidebar links are the most predictable navigation in a product, which makes them the cheapest to guess right.',
       'For very long navigation, content-visibility: auto on collapsed groups skips laying out what is not shown.',
@@ -843,7 +843,7 @@ useEffect(() => {
     realWorld: [
       'Watch someone use the product for a week. If they still read the labels rather than pointing, either the order is unstable or the names are not distinct.',
       'Usage data settles ordering arguments faster than opinion does, and it is the honest way to decide what belongs at the top.',
-      'Resizing is used by a minority, but that minority skews heavily towards the people who live in the product all day.',
+      'Resizing is used by a minority, but that minority skews heavily toward the people who live in the product all day.',
       'Check the sidebar at 200% browser zoom. It is the surface most likely to squeeze the content column to nothing.',
     ],
   },

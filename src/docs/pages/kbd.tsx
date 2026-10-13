@@ -444,7 +444,7 @@ export default defineDoc({
     ],
     contrast: [
       'The label owes 4.5:1 at 11px — small text has no exemption, and this is some of the smallest text in the system.',
-      'The keycap border owes 3:1: it is what makes the element read as a key rather than as emphasised text.',
+      'The keycap border owes 3:1: it is what makes the element read as a key rather than as emphasized text.',
       'On an inverted surface such as a Tooltip, the cap needs its own border and fill values. Reusing the light-surface tokens produces an invisible key.',
       'In forced-colors mode the fill is dropped, so the border must be a real border rather than a box-shadow.',
     ],
@@ -589,7 +589,7 @@ export function keysFor(shortcut: Shortcut) {
         props: [
           { name: 'children', type: 'ReactNode', required: true, description: 'One key. A whole chord in one cap loses the visual separation that makes it readable.' },
           { name: 'size', type: "'sm' | 'md'", default: "'sm'", description: 'Medium for a shortcuts page where the keys are the content.' },
-          { name: 'className', type: 'string', description: 'Where inverted-surface colours are applied — a Tooltip needs its own border and fill.' },
+          { name: 'className', type: 'string', description: 'Where inverted-surface colors are applied — a Tooltip needs its own border and fill.' },
         ],
       },
       {
@@ -621,7 +621,7 @@ export function keysFor(shortcut: Shortcut) {
       'Rendering ⌘ to Windows users, or "Cmd" to Mac users.',
       'Three kbd elements with no wrapper, announcing as three unrelated keys.',
       'Fixed pixel sizing, so caps do not scale with the user’s text size.',
-      'Light-surface colours reused inside a Tooltip, producing an invisible key.',
+      'Light-surface colors reused inside a Tooltip, producing an invisible key.',
       'Showing a shortcut that is not actually bound.',
       'Wrapping a UI label in a keycap, sending users to look at their keyboard.',
       'A box-shadow instead of a border, so the cap vanishes in forced-colors mode.',

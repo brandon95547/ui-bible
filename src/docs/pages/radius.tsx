@@ -328,7 +328,7 @@ export default defineDoc({
     },
     {
       title: 'Do not fully round a button',
-      why: 'Pill shapes belong to badges and chips. A fully rounded button reads as a tag, and users hesitate before clicking things they have categorised as labels.',
+      why: 'Pill shapes belong to badges and chips. A fully rounded button reads as a tag, and users hesitate before clicking things they have categorized as labels.',
       render: (
         <Row gap="sm">
           <span className="grid h-9 place-items-center rounded-full bg-[var(--ds-accent)] px-5 text-caption text-[var(--ds-accent-fg)]">
@@ -368,7 +368,7 @@ export default defineDoc({
       {
         attr: 'forced-colors: active',
         on: 'All surfaces',
-        note: 'High Contrast Mode keeps the radius but replaces colours. Shape becomes the primary categorical signal, which is an argument for keeping the language consistent.',
+        note: 'High Contrast Mode keeps the radius but replaces colors. Shape becomes the primary categorical signal, which is an argument for keeping the language consistent.',
       },
     ],
     focus:
@@ -458,7 +458,7 @@ const PAD = 8
     ],
     mistakes: [
       'Forgetting overflow-hidden on a card with a full-bleed image. The image squares off the corners and nobody notices until a screenshot goes into a deck.',
-      'Applying a radius to a full-width mobile banner. On a 360px screen the curve is visible against the edge and looks like a rendering artefact.',
+      'Applying a radius to a full-width mobile banner. On a 360px screen the curve is visible against the edge and looks like a rendering artifact.',
       'Setting a radius on a <table>. The cells ignore it; you must round the wrapper and clip.',
       'Using rounded-full on a variable-height element. The moment the content wraps to two lines the radius follows the height and the shape changes.',
     ],
@@ -466,7 +466,7 @@ const PAD = 8
       'Pick the container radius first — it is the most visible surface in the product — then derive the rest of the scale from it. 16px containers imply 8px controls.',
       'If a designer hands over a Figma file with corner radii of 10, 14 and 18, snap them to 8, 12 and 16 before building. The difference is invisible; the consistency is not.',
       'On marketing pages you can afford one step larger everywhere. Marketing surfaces are bigger and softer shapes read as friendlier; product surfaces are dense and need tighter geometry.',
-      'Audit for radius drift the same way you audit colour: grep for rounded-[ and border-radius: and check every literal against the scale.',
+      'Audit for radius drift the same way you audit color: grep for rounded-[ and border-radius: and check every literal against the scale.',
     ],
   },
 })

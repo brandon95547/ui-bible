@@ -267,7 +267,7 @@ export function Sidebar({
 
         {!hits && favPages.length > 0 && (
           <TreeNode
-            title="Favourites"
+            title="Favorites"
             icon="Star"
             depth={0}
             open={isOpen('sec:__fav')}
@@ -478,8 +478,8 @@ function TreeNode({
 
 /**
  * The section's own index, pinned above its first page. Shares NavRow's height
- * and active treatment so the section reads as one list, but is italicised and
- * carries no favourite star — it is a destination, not a page of the standard.
+ * and active treatment so the section reads as one list, but is italicized and
+ * carries no favorite star — it is a destination, not a page of the standard.
  */
 function OverviewRow({
   section,
@@ -577,7 +577,7 @@ function NavRow({
       <button
         type="button"
         onClick={() => onToggleFavorite(page.id)}
-        aria-label={favorite ? `Unfavourite ${page.title}` : `Favourite ${page.title}`}
+        aria-label={favorite ? `Unfavorite ${page.title}` : `Favorite ${page.title}`}
         aria-pressed={favorite}
         className={cn(
           'absolute right-1 grid h-5 w-5 place-items-center rounded-[var(--radius-xs)] transition-all',

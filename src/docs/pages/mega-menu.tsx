@@ -342,9 +342,9 @@ export default defineDoc({
 
   overview: {
     purpose:
-      'A mega menu drops a wide panel beneath a top-level nav item and shows that section’s second and third level in labelled columns. It trades one large, scannable reveal for the three or four hops a nested dropdown would have cost.',
+      'A mega menu drops a wide panel beneath a top-level nav item and shows that section’s second and third level in labeled columns. It trades one large, scannable reveal for the three or four hops a nested dropdown would have cost.',
     whenToUse: [
-      'A broad site — a catalogue, a marketing site, a documentation portal — with roughly 20 to 80 destinations under a handful of top-level headings.',
+      'A broad site — a catalog, a marketing site, a documentation portal — with roughly 20 to 80 destinations under a handful of top-level headings.',
       'The destinations group into obvious, nameable categories. The column headings are what make the panel scannable rather than merely large.',
       'Users are choosing where to go, not performing a task. Discovery is the job.',
       'Showing breadth is itself valuable — a visitor who cannot see that you sell the thing they came for will leave.',
@@ -378,8 +378,8 @@ export default defineDoc({
         <p>
           The usual objection is Hick's law — more visible choices, slower decisions. It does not
           apply cleanly here, because Hick's law describes an <em>undifferentiated</em> list.
-          Sixty links in three labelled columns are not scanned as sixty items; the user reads three
-          headings, discards two, and scans a dozen. Grouping is what converts a paralysing list
+          Sixty links in three labeled columns are not scanned as sixty items; the user reads three
+          headings, discards two, and scans a dozen. Grouping is what converts a paralyzing list
           into a fast one, and it is also what a mega menu is for. Remove the headings and the
           objection becomes correct.
         </p>
@@ -398,7 +398,7 @@ export default defineDoc({
         </p>
         <p>
           <strong>A mega menu is a symptom worth reading.</strong> Needing one means the site has
-          more destinations than a bar can hold. That is legitimate for a catalogue and a warning
+          more destinations than a bar can hold. That is legitimate for a catalog and a warning
           sign for a product — if an application needs sixty top-level links, the navigation is
           standing in for an information architecture that was never decided.
         </p>
@@ -549,7 +549,7 @@ export default defineDoc({
   anatomy: {
     render: <AnatomyDiagram />,
     caption:
-      '“Products” open. Four triggers, three labelled columns, and one featured slot — everything below the bar is a single panel, not four stacked menus.',
+      '“Products” open. Four triggers, three labeled columns, and one featured slot — everything below the bar is a single panel, not four stacked menus.',
     parts: [
       {
         n: 1,
@@ -711,7 +711,7 @@ export default defineDoc({
   dont: [
     {
       title: 'Do not open on contact',
-      why: 'A pointer travelling to the search box crosses the bar and detonates a panel over the page. It also makes the bar unusable for anyone who moves the mouse while reading.',
+      why: 'A pointer traveling to the search box crosses the bar and detonates a panel over the page. It also makes the bar unusable for anyone who moves the mouse while reading.',
       render: (
         <span className="text-caption text-[var(--ds-danger-text)]">
           openDelay: 0 → panels flash at every pass

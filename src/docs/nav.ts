@@ -25,7 +25,7 @@
      · trigger     — a hover card is a Popover raised on hover
      · size        — a navigation rail is a Sidebar at its collapsed width
      · vendor      — a snackbar is a Toast with a Material accent
-   They stay separate when the behaviour, the failure modes and the
+   They stay separate when the behavior, the failure modes and the
    accessibility contract differ. Not before.
    ======================================================================== */
 
@@ -45,8 +45,8 @@ export interface NavPage {
   status?: 'stable' | 'beta' | 'draft'
   /**
    * A handful of literal hex values shown as a strip on the page's card in the
-   * section index. Only for pages whose subject *is* a set of colours — an
-   * index of palettes that shows no colour is a list of foreign words.
+   * section index. Only for pages whose subject *is* a set of colors — an
+   * index of palettes that shows no color is a list of foreign words.
    */
   swatches?: string[]
 }
@@ -93,7 +93,7 @@ const FOUNDATIONS: NavPage[] = [
   {
     id: 'colors',
     title: 'Colors',
-    blurb: 'Ramps, semantic roles, contrast, and when colour is allowed to mean something.',
+    blurb: 'Ramps, semantic roles, contrast, and when color is allowed to mean something.',
     keywords: ['palette', 'hue', 'contrast', 'wcag', 'status', 'brand'],
   },
   {
@@ -131,7 +131,7 @@ const FOUNDATIONS: NavPage[] = [
   {
     id: 'icons',
     title: 'Icons',
-    blurb: 'Sizes, stroke weight, optical alignment, and labelling.',
+    blurb: 'Sizes, stroke weight, optical alignment, and labeling.',
     aliases: ['Icon', 'Glyph', 'Pictogram'],
     keywords: ['iconography', 'svg', 'lucide'],
   },
@@ -168,7 +168,7 @@ const FOUNDATIONS: NavPage[] = [
   {
     id: 'light-theme',
     title: 'Light Theme',
-    blurb: 'Elevation by shadow, hairlines, and keeping brand colour legible on white.',
+    blurb: 'Elevation by shadow, hairlines, and keeping brand color legible on white.',
     keywords: ['light mode', 'theme', 'white'],
   },
 ]
@@ -190,7 +190,7 @@ const NAVIGATION: NavPage[] = [
     aliases: ['Top App Bar'],
     keywords: [
       'navbar', 'header', 'masthead', 'title bar', 'banner', 'top bar',
-      'scroll behaviour', 'sticky', 'elevation on scroll', 'brand', 'account menu', 'global actions',
+      'scroll behavior', 'sticky', 'elevation on scroll', 'brand', 'account menu', 'global actions',
     ],
   },
   {
@@ -269,7 +269,7 @@ const NAVIGATION: NavPage[] = [
     blurb:
       'Nested, expandable hierarchy with roving focus — files, org charts, category trees and anything else that is genuinely a tree.',
     aliases: ['File Tree', 'Hierarchy', 'Nested List', 'Explorer'],
-    keywords: ['expand', 'collapse', 'branch', 'leaf', 'aria-expanded', 'virtualisation'],
+    keywords: ['expand', 'collapse', 'branch', 'leaf', 'aria-expanded', 'virtualization'],
   },
 ]
 
@@ -652,7 +652,7 @@ const DATA_DISPLAY: NavPage[] = [
   {
     id: 'badge',
     title: 'Badge',
-    blurb: 'Read-only status labels and counts — and the colour-alone trap that makes them fail.',
+    blurb: 'Read-only status labels and counts — and the color-alone trap that makes them fail.',
     aliases: ['Tag', 'Pill', 'Label', 'Status Indicator', 'Counter', 'Dot'],
     keywords: ['status', 'count', 'notification dot', 'severity', 'read only'],
   },
@@ -678,7 +678,7 @@ const DATA_DISPLAY: NavPage[] = [
     blurb:
       'Sorting, filtering, search, selection, pagination, sticky headers, and the responsive collapse that keeps it usable on a phone.',
     aliases: ['Table', 'Data Grid', 'Grid'],
-    keywords: ['rows', 'columns', 'sort', 'bulk select', 'column resize', 'virtualisation'],
+    keywords: ['rows', 'columns', 'sort', 'bulk select', 'column resize', 'virtualization'],
   },
   {
     id: 'timeline',
@@ -700,8 +700,8 @@ const DATA_DISPLAY: NavPage[] = [
     id: 'chart',
     title: 'Chart',
     blurb:
-      'Encoding data as position, length and colour — and the four chart types that honestly cover ninety per cent of cases.',
-    aliases: ['Graph', 'Plot', 'Sparkline', 'Data Visualisation'],
+      'Encoding data as position, length and color — and the four chart types that honestly cover ninety percent of cases.',
+    aliases: ['Graph', 'Plot', 'Sparkline', 'Data Visualization'],
     keywords: ['axis', 'legend', 'tooltip', 'series', 'categorical palette', 'accessible data'],
   },
   {
@@ -785,7 +785,7 @@ const MEDIA: NavPage[] = [
 
 /* ===========================================================================
    COLOR
-   Palettes we did not draw. Foundations owns *our* colour — the ramps, the
+   Palettes we did not draw. Foundations owns *our* color — the ramps, the
    semantic roles, the contrast contract. This section owns everyone else's,
    which is a different kind of page: no tokens, no theming, no authority.
    A palette here is a reference you are being shown how to convert, and the
@@ -804,7 +804,7 @@ const COLOR: NavPage[] = [
     title: 'Using a Palette',
     blurb:
       'Turning twenty borrowed hex values into something you can ship — what to keep, what to measure, and where it enters the token tiers.',
-    keywords: ['borrowed colour', 'ramp', 'categorical', 'brand colour', 'conversion', 'swatches'],
+    keywords: ['borrowed color', 'ramp', 'categorical', 'brand color', 'conversion', 'swatches'],
   },
   {
     id: 'flat-ui-defo',
@@ -879,15 +879,15 @@ const COLOR: NavPage[] = [
   {
     id: 'flat-ui-de',
     title: 'German Palette',
-    blurb: 'A light and dark step per hue, plus a real grey ramp. The most systematic here. Martin David.',
-    keywords: ['germany', 'systematic', 'ramp', 'grey', 'martin david'],
+    blurb: 'A light and dark step per hue, plus a real gray ramp. The most systematic here. Martin David.',
+    keywords: ['germany', 'systematic', 'ramp', 'gray', 'martin david'],
     swatches: ['#fc5c65', '#26de81', '#fa8231', '#45aaf2', '#778ca3', '#4b6584'],
   },
   {
     id: 'flat-ui-cn',
     title: 'Chinese Palette',
-    blurb: 'Vermillion and true blue over a full grey ramp. The only one that ships pure white. Wenjun.',
-    keywords: ['china', 'vermillion', 'coral', 'grey ramp', 'wenjun'],
+    blurb: 'Vermillion and true blue over a full gray ramp. The only one that ships pure white. Wenjun.',
+    keywords: ['china', 'vermillion', 'coral', 'gray ramp', 'wenjun'],
     swatches: ['#eccc68', '#a4b0be', '#ff6348', '#7bed9f', '#dfe4ea', '#ced6e0'],
   },
   {
@@ -900,7 +900,7 @@ const COLOR: NavPage[] = [
   {
     id: 'flat-ui-gb',
     title: 'British Palette',
-    blurb: 'Bright primaries over cool slate, with five usable greys. Jan Losert.',
+    blurb: 'Bright primaries over cool slate, with five usable grays. Jan Losert.',
     keywords: ['united kingdom', 'britain', 'slate', 'navy', 'jan losert'],
     swatches: ['#00a8ff', '#4cd137', '#8c7ae6', '#e84118', '#353b48', '#2f3640'],
   },
@@ -984,7 +984,7 @@ const PRINCIPLES: NavPage[] = [
     id: 'visual-hierarchy',
     title: 'Visual Hierarchy',
     blurb:
-      'Decide what an element IS before what colour it is. Role sets elevation; elevation is then expressed.',
+      'Decide what an element IS before what color it is. Role sets elevation; elevation is then expressed.',
     aliases: ['Layering', 'Depth', 'Surface Hierarchy'],
     keywords: [
       'hierarchy',
@@ -1183,7 +1183,7 @@ export function overviewSection(id: string) {
 
 export const PAGE_ORDER = ALL_PAGES.map((p) => p.id)
 
-export function neighbours(id: string) {
+export function neighbors(id: string) {
   const i = PAGE_ORDER.indexOf(id)
   return {
     prev: i > 0 ? PAGE_BY_ID.get(PAGE_ORDER[i - 1]) : undefined,

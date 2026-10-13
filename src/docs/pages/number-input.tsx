@@ -107,7 +107,7 @@ export default defineDoc({
           a message, when they leave.
         </p>
         <p>
-          The steppers are for nudging, not travelling. If reaching a common value takes more than
+          The steppers are for nudging, not traveling. If reaching a common value takes more than
           about five presses, the step is wrong or the control is — a timeout that steps in
           seconds from 0 to 300 needs a bigger step, a preset, or a different component.
         </p>
@@ -240,7 +240,7 @@ export default defineDoc({
       },
       {
         n: 4,
-        label: 'Bound behaviour',
+        label: 'Bound behavior',
         value: 'Disabled, never hidden',
         kind: 'color',
         note: 'A stepper that vanishes at the limit shifts the layout and removes the only signal that a limit exists.',
@@ -318,7 +318,7 @@ export default defineDoc({
     },
     {
       title: 'Set inputmode, not just type',
-      why: 'inputmode="decimal" gives mobile users a numeric keypad without inheriting type="number"’s scroll-stepping and its empty-string-on-invalid behaviour.',
+      why: 'inputmode="decimal" gives mobile users a numeric keypad without inheriting type="number"’s scroll-stepping and its empty-string-on-invalid behavior.',
       render: (
         <code className="font-mono text-[11px] leading-relaxed text-[var(--ds-success-text)]">
           type="text" inputmode="decimal"
@@ -379,11 +379,11 @@ export default defineDoc({
     ],
     contrast: [
       'Stepper glyphs at 12px owe 4.5:1 — they are small and they are the control.',
-      'A stepper disabled at its bound may use the disabled tone, and the bound must also be conveyed by aria-valuemin/max rather than by colour alone.',
+      'A stepper disabled at its bound may use the disabled tone, and the bound must also be conveyed by aria-valuemin/max rather than by color alone.',
       'The unit suffix is content and owes 4.5:1. It is frequently the only thing telling the user what the number means.',
     ],
     keyboard: [
-      { keys: '↑ / ↓', does: 'Increments and decrements by step. The native behaviour of a spinbutton, and users expect it.' },
+      { keys: '↑ / ↓', does: 'Increments and decrements by step. The native behavior of a spinbutton, and users expect it.' },
       { keys: 'Page Up / Page Down', does: 'Steps by a larger amount — ten steps by convention. Free to add and invaluable on a wide range.' },
       { keys: 'Home / End', does: 'Jumps to min or max when both are defined.' },
       { keys: 'Tab', does: 'Leaves the field. The steppers are not separate tab stops — arrows already do their job.' },
@@ -395,7 +395,7 @@ export default defineDoc({
       { attr: 'aria-valuetext', on: 'The field', note: 'For values that need units or formatting: "30 seconds", "$2,400". A bare "30" is ambiguous read aloud.' },
       { attr: 'aria-label', on: 'Each stepper', note: '"Increase replicas" / "Decrease replicas". A bare "+" is not a name.' },
       { attr: 'aria-hidden', on: 'The steppers', note: 'A defensible alternative — arrow keys already provide the function, and hiding them removes two redundant stops from the screen-reader path.' },
-      { attr: 'inputmode="decimal"', on: 'The field', note: 'Gives a numeric keypad on mobile without inheriting type="number"’s behaviour.' },
+      { attr: 'inputmode="decimal"', on: 'The field', note: 'Gives a numeric keypad on mobile without inheriting type="number"’s behavior.' },
     ],
     focus:
       'Focus stays on the field when a stepper is pressed — the steppers act on the field, they do not take focus from it. The focus halo must be visible around the whole control, including the stepper column.',
@@ -561,7 +561,7 @@ function NumberField({ value, onValueChange, min, max, step = 1 }) {
       'Offer presets alongside the field for wide ranges — 30s / 1m / 5m beside a timeout is worth more than any step size.',
       'Select the whole value on focus for fields users usually replace rather than adjust. Not for ones they nudge, where it destroys the current value on a stray keypress.',
       'Accept pasted values with symbols and separators — "$1,200" should become 1200 rather than being rejected. People paste from spreadsheets constantly.',
-      'Never use 0 as a placeholder. It is indistinguishable from a real value, and users submit it without realising they never chose it.',
+      'Never use 0 as a placeholder. It is indistinguishable from a real value, and users submit it without realizing they never chose it.',
     ],
     performance: [
       'Hold the draft as a string in local state and lift the parsed number on blur. Parsing on every keystroke in a large form re-renders everything for a value nobody has finished typing.',

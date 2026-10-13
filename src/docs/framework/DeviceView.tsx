@@ -22,7 +22,7 @@ import type { DocSpec } from './types'
 
    What it still cannot fake is the pointer. A 390px window on a desktop is
    `pointer: fine`, so rules keyed to `pointer: coarse` — 44px targets — stay
-   off. That is the correct behaviour rather than a gap: the Bible keys touch
+   off. That is the correct behavior rather than a gap: the Bible keys touch
    sizing to the input device precisely because window width was never a
    reliable proxy for a finger.
    ======================================================================== */
@@ -127,7 +127,7 @@ export function DeviceView({ route }: { route: string }) {
   }, [theme])
 
   React.useEffect(() => {
-    let cancelled = false
+    let canceled = false
     setState('loading')
     const loader = loadPage(pageId)
     if (!loader) {
@@ -136,13 +136,13 @@ export function DeviceView({ route }: { route: string }) {
     }
     loader()
       .then((m) => {
-        if (cancelled) return
+        if (canceled) return
         setSpec(m.default)
         setState('ready')
       })
-      .catch(() => !cancelled && setState('missing'))
+      .catch(() => !canceled && setState('missing'))
     return () => {
-      cancelled = true
+      canceled = true
     }
   }, [pageId])
 

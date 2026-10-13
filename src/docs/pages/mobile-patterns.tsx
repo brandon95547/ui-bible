@@ -276,7 +276,7 @@ function Playground() {
               ? 'The floor. A fingertip contact patch is roughly 8–10mm, and 44px is what covers it with room for the imprecision of a moving hand.'
               : px === 32
                 ? 'Fits more, misses more. This is the size a desktop layout produces when it is shipped to a phone unchanged.'
-                : 'Below any usable threshold. Every tap here is a gamble, and the errors land on whichever neighbour is closest.'}
+                : 'Below any usable threshold. Every tap here is a gamble, and the errors land on whichever neighbor is closest.'}
           </p>
           <p className="text-caption leading-relaxed text-[var(--ds-fg-muted)]">
             {safeArea
@@ -347,7 +347,7 @@ export default defineDoc({
           <strong>44px is not a style preference.</strong> A fingertip contact patch is roughly
           8–10mm across and the hand is usually moving. 44px covers that with margin; 32px is what a
           desktop layout produces when nobody adapted it, and the mis-taps land on whichever
-          neighbour is nearest. The padding counts toward the target — the visible mark can be
+          neighbor is nearest. The padding counts toward the target — the visible mark can be
           small as long as the hit area is not.
         </p>
         <p>
@@ -796,7 +796,7 @@ export default defineDoc({
       {
         attr: 'Target size',
         on: 'Every control',
-        note: 'WCAG 2.5.8 sets 24px as the AA floor; 44px is the practical one. The spacing exception only helps if the neighbours are genuinely far enough away.',
+        note: 'WCAG 2.5.8 sets 24px as the AA floor; 44px is the practical one. The spacing exception only helps if the neighbors are genuinely far enough away.',
       },
       {
         attr: 'Pointer cancellation',
@@ -820,7 +820,7 @@ export default defineDoc({
       },
     ],
     focus:
-      'The software keyboard covers up to half the screen. Scroll the focused field into the remaining space, and never let the keyboard hide the submit button — that is the single most common mobile form failure. Use dvh rather than vh so the layout tracks the visible viewport instead of an idealised one.',
+      'The software keyboard covers up to half the screen. Scroll the focused field into the remaining space, and never let the keyboard hide the submit button — that is the single most common mobile form failure. Use dvh rather than vh so the layout tracks the visible viewport instead of an idealized one.',
     screenReader: [
       'VoiceOver and TalkBack take over the touch gestures entirely. Any custom gesture must have a real control behind it, or it does not exist under a screen reader.',
       'Announce refresh states. A spinner conveys nothing; "Refreshing" and then "Updated, 6 items" conveys the same thing the animation does for everyone else.',
@@ -856,7 +856,7 @@ return isPhone
 <button onPointerUp={submit}>Retry now</button>   // not onPointerDown
 
 // The keyboard covers up to half the screen. dvh tracks the visible
-// viewport; vh is an idealised one the user may never actually have.
+// viewport; vh is an idealized one the user may never actually have.
 <div className="h-dvh">…</div>`,
     },
     css: {
@@ -936,7 +936,7 @@ input, select, textarea { font-size: 16px; }
     performance: [
       'Mobile CPUs are several times slower than the laptop you are testing on, and the network is worse. Budget accordingly rather than optimistically.',
       'Animate transform and opacity only. Anything else drops frames on a mid-range Android, which is the median device for most products.',
-      'Virtualise long lists and keep images sized. Layout shift on a phone moves the thing someone was about to tap.',
+      'Virtualize long lists and keep images sized. Layout shift on a phone moves the thing someone was about to tap.',
       'Use passive scroll listeners. A non-passive touchmove handler blocks scrolling on the main thread and produces the classic sticky-scroll feel.',
       'Serve smaller images to smaller screens. A 2000px hero on a 390px phone is bandwidth spent on a device that has the least of it.',
       'Cache aggressively and render from cache first. On a slow connection, showing yesterday’s list instantly beats showing a spinner for four seconds.',

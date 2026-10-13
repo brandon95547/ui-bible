@@ -299,7 +299,7 @@ export default defineDoc({
                 <Stack gap="xs">
                   <Checkbox label="Failed" defaultChecked />
                   <Checkbox label="Succeeded" />
-                  <Checkbox label="Cancelled" defaultChecked />
+                  <Checkbox label="Canceled" defaultChecked />
                 </Stack>
                 <span className="h-px bg-[var(--ds-border-subtle)]" />
                 <Row gap="sm">
@@ -645,7 +645,7 @@ export default defineDoc({
       'Do not announce hover cards on hover alone — the same content must be reachable by focusing the trigger, or it does not exist without a mouse.',
     ],
     touch:
-      'There is no hover, so a hover card must have a tap behaviour: tap the trigger to open, tap outside to close. Panels near the bottom of a phone screen are covered by nothing but are hard to reach — prefer a Drawer from the bottom edge for anything with more than a couple of controls. Keep the trigger visible when the panel opens, or the anchor relationship is lost.',
+      'There is no hover, so a hover card must have a tap behavior: tap the trigger to open, tap outside to close. Panels near the bottom of a phone screen are covered by nothing but are hard to reach — prefer a Drawer from the bottom edge for anything with more than a couple of controls. Keep the trigger visible when the panel opens, or the anchor relationship is lost.',
   },
 
   code: {
@@ -797,7 +797,7 @@ const shift = clampToViewport(rect, 8)`,
     ],
     performance: [
       'Do not mount the panel until it opens. A table row with a popover per row is otherwise dozens of hidden panels of layout work.',
-      'Compute placement on open and on resize, not on every scroll frame. Anchoring maths in a scroll listener is the classic cause of jank.',
+      'Compute placement on open and on resize, not on every scroll frame. Anchoring math in a scroll listener is the classic cause of jank.',
       'Share one panel instance across a list and re-point it at the active anchor.',
       'Animate transform and opacity only. Animating width or height re-lays-out the content and the controls visibly jump.',
     ],

@@ -266,7 +266,7 @@ export default defineDoc({
       </Card>
     ),
     caption:
-      'Icon, title, description, primary action, secondary action. Everything is centred, and the whole block is capped at 24rem so it never spans a wide container.',
+      'Icon, title, description, primary action, secondary action. Everything is centered, and the whole block is capped at 24rem so it never spans a wide container.',
     parts: [
       {
         n: 1,
@@ -294,7 +294,7 @@ export default defineDoc({
         label: 'Description width',
         value: 'max 24rem',
         kind: 'size',
-        note: 'About 45 characters per line. Centred text needs a narrower measure than left-aligned, because every line starts in a different place.',
+        note: 'About 45 characters per line. Centered text needs a narrower measure than left-aligned, because every line starts in a different place.',
       },
       {
         n: 5,
@@ -393,7 +393,7 @@ export default defineDoc({
   dont: [
     {
       title: 'Do not leave a dead end',
-      why: 'A grey box saying "No data" gives the user nothing. They cannot tell whether something is broken, whether they lack permission, or what they should do.',
+      why: 'A gray box saying "No data" gives the user nothing. They cannot tell whether something is broken, whether they lack permission, or what they should do.',
       render: (
         <div className="grid h-24 w-full place-items-center rounded-[var(--radius-md)] border border-[var(--ds-border-subtle)]">
           <span className="text-caption text-[var(--ds-fg-muted)]">No data</span>
@@ -461,7 +461,7 @@ export default defineDoc({
       'Do not announce the description as well as the title on every filter change. The title alone is enough.',
     ],
     touch:
-      'The primary action must be at least 44px and centred, which puts it in easy reach on mobile. Keep the secondary action below rather than beside it on narrow screens.',
+      'The primary action must be at least 44px and centered, which puts it in easy reach on mobile. Keep the secondary action below rather than beside it on narrow screens.',
   },
 
   code: {
@@ -544,7 +544,7 @@ function DeploymentList({ items, query, filters, loading, error }) {
 
 .ds-empty__title { font-size: 1.1875rem; font-weight: 600; }
 
-/* Centred text needs a narrower measure — every line starts somewhere new */
+/* Centered text needs a narrower measure — every line starts somewhere new */
 .ds-empty__desc {
   max-inline-size: 24rem;
   font-size: 13px;

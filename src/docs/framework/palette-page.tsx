@@ -103,7 +103,7 @@ ${byLightness(p.colors)
 
     preview: {
       render: (
-        <PreviewStage label={`${p.colors.length} colours`} center={false} minHeight={0} allowResize={false}>
+        <PreviewStage label={`${p.colors.length} colors`} center={false} minHeight={0} allowResize={false}>
           <div className="flex w-full flex-col gap-4">
             <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1 text-caption text-[var(--ds-fg-muted)]">
               {p.origin ? (
@@ -132,7 +132,7 @@ ${byLightness(p.colors)
       examples: [
         {
           id: 'text',
-          title: '01 · Text colours',
+          title: '01 · Text colors',
           description: `A palette ships hues, not a text ramp. These five are solved against the page background rather than mixed by percentage — "secondary" means 8:1 on every palette in this section, so the pages stay comparable and none of them ships a ramp that fails. Disabled sits below the floor deliberately; it is the one role WCAG exempts.`,
           render: (
             <PreviewStage center={false} minHeight={0} allowResize={false}>
@@ -143,7 +143,7 @@ ${byLightness(p.colors)
         {
           id: 'surfaces',
           title: '02 · Surfaces and backgrounds',
-          description: `Anchored on ${darkest.name}, the darkest colour in the set. The rest of the ladder is computed, because no palette ships two darks that happen to sit 16% apart — and depth read from surface lightness is the only kind that survives greyscale, high-contrast mode and a phone in sunlight.`,
+          description: `Anchored on ${darkest.name}, the darkest color in the set. The rest of the ladder is computed, because no palette ships two darks that happen to sit 16% apart — and depth read from surface lightness is the only kind that survives grayscale, high-contrast mode and a phone in sunlight.`,
           render: (
             <PreviewStage center={false} minHeight={0} allowResize={false}>
               <TokenRows sys={sys} tokens={sys.surfaces} />
@@ -152,9 +152,9 @@ ${byLightness(p.colors)
         },
         {
           id: 'semantic',
-          title: '03 · Semantic colours',
+          title: '03 · Semantic colors',
           description:
-            'Primary is the palette’s opening colour — designers lead with their signature. The status roles are the nearest hue this palette carries to each target, which is the honest version of a choice usually made by eye. Hover prefers a darker sibling the designer actually drew; active is always computed. Where a role sits far from its ideal hue, the row says so.',
+            'Primary is the palette’s opening color — designers lead with their signature. The status roles are the nearest hue this palette carries to each target, which is the honest version of a choice usually made by eye. Hover prefers a darker sibling the designer actually drew; active is always computed. Where a role sits far from its ideal hue, the row says so.',
           render: (
             <PreviewStage center={false} minHeight={0} allowResize={false}>
               <SemanticRows sys={sys} />
@@ -165,7 +165,7 @@ ${byLightness(p.colors)
           id: 'components',
           title: '04 · Component examples',
           description:
-            'The moment the palette stops being a picture. Filled, outlined and text buttons across five roles, four field states, and the selection controls — a colour that read as confident in a swatch grid often cannot hold a five-character label, and there is no way to discover that except by putting the label on it.',
+            'The moment the palette stops being a picture. Filled, outlined and text buttons across five roles, four field states, and the selection controls — a color that read as confident in a swatch grid often cannot hold a five-character label, and there is no way to discover that except by putting the label on it.',
           render: (
             <PreviewStage center={false} minHeight={0} allowResize={false}>
               <ComponentExamples sys={sys} />
@@ -174,7 +174,7 @@ ${byLightness(p.colors)
         },
         {
           id: 'chart',
-          title: '05 · Chart colours',
+          title: '05 · Chart colors',
           description:
             'Eight hues spread around the circle, each required to clear 3:1 against the page — under WCAG 1.4.11 a chart mark is a meaningful graphic, so a series nobody can see is not a style choice. This set is kept separate from the semantic roles on purpose: a series that happens to be red must not read as a failure.',
           render: (
@@ -187,7 +187,7 @@ ${byLightness(p.colors)
           id: 'alerts',
           title: '06 · Alerts and notifications',
           description:
-            'The four status roles doing the job they exist for, each with an icon and a word alongside the fill. Run these through a greyscale filter — if you can still tell the error from the success, colour was reinforcing the message rather than carrying it.',
+            'The four status roles doing the job they exist for, each with an icon and a word alongside the fill. Run these through a grayscale filter — if you can still tell the error from the success, color was reinforcing the message rather than carrying it.',
           render: (
             <PreviewStage center={false} minHeight={0} allowResize={false}>
               <AlertExamples sys={sys} />
@@ -215,7 +215,7 @@ ${byLightness(p.colors)
         render: <PaletteStrip colors={byLightness(p.colors).slice(-8)} height={44} />,
       },
       {
-        title: 'Use it where colour carries no valence',
+        title: 'Use it where color carries no valence',
         why: 'Charts, tags, avatars, calendar categories. These are the jobs a decorative palette is genuinely good at, because nothing here has to mean "this failed" to someone who cannot see it.',
       },
       {
@@ -244,14 +244,14 @@ ${byLightness(p.colors)
     dont: [
       {
         title: 'Do not map these onto success, warning and danger',
-        why: 'A status colour has to clear 4.5:1 against the surface it sits on, in both themes, next to an icon and a word. These were drawn to look good in a grid. The two requirements overlap by accident, never by design.',
+        why: 'A status color has to clear 4.5:1 against the surface it sits on, in both themes, next to an icon and a word. These were drawn to look good in a grid. The two requirements overlap by accident, never by design.',
       },
       {
         title: 'Do not paste the hex into a component',
         why: 'A literal hex cannot be themed, cannot be audited, and cannot be found later. Every one of these values belongs behind a custom property, exactly like the values in our own token tiers.',
       },
       {
-        title: 'Do not call a colour accessible without naming the surface',
+        title: 'Do not call a color accessible without naming the surface',
         why: `${audit.onWhite} of these ${audit.total} can set body text on a white page and ${audit.onBlack} can on a black one${
           audit.both ? `, and ${audit.both === 1 ? 'one manages' : `${audit.both} manage`} both` : ' — and none manage both'
         }. The two sets are nearly disjoint by arithmetic, not by taste. Pick the surface first and the palette divides itself.`,
@@ -265,10 +265,10 @@ ${byLightness(p.colors)
         { id: '1.4.11', name: 'Non-text Contrast', level: 'AA' },
       ],
       contrast: [
-        `${audit.onWhite} of ${audit.total} colours clear 4.5:1 against white and can carry body text on a light page. ${audit.onBlack} clear it against black. ${
+        `${audit.onWhite} of ${audit.total} colors clear 4.5:1 against white and can carry body text on a light page. ${audit.onBlack} clear it against black. ${
           audit.both === 0 ? 'None do both.' : audit.both === 1 ? 'One does both.' : `${audit.both} do both.`
         }`,
-        'Those two sets are nearly disjoint for a reason, not by accident: a colour’s contrast with white multiplied by its contrast with black is always exactly 21. Clearing 4.5:1 on one surface leaves at most 4.67:1 on the other.',
+        'Those two sets are nearly disjoint for a reason, not by accident: a color’s contrast with white multiplied by its contrast with black is always exactly 21. Clearing 4.5:1 on one surface leaves at most 4.67:1 on the other.',
         `${audit.largeOnWhite} of ${audit.total} reach 3:1 on white, which is the bar for large text, icons, borders and chart marks — a much larger set, and the one most of this palette is genuinely for.`,
         'White and black are the bounds, not our surfaces. Against a real canvas the numbers move, and alpha moves them again — composite first or the ratio is fiction.',
       ],
@@ -280,7 +280,7 @@ ${byLightness(p.colors)
         {
           attr: 'aria-label',
           on: 'Each swatch',
-          note: 'Names the colour and its value, because the swatch itself announces as nothing — a background colour is invisible to a screen reader.',
+          note: 'Names the color and its value, because the swatch itself announces as nothing — a background color is invisible to a screen reader.',
         },
         {
           attr: 'forced-colors: active',
@@ -289,10 +289,10 @@ ${byLightness(p.colors)
         },
       ],
       focus:
-        'Swatches take the standard focus ring, offset outwards. An inset ring would have to sit on the colour being demonstrated and would fail contrast on roughly half of these values.',
+        'Swatches take the standard focus ring, offset outward. An inset ring would have to sit on the color being demonstrated and would fail contrast on roughly half of these values.',
       screenReader: [
-        'A colour has no accessible meaning. If a chart series is identified only by its fill, the series does not exist for a screen reader — label it directly or provide the table.',
-        'Colour names like “Jigglypuff” or “Wet Asphalt” are identifiers, not descriptions. Never use one as the only label for a state.',
+        'A color has no accessible meaning. If a chart series is identified only by its fill, the series does not exist for a screen reader — label it directly or provide the table.',
+        'Color names like “Jigglypuff” or “Wet Asphalt” are identifiers, not descriptions. Never use one as the only label for a state.',
       ],
       touch:
         'Swatches are 88px tall and at least 152px wide, comfortably past the 44px minimum, so the copy affordance is reachable on a phone without a precise tap.',
@@ -303,7 +303,7 @@ ${byLightness(p.colors)
       css: {
         lang: 'css',
         code: css,
-        caption: `The twenty plus the ${totalTokens} they were expanded into. ${taken} of those are literal palette colours; the rest are computed, and each carries the arithmetic that produced it.`,
+        caption: `The twenty plus the ${totalTokens} they were expanded into. ${taken} of those are literal palette colors; the rest are computed, and each carries the arithmetic that produced it.`,
       },
     },
 
@@ -311,8 +311,8 @@ ${byLightness(p.colors)
       tips: [
         p.character,
         `Darkest value: ${darkest.name} ${darkest.hex}. Lightest: ${lightest.name} ${lightest.hex}. Between them sits every ramp you could build from this set.`,
-        'Sort the sheet by Hue to find neighbours you can safely put side by side, and by Lightness to find the ones that can carry text. Source order is the designer’s order and tells you about their intent, not about contrast.',
-        'If you only need one colour from this palette, take it and leave the rest. Adopting twenty because you liked one is how a product ends up with two palettes.',
+        'Sort the sheet by Hue to find neighbors you can safely put side by side, and by Lightness to find the ones that can carry text. Source order is the designer’s order and tells you about their intent, not about contrast.',
+        'If you only need one color from this palette, take it and leave the rest. Adopting twenty because you liked one is how a product ends up with two palettes.',
       ],
       mistakes: [
         'Using the palette at full saturation across a whole screen. These were drawn as accents against neutral ground; twenty of them at once is a swatch page, not an interface.',
@@ -326,7 +326,7 @@ ${byLightness(p.colors)
               p.dribbble ? ` (@${p.dribbble} on Dribbble)` : ''
             } and published in Flat UI Colors 2 by Ahmet Sülek.`,
         'Palettes like this one age visibly. A 2013 flat palette reads as 2013 — which is useful when that is the intent and a liability when it is not.',
-        'The fastest legitimate use is prototyping: grab a palette, get the categorical colours out of the way, and spend the argument you saved on hierarchy instead.',
+        'The fastest legitimate use is prototyping: grab a palette, get the categorical colors out of the way, and spend the argument you saved on hierarchy instead.',
       ],
     },
 
@@ -335,7 +335,7 @@ ${byLightness(p.colors)
         id: 'reference',
         title: 'Contrast reference',
         description:
-          'The measurement behind every derivation above. White and black bound what a colour can do, and reading a row in both directions gives you both answers at once — 4.86:1 on white is equally “this as text on a white page” and “white as a label on this fill”. The last column is what people mean when they ask whether a colour is accessible, and it is almost never both.',
+          'The measurement behind every derivation above. White and black bound what a color can do, and reading a row in both directions gives you both answers at once — 4.86:1 on white is equally “this as text on a white page” and “white as a label on this fill”. The last column is what people mean when they ask whether a color is accessible, and it is almost never both.',
         render: <ContrastAudit colors={p.colors} />,
       },
     ],

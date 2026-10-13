@@ -538,9 +538,9 @@ export default defineDoc({
       { id: '1.4.8', name: 'Visual Presentation', level: 'AAA' },
     ],
     contrast: [
-      'Small text needs more contrast, not less. 12px metadata on --ds-fg-muted is verified at 4.6:1 on --ds-surface; the same colour one step smaller has no verification and no excuse.',
+      'Small text needs more contrast, not less. 12px metadata on --ds-fg-muted is verified at 4.6:1 on --ds-surface; the same color one step smaller has no verification and no excuse.',
       'The "large text" exception (18.66px regular, 14px bold, 3:1) exists for headings. Designing ordinary UI text down to it is using an exemption as a target.',
-      'Never let a lighter weight stand in for a smaller size. 400 and 600 of one colour measure identically, so weight cannot rescue text that is too small to resolve.',
+      'Never let a lighter weight stand in for a smaller size. 400 and 600 of one color measure identically, so weight cannot rescue text that is too small to resolve.',
     ],
     keyboard: [
       { keys: '⌘ / Ctrl +', does: 'Browser zoom to 200%. The page must reflow without horizontal scrolling at 320px CSS width.' },

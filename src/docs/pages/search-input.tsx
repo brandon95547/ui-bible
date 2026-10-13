@@ -450,7 +450,7 @@ export default defineDoc({
       'The placeholder owes 4.5:1. It carries the field’s meaning here, which makes the usual "it is just a hint" excuse even weaker than normal.',
       'The magnifier owes 3:1 as a meaningful icon — it is what identifies the control.',
       'The clear button must reach 3:1 against the field fill. At 14px inside a low-contrast well it is easy to lose.',
-      'The active suggestion row must be distinguishable from idle rows without relying on colour alone.',
+      'The active suggestion row must be distinguishable from idle rows without relying on color alone.',
     ],
     keyboard: [
       { keys: '/ or ⌘K', does: 'Focuses the field from anywhere, when no other input has focus. Advertise it with a Kbd hint in the field.' },
@@ -491,13 +491,13 @@ const debounced = useDebounced(query, 300)
 
 React.useEffect(() => {
   if (!debounced) return setResults(all)
-  let cancelled = false
+  let canceled = false
   search(debounced).then((r) => {
     // Without this guard, a slow response for "ap" overwrites the correct
     // results for "api-gateway" and nothing on screen explains why.
-    if (!cancelled) setResults(r)
+    if (!canceled) setResults(r)
   })
-  return () => { cancelled = true }
+  return () => { canceled = true }
 }, [debounced])
 
 <SearchInput

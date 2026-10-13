@@ -123,7 +123,7 @@ function TokenInput() {
                 e.preventDefault()
                 commit()
               }
-              // The behaviour every user already knows from email "To" fields.
+              // The behavior every user already knows from email "To" fields.
               if (e.key === 'Backspace' && draft === '') {
                 setTokens((prev) => prev.slice(0, -1))
               }
@@ -186,7 +186,7 @@ export default defineDoc({
         <p>
           Chips are <strong>28px tall</strong>: below a button at 36px, above a badge at 22px. That
           middle position is doing real work — it signals "interactive, but secondary" without
-          needing a border style or a colour to say so. A chip that is button-height competes with
+          needing a border style or a color to say so. A chip that is button-height competes with
           the actual buttons on the page.
         </p>
         <p>
@@ -298,7 +298,7 @@ export default defineDoc({
         label: 'Padding',
         value: '10px, 6px when adorned',
         kind: 'space',
-        note: 'Reduced on the side that carries an icon or avatar, so the adornment does not push the label off-centre.',
+        note: 'Reduced on the side that carries an icon or avatar, so the adornment does not push the label off-center.',
       },
       {
         n: 3,
@@ -458,7 +458,7 @@ export default defineDoc({
     ],
     contrast: [
       'The unselected border must reach 3:1 — it is the only thing showing an interactive object is present.',
-      'Selected chips change fill, border and text colour together, so the state survives greyscale.',
+      'Selected chips change fill, border and text color together, so the state survives grayscale.',
       'The remove × must reach 3:1 against the chip fill. At 11px it is easy to make it too faint.',
     ],
     keyboard: [

@@ -398,7 +398,7 @@ export function MultiSelect({
         {...inspect('MultiSelect', {
           tokens: ['--ds-accent-subtle', '--radius-full', '--ds-surface-inset'],
           why: 'Selections become removable chips inside the control, so the current state is visible without opening anything. Past ~3 chips it collapses to “+N more” — an unbounded chip list makes the field grow and shoves the rest of the form down the page.',
-          a11y: 'Backspace on an empty field removes the last chip — the behaviour every user has already learned from email “To” fields. Each chip’s remove button has its own accessible name.',
+          a11y: 'Backspace on an empty field removes the last chip — the behavior every user has already learned from email “To” fields. Each chip’s remove button has its own accessible name.',
         })}
       >
         {selected.length === 0 && (

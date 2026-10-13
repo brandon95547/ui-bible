@@ -338,7 +338,7 @@ function CheckoutForm() {
                 aria-label="Country"
               />
             </Field>
-            <Field label="Postcode">
+            <Field label="Postal code">
               <TextInput autoComplete="postal-code" />
             </Field>
           </FieldRow>
@@ -474,7 +474,7 @@ export default defineDoc({
           <strong>One column.</strong> A single column has one unambiguous path through it. Two
           columns force the eye to decide at every row whether to go right or down, and the field
           people skip is almost always the one on the right. The exception is fields that are
-          genuinely one thing — expiry and CVC, first and last name, city and postcode — where
+          genuinely one thing — expiry and CVC, first and last name, city and postal code — where
           pairing them is what tells the user they belong together.
         </p>
         <p>
@@ -495,7 +495,7 @@ export default defineDoc({
         id: 'columns',
         title: 'One column, with deliberate exceptions',
         description:
-          'A single column has one path through it. Pair fields only when they are one piece of information — expiry and CVC, city and postcode.',
+          'A single column has one path through it. Pair fields only when they are one piece of information — expiry and CVC, city and postal code.',
         render: (
           <PreviewStage minHeight={0} allowResize={false}>
             <Row gap="lg" align="start" className="justify-center">
@@ -633,7 +633,7 @@ export default defineDoc({
               <Field label="City" optional>
                 <TextInput autoComplete="address-level2" />
               </Field>
-              <Field label="Postcode" optional>
+              <Field label="Postal code" optional>
                 <TextInput autoComplete="postal-code" />
               </Field>
             </FieldRow>
@@ -647,7 +647,7 @@ export default defineDoc({
       </div>
     ),
     caption:
-      'One group, one column, one exception. The paired city/postcode row is the only place the eye is asked to go sideways, and those two fields are one address.',
+      'One group, one column, one exception. The paired city/postal code row is the only place the eye is asked to go sideways, and those two fields are one address.',
     parts: [
       {
         n: 1,
@@ -811,7 +811,7 @@ export default defineDoc({
     },
     {
       title: 'Do not disable the submit button',
-      why: 'A greyed-out button with no explanation is a dead end: nothing says which field is the problem. Leave it enabled, and let pressing it produce the answer.',
+      why: 'A grayed-out button with no explanation is a dead end: nothing says which field is the problem. Leave it enabled, and let pressing it produce the answer.',
       render: (
         <Row gap="sm">
           <Button size="sm" disabled>
@@ -835,7 +835,7 @@ export default defineDoc({
       why: 'Wiping a password, a card number or a long message because one field failed is the fastest way to lose someone who was ready to finish.',
       render: (
         <span className="text-caption text-[var(--ds-danger-text)]">
-          one bad postcode → whole form empty
+          one bad postal code → whole form empty
         </span>
       ),
     },
@@ -878,8 +878,8 @@ export default defineDoc({
       { id: '3.3.4', name: 'Error Prevention', level: 'AA' },
     ],
     contrast: [
-      'Error text at 12px must reach 4.5:1. Red on white is a common failure — --ds-danger-text is the corrected value, not the raw ramp colour.',
-      'The invalid state must not be carried by the border colour alone. Ours changes the border and adds a message with an icon, so it survives greyscale and colour blindness.',
+      'Error text at 12px must reach 4.5:1. Red on white is a common failure — --ds-danger-text is the corrected value, not the raw ramp color.',
+      'The invalid state must not be carried by the border color alone. Ours changes the border and adds a message with an icon, so it survives grayscale and color blindness.',
       'Placeholder text is exempt from contrast rules only because it is not content. That is an argument for never putting content in it.',
     ],
     keyboard: [
@@ -925,7 +925,7 @@ export default defineDoc({
       'Focus is visible on every control, never removed, and never moved while the user is typing. On submit failure it goes to the first invalid field — one deliberate move, after the summary has been announced. Auto-focusing the first field on page load is acceptable on a dedicated form page and hostile anywhere else, because it scrolls the page for anyone who arrived to read.',
     screenReader: [
       'Each field announces as "Email, edit text, required, receipts and password resets go here" — label, role, state, then description.',
-      'The error must be in the accessibility tree, not only in colour. aria-describedby plus aria-invalid does this; a red border alone does not.',
+      'The error must be in the accessibility tree, not only in color. aria-describedby plus aria-invalid does this; a red border alone does not.',
       'Announce the summary on submit failure with role="alert", then move focus. Doing both at once means the announcement is cut off by the focus change.',
       'Do not use aria-live on a field that validates per keystroke — it produces a stream of interruptions as the user types.',
       'Group related controls in a real fieldset. Without it, a screen-reader user hears eight unrelated radio buttons.',
@@ -960,8 +960,8 @@ export default defineDoc({
       <Field label="City" optional>
         <TextInput autoComplete="address-level2" {...register('city')} />
       </Field>
-      <Field label="Postcode" optional>
-        <TextInput autoComplete="postal-code" {...register('postcode')} />
+      <Field label="Postal code" optional>
+        <TextInput autoComplete="postal-code" {...register('postalCode')} />
       </Field>
     </FieldRow>
   </Fieldset>
@@ -1048,7 +1048,7 @@ function handleSubmit(e: FormEvent) {
 .ds-field__desc { font: var(--text-caption); color: var(--ds-fg-muted); }
 .ds-field__err  { font: var(--text-caption); color: var(--ds-danger-text); }
 
-/* Two signals, so the state survives greyscale */
+/* Two signals, so the state survives grayscale */
 .ds-field input[aria-invalid='true'] {
   border-color: var(--ds-danger-border);
 }
@@ -1082,7 +1082,7 @@ function handleSubmit(e: FormEvent) {
           { name: 'label', type: 'string', description: 'Rendered above the control and wired to it with a real <label for>.' },
           { name: 'description', type: 'string', description: 'Static guidance. Always visible — it is not replaced by an error.' },
           { name: 'message', type: 'string', description: 'Validation message. Stacks under the description.' },
-          { name: 'status', type: "'default' | 'error' | 'success' | 'warning'", default: "'default'", description: 'Colours the message and drives aria-invalid.' },
+          { name: 'status', type: "'default' | 'error' | 'success' | 'warning'", default: "'default'", description: 'Colors the message and drives aria-invalid.' },
           { name: 'required', type: 'boolean', description: 'Marks the field required. Use this or `optional`, whichever set is smaller.' },
           { name: 'optional', type: 'boolean', description: 'Renders “Optional” instead of an asterisk — the better choice when most fields are required.' },
           { name: 'counter', type: '{ value, max }', description: 'Character count for a length-limited field.' },
@@ -1113,7 +1113,7 @@ function handleSubmit(e: FormEvent) {
       'Order fields by how easy they are to answer. Name and email first builds momentum; asking for a VAT number first loses people who would have finished.',
       'Save drafts on any form longer than about six fields. Recovering a half-finished form after a lost connection converts far better than starting again.',
       'Show what the format should be before it fails: "MM / YY" as a placeholder beats "Invalid date" as an error.',
-      'Never reject a phone number, postcode or name for its format alone. Normalise what you can, and accept the rest — those validators reject real people constantly.',
+      'Never reject a phone number, postal code or name for its format alone. Normalize what you can, and accept the rest — those validators reject real people constantly.',
       'One primary action per form. Two buttons of equal weight at the bottom is a decision the user should not have to make.',
     ],
     performance: [
@@ -1134,7 +1134,7 @@ function handleSubmit(e: FormEvent) {
     ],
     realWorld: [
       'Instrument per-field drop-off, not just form-level completion. The abandonment is nearly always concentrated on one or two fields, and you cannot see which without the data.',
-      'Watch how long each field takes to fill. A field that takes noticeably longer than its neighbours is usually asking for something the user has to go and look up.',
+      'Watch how long each field takes to fill. A field that takes noticeably longer than its neighbors is usually asking for something the user has to go and look up.',
       'Test with autofill on. A form that looks correct empty and breaks when the browser fills it is a bug most teams never see, because they always type.',
       'The best form change is usually a deletion. Removing one field beats redesigning the other eight.',
       'On a settings page, the confirmation matters more than the mechanism. Users need to see that the change stuck — an inline "Saved" beats a toast, which they may be looking away from.',

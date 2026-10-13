@@ -109,7 +109,7 @@ function TokenField() {
                 e.preventDefault()
                 commit()
               }
-              // The behaviour every user already knows from email "To" fields.
+              // The behavior every user already knows from email "To" fields.
               if (e.key === 'Backspace' && draft === '') {
                 setPeople((prev) => prev.slice(0, -1))
               }
@@ -178,7 +178,7 @@ export default defineDoc({
     reasoning: (
       <>
         <p>
-          The single most important behaviour is <strong>Backspace on an empty field removes the
+          The single most important behavior is <strong>Backspace on an empty field removes the
           last token</strong>. Every user learned it from an email "To" field, it costs three
           lines, and its absence makes the control feel subtly broken in a way people rarely
           articulate.
@@ -385,7 +385,7 @@ export default defineDoc({
       },
       {
         n: 6,
-        label: 'Panel behaviour',
+        label: 'Panel behavior',
         value: 'Stays open on select',
         kind: 'motion',
         note: 'The defining difference from a Select. Closing after each pick makes four selections cost four openings.',
@@ -527,13 +527,13 @@ export default defineDoc({
     contrast: [
       'Token labels owe 4.5:1 against the token fill — they are the value of the field.',
       'The remove × must reach 3:1 against the token fill. At 11px inside a tint this is the easiest thing on the page to under-contrast.',
-      'The checkmark on a selected row must not be the only signal. Pair it with a text change or the row reads identically in greyscale.',
+      'The checkmark on a selected row must not be the only signal. Pair it with a text change or the row reads identically in grayscale.',
       'The overflow counter is content and owes 4.5:1 — it tells the user something is hidden.',
     ],
     keyboard: [
       { keys: '↓', does: 'Opens the panel and moves the highlight to the first option. Focus stays in the field.' },
       { keys: 'Space / Enter', does: 'Toggles the highlighted option. The panel does not close.' },
-      { keys: 'Backspace', does: 'On an empty query, removes the last token. The behaviour everyone expects from an email field.' },
+      { keys: 'Backspace', does: 'On an empty query, removes the last token. The behavior everyone expects from an email field.' },
       { keys: '← / →', does: 'Optional roving focus across the tokens, so Tab does not stop nine times.' },
       { keys: 'Delete', does: 'On a focused token, removes it and moves focus to the next one.' },
       { keys: 'Esc', does: 'Closes the panel without changing the selection.' },
@@ -552,7 +552,7 @@ export default defineDoc({
     screenReader: [
       'Announce the count on every change: "Read deployments removed, 3 of 5 selected".',
       'The field announces its whole value on focus, so a user landing on it hears what is already chosen rather than an empty combobox.',
-      'In a token input, announce the instruction via aria-describedby — the Enter-or-comma behaviour is invisible otherwise.',
+      'In a token input, announce the instruction via aria-describedby — the Enter-or-comma behavior is invisible otherwise.',
     ],
     touch:
       'Remove buttons need a 24px minimum inside the token and the field needs 44px overall. On a phone the panel should become a full-screen sheet: a floating panel plus an on-screen keyboard plus a wrapping token field leaves almost no room for the options themselves.',
@@ -578,7 +578,7 @@ export default defineDoc({
   {values.length} of {scopes.length} selected
 </p>
 
-// Token input. Three behaviours, all of them expected, none of them free.
+// Token input. Three behaviors, all of them expected, none of them free.
 <input
   value={draft}
   onChange={(e) => setDraft(e.target.value)}
@@ -712,7 +712,7 @@ function remove(id: string, index: number) {
     ],
     performance: [
       'Keep the selection in a Set for membership checks. An includes() per option per render is quadratic and it shows at a few hundred options.',
-      'Virtualise the panel past roughly 200 rows, adding aria-setsize and aria-posinset when you do.',
+      'Virtualize the panel past roughly 200 rows, adding aria-setsize and aria-posinset when you do.',
       'Do not animate token layout on add or remove. The field reflows, and animating that reflow is both expensive and disorienting.',
       'Debounce any request the selection triggers by about 300ms — picking four options should be one request, not four.',
     ],
@@ -727,7 +727,7 @@ function remove(id: string, index: number) {
       'Rejecting a pasted comma-separated list, which is how most recipient fields are actually filled.',
     ],
     realWorld: [
-      'Recipient fields are the reference implementation everyone has internalised. Any deviation from Enter, comma, Backspace and paste-splits is felt immediately even when users cannot name it.',
+      'Recipient fields are the reference implementation everyone has internalized. Any deviation from Enter, comma, Backspace and paste-splits is felt immediately even when users cannot name it.',
       'For permissions and roles, showing a description under each option prevents far more support tickets than any amount of documentation elsewhere.',
       'Selection limits should disable the remaining options at the ceiling, with an explanation. Silently ignoring the eleventh click looks like a broken control.',
       'On mobile, a full-screen sheet beats a floating panel every time: the keyboard, the token field and the option list cannot all share the lower half of a phone screen.',

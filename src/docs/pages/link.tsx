@@ -129,10 +129,10 @@ export default defineDoc({
     reasoning: (
       <>
         <p>
-          <strong>Underline inline links.</strong> Colour alone fails 1.4.1 unless it also reaches
+          <strong>Underline inline links.</strong> Color alone fails 1.4.1 unless it also reaches
           3:1 against the surrounding text, which almost no palette does — and it fails entirely
           for anyone who cannot distinguish it. The underline is the only signal that survives
-          greyscale, low vision and a bad monitor.
+          grayscale, low vision and a bad monitor.
         </p>
         <p>
           A link with an <code>href</code> gets middle-click, ⌘-click, "copy link address",
@@ -157,7 +157,7 @@ export default defineDoc({
         id: 'variants',
         title: 'Three variants',
         description:
-          'Inline is underlined and always will be. Standalone drops the underline because its position and weight already mark it. Quiet is for dense metadata where accent colour would be noise.',
+          'Inline is underlined and always will be. Standalone drops the underline because its position and weight already mark it. Quiet is for dense metadata where accent color would be noise.',
         render: (
           <PreviewStage minHeight={0} allowResize={false} center={false}>
             <Stack gap="md" className="w-full max-w-md">
@@ -300,14 +300,14 @@ export default defineDoc({
       </p>
     ),
     caption:
-      'An accent-coloured run of text with an underline offset clear of the descenders, and an external marker that is announced as well as drawn.',
+      'An accent-colored run of text with an underline offset clear of the descenders, and an external marker that is announced as well as drawn.',
     parts: [
       {
         n: 1,
-        label: 'Colour',
+        label: 'Color',
         value: '--ds-accent-text',
         kind: 'color',
-        note: 'The text-certified accent step, not the fill. The fill colour is tuned for a white foreground and fails as text on the page surface.',
+        note: 'The text-certified accent step, not the fill. The fill color is tuned for a white foreground and fails as text on the page surface.',
       },
       {
         n: 2,
@@ -318,7 +318,7 @@ export default defineDoc({
       },
       {
         n: 3,
-        label: 'Underline colour',
+        label: 'Underline color',
         value: 'Accent border, → text on hover',
         kind: 'color',
         note: 'Slightly lighter at rest so the underline supports the word rather than competing with it, and darkening on hover confirms the target.',
@@ -363,13 +363,13 @@ export default defineDoc({
     { category: 'color', token: '--ds-fg-disabled', usedFor: 'An unavailable link — rendered as a span, not an anchor' },
     { category: 'spacing', token: 'underline-offset', value: '3px', usedFor: 'Clearing descenders' },
     { category: 'radius', token: '--radius-xs', value: '4px', usedFor: 'Focus ring corners' },
-    { category: 'motion', token: '--duration-fast', value: '120ms', usedFor: 'Underline colour transition' },
+    { category: 'motion', token: '--duration-fast', value: '120ms', usedFor: 'Underline color transition' },
   ],
 
   sizes: [
-    { name: 'Inline', height: 'Line height', type: 'Inherits', use: 'Inside prose. Always underlined — colour alone is not a signal.' },
+    { name: 'Inline', height: 'Line height', type: 'Inherits', use: 'Inside prose. Always underlined — color alone is not a signal.' },
     { name: 'Standalone', height: '20px', type: '13–15px', touch: '44px with padding', use: 'On its own line, usually with a trailing arrow. Underline appears on hover.' },
-    { name: 'Quiet', height: 'Line height', type: '12px', use: 'Dense metadata rows, where accent colour on every value would be noise.' },
+    { name: 'Quiet', height: 'Line height', type: '12px', use: 'Dense metadata rows, where accent color on every value would be noise.' },
     { name: 'External icon', icon: '12px', gap: '4px', use: 'Sized to the surrounding text so it does not disturb the line.' },
     { name: 'Touch target', touch: '44px', use: 'Standalone links get padding. Inline links inside prose cannot, which is why link-dense paragraphs are hard on a phone.' },
   ],
@@ -377,7 +377,7 @@ export default defineDoc({
   do: [
     {
       title: 'Underline inline links',
-      why: 'Colour alone fails for anyone who cannot distinguish it, and almost no accent reaches 3:1 against body text. The underline survives greyscale and low vision.',
+      why: 'Color alone fails for anyone who cannot distinguish it, and almost no accent reaches 3:1 against body text. The underline survives grayscale and low vision.',
       render: (
         <p className="text-body-sm text-[var(--ds-fg-secondary)]">
           The full trace is in <A>deployment 4021</A>.
@@ -439,7 +439,7 @@ export default defineDoc({
     },
     {
       title: 'Do not remove the underline from inline links',
-      why: 'Colour alone fails 1.4.1 unless it also reaches 3:1 against the surrounding text, which almost no palette does. In a dense paragraph the links become invisible.',
+      why: 'Color alone fails 1.4.1 unless it also reaches 3:1 against the surrounding text, which almost no palette does. In a dense paragraph the links become invisible.',
       render: (
         <p className="text-body-sm text-[var(--ds-fg-secondary)]">
           The rollback returned api-gateway to{' '}
@@ -473,7 +473,7 @@ export default defineDoc({
       'Link text owes 4.5:1 against the page like any other text.',
       'If the link is not underlined, it must reach 3:1 against the surrounding text as well as 4.5:1 against the background. Almost no palette manages both — which is why the underline is the rule.',
       'The underline itself owes 3:1: it is the thing carrying the signal.',
-      'Hover must change more than the cursor. A colour or decoration change confirms the target for anyone not watching the pointer.',
+      'Hover must change more than the cursor. A color or decoration change confirms the target for anyone not watching the pointer.',
     ],
     keyboard: [
       { keys: 'Tab', does: 'Moves to the link. Any element with an href is focusable for free.' },
@@ -489,7 +489,7 @@ export default defineDoc({
       { attr: 'download', on: 'A file link', note: 'Plus the file type and size in the visible text, so nobody clicks blind on a 40 MB download.' },
     ],
     focus:
-      'The focus ring is offset so it does not sit on the underline. A link wrapping across lines gets a ring per fragment — that is correct behaviour and should not be "fixed" with a box-decoration hack that clips it.',
+      'The focus ring is offset so it does not sit on the underline. A link wrapping across lines gets a ring per fragment — that is correct behavior and should not be "fixed" with a box-decoration hack that clips it.',
     screenReader: [
       'Users routinely list every link on a page. Each one must make sense on its own, which is what 2.4.9 is asking for.',
       'Announce a new tab in the link text via visually hidden content. An icon is aria-hidden and conveys nothing.',
@@ -542,7 +542,7 @@ export default defineDoc({
     },
     html: {
       lang: 'html',
-      code: `<!-- Inline: underlined, because colour alone is not a signal. -->
+      code: `<!-- Inline: underlined, because color alone is not a signal. -->
 <p>
   The rollback returned api-gateway to
   <a href="/builds/4019" class="ds-link">build 4019</a>.
@@ -613,7 +613,7 @@ export default defineDoc({
 }
 
 @media (forced-colors: active) {
-  .ds-link { text-decoration: underline; }   /* colour is overridden here */
+  .ds-link { text-decoration: underline; }   /* color is overridden here */
 }`,
     },
     api: [
@@ -641,8 +641,8 @@ export default defineDoc({
     performance: [
       'Prefetch on hover or on viewport entry for likely destinations, with a short delay so a pointer crossing the page does not fetch everything.',
       'Do not attach a listener per link. One delegated handler on the container scales to a page of hundreds.',
-      'Use native anchors so the browser can apply its own optimisations — speculative loading rules only work on real links.',
-      'Avoid animating text-decoration; it forces a repaint of the text run. Transition the decoration colour instead.',
+      'Use native anchors so the browser can apply its own optimizations — speculative loading rules only work on real links.',
+      'Avoid animating text-decoration; it forces a repaint of the text run. Transition the decoration color instead.',
     ],
     mistakes: [
       'A div or button used to navigate, losing every browser affordance.',
@@ -658,7 +658,7 @@ export default defineDoc({
       'Removing underlines is the most common accessibility regression in redesigns, and it is always argued for on aesthetic grounds. The underline is doing real work.',
       'Users open their own new tabs. Products that force target="_blank" get complaints about the back button, not gratitude for the tab.',
       'Link-purpose failures are the most frequent finding in any audit of a content site, and the fix is nearly always editorial rather than technical.',
-      'In single-page apps, the router link is where browser behaviour quietly disappears. Test middle-click and ⌘-click on a real link before shipping the abstraction.',
+      'In single-page apps, the router link is where browser behavior quietly disappears. Test middle-click and ⌘-click on a real link before shipping the abstraction.',
     ],
   },
 })

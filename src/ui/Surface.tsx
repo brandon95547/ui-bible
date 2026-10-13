@@ -188,7 +188,7 @@ export function Panel({
    STAT — the dashboard atom
    ======================================================================== */
 
-/** Tone drives the leading chip only — fill plus the icon colour certified against it. */
+/** Tone drives the leading chip only — fill plus the icon color certified against it. */
 const statChip: Record<Tone, string> = {
   neutral: 'bg-[var(--ds-layer-active)] text-[var(--ds-fg-secondary)]',
   accent: 'bg-[var(--ds-accent-subtle)] text-[var(--ds-accent-text)]',
@@ -222,7 +222,7 @@ export function Stat({
    * 16px, so the value can be a word ("Complete") rather than a figure.
    */
   layout?: 'stacked' | 'leading'
-  /** Colours the leading chip. The stacked layout has no chip and ignores it. */
+  /** Colors the leading chip. The stacked layout has no chip and ignores it. */
   tone?: Tone
   /** Renders a ring in the chip in place of the icon. `leading` only. */
   progress?: number
@@ -299,7 +299,7 @@ export function Stat({
       {...inspect('Stat', {
         tokens: ['--text-h2', '--ds-fg', '--ds-fg-muted', '--ds-success-text'],
         why: 'The number is the largest thing in the tile and the label is the smallest — the eye should land on the value first and only then find out what it measures. Tabular figures stop the digits shifting as the value updates.',
-        a11y: 'The delta arrow is paired with a sign and a word, never colour alone. Screen readers get “up 12.4 percent versus last week”, not “green”.',
+        a11y: 'The delta arrow is paired with a sign and a word, never color alone. Screen readers get “up 12.4 percent versus last week”, not “green”.',
       })}
     >
       <div className="flex items-start justify-between gap-3">

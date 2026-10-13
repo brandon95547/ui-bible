@@ -713,7 +713,7 @@ export function MegaMenu({
                the same place on every screen.
      brand     the mark plus the product name. This is the "you are in this
                product" anchor, and it is the only thing in the bar allowed
-               to carry colour.
+               to carry color.
      actions   the global utilities — help, notifications, settings. Three at
                the widest, two on a phone. A fourth stops being read and
                starts being scanned.
@@ -725,7 +725,7 @@ export function MegaMenu({
      left    an application. The brand anchors the same left edge as the
              content under it. This is the default and it is almost always
              right.
-     center  a document or a phone screen. Centring is genuinely centred in
+     center  a document or a phone screen. Centering is genuinely centered in
              the BAR, not between the icons, so it survives a lopsided action
              cluster without drifting.
      right   a chrome-light layout where the left edge belongs to a sidebar

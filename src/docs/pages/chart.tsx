@@ -63,7 +63,7 @@ function Axes({ ticks = [0, 200, 400, 600] }: { ticks?: number[] }) {
   )
 }
 
-function LineChart({ count = 3, labelled = true }: { count?: number; labelled?: boolean }) {
+function LineChart({ count = 3, labeled = true }: { count?: number; labeled?: boolean }) {
   const series = SERIES.slice(0, count)
   return (
     <figure className="w-full">
@@ -99,8 +99,8 @@ function LineChart({ count = 3, labelled = true }: { count?: number; labelled?: 
               stroke="var(--ds-surface)"
               strokeWidth={2}
             />
-            {labelled && (
-              // Direct labels: identity is never colour alone.
+            {labeled && (
+              // Direct labels: identity is never color alone.
               <text
                 x={x(s.data.length - 1) - 8}
                 y={y(s.data[s.data.length - 1]) - 8}
@@ -213,7 +213,7 @@ function Playground() {
     >
       <div className="w-full max-w-xl">
         {form === 'line' ? (
-          <LineChart count={Number(count)} labelled={labels} />
+          <LineChart count={Number(count)} labeled={labels} />
         ) : (
           <BarChart stacked={form === 'stacked'} />
         )}
@@ -227,13 +227,13 @@ export default defineDoc({
     id: 'chart',
     title: 'Chart',
     tagline:
-      'Encoding data as position, length and colour — and the four chart types that honestly cover ninety per cent of cases.',
-    keywords: ['graph', 'plot', 'sparkline', 'data visualisation', 'axis', 'legend', 'series', 'categorical'],
+      'Encoding data as position, length and color — and the four chart types that honestly cover ninety percent of cases.',
+    keywords: ['graph', 'plot', 'sparkline', 'data visualization', 'axis', 'legend', 'series', 'categorical'],
   },
 
   overview: {
     purpose:
-      'A chart turns numbers into a shape the eye can read faster than a table. Which shape depends entirely on the question: magnitude wants length, change over time wants position, and a single headline number wants no chart at all. Getting the form right is most of the work; colour is the last decision, not the first.',
+      'A chart turns numbers into a shape the eye can read faster than a table. Which shape depends entirely on the question: magnitude wants length, change over time wants position, and a single headline number wants no chart at all. Getting the form right is most of the work; color is the last decision, not the first.',
     whenToUse: [
       'Comparing magnitudes across a handful of categories.',
       'Showing change over time, where the shape of the trend is the point.',
@@ -252,7 +252,7 @@ export default defineDoc({
         to: '#/data-table',
       },
       {
-        text: 'It shows progress towards a known total.',
+        text: 'It shows progress toward a known total.',
         instead: 'a Progress Indicator',
         to: '#/progress-indicator',
       },
@@ -265,9 +265,9 @@ export default defineDoc({
     reasoning: (
       <>
         <p>
-          <strong>Pick the form from the job, then colour last.</strong> Magnitude across
+          <strong>Pick the form from the job, then color last.</strong> Magnitude across
           categories is bars; change over time is a line; composition is stacked bars, and almost
-          never a pie. Most bad charts are bad because the colour decision was made first and the
+          never a pie. Most bad charts are bad because the color decision was made first and the
           form was whatever the library defaulted to.
         </p>
         <p>
@@ -277,9 +277,9 @@ export default defineDoc({
           base.
         </p>
         <p>
-          Colour is assigned by <strong>the job it does</strong>: categorical for identity in a
+          Color is assigned by <strong>the job it does</strong>: categorical for identity in a
           fixed order that never cycles, sequential for magnitude as one hue light to dark,
-          diverging for polarity with a neutral midpoint. Status colours are reserved and never
+          diverging for polarity with a neutral midpoint. Status colors are reserved and never
           become "series four".
         </p>
       </>
@@ -301,7 +301,7 @@ export default defineDoc({
                 <BarChart />
               </Cell>
               <Cell label="Over time" sub="Line" tone="good">
-                <LineChart count={2} labelled={false} />
+                <LineChart count={2} labeled={false} />
               </Cell>
               <Cell label="Composition" sub="Stacked bars" tone="good">
                 <BarChart stacked />
@@ -339,10 +339,10 @@ export default defineDoc({
                 ))}
               </Row>
               <p className="text-caption leading-relaxed text-[var(--ds-fg-secondary)]">
-                Slots 1–4 separate cleanly for every form of colour vision deficiency (worst
+                Slots 1–4 separate cleanly for every form of color vision deficiency (worst
                 adjacent pair ΔE 9.2, protanopia). Slots 5 and 6 — the pink and the teal —
                 collapse to ΔE 2.7 under deuteranopia, which is indistinguishable. Past four
-                series, identity must not rest on colour: use direct labels, a texture, or split
+                series, identity must not rest on color: use direct labels, a texture, or split
                 into small multiples.
               </p>
             </Stack>
@@ -359,13 +359,13 @@ export default defineDoc({
             <Grid min="17rem">
               <Cell label="Two charts" tone="good">
                 <Stack gap="sm">
-                  <LineChart count={1} labelled={false} />
+                  <LineChart count={1} labeled={false} />
                   <BarChart />
                 </Stack>
               </Cell>
               <Cell label="Two axes" sub="Shows whatever you scale it to" tone="bad">
                 <div className="relative">
-                  <LineChart count={2} labelled={false} />
+                  <LineChart count={2} labeled={false} />
                   <span className="absolute inset-y-0 right-0 w-8 border-l border-dashed border-[var(--ds-danger-border)]" />
                 </div>
               </Cell>
@@ -381,14 +381,14 @@ export default defineDoc({
         render: (
           <PreviewStage minHeight={0} allowResize={false} center={false}>
             <div className="w-full max-w-lg">
-              <LineChart count={3} labelled />
+              <LineChart count={3} labeled />
             </div>
           </PreviewStage>
         ),
       },
     ],
     states: [
-      { label: 'Line', render: <div className="w-40"><LineChart count={1} labelled={false} /></div> },
+      { label: 'Line', render: <div className="w-40"><LineChart count={1} labeled={false} /></div> },
       { label: 'Bar', render: <div className="w-40"><BarChart /></div> },
       { label: 'Stacked', render: <div className="w-40"><BarChart stacked /></div> },
       { label: 'Sparkline', render: <div className="w-24"><Sparkline data={SERIES[0].data} /></div> },
@@ -427,7 +427,7 @@ export default defineDoc({
   anatomy: {
     render: (
       <div className="w-full max-w-xl">
-        <LineChart count={3} labelled />
+        <LineChart count={3} labeled />
       </div>
     ),
     caption:
@@ -480,7 +480,7 @@ export default defineDoc({
         label: 'Stacked gap',
         value: '2px of surface',
         kind: 'space',
-        note: 'Between segments, so the boundary is a gap rather than a colour change the eye has to resolve.',
+        note: 'Between segments, so the boundary is a gap rather than a color change the eye has to resolve.',
       },
       {
         n: 8,
@@ -497,7 +497,7 @@ export default defineDoc({
     { category: 'color', group: 'Categorical', token: '--p-viz-1', value: '#7c6cff', usedFor: 'First series, always' },
     { category: 'color', group: 'Chrome', token: '--ds-border-subtle', usedFor: 'Grid lines' },
     { category: 'color', group: 'Chrome', token: '--ds-fg-muted', usedFor: 'Axis labels and tick values' },
-    { category: 'color', group: 'Chrome', token: '--ds-fg-secondary', usedFor: 'Direct labels and legend text — never the series colour' },
+    { category: 'color', group: 'Chrome', token: '--ds-fg-secondary', usedFor: 'Direct labels and legend text — never the series color' },
     { category: 'color', group: 'Chrome', token: '--ds-surface', usedFor: 'The ring around overlapping marks and the gap in a stack' },
     { category: 'color', group: 'Reserved', token: '--ds-success / --ds-danger', usedFor: 'Status only. Never "series 4".' },
     { category: 'spacing', token: 'stack gap', value: '2px', usedFor: 'Between stacked segments' },
@@ -511,13 +511,13 @@ export default defineDoc({
     { name: 'Section chart', height: '240px', use: 'The default for a chart that is the subject of its section.' },
     { name: 'Full analysis', height: '360px+', use: 'A dedicated view with filters, a legend and a table alternative.' },
     { name: 'Bar width', minWidth: '16px', gap: '≥ 2px', use: 'Below 16px a bar stops reading as a magnitude and becomes a tick.' },
-    { name: 'Series ceiling', maxWidth: '4 by colour', use: 'Four separate cleanly for every form of CVD. Past four, identity needs a second encoding.' },
+    { name: 'Series ceiling', maxWidth: '4 by color', use: 'Four separate cleanly for every form of CVD. Past four, identity needs a second encoding.' },
   ],
 
   do: [
     {
       title: 'Validate the palette rather than eyeballing it',
-      why: 'Colour-vision separation is computable. Running the check on this system’s own tokens produced a hard ceiling that no amount of looking would have revealed.',
+      why: 'Color-vision separation is computable. Running the check on this system’s own tokens produced a hard ceiling that no amount of looking would have revealed.',
       render: (
         <Stack gap="xs" className="font-mono text-[11px]">
           <span className="text-[var(--ds-success-text)]">viz 1–4 · worst ΔE 9.2 · passes</span>
@@ -528,7 +528,7 @@ export default defineDoc({
     {
       title: 'Label directly up to four series',
       why: 'A legend makes the eye leave the data to decode it. A label at the end of the line answers the question where the question is asked.',
-      render: <div className="w-44"><LineChart count={2} labelled /></div>,
+      render: <div className="w-44"><LineChart count={2} labeled /></div>,
     },
     {
       title: 'Start bar axes at zero',
@@ -578,7 +578,7 @@ export default defineDoc({
     },
     {
       title: 'Do not cycle the palette past eight series',
-      why: 'A ninth series repeating the first colour makes two different things look identical. Bucket the tail into "Other" or use small multiples.',
+      why: 'A ninth series repeating the first color makes two different things look identical. Bucket the tail into "Other" or use small multiples.',
       render: (
         <Row gap="sm">
           {[1, 2, 3, 4, 5, 6, 7, 8, 1, 2].map((n, i) => (
@@ -615,10 +615,10 @@ export default defineDoc({
       { id: '1.4.5', name: 'Images of Text', level: 'AA' },
     ],
     contrast: [
-      'Every series colour must reach 3:1 against the chart surface. All eight viz tokens pass on this system’s dark canvas.',
-      'Adjacent series must separate under colour-vision deficiency. Slots 1–4 reach ΔE 9.2 at worst; slots 5 and 6 collapse to 2.7 under deuteranopia and must not be relied on alone.',
+      'Every series color must reach 3:1 against the chart surface. All eight viz tokens pass on this system’s dark canvas.',
+      'Adjacent series must separate under color-vision deficiency. Slots 1–4 reach ΔE 9.2 at worst; slots 5 and 6 collapse to 2.7 under deuteranopia and must not be relied on alone.',
       'Grid lines are deliberately below text contrast — they are chrome, not content, and a grid at 4.5:1 competes with the data.',
-      'Labels and legend text use ink tokens, never the series colour. Coloured text at 9px rarely reaches its ratio and reads as decoration.',
+      'Labels and legend text use ink tokens, never the series color. Colored text at 9px rarely reaches its ratio and reads as decoration.',
     ],
     keyboard: [
       { keys: 'Tab', does: 'Reaches the chart region when it is interactive, then the table toggle and any filters.' },
@@ -626,7 +626,7 @@ export default defineDoc({
       { keys: 'Tab', does: 'Reaches the legend when legend items toggle series visibility — they are buttons, not swatches.' },
     ],
     aria: [
-      { attr: 'role="img"', on: 'A static chart', note: 'With an aria-label summarising the shape and the endpoints. "Chart" alone conveys nothing.' },
+      { attr: 'role="img"', on: 'A static chart', note: 'With an aria-label summarizing the shape and the endpoints. "Chart" alone conveys nothing.' },
       { attr: 'aria-label', on: 'The chart', note: 'State the trend, not the pixels: "Production rises from 312 to 542 between January and July".' },
       { attr: '<figure> / <figcaption>', on: 'The wrapper', note: 'The caption is the title and is read by everyone.' },
       { attr: 'A table alternative', on: 'Beside the chart', note: 'The most useful accessibility feature a chart can have, and it also serves print, copy and export.' },
@@ -637,7 +637,7 @@ export default defineDoc({
     screenReader: [
       'The label should describe the shape and the endpoints, which is what a sighted reader takes away in one glance.',
       'Provide the table view. A screen-reader user reading a summary is getting your interpretation; the table gives them the data.',
-      'Never rely on colour alone for identity — direct labels, patterns or a table are what make a multi-series chart readable without it.',
+      'Never rely on color alone for identity — direct labels, patterns or a table are what make a multi-series chart readable without it.',
     ],
     touch:
       'Hit targets must be larger than the marks — a 4px dot needs a 24px invisible target. Tap to pin a tooltip rather than relying on hover, which does not exist. On a narrow screen, reduce the tick count rather than rotating labels: rotated axis labels are hard to read at any size.',
@@ -661,7 +661,7 @@ export default defineDoc({
   tableToggle                          // the accessible alternative
 />
 
-// Colour follows the ENTITY, never its rank. A filter that removes a series
+// Color follows the ENTITY, never its rank. A filter that removes a series
 // must not repaint the survivors.
 const COLOR_BY_ENV = {
   production:  'var(--p-viz-1)',
@@ -669,7 +669,7 @@ const COLOR_BY_ENV = {
   development: 'var(--p-viz-3)',
 } as const
 
-// Past four series colour alone is not enough — this system's own palette
+// Past four series color alone is not enough — this system's own palette
 // collapses at slots 5 and 6 under deuteranopia (ΔE 2.7).
 if (series.length > 4) {
   // direct labels, a texture fill, or small multiples — pick one
@@ -740,7 +740,7 @@ const indexed = rows.map((r) => ({
    the bar from the axis it is measured against. */
 .ds-chart .bar { rx: 4; }
 
-/* Text wears ink tokens, never the series colour — coloured text at 9px
+/* Text wears ink tokens, never the series color — colored text at 9px
    rarely reaches its ratio. */
 .ds-chart .label,
 .ds-chart__legend { color: var(--ds-fg-secondary); font-size: 12px; }
@@ -752,7 +752,7 @@ const indexed = rows.map((r) => ({
   background: var(--swatch);
 }
 
-/* Colour is gone here: identity must already be carried by labels or
+/* Color is gone here: identity must already be carried by labels or
    patterns. */
 @media (forced-colors: active) {
   .ds-chart .line { stroke: CanvasText; }
@@ -764,7 +764,7 @@ const indexed = rows.map((r) => ({
         props: [
           { name: 'type', type: "'line' | 'bar' | 'area'", required: true, description: 'Chosen from the job: magnitude is bars, change over time is a line.' },
           { name: 'title', type: 'string', required: true, description: 'States what is measured and in what unit.' },
-          { name: 'series', type: '{ key: string; label: string; color: string }[]', required: true, description: 'Colour bound to the entity, not its rank, so filtering never repaints the survivors.' },
+          { name: 'series', type: '{ key: string; label: string; color: string }[]', required: true, description: 'Color bound to the entity, not its rank, so filtering never repaints the survivors.' },
           { name: 'stacked', type: 'boolean', default: 'false', description: 'Only when the parts sum to a meaningful whole, with a 2px surface gap between segments.' },
           { name: 'directLabels', type: 'boolean', default: 'true', description: 'Up to four series. Past that, labels collide and small multiples are the answer.' },
           { name: 'tableToggle', type: 'boolean', default: 'true', description: 'The accessible alternative, and the way anyone copies the numbers.' },
@@ -785,14 +785,14 @@ const indexed = rows.map((r) => ({
     performance: [
       'Render as inline SVG under a few hundred points; move to canvas past a few thousand. The crossover is lower than most people expect.',
       'Downsample before rendering rather than drawing ten thousand points into six hundred pixels. Largest-triangle-three-buckets preserves the visible shape.',
-      'Memoise scales and path strings on the data. Recomputing a path on every hover event is the usual cause of a laggy tooltip.',
+      'Memoize scales and path strings on the data. Recomputing a path on every hover event is the usual cause of a laggy tooltip.',
       'Do not animate on every data update in a live chart. Transition on mount only; a chart animating every five seconds is unreadable.',
     ],
     mistakes: [
       'Two y-axes, which lets the author choose the relationship the chart appears to show.',
       'A truncated baseline on a bar chart, exaggerating small differences.',
       'A cycled palette, so series nine and series one look identical.',
-      'Relying on colour alone past four series, where this system’s own palette collapses under deuteranopia.',
+      'Relying on color alone past four series, where this system’s own palette collapses under deuteranopia.',
       'A pie chart with seven slices, which nobody can compare by angle.',
       'A number on every data point, which is a table drawn as a chart.',
       'Grid lines at data weight, competing with the marks.',
@@ -801,7 +801,7 @@ const indexed = rows.map((r) => ({
     realWorld: [
       'The most common chart in a product is a single number with a sparkline. It answers "what is it" and "is that normal" in one glance, and it needs no axes at all.',
       'Dual-axis charts survive because they look sophisticated. They are the single most misleading form in common use, and the fix — two charts — is always easier than the argument.',
-      'Colour-vision deficiency affects roughly one in twelve men. Running the validator takes seconds and, on this system’s own palette, revealed a collision at four series that no review had caught.',
+      'Color-vision deficiency affects roughly one in twelve men. Running the validator takes seconds and, on this system’s own palette, revealed a collision at four series that no review had caught.',
       'The table toggle gets used far more than anyone expects — by everyone, not only screen-reader users. People want to copy the numbers.',
     ],
   },

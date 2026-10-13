@@ -16,7 +16,7 @@ const ITEMS = [
     id: 'regions',
     title: 'Which regions can I deploy to?',
     meta: 'Infrastructure',
-    body: 'Twenty-four regions across four continents. Adding a region rebuilds the container for that architecture, which takes a few minutes the first time and is cached afterwards.',
+    body: 'Twenty-four regions across four continents. Adding a region rebuilds the container for that architecture, which takes a few minutes the first time and is cached afterward.',
   },
   {
     id: 'secrets',
@@ -607,7 +607,7 @@ export default defineDoc({
       'The chevron owes 3:1 — it is the affordance, and aria-expanded alone does not help a sighted user.',
       'The expanded state changes both the chevron rotation and the title weight, so it does not depend on either one alone.',
       'Dividers owe 3:1 if they are the only thing separating sections; if each section has its own surface, they are decorative.',
-      'A section marked as containing an error must carry a badge as well as a colour.',
+      'A section marked as containing an error must carry a badge as well as a color.',
     ],
     keyboard: [
       { keys: 'Tab', does: 'Moves to each trigger, then into an open panel’s own controls.' },
@@ -656,7 +656,7 @@ React.useEffect(() => {
 }, [errors])
 
 // Native <details> is a legitimate implementation and gets the semantics,
-// the keyboard and the print behaviour for free.
+// the keyboard and the print behavior for free.
 <details>
   <summary>How do rollbacks work?</summary>
   <p>A rollback re-points the load balancer at the previous healthy build.</p>

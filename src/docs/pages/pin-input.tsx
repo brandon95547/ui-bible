@@ -339,7 +339,7 @@ export default defineDoc({
       </div>
     ),
     caption:
-      'Six boxes in one labelled group. The caret sits in the next empty box, and the count of boxes is the instruction.',
+      'Six boxes in one labeled group. The caret sits in the next empty box, and the count of boxes is the instruction.',
     parts: [
       {
         n: 1,
@@ -358,7 +358,7 @@ export default defineDoc({
       {
         n: 3,
         label: 'Type',
-        value: '17px monospace, centred',
+        value: '17px monospace, centered',
         kind: 'type',
         note: 'Monospace so every digit sits identically in its box, and larger than body text because these characters are being checked against another screen.',
       },
@@ -388,7 +388,7 @@ export default defineDoc({
         label: 'Group label',
         value: 'One for all boxes',
         kind: 'type',
-        note: 'role="group" with a name. Six unlabelled inputs announcing "edit text, blank" is the worst outcome available here.',
+        note: 'role="group" with a name. Six unlabeled inputs announcing "edit text, blank" is the worst outcome available here.',
       },
     ],
   },
@@ -460,7 +460,7 @@ export default defineDoc({
 
   dont: [
     {
-      title: 'Do not leave the boxes unlabelled',
+      title: 'Do not leave the boxes unlabeled',
       why: 'Six inputs each announcing "edit text, blank" gives a screen-reader user no idea what is being asked or how many digits are left.',
       render: (
         <span className="text-caption text-[var(--ds-danger-text)]">
@@ -470,7 +470,7 @@ export default defineDoc({
     },
     {
       title: 'Do not mark a single box as wrong',
-      why: 'You do not know which digit was mistyped — the server rejected the whole code. Colouring box three implies knowledge you do not have.',
+      why: 'You do not know which digit was mistyped — the server rejected the whole code. Coloring box three implies knowledge you do not have.',
       render: (
         <Row gap="sm">
           {['4', '0', '2', '1'].map((d, i) => (
@@ -526,7 +526,7 @@ export default defineDoc({
     contrast: [
       'Box borders owe 3:1 — they are the only thing showing how many digits are expected.',
       'The digits owe 4.5:1. They are being checked against another screen, so legibility matters more here than almost anywhere.',
-      'The error state changes every border plus the message, so it survives greyscale.',
+      'The error state changes every border plus the message, so it survives grayscale.',
       'A masked box must still show that it contains something — an empty box and a masked one cannot look alike.',
     ],
     keyboard: [
@@ -538,7 +538,7 @@ export default defineDoc({
     ],
     aria: [
       { attr: 'role="group"', on: 'The container', note: 'With aria-label: "Verification code, 6 digits". This is what makes the boxes one question.' },
-      { attr: 'aria-label', on: 'Each box', note: '"Digit 1 of 6". Never bare — an unlabelled box announces as "edit text, blank".' },
+      { attr: 'aria-label', on: 'Each box', note: '"Digit 1 of 6". Never bare — an unlabeled box announces as "edit text, blank".' },
       { attr: 'autocomplete="one-time-code"', on: 'The first box only', note: 'Triggers platform autofill. On every box it fills each one with the entire code.' },
       { attr: 'inputmode="numeric"', on: 'Each box', note: 'Numeric keypad on mobile. With type="text", so leading zeros survive.' },
       { attr: 'aria-invalid', on: 'Every box', note: 'The whole code is wrong, not one digit.' },
@@ -702,7 +702,7 @@ async function verify(code: string) {
     mistakes: [
       'Paste filling only the focused box, breaking the primary path silently.',
       'autocomplete="one-time-code" on every box, so autofill puts the whole code in each one.',
-      'Unlabelled boxes announcing "edit text, blank" six times.',
+      'Unlabeled boxes announcing "edit text, blank" six times.',
       'Backspace needing two presses to delete the previous digit.',
       'Clearing the whole code on a failed attempt, forcing a full retype.',
       'Marking one box as the wrong digit, when the server only rejected the whole code.',

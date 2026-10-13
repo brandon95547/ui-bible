@@ -288,7 +288,7 @@ export default defineDoc({
         id: 'density',
         title: 'Column count and target size',
         description:
-          'Below about 80px a thumbnail stops being recognisable and becomes a coloured square. That is the floor, and it is what caps the column count on a phone.',
+          'Below about 80px a thumbnail stops being recognizable and becomes a colored square. That is the floor, and it is what caps the column count on a phone.',
         render: (
           <PreviewStage minHeight={0} allowResize={false} center={false}>
             <Stack gap="lg" className="w-full">
@@ -424,14 +424,14 @@ export default defineDoc({
         label: 'Minimum tile',
         value: '80px',
         kind: 'size',
-        note: 'Below this a thumbnail stops being recognisable, and the whole point of a grid is recognition before selection.',
+        note: 'Below this a thumbnail stops being recognizable, and the whole point of a grid is recognition before selection.',
       },
       {
         n: 5,
         label: 'Hover affordance',
         value: 'Scrim + zoom glyph',
         kind: 'motion',
-        note: 'A scrim rather than a scale transform, because scaling a tile inside a tight grid overlaps its neighbours.',
+        note: 'A scrim rather than a scale transform, because scaling a tile inside a tight grid overlaps its neighbors.',
       },
       {
         n: 6,
@@ -543,7 +543,7 @@ export default defineDoc({
     },
     {
       title: 'Do not go below 80px tiles',
-      why: 'A thumbnail smaller than that is a coloured square. Recognition before selection is the entire purpose of the grid.',
+      why: 'A thumbnail smaller than that is a colored square. Recognition before selection is the entire purpose of the grid.',
       render: (
         <div className="grid w-32 grid-cols-6 gap-1">
           {TILES.map((t) => (
@@ -567,7 +567,7 @@ export default defineDoc({
     ],
     contrast: [
       'The focus ring must be visible against an arbitrary image, which is why it is offset outside the tile rather than drawn on it.',
-      'A selection ring needs both an offset and a ring in the surface colour, or it disappears against a light photograph.',
+      'A selection ring needs both an offset and a ring in the surface color, or it disappears against a light photograph.',
       'Lightbox controls sit over an unpredictable image and need their own surface or a scrim.',
       'The hover scrim must be dark enough for the zoom glyph to reach 3:1 against any image beneath it.',
     ],
@@ -623,7 +623,7 @@ function close() {
   triggerRef.current?.focus()       // not the first tile — the right one
 }
 
-// Preload the neighbours so arrow traversal feels instant.
+// Preload the neighbors so arrow traversal feels instant.
 React.useEffect(() => {
   if (open === null) return
   for (const i of [open - 1, open + 1]) {
@@ -688,7 +688,7 @@ React.useEffect(() => {
 .ds-gallery img { inline-size: 100%; block-size: 100%; object-fit: cover; }
 
 /* A scrim, not a scale transform — scaling a tile in a tight grid overlaps
-   its neighbours. */
+   its neighbors. */
 .ds-gallery button::after {
   content: '';
   position: absolute;
@@ -741,14 +741,14 @@ React.useEffect(() => {
   notes: {
     tips: [
       'Serve thumbnails at roughly twice the tile size, not the full file. A grid of twenty full-resolution photographs is tens of megabytes for pictures shown at 150px.',
-      'Preload the neighbouring images when the lightbox opens, so arrow traversal feels instant without preloading the whole set.',
+      'Preload the neighboring images when the lightbox opens, so arrow traversal feels instant without preloading the whole set.',
       'Show a "+12" overflow tile rather than a scrolling grid when the gallery is a preview inside a card.',
       'For pickers, make selection a ring and opening a separate affordance. Conflating them means every attempt to inspect an image also selects it.',
       'Keep the lightbox index in the URL. A user who wants to share the third image should be able to.',
     ],
     performance: [
       'Lazy-load everything below the fold with the native attribute and set decoding="async" so decoding does not block scrolling.',
-      'Virtualise past a few hundred tiles. A gallery of a thousand images will otherwise take seconds to lay out.',
+      'Virtualize past a few hundred tiles. A gallery of a thousand images will otherwise take seconds to lay out.',
       'Load the full-resolution image only when the lightbox opens, and show the thumbnail scaled up until it arrives.',
       'Give every tile explicit dimensions. A grid without them reflows continuously as images arrive, which is the worst possible scrolling experience.',
     ],
@@ -766,7 +766,7 @@ React.useEffect(() => {
       'Users open a lightbox to see detail. If your thumbnails are already large enough to read, the gallery may not need one at all.',
       'Cropping to a uniform ratio is nearly always the right call, even for photography — the alignment gain outweighs the occasional awkward crop, and the lightbox shows the full frame anyway.',
       'On mobile, swipe between lightbox images is expected. Keep the arrow buttons too: swipe alone is undiscoverable and fails 2.5.7.',
-      'Asset pickers are galleries with selection instead of a lightbox. Keeping the two behaviours visually distinct prevents a whole class of accidental selections.',
+      'Asset pickers are galleries with selection instead of a lightbox. Keeping the two behaviors visually distinct prevents a whole class of accidental selections.',
     ],
   },
 })

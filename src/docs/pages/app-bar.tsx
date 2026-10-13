@@ -160,7 +160,7 @@ function RtlToggle({
   )
 }
 
-/** A labelled control group in the panel. */
+/** A labeled control group in the panel. */
 function Knob({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-2">
@@ -337,7 +337,7 @@ function TabbedScreen({ bar, height }: { bar: BarState; height: number }) {
         )}
       >
         {/* Transparent, not unelevated: an unelevated bar still paints its own
-            plane — canvas — and would lay a second colour over the block's
+            plane — canvas — and would lay a second color over the block's
             surface, which is the seam this arrangement exists to avoid. */}
         <Bar {...bar} elevated={false} bordered={false} sticky={false} className="bg-transparent" />
 
@@ -428,7 +428,7 @@ function Playground() {
               onChange={setAlign}
               options={ALIGN_OPTIONS.map((o) => ({
                 value: o.value as AppBarAlign,
-                // The icon already says left/centre/right. Spelling it out
+                // The icon already says left/center/right. Spelling it out
                 // again costs 70px of a row that has none to spare.
                 label: <span className="sr-only">{o.label}</span>,
                 icon: o.icon,
@@ -721,7 +721,7 @@ function AnatomySpecimen() {
     // Fixed width inside a scroller, not a fluid box. The diagram sits beside a
     // 20rem parts column, so on anything under a wide monitor a fluid mock runs
     // out of room and squeezes the brand out of a drawing whose whole job is to
-    // label the brand. A labelled drawing has one geometry; it scrolls.
+    // label the brand. A labeled drawing has one geometry; it scrolls.
     <div className="w-full overflow-x-auto pb-1">
     <div className="relative w-[520px] min-w-[520px] py-6 ps-7">
       <div className="overflow-hidden rounded-[var(--radius-lg)] bg-[var(--ds-surface)] shadow-e2">
@@ -914,7 +914,7 @@ export default defineDoc({
       height: '64px',
       padding: '40px gutter',
       type: '19px title',
-      use: 'Container ≥ 640px. Three utilities plus the account. The row caps at 76rem and centres with the content column beneath it.',
+      use: 'Container ≥ 640px. Three utilities plus the account. The row caps at 76rem and centers with the content column beneath it.',
     },
     {
       name: 'Tablet',
@@ -1025,7 +1025,7 @@ export default defineDoc({
     },
     {
       title: 'Do not shrink controls to fit more in',
-      why: 'The fix for a crowded bar is fewer things in it, not smaller ones. Below 36px the glyphs stop being recognisable at a glance and the targets stop clearing the spacing they need — and the utility that got squeezed in was, by definition, the least important one there.',
+      why: 'The fix for a crowded bar is fewer things in it, not smaller ones. Below 36px the glyphs stop being recognizable at a glance and the targets stop clearing the spacing they need — and the utility that got squeezed in was, by definition, the least important one there.',
       render: (
         <Row gap="sm" align="center">
           <span className="grid h-6 w-6 place-items-center rounded-[var(--radius-sm)] text-[var(--ds-fg-muted)]"><Bell size={12} /></span>
@@ -1062,7 +1062,7 @@ export default defineDoc({
       { attr: 'aria-label', on: 'Icon-only buttons', note: 'Required. The name is what the control does — "Open navigation", "Notifications", "Account menu, Ada Lovelace".' },
       { attr: 'aria-expanded + aria-controls', on: 'The navigation trigger', note: 'Says whether the panel is open and which element it is. Without the pair the button announces the same thing before and after it works.' },
       { attr: 'aria-haspopup', on: 'The account control', note: '"menu" when it opens a menu. It tells the user a press opens something rather than navigating.' },
-      { attr: 'aria-current="page"', on: 'A link in the bar to the current screen', note: 'Only if the bar carries destinations at all. Colour alone does not say "you are here".' },
+      { attr: 'aria-current="page"', on: 'A link in the bar to the current screen', note: 'Only if the bar carries destinations at all. Color alone does not say "you are here".' },
     ],
     focus:
       'The ring is never removed, only restyled: 2px at 2px offset, on every control including the brand. A sticky bar also hides whatever the browser scrolls a focused element to, so the scroll container needs scroll-padding-top equal to the bar height — without it, tabbing into the page puts focus under the bar.',
@@ -1161,7 +1161,7 @@ html {
         props: [
           { name: 'title', type: 'ReactNode', required: true, description: 'The product name or screen title. One line — the bar truncates rather than wraps.' },
           { name: 'logo', type: 'ReactNode', description: 'The mark before the title. Square, and the only thing in the bar that carries the accent.' },
-          { name: 'align', type: "'left' | 'center' | 'right'", default: "'left'", description: 'Where the brand block sits. Center switches the grid to equal side tracks so it is centred against the bar rather than against whatever the slots happen to weigh.' },
+          { name: 'align', type: "'left' | 'center' | 'right'", default: "'left'", description: 'Where the brand block sits. Center switches the grid to equal side tracks so it is centered against the bar rather than against whatever the slots happen to weigh.' },
           { name: 'leading', type: 'ReactNode', description: 'Slot 1: a navigation trigger or a back arrow. The slot holds its track even when this is undefined, so the brand does not move between screens.' },
           { name: 'actions', type: 'ReactNode', description: 'Slot 3: global utilities. Three at desktop width, two below a 640px container.' },
           { name: 'account', type: 'ReactNode', description: 'Slot 4: the signed-in person, separated from the actions by a wider gap.' },
@@ -1178,7 +1178,7 @@ html {
   notes: {
     tips: [
       'Flat at the top of the scroll, elevated once the page moves. It is the cheapest way to say "there is more above" and it costs one scroll listener and a 160ms transition.',
-      'Centre the title only when the bar has nothing else to hold. With a trigger on one side and three utilities on the other, a centred title is off-centre against its own slots on every screen where the two sides differ in width.',
+      'Center the title only when the bar has nothing else to hold. With a trigger on one side and three utilities on the other, a centered title is off-center against its own slots on every screen where the two sides differ in width.',
       'On a phone, a back arrow and a screen title are usually more useful than the brand. The brand is already established once; where you are is the question the bar is being asked.',
       'Count the controls before adding one. Four global utilities plus an account is where a bar starts reading as a toolbar, and the fourth is almost always a candidate for the account menu.',
     ],

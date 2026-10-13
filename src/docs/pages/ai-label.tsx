@@ -152,19 +152,19 @@ export default defineDoc({
       'An AI label marks content a model produced, so the reader can calibrate how much to trust it. It is a disclosure, not a feature badge — the point is not that the product has AI, it is that this particular paragraph, summary or suggestion was not written by a person and may be wrong in ways human writing is not.',
     whenToUse: [
       'Generated prose: summaries, descriptions, draft replies, release notes.',
-      'Model-produced structure: extracted fields, suggested tags, categorisations.',
+      'Model-produced structure: extracted fields, suggested tags, categorizations.',
       'Predictions and rankings presented as fact — a risk score, an anomaly flag.',
       'Anywhere a reader might otherwise assume a person wrote or checked it.',
     ],
     whenNotToUse: [
       {
         text: 'A person wrote it, with a model only assisting.',
-        instead: 'nothing — the human is the author, and over-labelling dilutes the mark',
+        instead: 'nothing — the human is the author, and over-labeling dilutes the mark',
         to: '#/badge',
       },
       {
         text: 'It is ordinary automation with deterministic output.',
-        instead: 'nothing — a sort, a filter or a template is not AI and labelling it is noise',
+        instead: 'nothing — a sort, a filter or a template is not AI and labeling it is noise',
         to: '#/badge',
       },
       {
@@ -398,7 +398,7 @@ export default defineDoc({
         label: 'Tone',
         value: 'Accent, not status',
         kind: 'color',
-        note: 'Accent-tinted. Using a status colour would claim the content is good, bad or risky, which the label is not saying.',
+        note: 'Accent-tinted. Using a status color would claim the content is good, bad or risky, which the label is not saying.',
       },
       {
         n: 5,
@@ -515,7 +515,7 @@ export default defineDoc({
       ),
     },
     {
-      title: 'Do not use a status colour',
+      title: 'Do not use a status color',
       why: 'Green claims the content is good and amber claims it is risky. The label is saying who produced it, not whether it is right.',
       render: (
         <Row gap="sm">
@@ -549,9 +549,9 @@ export default defineDoc({
     ],
     contrast: [
       'The label text owes 4.5:1 at 11px. It is a disclosure, and small quiet text is exactly where that gets skipped.',
-      'The word carries the meaning, never the sparkle or the tint alone — colour-only disclosure fails 1.4.1 outright.',
+      'The word carries the meaning, never the sparkle or the tint alone — color-only disclosure fails 1.4.1 outright.',
       'The border owes 3:1: it is what separates the label from the heading beside it.',
-      'The reviewed and unreviewed variants must differ by wording as well as colour.',
+      'The reviewed and unreviewed variants must differ by wording as well as color.',
     ],
     keyboard: [
       { keys: 'Tab', does: 'Reaches the label when it opens an explainer. A static mark is not focusable.' },
@@ -563,7 +563,7 @@ export default defineDoc({
       { attr: 'aria-label', on: 'The pressable label', note: '"AI generated — what does this mean?". A bare "AI" announces two letters with no context.' },
       { attr: 'aria-hidden', on: 'The sparkle', note: 'Decoration. The word is the disclosure.' },
       { attr: 'aria-haspopup="dialog"', on: 'The label', note: 'With aria-expanded, so the explainer is discoverable rather than a surprise.' },
-      { attr: 'aria-describedby', on: 'The labelled region', note: 'Pointing at the disclosure, so the provenance is announced with the content rather than only beside it.' },
+      { attr: 'aria-describedby', on: 'The labeled region', note: 'Pointing at the disclosure, so the provenance is announced with the content rather than only beside it.' },
       { attr: 'role="note"', on: 'A region-level disclosure', note: 'For a banner covering a whole generated view.' },
     ],
     focus:
@@ -660,7 +660,7 @@ export default defineDoc({
   padding-inline: 8px;
   border: 1px solid var(--ds-accent-border);
   border-radius: 999px;
-  /* Accent, never a status colour: green would claim the content is good,
+  /* Accent, never a status color: green would claim the content is good,
      amber that it is risky. The label says neither. */
   background: var(--ds-accent-subtle);
   color: var(--ds-accent-text);
@@ -722,7 +722,7 @@ export default defineDoc({
       'Using the mark to advertise a feature, which destroys its meaning as a disclosure.',
       'A sparkle with no word, relying on a convention the reader may not know.',
       'A label per element instead of one per region.',
-      'A status colour, claiming the content is good or risky.',
+      'A status color, claiming the content is good or risky.',
       'Hover-only disclosure, invisible on touch.',
       'No explainer, so the reader learns something happened but not what.',
       'Not distinguishing reviewed from unreviewed content.',
@@ -731,7 +731,7 @@ export default defineDoc({
     realWorld: [
       'Disclosure requirements are tightening in several jurisdictions. Building the mark and the provenance record now is far cheaper than retrofitting them across a product later.',
       'Users calibrate quickly once a product is consistent: they learn the mark, learn what it predicts about quality, and adjust their trust accordingly. That is the mechanism working.',
-      'Over-labelling is the more common failure. A product that marks every ranked list and every autocomplete has trained its users to ignore the mark by the time it matters.',
+      'Over-labeling is the more common failure. A product that marks every ranked list and every autocomplete has trained its users to ignore the mark by the time it matters.',
       'The feedback control in the explainer is the highest-signal quality data most teams have. It arrives at the moment the reader noticed the problem, attached to the exact output.',
     ],
   },

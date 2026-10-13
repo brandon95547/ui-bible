@@ -304,7 +304,7 @@ export default defineDoc({
         id: 'disabled',
         title: 'Unavailable dates',
         description:
-          'Disabled days must be visibly unavailable rather than silently rejected on submit — and the reason belongs near the field, not in an error afterwards.',
+          'Disabled days must be visibly unavailable rather than silently rejected on submit — and the reason belongs near the field, not in an error afterward.',
         render: (
           <PreviewStage minHeight={300} center={false}>
             <Stack gap="sm" className="items-start">
@@ -566,7 +566,7 @@ export default defineDoc({
       { id: '4.1.2', name: 'Name, Role, Value', level: 'A' },
     ],
     contrast: [
-      'The selected day carries a fill and inverted text, so it survives greyscale.',
+      'The selected day carries a fill and inverted text, so it survives grayscale.',
       'Today’s ring must reach 3:1 — it is a meaningful boundary, not decoration.',
       'Disabled days may use the disabled tone, but their unavailability must also be exposed through the disabled attribute.',
       'The range tint must be distinguishable from the hover wash, or a user cannot tell what is selected while the pointer is in the grid.',
@@ -747,13 +747,13 @@ const iso = zonedTimeToUtc(startOfDay(date), 'Europe/London').toISOString()`,
     tips: [
       'Show two months for range selection. A span crossing a month boundary is otherwise chosen half-blind.',
       'Highlight the range as the pointer moves between the two ends. It is the only preview of what clicking will produce.',
-      'For availability calendars, show why a day is unavailable on hover or focus — "fully booked" beats a grey square.',
+      'For availability calendars, show why a day is unavailable on hover or focus — "fully booked" beats a gray square.',
       'Default to something sensible rather than empty. Today, the next business day, or the start of the current month removes an interaction for most users.',
       'On mobile, consider native input[type=date] outright. The platform picker is familiar, accessible and costs nothing to maintain.',
     ],
     performance: [
       'Import only the date functions you use. A full date library in the entry bundle is a few hundred kilobytes for a component most users never open.',
-      'Memoise the month grid on year and month. Recomputing thirty-one cells on every render is visible when the panel is open during typing.',
+      'Memoize the month grid on year and month. Recomputing thirty-one cells on every render is visible when the panel is open during typing.',
       'Load the picker lazily. It is a large component behind a single button and rarely needed on first paint.',
       'Never call Date.now() during render. It makes output non-deterministic and breaks any snapshot or server render.',
     ],

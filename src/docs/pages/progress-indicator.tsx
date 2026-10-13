@@ -42,7 +42,7 @@ function Playground() {
   ${indeterminate ? 'indeterminate' : `value={${Math.round(value)}}`}
   tone="${tone}"
   size="${size}"
-  label="Uploading build artefacts"${showValue ? '\n  showValue' : ''}
+  label="Uploading build artifacts"${showValue ? '\n  showValue' : ''}
 />`}
     >
       <div className="w-full max-w-md">
@@ -51,7 +51,7 @@ function Playground() {
           tone={tone}
           size={size}
           indeterminate={indeterminate}
-          label="Uploading build artefacts"
+          label="Uploading build artifacts"
           showValue={showValue}
         />
       </div>
@@ -257,7 +257,7 @@ export default defineDoc({
   anatomy: {
     render: (
       <div className="w-full max-w-md">
-        <Progress value={64} label="Uploading build artefacts" showValue />
+        <Progress value={64} label="Uploading build artifacts" showValue />
         <p className="mt-2 text-caption text-[var(--ds-fg-muted)]">
           128 MB of 200 MB · about 40 seconds remaining
         </p>
@@ -275,10 +275,10 @@ export default defineDoc({
       },
       {
         n: 2,
-        label: 'Track colour',
+        label: 'Track color',
         value: '--ds-layer-active',
         kind: 'color',
-        note: 'An alpha layer, so the same track works on a card, a dialog, or a coloured banner.',
+        note: 'An alpha layer, so the same track works on a card, a dialog, or a colored banner.',
       },
       {
         n: 3,
@@ -299,7 +299,7 @@ export default defineDoc({
         label: 'Concrete detail',
         value: 'Below the bar',
         kind: 'type',
-        note: '"128 MB of 200 MB" is more useful than "64%". Give both — the percentage for the glance, the units for the judgement.',
+        note: '"128 MB of 200 MB" is more useful than "64%". Give both — the percentage for the glance, the units for the judgment.',
       },
       {
         n: 6,
@@ -432,7 +432,7 @@ export default defineDoc({
     contrast: [
       'The fill must reach 3:1 against the track — it is a meaningful graphic under WCAG 1.4.11.',
       'The track itself does not need to meet contrast against the page, but if it is invisible the user cannot see how much is left.',
-      'Never signal completion with colour alone. Pair the green fill with a check, the word "Complete", or 100%.',
+      'Never signal completion with color alone. Pair the green fill with a check, the word "Complete", or 100%.',
     ],
     keyboard: [
       { keys: 'Tab', does: 'Progress indicators are not focusable. Any cancel button next to one is.' },
@@ -443,7 +443,7 @@ export default defineDoc({
       { attr: 'role="meter"', on: 'A usage bar', note: 'For a measurement that is simply true right now.' },
       { attr: 'aria-valuenow', on: 'Determinate only', note: 'Omit entirely when indeterminate. Never send 0 as a stand-in.' },
       { attr: 'aria-valuemin / -valuemax', on: 'The track', note: '0 and 100 unless you are reporting raw units.' },
-      { attr: 'aria-label / aria-labelledby', on: 'The track', note: 'Name what is progressing: "Uploading build artefacts", not "Progress".' },
+      { attr: 'aria-label / aria-labelledby', on: 'The track', note: 'Name what is progressing: "Uploading build artifacts", not "Progress".' },
       { attr: 'aria-live="polite"', on: 'A status region', note: 'Announce milestones — 25, 50, 75, 100 — not every percent.' },
       { attr: 'aria-busy', on: 'The affected region', note: 'On the container being loaded, so assistive tech knows its contents are provisional.' },
     ],
@@ -451,7 +451,7 @@ export default defineDoc({
       'Progress never takes focus. If focus was inside a region that is now loading, leave it there — moving it to a spinner strands the user when the spinner disappears.',
     screenReader: [
       'Announce milestones, not every update. A live region firing on every percent is unusable.',
-      'Say what is progressing. "Progress, 64%" is far less useful than "Uploading build artefacts, 64%".',
+      'Say what is progressing. "Progress, 64%" is far less useful than "Uploading build artifacts, 64%".',
       'On completion, announce the outcome rather than 100%: "Upload complete, 200 MB".',
     ],
     touch:
@@ -465,7 +465,7 @@ export default defineDoc({
 import { Meter } from '@/ui/Display'
 
 // Determinate, with a concrete unit alongside the percentage
-<Progress value={pct} label="Uploading build artefacts" showValue />
+<Progress value={pct} label="Uploading build artifacts" showValue />
 <p className="text-caption text-fg-muted">
   {formatBytes(sent)} of {formatBytes(total)} · {eta} remaining
 </p>
@@ -503,7 +503,7 @@ async function upload() {
       code: `<!-- Determinate -->
 <div class="ds-progress">
   <div class="ds-progress__header">
-    <span id="up-label">Uploading build artefacts</span>
+    <span id="up-label">Uploading build artifacts</span>
     <span class="ds-progress__value">64%</span>
   </div>
   <div class="ds-progress__track"
@@ -581,7 +581,7 @@ async function upload() {
           { name: 'value', type: 'number', description: '0–100.' },
           { name: 'size', type: 'number', default: '40', description: 'Outer diameter in px.' },
           { name: 'thickness', type: 'number', default: '3', description: 'Stroke width.' },
-          { name: 'children', type: 'ReactNode', description: 'Centred content — usually the number.' },
+          { name: 'children', type: 'ReactNode', description: 'Centered content — usually the number.' },
         ],
       },
       {
@@ -598,7 +598,7 @@ async function upload() {
   notes: {
     tips: [
       'For multi-file uploads, show one bar for the batch and a count underneath. Twelve individual bars is a progress wall nobody reads.',
-      'If the operation can be cancelled, put the cancel button next to the bar, not in a menu. Users look for it exactly where they are already looking.',
+      'If the operation can be canceled, put the cancel button next to the bar, not in a menu. Users look for it exactly where they are already looking.',
       'When progress genuinely stalls, say so. "Waiting for the build server" after fifteen seconds of no movement is far better than a bar that has simply stopped.',
       'Reserve the space for the bar before it appears, or its arrival shifts everything below it and the user loses their place.',
     ],

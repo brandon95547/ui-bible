@@ -231,7 +231,7 @@ export default defineDoc({
       </div>
     ),
     caption:
-      'Four destinations, one active. The active item gets a pill behind its icon plus a colour change plus a heavier label — three signals, so it survives greyscale.',
+      'Four destinations, one active. The active item gets a pill behind its icon plus a color change plus a heavier label — three signals, so it survives grayscale.',
     parts: [
       {
         n: 1,
@@ -288,7 +288,7 @@ export default defineDoc({
     { category: 'spacing', token: 'item min-width', value: '64px', usedFor: 'Thumb accuracy floor' },
     { category: 'spacing', token: 'gap', value: '4px', usedFor: 'Icon to label' },
     { category: 'typography', token: '--text-overline', value: '11px', usedFor: 'Labels' },
-    { category: 'motion', token: 'duration', value: '140–180ms', usedFor: 'Pill and colour transition' },
+    { category: 'motion', token: 'duration', value: '140–180ms', usedFor: 'Pill and color transition' },
   ],
 
   sizes: [
@@ -320,7 +320,7 @@ export default defineDoc({
     },
     {
       title: 'Preserve each destination’s stack',
-      why: 'Returning to a tab should return the user where they were, not to its root. This is the behaviour every native app has, and its absence is felt immediately.',
+      why: 'Returning to a tab should return the user where they were, not to its root. This is the behavior every native app has, and its absence is felt immediately.',
       render: (
         <span className="text-caption text-[var(--ds-fg-muted)]">
           Home › Project › Deploy → switch to Alerts → back to Home ›{' '}
@@ -398,7 +398,7 @@ export default defineDoc({
       { id: '3.2.3', name: 'Consistent Navigation', level: 'AA' },
     ],
     contrast: [
-      'The active item must be distinguishable from the inactive ones by more than colour. Ours changes the fill, the icon colour and the label weight together.',
+      'The active item must be distinguishable from the inactive ones by more than color. Ours changes the fill, the icon color and the label weight together.',
       'The inactive label at 11px must still reach 4.5:1. Small text has no contrast exemption.',
       'The top edge of the bar must reach 3:1 against the content, or the bar merges into the list behind it.',
     ],
@@ -487,7 +487,7 @@ const isMobile = useMediaQuery('(max-width: 767px)')
   color: var(--ds-fg-muted);
 }
 
-/* Three signals at once, so the state survives greyscale */
+/* Three signals at once, so the state survives grayscale */
 .ds-bottom-nav__item[aria-current='page'] { color: var(--ds-accent-text); }
 .ds-bottom-nav__item[aria-current='page'] .ds-bottom-nav__pill {
   background: var(--ds-accent-subtle);

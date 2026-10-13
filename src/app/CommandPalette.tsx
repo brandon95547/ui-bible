@@ -93,7 +93,7 @@ export function CommandPalette({
           title: p!.title,
           subtitle: p!.path,
           icon: <Star size={14} />,
-          section: 'Favourites',
+          section: 'Favorites',
           run: () => onNavigate(p!.id),
         }))
 

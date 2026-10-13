@@ -163,7 +163,7 @@ export default defineDoc({
     whenToUse: [
       'A destructive or irreversible action needs explicit confirmation.',
       'A short, self-contained task must be completed before the underlying page makes sense.',
-      'The user must acknowledge something before proceeding — a licence, a breaking change.',
+      'The user must acknowledge something before proceeding — a license, a breaking change.',
       'A focused sub-task is genuinely better without the surrounding page competing for attention.',
     ],
     whenNotToUse: [
@@ -519,13 +519,13 @@ export default defineDoc({
       { id: '4.1.2', name: 'Name, Role, Value', level: 'A' },
     ],
     contrast: [
-      'The scrim must make the background clearly inactive while leaving it recognisable. 72% in dark and 42% in light are the values we ship.',
+      'The scrim must make the background clearly inactive while leaving it recognizable. 72% in dark and 42% in light are the values we ship.',
       'The panel border must reach 3:1 against the scrim, or the dialog edge disappears in High Contrast Mode.',
-      'The destructive action must not rely on colour alone. Ours pairs red with an explicit verb and an icon.',
+      'The destructive action must not rely on color alone. Ours pairs red with an explicit verb and an icon.',
     ],
     keyboard: [
       { keys: 'Tab', does: 'Cycles inside the dialog only. It never reaches the page behind.' },
-      { keys: 'Shift + Tab', does: 'Cycles backwards, wrapping from the first element to the last.' },
+      { keys: 'Shift + Tab', does: 'Cycles backward, wrapping from the first element to the last.' },
       { keys: 'Esc', does: 'Closes, unless data would be lost — then it prompts.' },
       { keys: 'Enter', does: 'Submits the form inside the dialog. Never bound to a destructive default.' },
       { keys: 'Focus on open', does: 'The first focusable element, or the panel itself if there is none.' },
@@ -547,7 +547,7 @@ export default defineDoc({
       'A dialog opened by a keyboard shortcut with no visible trigger still needs a focus-restore target — remember what had focus before it opened.',
     ],
     touch:
-      'On phones, use fullscreen or a bottom sheet rather than a centred dialog. A centred modal wastes the margins and puts the actions out of thumb reach. Body scroll is locked with scrollbar compensation so the page does not shift.',
+      'On phones, use fullscreen or a bottom sheet rather than a centered dialog. A centered modal wastes the margins and puts the actions out of thumb reach. Body scroll is locked with scrollbar compensation so the page does not shift.',
   },
 
   code: {
@@ -657,7 +657,7 @@ useEffect(() => { open ? ref.current?.showModal() : ref.current?.close() }, [ope
   background: var(--ds-surface);
 }
 
-/* Mobile: fullscreen beats a centred modal in the margins */
+/* Mobile: fullscreen beats a centered modal in the margins */
 @media (max-width: 640px) {
   .ds-dialog {
     inline-size: 100vw;
@@ -696,7 +696,7 @@ useEffect(() => { open ? ref.current?.showModal() : ref.current?.close() }, [ope
       'Count the dialogs in your product and ask of each one: what breaks if this just happens with an Undo? Most of them survive the question, and the product gets faster.',
       'Autofocus the first input in a form dialog, and nothing at all in a destructive one. Enter should never delete something by accident.',
       'A wizard in a dialog needs a visible step indicator and a working Back. Without both, users abandon at step two because they cannot tell how much is left.',
-      'On mobile, prefer a fullscreen dialog or a bottom sheet. A centred modal on a 375px screen has no margins to spare and puts the buttons out of thumb reach.',
+      'On mobile, prefer a fullscreen dialog or a bottom sheet. A centered modal on a 375px screen has no margins to spare and puts the buttons out of thumb reach.',
     ],
     performance: [
       'Render in a portal at the body. Inside a transformed ancestor, position: fixed silently stops being fixed and the dialog is clipped.',

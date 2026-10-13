@@ -152,9 +152,9 @@ export default defineDoc({
         </p>
         <p>
           Arrow keys move between radios and <strong>Tab skips the whole group</strong>. That is
-          native behaviour: a group is one stop in the tab order, not five. It is also why radios
+          native behavior: a group is one stop in the tab order, not five. It is also why radios
           need a shared <code>name</code> — without it the browser treats them as unrelated and both
-          the exclusivity and the keyboard behaviour quietly stop working.
+          the exclusivity and the keyboard behavior quietly stop working.
         </p>
       </>
     ),
@@ -268,7 +268,7 @@ export default defineDoc({
       },
       {
         n: 5,
-        label: 'Tab behaviour',
+        label: 'Tab behavior',
         value: 'One stop for the group',
         kind: 'motion',
         note: 'Only the selected radio is tabbable; arrow keys move within. Native gives you this automatically as long as the options share a name.',
@@ -288,7 +288,7 @@ export default defineDoc({
     { category: 'spacing', token: 'card padding', value: '14px', usedFor: 'RadioCard' },
     { category: 'radius', token: 'full', usedFor: 'Dot' },
     { category: 'radius', token: '--radius-lg', value: '12px', usedFor: 'RadioCard corners' },
-    { category: 'motion', token: 'duration', value: '120–140ms', usedFor: 'Border-width and colour transition' },
+    { category: 'motion', token: 'duration', value: '120–140ms', usedFor: 'Border-width and color transition' },
   ],
 
   sizes: [
@@ -394,7 +394,7 @@ export default defineDoc({
     ],
     contrast: [
       'The unselected border must reach 3:1 against the surface. It is the only thing indicating the control exists.',
-      'The selected ring must be distinguishable from the unselected border by more than colour — ours changes from a 1px border to a 5px ring, which survives greyscale.',
+      'The selected ring must be distinguishable from the unselected border by more than color — ours changes from a 1px border to a 5px ring, which survives grayscale.',
       'A selected RadioCard uses a border, a tint and the dot together. Any one alone is too subtle at a glance.',
     ],
     keyboard: [
@@ -581,7 +581,7 @@ export default defineDoc({
       'When a radio changes something expensive — a plan, a region, a data source — do not apply it on selection. Selection sets intent; a Save button applies it.',
     ],
     performance: [
-      'Radio groups are cheap. The only real cost is re-rendering the whole group on every change — memoise the option rows if the group is large or the descriptions are complex.',
+      'Radio groups are cheap. The only real cost is re-rendering the whole group on every change — memoize the option rows if the group is large or the descriptions are complex.',
       'RadioCards with images should lazy-load them; a plan picker with four screenshots is otherwise four blocking requests above the fold.',
       'A segmented control animating its active pill should animate transform, not left or width, or it drops frames on every switch.',
     ],
@@ -589,7 +589,7 @@ export default defineDoc({
       'Forgetting the shared name, which silently breaks exclusivity and arrow-key navigation.',
       'Using a div with a click handler, which loses arrow keys, group semantics and form submission.',
       'Making a radio deselectable "for convenience". It breaks the mental model — if a value can be absent, that is a checkbox or an explicit "None" option.',
-      'Putting a radio group inside a checkbox-styled container, so the shape says "many" and the behaviour says "one".',
+      'Putting a radio group inside a checkbox-styled container, so the shape says "many" and the behavior says "one".',
       'Selecting on arrow key while also firing a network request, so arrowing through five options fires five requests.',
     ],
     realWorld: [

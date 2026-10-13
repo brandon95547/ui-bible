@@ -649,7 +649,7 @@ export default defineDoc({
         id: 'waveform-vs-bar',
         title: 'Why a waveform and not a bar',
         description:
-          'The same two clips. On the left you can see which one opens with four seconds of silence and which one is clipping; on the right they are the same grey rectangle.',
+          'The same two clips. On the left you can see which one opens with four seconds of silence and which one is clipping; on the right they are the same gray rectangle.',
         render: (
           <PreviewStage minHeight={0} allowResize={false} center={false}>
             <Grid min="17rem">
@@ -820,7 +820,7 @@ export default defineDoc({
       </div>
     ),
     caption:
-      'The full player: waveform, elapsed and total time, then a transport row with the secondary controls pushed to the edges so the play button stays centred.',
+      'The full player: waveform, elapsed and total time, then a transport row with the secondary controls pushed to the edges so the play button stays centered.',
     parts: [
       {
         n: 1,
@@ -834,7 +834,7 @@ export default defineDoc({
         label: 'Bar count',
         value: '96–120 full · 48–72 row',
         kind: 'shape',
-        note: 'Derived from width, not fixed: bars narrower than 1px alias into a grey smear. Roughly one bar per 3–4px of width.',
+        note: 'Derived from width, not fixed: bars narrower than 1px alias into a gray smear. Roughly one bar per 3–4px of width.',
       },
       {
         n: 3,
@@ -980,7 +980,7 @@ export default defineDoc({
     },
     {
       title: 'Do not block play on the waveform',
-      why: 'Peaks are decoration for the first second and content afterwards. A play button that waits for a decode is a player that feels broken on a slow connection.',
+      why: 'Peaks are decoration for the first second and content afterward. A play button that waits for a decode is a player that feels broken on a slow connection.',
       render: (
         <code className="font-mono text-[11px] text-[var(--ds-danger-text)]">
           await peaks; audio.play()  → 3s of nothing
@@ -997,9 +997,9 @@ export default defineDoc({
       { id: '4.1.2', name: 'Name, Role, Value', level: 'A' },
     ],
     contrast: [
-      'The played and unplayed halves of the waveform must differ by more than hue — the split is what tells a reader where they are, and it is the first thing to disappear for a colour-blind user.',
+      'The played and unplayed halves of the waveform must differ by more than hue — the split is what tells a reader where they are, and it is the first thing to disappear for a color-blind user.',
       'Unplayed bars still need 3:1 against the row background. Bars drawn at 15% alpha look elegant and vanish on a projector.',
-      'The playhead is a 1.5px line: it needs the strongest foreground in the palette, not a mid-grey.',
+      'The playhead is a 1.5px line: it needs the strongest foreground in the palette, not a mid-gray.',
       'The focus ring goes on the scrubber itself, not on a wrapper — the wrapper is usually the full row and the ring then describes the wrong thing.',
     ],
     keyboard: [

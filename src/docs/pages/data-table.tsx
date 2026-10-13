@@ -511,7 +511,7 @@ export default defineDoc({
     contrast: [
       'Header labels are muted but must still reach 4.5:1 — they are text, not decoration.',
       'Row hover and row selected must be distinguishable from each other and from the default row. Three states, three distinct values.',
-      'Status badges inside cells follow the badge rules: colour plus a word, never colour alone.',
+      'Status badges inside cells follow the badge rules: color plus a word, never color alone.',
     ],
     keyboard: [
       { keys: 'Tab', does: 'Moves through interactive elements in the table: sort buttons, checkboxes, row actions.' },
@@ -528,7 +528,7 @@ export default defineDoc({
       { attr: 'aria-label', on: 'Row checkboxes', note: '"Select api-gateway", not "Select row". A column of identical names is useless.' },
       { attr: 'aria-live="polite"', on: 'The selection count', note: 'Announces "3 selected" without moving focus.' },
       { attr: 'aria-busy', on: '<tbody> while loading', note: 'On the container, so the update is not announced row by row.' },
-      { attr: 'aria-rowcount', on: 'A virtualised table', note: 'The total, not the rendered count — otherwise it announces "row 12 of 20" in a table of 5,000.' },
+      { attr: 'aria-rowcount', on: 'A virtualized table', note: 'The total, not the rendered count — otherwise it announces "row 12 of 20" in a table of 5,000.' },
     ],
     focus:
       'With a sticky header, set scroll-padding-top on the scroll container so a focused row is never hidden underneath it. This is WCAG 2.4.11 and it is very easy to miss.',
@@ -669,7 +669,7 @@ const columns: Column<Deploy>[] = [
       {
         name: 'DataTable',
         props: [
-          { name: 'columns', type: 'Column<T>[]', required: true, description: 'Column definitions. Memoise them — they run per row per render.' },
+          { name: 'columns', type: 'Column<T>[]', required: true, description: 'Column definitions. Memoize them — they run per row per render.' },
           { name: 'rows', type: 'T[]', required: true, description: 'The current page of data. Sorting is applied internally when sortBy is present.' },
           { name: 'rowKey', type: '(row: T) => string', required: true, description: 'Stable identity. Never use the array index.' },
           { name: 'sort', type: '{ id, dir } | null', description: 'Controlled sort state. Cycles asc → desc → none.' },
@@ -702,8 +702,8 @@ const columns: Column<Deploy>[] = [
       'Persist sort, filters and density in the URL. A table state that vanishes on refresh cannot be shared with a colleague.',
     ],
     performance: [
-      'Virtualise past about 200 rows. Below that the DOM cost is negligible and virtualisation adds real complexity — including breaking Ctrl+F.',
-      'Memoise the column definitions. Recreating them each render invalidates every memoised row.',
+      'Virtualize past about 200 rows. Below that the DOM cost is negligible and virtualization adds real complexity — including breaking Ctrl+F.',
+      'Memoize the column definitions. Recreating them each render invalidates every memoized row.',
       'Sort and filter on the server once the dataset passes a few thousand rows. Client-side sorting of 50,000 rows blocks the main thread for seconds.',
       'Store selection in a Set keyed by id. An array with .includes() is O(n) per row and turns selection into an O(n²) render.',
     ],

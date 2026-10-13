@@ -396,7 +396,7 @@ export default defineDoc({
       },
       {
         text: 'The screen is used once a month.',
-        instead: 'obvious, labelled controls. Shortcuts and density reward practice nobody will get',
+        instead: 'obvious, labeled controls. Shortcuts and density reward practice nobody will get',
       },
       {
         text: 'The product has fewer than about twenty destinations.',
@@ -636,7 +636,7 @@ export default defineDoc({
     { name: 'Row, comfortable', height: '56px', padding: '10px 12px', use: 'Sender, subject, preview.' },
     { name: 'Row, compact', height: '36px', padding: '6px 10px', use: 'Sender and subject. Same type size.' },
     { name: 'Divider', minWidth: '1px', touch: '9px', use: 'Mark and target are different.' },
-    { name: 'Palette', maxWidth: '36rem', height: 'max 60vh', use: 'Centred, ~20% from the top.' },
+    { name: 'Palette', maxWidth: '36rem', height: 'max 60vh', use: 'Centered, ~20% from the top.' },
     { name: 'Palette row', height: '36px', padding: '6px 8px', use: 'Icon, label, shortcut.' },
     { name: 'Split minimum', minWidth: '22%', maxWidth: '78%', use: 'Clamp the drag. A 3% pane is a bug the user cannot undo.' },
     { name: 'Icon button', height: '24px (xs)', touch: '32px', use: 'Hover actions. Smaller than touch, because it is not touch.' },
@@ -772,7 +772,7 @@ export default defineDoc({
       { id: '4.1.2', name: 'Name, Role, Value', level: 'A' },
     ],
     contrast: [
-      'A selected row must be distinguishable from a hovered one, and both from neither. Three background steps that survive a greyscale screenshot.',
+      'A selected row must be distinguishable from a hovered one, and both from neither. Three background steps that survive a grayscale screenshot.',
       'The divider needs 3:1 against both panes, which is harder than it sounds when one pane is a surface and the other is the canvas.',
       'Compact density must not reduce contrast. Smaller padding is fine; lighter text to "balance" it is the failure that follows.',
     ],
@@ -804,7 +804,7 @@ export default defineDoc({
       {
         attr: 'role="dialog"',
         on: 'The command palette',
-        note: 'Modal, labelled, focus-trapped. The input is a combobox with aria-controls pointing at the results list.',
+        note: 'Modal, labeled, focus-trapped. The input is a combobox with aria-controls pointing at the results list.',
       },
       {
         attr: 'aria-live="polite"',
@@ -942,7 +942,7 @@ useEffect(() => {
       'Preserve selection across a refresh. Coming back to a queue and finding the cursor at the top is a small betrayal that happens every day.',
     ],
     performance: [
-      'Virtualise the master list past a few hundred rows, and keep the selected row rendered even when it scrolls out — otherwise the detail flickers as the list moves.',
+      'Virtualize the master list past a few hundred rows, and keep the selected row rendered even when it scrolls out — otherwise the detail flickers as the list moves.',
       'Debounce the detail fetch on rapid arrow-keying. Someone holding ↓ should not fire forty requests on the way past.',
       'Prefetch the next and previous items in the queue. In a triage workflow the user goes one way, and it is nearly free to be ready.',
       'Drive the split drag with a CSS custom property and update it in a pointermove handler, not React state. Re-rendering both panes per frame is what makes a divider feel gluey.',
@@ -961,7 +961,7 @@ useEffect(() => {
     realWorld: [
       'Watch a heavy user for ten minutes. The patterns worth building are the ones they have invented a workaround for — a saved filter they re-apply, a tab they keep open.',
       'Keyboard support is not a power-user luxury; it is the same code path a screen-reader user depends on. Products with real shortcut support are usually the accessible ones by accident.',
-      'The palette works because it needs one memorised fact instead of thirty. Any feature you can reduce to "one thing to remember, then search" is worth the same treatment.',
+      'The palette works because it needs one memorized fact instead of thirty. Any feature you can reduce to "one thing to remember, then search" is worth the same treatment.',
       'Density arguments are audience arguments. Ship both and log which one people pick — the answer is usually split down the middle, which is why picking one always upsets half the users.',
       'Master–detail is worth building even when a table with a modal would ship sooner. The queue-keeping-its-place property is the entire value, and a modal cannot have it.',
     ],

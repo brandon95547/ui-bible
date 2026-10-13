@@ -58,15 +58,15 @@ function fmtDb(db: number) {
 }
 
 function fmtPan(pan: number) {
-  if (Math.abs(pan) < 1) return 'Centre'
+  if (Math.abs(pan) < 1) return 'Center'
   return pan < 0 ? `L${Math.round(-pan)}` : `R${Math.round(pan)}`
 }
 
-/* -- Channel colour -------------------------------------------------------
-   Colour identifies a channel at a glance across eight of them. It is never
+/* -- Channel color -------------------------------------------------------
+   Color identifies a channel at a glance across eight of them. It is never
    the only signal: every strip also carries its number and its name, so a
-   colour-blind user loses a convenience and not the interface. The ramp is
-   fixed rather than tokenised because these are identity hues, the same
+   color-blind user loses a convenience and not the interface. The ramp is
+   fixed rather than tokenized because these are identity hues, the same
    category as chart series — semantic tokens would make every channel mean
    "success" or "danger", which they do not. */
 const CHANNEL_HUES = [205, 265, 135, 30, 175, 335, 220, 45] as const
@@ -128,7 +128,7 @@ function Meter({
         const on = level >= at
         const isPeak = peak != null && Math.abs(peak - at) < 1 / SEGMENTS
         // Green up to -12, amber into the last few dB, red once it clips. The
-        // thresholds are the meter's whole message, so they are colour AND
+        // thresholds are the meter's whole message, so they are color AND
         // position — the top of the scale is red whether or not you see red.
         const tone =
           at > 0.93
@@ -155,7 +155,7 @@ function Meter({
    A static thumbnail of the clip on the channel. Decorative: it tells you
    which channel is which faster than reading the name, and carries nothing
    the name does not. */
-function Waveform({ seed, colour }: { seed: number; colour: string }) {
+function Waveform({ seed, color }: { seed: number; color: string }) {
   const bars = React.useMemo(() => {
     // Deterministic so it does not reshuffle on every render.
     let s = seed * 9301 + 49297
@@ -171,7 +171,7 @@ function Waveform({ seed, colour }: { seed: number; colour: string }) {
         <span
           key={i}
           className="flex-1 rounded-[1px]"
-          style={{ blockSize: `${h * 100}%`, background: colour, opacity: 0.75 }}
+          style={{ blockSize: `${h * 100}%`, background: color, opacity: 0.75 }}
         />
       ))}
     </div>
@@ -190,14 +190,14 @@ function Fader({
   db,
   onChange,
   label,
-  colour,
+  color,
   disabled,
   showScale = true,
 }: {
   db: number
   onChange?: (db: number) => void
   label: string
-  colour: string
+  color: string
   disabled?: boolean
   showScale?: boolean
 }) {
@@ -243,14 +243,14 @@ function Fader({
           aria-hidden
           className="absolute inset-y-0 left-1/2 w-1.5 -translate-x-1/2 rounded-full bg-[var(--ds-sunken)] shadow-[inset_0_1px_2px_rgb(0_0_0/0.45)]"
         />
-        {/* Travelled portion, from the bottom */}
+        {/* Traveled portion, from the bottom */}
         <span
           aria-hidden
           className="absolute bottom-0 left-1/2 w-1.5 -translate-x-1/2 rounded-full"
           style={{
             blockSize: `${pos * 100}%`,
-            background: disabled ? 'var(--ds-border-strong)' : colour,
-            boxShadow: disabled ? undefined : `0 0 8px ${colour}`,
+            background: disabled ? 'var(--ds-border-strong)' : color,
+            boxShadow: disabled ? undefined : `0 0 8px ${color}`,
           }}
         />
         {/* Unity mark. 0 dB is the one position on the scale a mixer engineer
@@ -291,13 +291,13 @@ function PanKnob({
   pan,
   onChange,
   label,
-  colour,
+  color,
   disabled,
 }: {
   pan: number
   onChange?: (v: number) => void
   label: string
-  colour: string
+  color: string
   disabled?: boolean
 }) {
   const angle = (pan / 100) * 135
@@ -316,7 +316,7 @@ function PanKnob({
           value={pan}
           disabled={disabled}
           onChange={(e) => onChange?.(Number(e.target.value))}
-          // Double-click to recentre is the hardware convention and costs
+          // Double-click to recenter is the hardware convention and costs
           // nothing; the keyboard equivalent is Home then End, or just typing.
           onDoubleClick={() => onChange?.(0)}
           className="peer absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0 disabled:cursor-not-allowed"
@@ -338,7 +338,7 @@ function PanKnob({
         >
           <span
             className="absolute left-1/2 top-[3px] h-3 w-[2px] -translate-x-1/2 rounded-full"
-            style={{ background: disabled ? 'var(--ds-border-strong)' : colour }}
+            style={{ background: disabled ? 'var(--ds-border-strong)' : color }}
           />
         </span>
       </div>
@@ -350,7 +350,7 @@ function PanKnob({
 /* -- Mute / Solo ----------------------------------------------------------
    Toggle buttons, so aria-pressed carries the state. They are the two controls
    on the strip that change what you HEAR without moving anything, which is why
-   they are the two that get a lit indicator rather than only a colour change. */
+   they are the two that get a lit indicator rather than only a color change. */
 function StripToggle({
   on,
   onChange,
@@ -438,7 +438,7 @@ function ChannelStrip({
   audible: boolean
   compact?: boolean
 }) {
-  const colour = hue(index)
+  const color = hue(index)
 
   return (
     <div
@@ -453,7 +453,7 @@ function ChannelStrip({
           <span
             aria-hidden
             className="flex h-5 w-5 shrink-0 items-center justify-center rounded-[var(--radius-xs)] text-[11px] font-semibold text-black"
-            style={{ background: colour }}
+            style={{ background: color }}
           >
             {index + 1}
           </span>
@@ -462,7 +462,7 @@ function ChannelStrip({
           </p>
         </div>
 
-        {!compact && <Waveform seed={index + 1} colour={colour} />}
+        {!compact && <Waveform seed={index + 1} color={color} />}
 
         {/* The readout is text, not just a fader position — the number is the
             thing an engineer writes down. Tabular so it does not jitter. */}
@@ -479,7 +479,7 @@ function ChannelStrip({
           pan={channel.pan}
           onChange={(pan) => onChange({ pan })}
           label={`${channel.name} pan`}
-          colour={colour}
+          color={color}
         />
 
         <div className="flex gap-1.5">
@@ -507,15 +507,15 @@ function ChannelStrip({
           db={channel.db}
           onChange={(db) => onChange({ db })}
           label={`${channel.name} fader`}
-          colour={colour}
+          color={color}
           showScale={!compact}
         />
         <Meter level={audible ? level : 0} className="w-2 shrink-0" />
       </div>
 
       {/* The identity bar. Reading a row of strips is a scanning task, and a
-          solid block of colour at a fixed position is the fastest index. */}
-      <span aria-hidden className="h-1 w-full shrink-0" style={{ background: colour }} />
+          solid block of color at a fixed position is the fastest index. */}
+      <span aria-hidden className="h-1 w-full shrink-0" style={{ background: color }} />
     </div>
   )
 }
@@ -553,7 +553,7 @@ function MasterStrip({
         </div>
 
         {/* Clipping is the one thing on a mixer that is genuinely an error, so
-            it is the one indicator that changes text and not just colour. */}
+            it is the one indicator that changes text and not just color. */}
         <p
           className={cn(
             'flex items-center justify-center gap-1.5 rounded-[var(--radius-xs)] py-1 text-[10px] font-semibold uppercase tracking-wide',
@@ -581,7 +581,7 @@ function MasterStrip({
           db={db}
           onChange={onChange}
           label="Master fader"
-          colour="var(--ds-accent)"
+          color="var(--ds-accent)"
           showScale={!compact}
         />
         <Meter level={mute ? 0 : right} className="w-2 shrink-0" />
@@ -716,8 +716,8 @@ function ConsoleMixer({
 /* ===========================================================================
    VARIANT 2 — STUDIO
    The same job arranged the other way round. The console shows every channel
-   at once and is optimised for COMPARING them; the studio shows one selected
-   track in depth and is optimised for WORKING ON it.
+   at once and is optimized for COMPARING them; the studio shows one selected
+   track in depth and is optimized for WORKING ON it.
 
    That is a real difference and not a skin. A console can hold eight faders
    because a fader is narrow; the moment a track needs volume, pan, presence,
@@ -729,7 +729,7 @@ function ConsoleMixer({
 
 /* -- Rotary --------------------------------------------------------------
    The knob the studio uses three of. Same contract as the pan knob — a range
-   input underneath, rotation on top — but larger, labelled, and with its value
+   input underneath, rotation on top — but larger, labeled, and with its value
    printed beneath, because these are values an operator reads rather than
    positions they eyeball. */
 function RotaryKnob({
@@ -740,7 +740,7 @@ function RotaryKnob({
   step = 0.1,
   label,
   format,
-  colour = 'var(--ds-accent)',
+  color = 'var(--ds-accent)',
   size = 56,
   reset,
   arc = 135,
@@ -752,7 +752,7 @@ function RotaryKnob({
   step?: number
   label: string
   format: (v: number) => string
-  colour?: string
+  color?: string
   size?: number
   reset?: number
   arc?: number
@@ -791,7 +791,7 @@ function RotaryKnob({
           />
           <circle
             cx="50" cy="50" r="44" fill="none" strokeWidth="5" strokeLinecap="round"
-            stroke={colour}
+            stroke={color}
             strokeDasharray={`${(arc * 2 / 360) * 276 * t} 276`}
             transform="rotate(-225 50 50)"
           />
@@ -811,7 +811,7 @@ function RotaryKnob({
         >
           <span
             className="absolute left-1/2 top-[10%] h-[30%] w-[2px] -translate-x-1/2 rounded-full"
-            style={{ background: colour }}
+            style={{ background: color }}
           />
         </span>
       </div>
@@ -845,7 +845,7 @@ interface Track {
    frequency, Dynamics is consistency over level, Automation is change over
    time. A user works down that list as a problem gets more specific. */
 /* EQ is expressed as five NAMED bands rather than raw filter parameters.
-   "Warmth" and "Air" are the same numbers a parametric EQ exposes, labelled for
+   "Warmth" and "Air" are the same numbers a parametric EQ exposes, labeled for
    the person who actually opens this panel — and each band's number ties its
    card to its point on the curve, so the abstract graph and the concrete knob
    are visibly the same control. */
@@ -1008,7 +1008,7 @@ function TrackRow({
   onSelect: () => void
   onMute: () => void
 }) {
-  const colour = hue(index)
+  const color = hue(index)
 
   return (
     <li
@@ -1034,7 +1034,7 @@ function TrackRow({
       <span
         aria-hidden
         className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[var(--radius-sm)]"
-        style={{ background: `color-mix(in oklab, ${colour} 18%, transparent)`, color: hueText(index) }}
+        style={{ background: `color-mix(in oklab, ${color} 18%, transparent)`, color: hueText(index) }}
       >
         <TrackGlyph name={track.icon} />
       </span>
@@ -1044,7 +1044,7 @@ function TrackRow({
           {track.name}
         </span>
         <span className="mt-1 flex items-center gap-1.5">
-          <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: colour }} />
+          <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: color }} />
           {/* Horizontal because the row is horizontal. Same rules as the
               console meter: decorative, aria-hidden, never the only source. */}
           <Meter level={track.mute ? 0 : level} orientation="horizontal" className="h-1.5 w-16" />
@@ -1284,7 +1284,7 @@ function MiniKnob({
   max,
   step = 0.1,
   label,
-  colour,
+  color,
   size = 52,
 }: {
   value: number
@@ -1293,7 +1293,7 @@ function MiniKnob({
   max: number
   step?: number
   label: string
-  colour: string
+  color: string
   size?: number
 }) {
   const t = (value - min) / (max - min)
@@ -1314,7 +1314,7 @@ function MiniKnob({
         <circle cx="50" cy="50" r="45" fill="none" strokeWidth="6" strokeLinecap="round"
           stroke="var(--ds-layer-active)" strokeDasharray="212 283" transform="rotate(-225 50 50)" />
         <circle cx="50" cy="50" r="45" fill="none" strokeWidth="6" strokeLinecap="round"
-          stroke={colour} strokeDasharray={`${212 * t} 283`} transform="rotate(-225 50 50)" />
+          stroke={color} strokeDasharray={`${212 * t} 283`} transform="rotate(-225 50 50)" />
       </svg>
       <span
         aria-hidden
@@ -1330,7 +1330,7 @@ function MiniKnob({
         style={{ transform: `rotate(${angle}deg)` }}
       >
         <span className="absolute left-1/2 top-[8%] h-[32%] w-[2px] -translate-x-1/2 rounded-full"
-          style={{ background: colour }} />
+          style={{ background: color }} />
       </span>
     </div>
   )
@@ -1481,28 +1481,28 @@ function EqPanel({
           order the reader needs them in. */}
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
         {eq.bands.map((b) => {
-          const colour = hslHue(b.hueDeg, 62)
+          const color = hslHue(b.hueDeg, 62)
           const isCut = b.kind === 'cut'
           return (
             <div
               key={b.id}
               className="flex flex-col items-center gap-1.5 rounded-[var(--radius-sm)] border p-2"
               style={{
-                borderColor: `color-mix(in oklab, ${colour} 40%, transparent)`,
-                background: `color-mix(in oklab, ${colour} 7%, transparent)`,
+                borderColor: `color-mix(in oklab, ${color} 40%, transparent)`,
+                background: `color-mix(in oklab, ${color} 7%, transparent)`,
               }}
               title={b.hint}
             >
               <span className="flex w-full items-center gap-1.5">
                 <span aria-hidden
                   className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-[10px] font-bold text-black"
-                  style={{ background: colour }}>{b.n}</span>
+                  style={{ background: color }}>{b.n}</span>
                 <span className="truncate text-caption text-[var(--ds-fg)]">{b.label}</span>
               </span>
 
               <MiniKnob
                 label={`${b.label} ${isCut ? 'frequency' : 'gain'}`}
-                colour={colour}
+                color={color}
                 value={isCut ? b.freq : b.gain}
                 min={isCut ? 20 : -12}
                 max={isCut ? 300 : 12}
@@ -1541,7 +1541,7 @@ function EqPanel({
    the line IS that effect. */
 /* Before and after, on one timeline.
 
-   A transfer curve is the engineer's display and it explains the maths; this
+   A transfer curve is the engineer's display and it explains the math; this
    explains the RESULT. Two traces over the same waveform — what went in, what
    came out — say "the loud parts came down and the quiet parts came up" in a
    way no threshold number does, which is the whole point of describing this
@@ -1562,7 +1562,7 @@ function DynWave({ dyn }: { dyn: Dyn }) {
       // A speech-like envelope: phrases with gaps.
       const phrase = Math.abs(Math.sin(i / 9)) * (0.55 + rnd() * 0.45)
       const raw = Math.pow(phrase, 1.4)
-      // Levelling pulls everything towards the middle of the range.
+      // Leveling pulls everything toward the middle of the range.
       const evened = raw + (0.62 - raw) * amount
       inPts.push(`${i === 0 ? 'M' : 'L'}${x.toFixed(1)},${(mid - raw * mid * 0.92).toFixed(1)}`)
       outPts.push(`${i === 0 ? 'M' : 'L'}${x.toFixed(1)},${(mid - evened * mid * 0.72).toFixed(1)}`)
@@ -1589,9 +1589,9 @@ function DynWave({ dyn }: { dyn: Dyn }) {
 function dynSummary(dyn: Dyn) {
   if (!dyn.on) return 'Dynamics is off. The track is unchanged.'
   const parts: string[] = []
-  if (dyn.leveler > 2) parts.push(`voice levelling ${Math.round(dyn.leveler)} per cent, target ${dyn.target}`)
-  if (dyn.comp > 2) parts.push(`compression ${Math.round(dyn.comp)} per cent`)
-  if (dyn.deess > 2) parts.push(`harsh S sounds reduced ${Math.round(dyn.deess)} per cent`)
+  if (dyn.leveler > 2) parts.push(`voice leveling ${Math.round(dyn.leveler)} percent, target ${dyn.target}`)
+  if (dyn.comp > 2) parts.push(`compression ${Math.round(dyn.comp)} percent`)
+  if (dyn.deess > 2) parts.push(`harsh S sounds reduced ${Math.round(dyn.deess)} percent`)
   if (dyn.gateOn) parts.push(`background noise silenced below ${dyn.gate} decibels`)
   if (dyn.limiter) parts.push(`limiter on, ceiling ${dyn.ceiling.toFixed(1)} dBTP`)
   return parts.length ? `Before and after: ${parts.join(', ')}.` : 'No dynamics processing applied.'
@@ -1599,7 +1599,7 @@ function dynSummary(dyn: Dyn) {
 
 const DYN_PRESETS = [
   { value: 'balanced-narration', label: 'Balanced narration' },
-  { value: 'gentle', label: 'Gentle levelling' },
+  { value: 'gentle', label: 'Gentle leveling' },
   { value: 'broadcast', label: 'Broadcast' },
   { value: 'none', label: 'None' },
 ]
@@ -1694,7 +1694,7 @@ function DynamicsPanel({
         <DynStage icon={<AudioLines size={15} />} title="Voice leveler"
           blurb="Keeps your voice at a consistent level throughout.">
           <div className="flex items-center gap-3">
-            <MiniKnob label="Voice leveler amount" colour="var(--ds-accent)" value={dyn.leveler}
+            <MiniKnob label="Voice leveler amount" color="var(--ds-accent)" value={dyn.leveler}
               min={0} max={100} step={1} onChange={(leveler) => onChange({ leveler })} />
             <label className="min-w-0 flex-1">
               <span className="text-[10px] text-[var(--ds-fg-muted)]">Target</span>
@@ -1714,7 +1714,7 @@ function DynamicsPanel({
         <DynStage icon={<Activity size={15} />} title="Compressor"
           blurb="Controls loud peaks for a smoother, steadier sound.">
           <div className="flex items-center gap-3">
-            <MiniKnob label="Compressor amount" colour="var(--ds-warning)" value={dyn.comp}
+            <MiniKnob label="Compressor amount" color="var(--ds-warning)" value={dyn.comp}
               min={0} max={100} step={1} onChange={(comp) => onChange({ comp })} />
             <div className="min-w-0 flex-1">
               {/* Gain reduction is the one live number proving the compressor
@@ -1734,7 +1734,7 @@ function DynamicsPanel({
         <DynStage icon={<Waves size={15} />} title="De-esser"
           blurb="Tames sharp S sounds without dulling the whole track.">
           <div className="flex items-center gap-3">
-            <MiniKnob label="De-esser amount" colour="var(--ds-info)" value={dyn.deess}
+            <MiniKnob label="De-esser amount" color="var(--ds-info)" value={dyn.deess}
               min={0} max={100} step={1} onChange={(deess) => onChange({ deess })} />
             <p className="text-[11px] text-[var(--ds-fg-secondary)]">
               {dyn.deess < 2 ? 'Off' : `Reducing harsh S sounds by ${Math.round(dyn.deess)}%`}
@@ -1886,7 +1886,7 @@ function DuckLane({ amount }: { amount: number }) {
 
   return (
     <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" className="h-full w-full" role="img"
-      aria-label={`Music ducking. Music drops ${amount} per cent beneath narration, in four places.`}>
+      aria-label={`Music ducking. Music drops ${amount} percent beneath narration, in four places.`}>
       <path d={`${d} L${W},${H} L0,${H} Z`} fill="var(--ds-warning)" opacity="0.14" />
       <path d={d} fill="none" stroke="var(--ds-warning)" strokeWidth="2" vectorEffect="non-scaling-stroke" />
     </svg>
@@ -2058,7 +2058,7 @@ function AutomationPanel({
           <label className="flex items-center gap-2">
             <span className="text-[10px] text-[var(--ds-fg-muted)]">Amount</span>
             <input
-              type="range" aria-label="Duck amount" aria-valuetext={`${auto.duck} per cent`}
+              type="range" aria-label="Duck amount" aria-valuetext={`${auto.duck} percent`}
               min={0} max={100} value={auto.duck}
               onChange={(e) => onChange({ duck: Number(e.target.value) })}
               className="w-24 accent-[var(--ds-accent)]"
@@ -2151,7 +2151,7 @@ function DuckCurve({ amount }: { amount: number }) {
 
   return (
     <svg viewBox="0 0 120 76" preserveAspectRatio="none" className="h-full w-full" role="img"
-      aria-label={`Ducking automation. Music drops by ${amount} per cent while voice is present.`}>
+      aria-label={`Ducking automation. Music drops by ${amount} percent while voice is present.`}>
       <defs>
         <linearGradient id="duckfade" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="var(--ds-warning)" stopOpacity="0.22" />
@@ -2177,7 +2177,7 @@ function StudioMixer({ running = true }: { running?: boolean }) {
 
   const selected = tracks.find((t) => t.id === selectedId) ?? tracks[0]
   const selectedIndex = tracks.findIndex((t) => t.id === selected.id)
-  const colour = hue(selectedIndex)
+  const color = hue(selectedIndex)
 
   React.useEffect(() => {
     const reduced =
@@ -2308,7 +2308,7 @@ function StudioMixer({ running = true }: { running?: boolean }) {
               }
             >
               <div className="rounded-[var(--radius-sm)] bg-[var(--ds-sunken)] p-2">
-                <Waveform seed={selectedIndex + 1} colour={colour} />
+                <Waveform seed={selectedIndex + 1} color={color} />
                 <div aria-hidden className="mt-1 flex justify-between text-[9px] tabular-nums text-[var(--ds-fg-muted)]">
                   {['0:00', '0:20', '0:40', '1:00'].map((t) => <span key={t}>{t}</span>)}
                 </div>
@@ -2317,16 +2317,16 @@ function StudioMixer({ running = true }: { running?: boolean }) {
               <div className="flex flex-wrap items-start justify-around gap-4">
                 <RotaryKnob
                   label="Volume" value={selected.volume} min={DB_MIN} max={DB_MAX} reset={0}
-                  onChange={(volume) => patch({ volume })} format={fmtDb} colour={colour}
+                  onChange={(volume) => patch({ volume })} format={fmtDb} color={color}
                 />
                 <RotaryKnob
                   label="Pan" value={selected.pan} min={-100} max={100} step={1} reset={0}
-                  onChange={(pan) => patch({ pan })} format={fmtPan} colour={colour}
+                  onChange={(pan) => patch({ pan })} format={fmtPan} color={color}
                 />
                 <RotaryKnob
                   label="Presence" value={selected.presence} min={-6} max={6} reset={0}
                   onChange={(presence) => patch({ presence })}
-                  format={(v) => `${v > 0 ? '+' : ''}${v.toFixed(1)} dB`} colour={colour}
+                  format={(v) => `${v > 0 ? '+' : ''}${v.toFixed(1)} dB`} color={color}
                 />
               </div>
 
@@ -2354,7 +2354,7 @@ function StudioMixer({ running = true }: { running?: boolean }) {
                     <input
                       type="range"
                       aria-label="Duck amount"
-                      aria-valuetext={`${duck} per cent`}
+                      aria-valuetext={`${duck} percent`}
                       min={0}
                       max={100}
                       value={duck}
@@ -2431,7 +2431,7 @@ function StudioMixer({ running = true }: { running?: boolean }) {
             />
           </div>
 
-          {/* Loudness is the number this variant is actually steering towards,
+          {/* Loudness is the number this variant is actually steering toward,
               so it is the largest text on the panel — and it says how far from
               target it is, because "-14 LUFS" alone means nothing to most
               people editing a video. */}
@@ -2642,7 +2642,7 @@ export default defineDoc({
         id: 'strip',
         title: 'One channel strip',
         description:
-          'The unit that repeats. Number and colour for identity, a waveform to recognise the clip, the gain readout as text, pan, mute and solo, then the fader and its meter side by side.',
+          'The unit that repeats. Number and color for identity, a waveform to recognize the clip, the gain readout as text, pan, mute and solo, then the fader and its meter side by side.',
         render: (
           <PreviewStage minHeight={0} allowResize={false} center={false}>
             <div className="w-[132px]">
@@ -2775,14 +2775,14 @@ export default defineDoc({
         id: 'scale',
         title: 'Why the taper',
         description:
-          'The same eight values on a tapered scale and a linear one. On the linear track unity gain sits near the top and the useful range is squeezed into the last centimetre.',
+          'The same eight values on a tapered scale and a linear one. On the linear track unity gain sits near the top and the useful range is squeezed into the last centimeter.',
         render: (
           <PreviewStage minHeight={0} allowResize={false} center={false}>
             <Grid min="15rem">
               <Cell label="Tapered — usable" tone="good">
                 <div className="flex h-40 gap-3 py-1">
                   {[0, -3, -6, -12].map((db, i) => (
-                    <Fader key={db} db={db} label={`t${i}`} colour={hue(i)} />
+                    <Fader key={db} db={db} label={`t${i}`} color={hue(i)} />
                   ))}
                 </div>
               </Cell>
@@ -2805,13 +2805,13 @@ export default defineDoc({
       },
     ],
     states: [
-      { label: 'Unity (0 dB)', render: <div className="h-32"><Fader db={0} label="a" colour="var(--ds-accent)" showScale={false} /></div> },
-      { label: 'Attenuated', render: <div className="h-32"><Fader db={-12} label="b" colour="var(--ds-accent)" showScale={false} /></div> },
-      { label: 'Boosted', render: <div className="h-32"><Fader db={6} label="c" colour="var(--ds-accent)" showScale={false} /></div> },
-      { label: 'Off (-∞)', render: <div className="h-32"><Fader db={-60} label="d" colour="var(--ds-accent)" showScale={false} /></div> },
-      { label: 'Disabled', render: <div className="h-32"><Fader db={-6} label="e" colour="var(--ds-accent)" showScale={false} disabled /></div> },
-      { label: 'Pan centre', render: <PanKnob pan={0} label="f" colour="var(--ds-accent)" /> },
-      { label: 'Pan hard left', render: <PanKnob pan={-100} label="g" colour="var(--ds-accent)" /> },
+      { label: 'Unity (0 dB)', render: <div className="h-32"><Fader db={0} label="a" color="var(--ds-accent)" showScale={false} /></div> },
+      { label: 'Attenuated', render: <div className="h-32"><Fader db={-12} label="b" color="var(--ds-accent)" showScale={false} /></div> },
+      { label: 'Boosted', render: <div className="h-32"><Fader db={6} label="c" color="var(--ds-accent)" showScale={false} /></div> },
+      { label: 'Off (-∞)', render: <div className="h-32"><Fader db={-60} label="d" color="var(--ds-accent)" showScale={false} /></div> },
+      { label: 'Disabled', render: <div className="h-32"><Fader db={-6} label="e" color="var(--ds-accent)" showScale={false} disabled /></div> },
+      { label: 'Pan center', render: <PanKnob pan={0} label="f" color="var(--ds-accent)" /> },
+      { label: 'Pan hard left', render: <PanKnob pan={-100} label="g" color="var(--ds-accent)" /> },
       { label: 'Muted', render: <div className="w-24"><StripToggle on onChange={() => {}} tone="danger" name="x">Mute</StripToggle></div> },
       { label: 'Soloed', render: <div className="w-24"><StripToggle on onChange={() => {}} tone="warning" name="y">Solo</StripToggle></div> },
       { label: 'Meter, nominal', render: <div className="h-24"><Meter level={0.55} className="w-2.5 h-full" /></div> },
@@ -2828,14 +2828,14 @@ export default defineDoc({
     caption:
       'One strip. Every element sits at the same vertical position on every channel, which is what lets eight of them be read as one picture.',
     parts: [
-      { n: 1, label: 'Identity', value: 'Number + colour + name', kind: 'color', note: 'Three redundant signals for the same fact. Colour alone fails for a colour-blind user and fails again the moment there are more channels than distinguishable hues.' },
-      { n: 2, label: 'Waveform', value: '32px, decorative', kind: 'size', note: 'Recognising a clip by shape is faster than reading its name. It carries nothing the name does not, so it is aria-hidden.' },
+      { n: 1, label: 'Identity', value: 'Number + color + name', kind: 'color', note: 'Three redundant signals for the same fact. Color alone fails for a color-blind user and fails again the moment there are more channels than distinguishable hues.' },
+      { n: 2, label: 'Waveform', value: '32px, decorative', kind: 'size', note: 'Recognizing a clip by shape is faster than reading its name. It carries nothing the name does not, so it is aria-hidden.' },
       { n: 3, label: 'Gain readout', value: 'Mono, tabular', kind: 'type', note: 'The number as text. An engineer writes this down; a fader position cannot be written down. Tabular figures so it does not jitter while dragging.' },
-      { n: 4, label: 'Pan', value: '44px rotary', kind: 'size', note: 'A range input presented as a rotation, because a pan value is a position between two speakers. Double-click recentres.' },
-      { n: 5, label: 'Mute / Solo', value: '28px, aria-pressed', kind: 'shape', note: 'The two controls that change what you hear without moving anything, so they are the two with a lit indicator rather than only a colour change.' },
+      { n: 4, label: 'Pan', value: '44px rotary', kind: 'size', note: 'A range input presented as a rotation, because a pan value is a position between two speakers. Double-click recenters.' },
+      { n: 5, label: 'Mute / Solo', value: '28px, aria-pressed', kind: 'shape', note: 'The two controls that change what you hear without moving anything, so they are the two with a lit indicator rather than only a color change.' },
       { n: 6, label: 'Fader', value: '26 × 40px cap', kind: 'size', note: 'The cap is deliberately large and gripped. It is the control the user reaches for most and the one they aim at while listening rather than looking.' },
       { n: 7, label: 'Scale', value: 'Meaningful stops', kind: 'type', note: '+12 down to -60, with 0 dB given a physical detent line. Printing every step would make it measuring equipment.' },
-      { n: 8, label: 'Meter', value: '8px, aria-hidden', kind: 'color', note: 'Output. Segmented so a level is read as a quantity rather than a colour, with the top of the scale red by position as well as by hue.' },
+      { n: 8, label: 'Meter', value: '8px, aria-hidden', kind: 'color', note: 'Output. Segmented so a level is read as a quantity rather than a color, with the top of the scale red by position as well as by hue.' },
       { n: 9, label: 'Identity bar', value: '4px', kind: 'color', note: 'A solid block at a fixed position is the fastest index across a row of strips.' },
     ],
   },
@@ -2894,7 +2894,7 @@ export default defineDoc({
       title: 'Give 0 dB a detent',
       why: 'Unity gain is the one position an engineer looks for without reading the scale. A line on the rail — and a double-click that snaps to it — turns "find zero" from a task into a gesture.',
       render: (
-        <div className="h-28"><Fader db={0} label="detent" colour="var(--ds-success)" showScale={false} /></div>
+        <div className="h-28"><Fader db={0} label="detent" color="var(--ds-success)" showScale={false} /></div>
       ),
     },
     {
@@ -2931,7 +2931,7 @@ export default defineDoc({
     },
     {
       title: 'Say what the loudness number means',
-      why: '"-14 LUFS" is meaningless to most people editing a video, and it is the number the whole studio arrangement is steering towards. Print the target beside it and say which side of it you are on.',
+      why: '"-14 LUFS" is meaningless to most people editing a video, and it is the number the whole studio arrangement is steering toward. Print the target beside it and say which side of it you are on.',
       render: (
         <div className="w-32 rounded-[var(--radius-xs)] border border-[var(--ds-success-border)] p-2 text-center">
           <p className="font-mono text-body-sm tabular-nums text-[var(--ds-fg)]">-14.0 LUFS</p>
@@ -3038,7 +3038,7 @@ export default defineDoc({
         <Row gap="sm">
           {[0, 1, 2, 3, 4].map((i) => (
             <div key={i} className="w-8 rounded-[var(--radius-xs)] border border-[var(--ds-danger-border)] p-1">
-              <div className="h-10"><Fader db={-6} label={`tiny${i}`} colour={hue(i)} showScale={false} /></div>
+              <div className="h-10"><Fader db={-6} label={`tiny${i}`} color={hue(i)} showScale={false} /></div>
             </div>
           ))}
         </Row>
@@ -3056,23 +3056,23 @@ export default defineDoc({
       { id: '4.1.2', name: 'Name, Role, Value', level: 'A' },
     ],
     contrast: [
-      'The travelled portion of the rail must reach 3:1 against the untravelled portion — that boundary is the value.',
-      'The fader cap must reach 3:1 against both the rail and the strip behind it, which is why it is a bordered object with its own elevation rather than a coloured block.',
-      'Channel colour is identity, not status, so it is never the only carrier: the number and the name say the same thing.',
-      'Meter segment colours are a convention, not a message. Clipping must also be text.',
-      'Every dB readout is content and owes 4.5:1 — including the coloured one, which is why the channel hue is lightened for text use.',
+      'The traveled portion of the rail must reach 3:1 against the untraveled portion — that boundary is the value.',
+      'The fader cap must reach 3:1 against both the rail and the strip behind it, which is why it is a bordered object with its own elevation rather than a colored block.',
+      'Channel color is identity, not status, so it is never the only carrier: the number and the name say the same thing.',
+      'Meter segment colors are a convention, not a message. Clipping must also be text.',
+      'Every dB readout is content and owes 4.5:1 — including the colored one, which is why the channel hue is lightened for text use.',
     ],
     keyboard: [
       { keys: 'Tab', does: 'Moves through one strip at a time in visual order: pan, mute, solo, fader. Predictable order across strips matters more than any single shortcut.' },
       { keys: '↑ / ↓', does: 'Moves the focused fader by one step. ← / → move a pan knob.' },
       { keys: 'Page Up / Page Down', does: 'Larger increment — conventionally 6 dB on a fader.' },
       { keys: 'Home / End', does: 'Jumps to the minimum or maximum of the focused control.' },
-      { keys: 'Double-click', does: 'Resets a fader to unity and a pan knob to centre. Provide a keyboard equivalent — this must not be the only way.' },
+      { keys: 'Double-click', does: 'Resets a fader to unity and a pan knob to center. Provide a keyboard equivalent — this must not be the only way.' },
       { keys: '↑ / ↓ in the track list', does: 'Moves the selection in the studio arrangement, which changes everything in the inspector. Tab leaves the list rather than walking it.' },
     ],
     aria: [
       { attr: 'role="slider"', on: 'Faders and pan knobs', note: 'Implicit on input[type=range]. This is the reason to build on it rather than on a div.' },
-      { attr: 'aria-valuetext', on: 'Faders and pan knobs', note: '"-4.2 dB", "L22", "Centre". Without it a pan knob announces "-22" and a fader announces a position on an internal 0–1000 scale that means nothing.' },
+      { attr: 'aria-valuetext', on: 'Faders and pan knobs', note: '"-4.2 dB", "L22", "Center". Without it a pan knob announces "-22" and a fader announces a position on an internal 0–1000 scale that means nothing.' },
       { attr: 'aria-orientation="vertical"', on: 'Faders', note: 'Changes which arrow keys are announced as increasing.' },
       { attr: 'aria-label', on: 'Every control', note: 'Scoped by channel — "Narration fader", not "fader". Eight identically-named sliders is the most common failure in this component.' },
       { attr: 'aria-pressed', on: 'Mute and solo', note: 'They are toggle buttons, not links or checkboxes. The pressed state is the whole meaning.' },
@@ -3169,7 +3169,7 @@ export default defineDoc({
           { name: 'id', type: 'string', required: true, description: 'Stable identity. Not the index — strips get reordered.' },
           { name: 'name', type: 'string', required: true, description: 'Used in every aria-label on the strip.' },
           { name: 'db', type: 'number', required: true, description: 'Gain, -60 to +12. -60 is treated as -∞.' },
-          { name: 'pan', type: 'number', required: true, description: '-100 (hard left) to +100 (hard right). 0 is centre.' },
+          { name: 'pan', type: 'number', required: true, description: '-100 (hard left) to +100 (hard right). 0 is center.' },
           { name: 'mute', type: 'boolean', required: true, description: 'Silences this channel.' },
           { name: 'solo', type: 'boolean', required: true, description: 'Silences every channel that is not soloed. A mode — surface it.' },
         ],
@@ -3179,7 +3179,7 @@ export default defineDoc({
 
   notes: {
     tips: [
-      'Double-click to reset is the hardware convention and worth honouring — unity on a fader, centre on a pan knob. Give it a keyboard equivalent; it must never be the only route.',
+      'Double-click to reset is the hardware convention and worth honoring — unity on a fader, center on a pan knob. Give it a keyboard equivalent; it must never be the only route.',
       'Solo should be exclusive by default and additive with a modifier. Most users want "just this one"; power users want "these three".',
       'Keep the master strip visually distinct and at the end. A master that looks like channel nine will be dragged as one.',
       'Peak-hold on the meter — a mark that lingers for a second at the highest recent level — is the single most useful addition, because clipping is over before the eye catches it.',
@@ -3191,18 +3191,18 @@ export default defineDoc({
       'The waveform thumbnail should be generated once and cached per clip. Recomputing peaks on render is invisible with eight channels and fatal with thirty-two.',
     ],
     mistakes: [
-      'Eight sliders labelled "slider". The channel name has to be in every aria-label or the whole console is unnavigable by keyboard.',
+      'Eight sliders labeled "slider". The channel name has to be in every aria-label or the whole console is unnavigable by keyboard.',
       'A meter with no text equivalent, so clipping is invisible to anyone who was not looking at that pixel.',
       'Solo with no visible consequence — the most reliable source of "the mixer is broken" reports.',
-      'A linear dB scale, which makes the useful range of the fader about a centimetre long.',
+      'A linear dB scale, which makes the useful range of the fader about a centimeter long.',
       'Transitioning the fader position, which makes every drag feel broken.',
-      'Colour as the only channel identity, which fails for a colour-blind user and fails for everyone once there are more channels than distinguishable hues.',
+      'Color as the only channel identity, which fails for a color-blind user and fails for everyone once there are more channels than distinguishable hues.',
     ],
     realWorld: [
       'Most real tools ship both arrangements: the console as the main view, the studio opened by double-clicking a strip. The console answers "is the balance right", the studio answers "what is wrong with this track", and neither question is rare enough to make the other view optional.',
-      'The studio arrangement is what appears in video editors, where the user is not an audio engineer and there are five tracks rather than forty. It steers towards a loudness target instead of asking for a balance, because "-14 LUFS for this platform" is a decision the tool can make and the user cannot.',
+      'The studio arrangement is what appears in video editors, where the user is not an audio engineer and there are five tracks rather than forty. It steers toward a loudness target instead of asking for a balance, because "-14 LUFS for this platform" is a decision the tool can make and the user cannot.',
       'Every hardware console ever built puts the fader at the bottom and the meter beside it. That is not nostalgia — it is because the hand rests low and the eye tracks the meter while the hand moves.',
-      'Broadcast desks give solo its own colour and its own light because an accidental solo on air is a serious failure. The visual weight is proportional to the cost of the mistake.',
+      'Broadcast desks give solo its own color and its own light because an accidental solo on air is a serious failure. The visual weight is proportional to the cost of the mistake.',
       'DAWs let a strip collapse to a fader and a name and nothing else. That is the honest compact mode: drop information, never target size.',
     ],
   },

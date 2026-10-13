@@ -7,7 +7,7 @@ const BPS = [
   { name: 'md', min: 768, label: 'Tablet', Icon: Tablet, cols: 8, gutter: 32, what: 'Persistent secondary navigation. Tables regain their columns.' },
   { name: 'lg', min: 1024, label: 'Laptop', Icon: Laptop, cols: 12, gutter: 40, what: 'Full application shell. Sidebar is permanent. Three-up card grids.' },
   { name: 'xl', min: 1280, label: 'Desktop', Icon: Monitor, cols: 12, gutter: 40, what: 'The right-hand rail appears. Master–detail becomes viable.' },
-  { name: '2xl', min: 1536, label: 'Wide', Icon: Tv, cols: 12, gutter: 40, what: 'Container caps at 76rem and centres. Nothing else changes.' },
+  { name: '2xl', min: 1536, label: 'Wide', Icon: Tv, cols: 12, gutter: 40, what: 'Container caps at 76rem and centers. Nothing else changes.' },
 ]
 
 function Ladder() {
@@ -287,14 +287,14 @@ export default defineDoc({
     { category: 'spacing', token: 'md', value: '768px', usedFor: 'Tables regain columns, secondary nav appears' },
     { category: 'spacing', token: 'lg', value: '1024px', usedFor: 'Permanent sidebar, full application shell' },
     { category: 'spacing', token: 'xl', value: '1280px', usedFor: 'Right-hand rail, master–detail' },
-    { category: 'spacing', token: '2xl', value: '1536px', usedFor: 'Container reaches its cap and centres' },
+    { category: 'spacing', token: '2xl', value: '1536px', usedFor: 'Container reaches its cap and centers' },
     { category: 'spacing', token: 'gutter', value: '24 → 40px', usedFor: 'Page padding, steps at sm' },
     { category: 'spacing', token: 'touch-target', value: '44px', usedFor: 'Minimum on pointer: coarse' },
   ],
 
   sizes: [
     { name: 'base', minWidth: '0px', padding: '24px', use: 'One column. Bottom nav. Full-screen dialogs. Tables as cards.' },
-    { name: 'sm', minWidth: '640px', padding: '32px', use: 'Two-up cards. Paired form fields. Centred dialogs.' },
+    { name: 'sm', minWidth: '640px', padding: '32px', use: 'Two-up cards. Paired form fields. Centered dialogs.' },
     { name: 'md', minWidth: '768px', padding: '32px', use: 'Real tables. Persistent secondary navigation.' },
     { name: 'lg', minWidth: '1024px', padding: '40px', use: 'Permanent sidebar. Three-up grids. Desktop density available.' },
     { name: 'xl', minWidth: '1280px', padding: '40px', use: 'Right rail. Master–detail. Four-up grids.' },

@@ -147,8 +147,8 @@ export default defineDoc({
         </p>
         <p>
           Never change the label weight between states. Bold on active and regular on inactive
-          causes the whole row to reflow every time the user switches, and neighbouring labels shift
-          under the cursor. Change colour instead — it costs no layout.
+          causes the whole row to reflow every time the user switches, and neighboring labels shift
+          under the cursor. Change color instead — it costs no layout.
         </p>
       </>
     ),
@@ -284,10 +284,10 @@ export default defineDoc({
       },
       {
         n: 3,
-        label: 'Label colour',
+        label: 'Label color',
         value: 'muted → fg',
         kind: 'color',
-        note: 'Colour changes, weight does not. Changing the weight reflows the whole row on every switch.',
+        note: 'Color changes, weight does not. Changing the weight reflows the whole row on every switch.',
       },
       {
         n: 4,
@@ -325,7 +325,7 @@ export default defineDoc({
     { category: 'spacing', token: 'panel gap', value: '20px', usedFor: 'Tabs to panel' },
     { category: 'radius', token: '--radius-sm', value: '6px', usedFor: 'Focus ring and pill corners' },
     { category: 'shadow', token: '--shadow-e1', usedFor: 'Active pill lift' },
-    { category: 'motion', token: 'duration', value: '140ms standard', usedFor: 'Colour transition' },
+    { category: 'motion', token: 'duration', value: '140ms standard', usedFor: 'Color transition' },
   ],
 
   sizes: [
@@ -361,8 +361,8 @@ export default defineDoc({
       ),
     },
     {
-      title: 'Change colour, not weight',
-      why: 'A bold active label is wider than a regular one, so every switch reflows the row and neighbouring tabs move under the cursor.',
+      title: 'Change color, not weight',
+      why: 'A bold active label is wider than a regular one, so every switch reflows the row and neighboring tabs move under the cursor.',
       render: (
         <MiniTabs active />
       ),
@@ -473,7 +473,7 @@ export default defineDoc({
     contrast: [
       'The inactive label must reach 4.5:1 — it is real text, not decoration, and it is the most commonly failed part of a tab row.',
       'The 2px indicator must reach 3:1 against the container. It is the only visual carrier of which tab is active.',
-      'Never rely on the indicator alone. The active label also changes colour, so the state survives greyscale.',
+      'Never rely on the indicator alone. The active label also changes color, so the state survives grayscale.',
     ],
     keyboard: [
       { keys: 'Tab', does: 'Enters the tablist at the active tab. One stop for the whole row.' },
@@ -576,7 +576,7 @@ const Metrics = lazy(() => import('./Metrics'))`,
 
 .ds-tab:hover { color: var(--ds-fg-secondary); }
 
-/* Colour and the indicator change. Weight never does — a bold active
+/* Color and the indicator change. Weight never does — a bold active
    label is wider and reflows the whole row on every switch. */
 .ds-tab[aria-selected='true'] {
   color: var(--ds-fg);

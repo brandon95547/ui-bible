@@ -58,7 +58,7 @@ function Picker({
     <div className={cn('flex flex-col gap-3', compact ? 'w-[13rem]' : 'w-[15rem]')}>
       {/* Swatches first: almost every real choice is one of these, and a
           named swatch is reproducible in a way a spectrum drag is not. */}
-      <div role="radiogroup" aria-label="Preset colours" className="grid grid-cols-8 gap-1.5">
+      <div role="radiogroup" aria-label="Preset colors" className="grid grid-cols-8 gap-1.5">
         {SWATCHES.map(([hex, name]) => {
           const on = value.toLowerCase() === hex
           return (
@@ -101,7 +101,7 @@ function Picker({
         />
         <div className="min-w-0 flex-1">
           {/* The hex field is never optional. It is the only exact, shareable,
-              reproducible way to state a colour. */}
+              reproducible way to state a color. */}
           <TextInput
             size="sm"
             value={draft}
@@ -118,7 +118,7 @@ function Picker({
         {hasEyeDropper && (
           <button
             type="button"
-            aria-label="Pick a colour from the screen"
+            aria-label="Pick a color from the screen"
             className="grid h-8 w-8 shrink-0 place-items-center rounded-[var(--radius-md)] text-[var(--ds-fg-muted)] hover:bg-[var(--ds-layer-hover)] hover:text-[var(--ds-fg)] focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[var(--ds-focus-ring)]"
           >
             <Pipette size={14} />
@@ -164,7 +164,7 @@ function Playground() {
           <KnobToggle checked={contrast} onChange={setContrast} label="Contrast readout" />
         </div>
       }
-      code={`<Field label="Brand colour" description="Used for buttons and links.">
+      code={`<Field label="Brand color" description="Used for buttons and links.">
   <ColorPicker
     value={value}
     onChange={setValue}
@@ -174,7 +174,7 @@ function Playground() {
 </Field>`}
     >
       <div className="w-full max-w-xs">
-        <Field label="Brand colour" description="Used for buttons, links and focus rings.">
+        <Field label="Brand color" description="Used for buttons, links and focus rings.">
           <Picker
             value={value}
             onChange={setValue}
@@ -192,32 +192,32 @@ export default defineDoc({
     id: 'color-picker',
     title: 'Color Picker',
     tagline:
-      'Swatches first, spectrum second, hex field always. Most colour choices are a pick from a set, not an exploration of a gamut.',
+      'Swatches first, spectrum second, hex field always. Most color choices are a pick from a set, not an exploration of a gamut.',
     keywords: ['swatch', 'eyedropper', 'hex', 'hsl', 'palette', 'contrast', 'alpha'],
   },
 
   overview: {
     purpose:
-      'A colour picker turns an abstract value into something the user can see. In practice almost every real choice is a pick from a small set — a label colour, a category, a brand accent — so the swatch grid does most of the work and the spectrum exists for the minority of cases that genuinely need a specific hue. The hex field is what makes any of it reproducible.',
+      'A color picker turns an abstract value into something the user can see. In practice almost every real choice is a pick from a small set — a label color, a category, a brand accent — so the swatch grid does most of the work and the spectrum exists for the minority of cases that genuinely need a specific hue. The hex field is what makes any of it reproducible.',
     whenToUse: [
-      'Choosing a colour with a visible effect: a label, a tag, a chart series, a theme accent.',
+      'Choosing a color with a visible effect: a label, a tag, a chart series, a theme accent.',
       'Brand and theme configuration, where the exact value matters and must be shareable.',
       'Anywhere a user would otherwise paste a hex code and hope.',
     ],
     whenNotToUse: [
       {
-        text: 'The colour carries meaning that the system defines.',
-        instead: 'the semantic tokens — status colours are not a user preference',
+        text: 'The color carries meaning that the system defines.',
+        instead: 'the semantic tokens — status colors are not a user preference',
         to: '#/colors',
       },
       {
-        text: 'There are fewer than about ten allowed colours.',
+        text: 'There are fewer than about ten allowed colors.',
         instead: 'a swatch grid alone, with no spectrum at all',
         to: '#/radio-button',
       },
       {
         text: 'The user is picking a chart palette.',
-        instead: 'a named categorical palette — hand-picked series colours collide and fail in greyscale',
+        instead: 'a named categorical palette — hand-picked series colors collide and fail in grayscale',
         to: '#/chart',
       },
     ],
@@ -236,7 +236,7 @@ export default defineDoc({
           guideline.
         </p>
         <p>
-          If the colour will ever sit behind text, <strong>show the contrast ratio</strong>. This
+          If the color will ever sit behind text, <strong>show the contrast ratio</strong>. This
           is the one place a design system can prevent an accessibility failure at the moment it is
           created rather than auditing it six months later.
         </p>
@@ -251,7 +251,7 @@ export default defineDoc({
         id: 'swatches-only',
         title: 'Most pickers should be swatches only',
         description:
-          'Twelve labelled colours cover a label picker, a category colour, a calendar tag. Adding a spectrum invites values nobody can reproduce.',
+          'Twelve labeled colors cover a label picker, a category color, a calendar tag. Adding a spectrum invites values nobody can reproduce.',
         render: (
           <PreviewStage minHeight={0} allowResize={false} center={false}>
             <SwatchOnly />
@@ -262,7 +262,7 @@ export default defineDoc({
         id: 'contrast',
         title: 'Contrast as you choose',
         description:
-          'The ratio against the surface the colour will actually sit on, checked live. It is the cheapest accessibility intervention available anywhere in a design system.',
+          'The ratio against the surface the color will actually sit on, checked live. It is the cheapest accessibility intervention available anywhere in a design system.',
         render: (
           <PreviewStage minHeight={0} allowResize={false} center={false}>
             <Grid min="16rem">
@@ -299,7 +299,7 @@ export default defineDoc({
         id: 'preview',
         title: 'Preview it where it lands',
         description:
-          'A swatch in a panel tells you the colour. The same colour behind a real button tells you whether it works, which is the actual question.',
+          'A swatch in a panel tells you the color. The same color behind a real button tells you whether it works, which is the actual question.',
         render: <LivePreview />,
       },
     ],
@@ -387,19 +387,19 @@ export default defineDoc({
         label: 'Swatch',
         value: '24 × 24px, 6px gap',
         kind: 'size',
-        note: 'Large enough to judge the colour, small enough that twelve fit on one row. Below 20px, similar hues become indistinguishable.',
+        note: 'Large enough to judge the color, small enough that twelve fit on one row. Below 20px, similar hues become indistinguishable.',
       },
       {
         n: 2,
         label: 'Selection',
         value: 'Ring + offset, plus a check',
         kind: 'shape',
-        note: 'A ring rather than a border, so the swatch never changes size and the row does not jump as the selection moves. The check is the second, non-colour signal.',
+        note: 'A ring rather than a border, so the swatch never changes size and the row does not jump as the selection moves. The check is the second, non-color signal.',
       },
       {
         n: 3,
         label: 'Light-swatch border',
-        value: '1px on pale colours',
+        value: '1px on pale colors',
         kind: 'color',
         note: 'A white swatch on a white panel is invisible. Every swatch needs an edge that survives its own lightness.',
       },
@@ -408,7 +408,7 @@ export default defineDoc({
         label: 'Spectrum',
         value: '80px tall',
         kind: 'size',
-        note: 'Deliberately secondary. It is the escape hatch for a colour not in the set, not the primary interface.',
+        note: 'Deliberately secondary. It is the escape hatch for a color not in the set, not the primary interface.',
       },
       {
         n: 5,
@@ -422,7 +422,7 @@ export default defineDoc({
         label: 'Contrast readout',
         value: 'Ratio + AA verdict',
         kind: 'type',
-        note: 'Against the surface the colour will actually sit on. A number with no pass/fail verdict makes the reader do the work.',
+        note: 'Against the surface the color will actually sit on. A number with no pass/fail verdict makes the reader do the work.',
       },
       {
         n: 7,
@@ -484,7 +484,7 @@ export default defineDoc({
     },
     {
       title: 'Show contrast against the real surface',
-      why: 'It is the cheapest possible accessibility intervention: catching the failure while the colour is being chosen rather than in an audit months later.',
+      why: 'It is the cheapest possible accessibility intervention: catching the failure while the color is being chosen rather than in an audit months later.',
       render: <ContrastRow hex="#4338ca" />,
     },
     {
@@ -516,18 +516,18 @@ export default defineDoc({
       ),
     },
     {
-      title: 'Do not let users pick status colours',
+      title: 'Do not let users pick status colors',
       why: 'Red means failure because the system says so. Making that a preference breaks the meaning across every surface at once.',
       render: (
         <Row gap="sm" align="center">
-          <span className="text-caption text-[var(--ds-danger-text)]">Error colour</span>
+          <span className="text-caption text-[var(--ds-danger-text)]">Error color</span>
           <span className="h-5 w-5 rounded-[var(--radius-sm)] bg-[#10b981]" />
         </Row>
       ),
     },
     {
-      title: 'Do not identify colours by colour alone',
-      why: 'A grid of unlabelled swatches is unusable for anyone with a colour vision deficiency, and unnameable for everyone else.',
+      title: 'Do not identify colors by color alone',
+      why: 'A grid of unlabeled swatches is unusable for anyone with a color vision deficiency, and unnameable for everyone else.',
       render: (
         <Row gap="sm">
           {['#ef4444', '#f59e0b', '#10b981'].map((c) => (
@@ -538,7 +538,7 @@ export default defineDoc({
     },
     {
       title: 'Do not offer alpha unless it is used',
-      why: 'A transparency slider turns every chosen colour into a value that behaves differently on every background — and users reach for it to make things "softer" when they wanted a lighter shade.',
+      why: 'A transparency slider turns every chosen color into a value that behaves differently on every background — and users reach for it to make things "softer" when they wanted a lighter shade.',
       render: (
         <span
           aria-hidden
@@ -561,9 +561,9 @@ export default defineDoc({
       { id: '4.1.2', name: 'Name, Role, Value', level: 'A' },
     ],
     contrast: [
-      'Every swatch needs an edge that survives its own lightness — a 3:1 border, or an inset ring on pale colours.',
+      'Every swatch needs an edge that survives its own lightness — a 3:1 border, or an inset ring on pale colors.',
       'The selection ring must reach 3:1 against both the swatch and the panel, which is why it is drawn with an offset.',
-      'The selected state carries a check as well as a ring, so it does not depend on the ring being visible against that particular colour.',
+      'The selected state carries a check as well as a ring, so it does not depend on the ring being visible against that particular color.',
       'The contrast readout must state a verdict, not only a number. "3.1:1" leaves the reader to remember the thresholds.',
     ],
     keyboard: [
@@ -575,14 +575,14 @@ export default defineDoc({
     ],
     aria: [
       { attr: 'role="radiogroup"', on: 'The swatch grid', note: 'One value, mutually exclusive. Each swatch is role="radio" with aria-checked.' },
-      { attr: 'aria-label', on: 'Each swatch', note: 'The name and the value: "Indigo #6366f1". A swatch with no name is unusable without colour vision.' },
+      { attr: 'aria-label', on: 'Each swatch', note: 'The name and the value: "Indigo #6366f1". A swatch with no name is unusable without color vision.' },
       { attr: 'role="slider"', on: 'Spectrum axes', note: 'With aria-valuenow and aria-valuetext, so hue and saturation are adjustable by keyboard.' },
       { attr: 'aria-label', on: 'The hex field', note: '"Hex value". It is the precise path and must be findable.' },
-      { attr: 'role="status"', on: 'The contrast readout', note: 'Announces the ratio and the verdict as the colour changes, debounced.' },
-      { attr: 'aria-invalid', on: 'The hex field', note: 'While the string does not parse, with the last valid colour still applied.' },
+      { attr: 'role="status"', on: 'The contrast readout', note: 'Announces the ratio and the verdict as the color changes, debounced.' },
+      { attr: 'aria-invalid', on: 'The hex field', note: 'While the string does not parse, with the last valid color still applied.' },
     ],
     focus:
-      'The swatch grid uses roving tabindex so Tab crosses it once. Selecting a swatch keeps focus on it, so the user can arrow to a neighbour and compare. The hex field keeps its caret when the value is set from elsewhere in the picker.',
+      'The swatch grid uses roving tabindex so Tab crosses it once. Selecting a swatch keeps focus on it, so the user can arrow to a neighbor and compare. The hex field keeps its caret when the value is set from elsewhere in the picker.',
     screenReader: [
       'Swatches announce as "Indigo #6366f1, radio button, selected, 1 of 8".',
       'Announce the contrast verdict when it changes: "4.8 to 1, passes AA for text".',
@@ -597,7 +597,7 @@ export default defineDoc({
       lang: 'tsx',
       code: `import { ColorPicker } from '@/ui/Input'
 
-<Field label="Brand colour" description="Used for buttons, links and focus rings.">
+<Field label="Brand color" description="Used for buttons, links and focus rings.">
   <ColorPicker
     value={brand}
     onChange={setBrand}
@@ -606,7 +606,7 @@ export default defineDoc({
   />
 </Field>
 
-// Parse loosely: shorthand, missing hash, uppercase are all the same colour.
+// Parse loosely: shorthand, missing hash, uppercase are all the same color.
 function parseHex(input: string): string | null {
   const s = input.trim().replace(/^#/, '').toLowerCase()
   if (/^[0-9a-f]{3}$/.test(s)) return '#' + s.split('').map((c) => c + c).join('')
@@ -637,7 +637,7 @@ async function pick() {
       lang: 'html',
       code: `<div class="ds-colorpicker">
   <!-- One value, mutually exclusive: a radiogroup, not eight buttons. -->
-  <div role="radiogroup" aria-label="Preset colours" class="ds-swatches">
+  <div role="radiogroup" aria-label="Preset colors" class="ds-swatches">
     <button type="button" role="radio" aria-checked="true"
             aria-label="Indigo #6366f1" style="--swatch: #6366f1" tabindex="0">
       <svg aria-hidden="true">…</svg>
@@ -711,9 +711,9 @@ async function pick() {
         props: [
           { name: 'value', type: 'string', required: true, description: 'A six-digit hex string. One canonical format in state, however it was entered.' },
           { name: 'onChange', type: '(hex: string) => void', required: true, description: 'Fires only on a valid parse, so state never holds a half-typed value.' },
-          { name: 'swatches', type: '{ hex: string; name: string }[]', description: 'The primary interface. Every swatch needs a name — colour alone is not an identifier.' },
+          { name: 'swatches', type: '{ hex: string; name: string }[]', description: 'The primary interface. Every swatch needs a name — color alone is not an identifier.' },
           { name: 'showSpectrum', type: 'boolean', default: 'true', description: 'Turn it off wherever the allowed set is fixed, which is most of the time.' },
-          { name: 'showContrast', type: "{ against: string; level: 'AA' | 'AAA' }", description: 'Live ratio and verdict against the surface the colour will actually sit on.' },
+          { name: 'showContrast', type: "{ against: string; level: 'AA' | 'AAA' }", description: 'Live ratio and verdict against the surface the color will actually sit on.' },
           { name: 'alpha', type: 'boolean', default: 'false', description: 'Only enable where transparency is genuinely used. It makes every value background-dependent.' },
         ],
       },
@@ -722,33 +722,33 @@ async function pick() {
 
   notes: {
     tips: [
-      'Show recently used colours below the swatches. In any tool where people colour many things, the last five cover most of the next choices.',
-      'Suggest an accessible neighbour when the chosen colour fails contrast — "try #4338ca" is far more useful than a red badge.',
-      'Preview the colour where it will actually be used, not only as a swatch. A brand accent looks different as a 4px focus ring than as a 24px square.',
+      'Show recently used colors below the swatches. In any tool where people color many things, the last five cover most of the next choices.',
+      'Suggest an accessible neighbor when the chosen color fails contrast — "try #4338ca" is far more useful than a red badge.',
+      'Preview the color where it will actually be used, not only as a swatch. A brand accent looks different as a 4px focus ring than as a 24px square.',
       'Store one canonical format. Accepting hex, rgb and hsl on input is friendly; storing all three is a bug waiting to happen.',
-      'For theme builders, derive the full ramp from the chosen colour rather than asking for ten values. One decision, ten outputs.',
+      'For theme builders, derive the full ramp from the chosen color rather than asking for ten values. One decision, ten outputs.',
     ],
     performance: [
       'Throttle live preview updates to animation frames. Dragging the spectrum fires far more often than the screen refreshes.',
-      'Compute contrast on a debounce, not per pointer event. The maths is cheap but the re-render it triggers is not.',
+      'Compute contrast on a debounce, not per pointer event. The math is cheap but the re-render it triggers is not.',
       'Render the spectrum with CSS gradients rather than a canvas. It scales, it costs nothing, and it survives a device-pixel-ratio change.',
       'Do not put the picker panel in the DOM until it opens. Gradients and swatch grids are pure overhead when closed.',
     ],
     mistakes: [
       'A spectrum with no hex field, so no value can be matched to a brand guideline.',
-      'Unlabelled swatches, identifying colours by colour alone.',
+      'Unlabeled swatches, identifying colors by color alone.',
       'No edge on pale swatches, making white invisible on a white panel.',
       'A border rather than a ring for selection, so the grid jumps as the selection moves.',
-      'Letting users override semantic status colours.',
+      'Letting users override semantic status colors.',
       'An alpha slider nobody needs, producing values that behave differently on every background.',
       'A drag-only spectrum, failing WCAG 2.5.7.',
       'An eyedropper button on platforms with no EyeDropper API.',
     ],
     realWorld: [
       'In label and tag pickers, twelve swatches with no spectrum is almost always the right control. The freedom of a full picker produces sixty near-identical greens across a workspace.',
-      'Theme builders should constrain hard. Users pick colours that fail contrast constantly, and a live verdict at the point of choice prevents more failures than any audit.',
+      'Theme builders should constrain hard. Users pick colors that fail contrast constantly, and a live verdict at the point of choice prevents more failures than any audit.',
       'The EyeDropper API is genuinely useful for matching an existing brand, and genuinely unavailable on mobile and in Safari. Feature-detect and treat it as a bonus.',
-      'If your product has a design system, the honest answer is usually that users should not be picking arbitrary colours at all — offer the palette and keep the meaning intact.',
+      'If your product has a design system, the honest answer is usually that users should not be picking arbitrary colors at all — offer the palette and keep the meaning intact.',
     ],
   },
 })
@@ -757,7 +757,7 @@ function SwatchOnly() {
   const [value, setValue] = React.useState('#10b981')
   return (
     <Stack gap="sm" className="items-start">
-      <div role="radiogroup" aria-label="Label colour" className="flex flex-wrap gap-2">
+      <div role="radiogroup" aria-label="Label color" className="flex flex-wrap gap-2">
         {SWATCHES.map(([hex, name]) => {
           const on = value === hex
           return (
@@ -831,7 +831,7 @@ function LivePreview() {
             Deploy to production
           </button>
           <a href="#/color-picker" className="text-body-sm underline" style={{ color: value }}>
-            A link in the same colour
+            A link in the same color
           </a>
           <span
             className="h-9 rounded-[var(--radius-md)] outline-2 outline-offset-2"

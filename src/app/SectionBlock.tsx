@@ -114,8 +114,8 @@ function PageCard({ page, onNavigate }: { page: NavPage; onNavigate: (id: string
         />
       </span>
       <span className="text-caption leading-relaxed text-[var(--ds-fg-muted)]">{page.blurb}</span>
-      {/* A page whose subject is a set of colours shows them. Six stops is
-          enough to recognise a palette by and short enough not to turn the
+      {/* A page whose subject is a set of colors shows them. Six stops is
+          enough to recognize a palette by and short enough not to turn the
           card into the page. */}
       {page.swatches && page.swatches.length > 0 && (
         <span

@@ -78,7 +78,7 @@ export default defineDoc({
         instead: 'auto-fill with a minmax track',
       },
       {
-        text: 'To centre a single element.',
+        text: 'To center a single element.',
         instead: 'place-items or margin-inline auto',
       },
     ],
@@ -262,12 +262,12 @@ export default defineDoc({
     { name: 'Tablet', maxWidth: '640–1023px', gap: '16px', padding: '32px', use: '8 columns. Two-up cards, collapsible sidebar.' },
     { name: 'Laptop', maxWidth: '1024–1279px', gap: '24px', padding: '40px', use: '12 columns. Persistent sidebar, three-up cards.' },
     { name: 'Desktop', maxWidth: '1280–1535px', gap: '24px', padding: '40px', use: '12 columns plus the right rail.' },
-    { name: 'Wide', maxWidth: '≥1536px', gap: '24px', padding: '40px', use: 'Container caps at 76rem and centres. Do not keep stretching.' },
+    { name: 'Wide', maxWidth: '≥1536px', gap: '24px', padding: '40px', use: 'Container caps at 76rem and centers. Do not keep stretching.' },
   ],
 
   do: [
     {
-      title: 'Cap the container and centre it',
+      title: 'Cap the container and center it',
       why: 'On a 2560px monitor an uncapped layout puts the navigation and the primary action a foot apart. Capping is not wasted space; it is a reading distance.',
       render: (
         <div className="w-full rounded-[var(--radius-md)] bg-[var(--ds-surface-inset)] p-2">
@@ -323,7 +323,7 @@ export default defineDoc({
     },
     {
       title: 'Do not set fixed heights on content containers',
-      why: 'It fails the WCAG text-spacing override, it fails localisation, and it fails the moment a string is longer than the one you designed with.',
+      why: 'It fails the WCAG text-spacing override, it fails localization, and it fails the moment a string is longer than the one you designed with.',
       render: (
         <div className="h-10 w-full overflow-hidden rounded-[var(--radius-sm)] bg-[var(--ds-danger-subtle)] p-2 text-caption text-[var(--ds-danger-text)]">
           This sentence is longer than the box that was designed to hold it, so it is now clipped.
@@ -394,7 +394,7 @@ export default defineDoc({
   </div>
 </div>
 
-// Page container: capped and centred
+// Page container: capped and centered
 <div className="mx-auto w-full max-w-[76rem] px-6 sm:px-10">{children}</div>
 
 // Prose gets its own, narrower cap
@@ -465,7 +465,7 @@ export default defineDoc({
       'Design the 320px and the 1920px cases first. Everything in between is interpolation; the extremes are where layouts actually break.',
     ],
     performance: [
-      'CSS Grid layout is fast, but a grid with thousands of implicit rows is not. Virtualise long lists rather than letting the grid create 10,000 tracks.',
+      'CSS Grid layout is fast, but a grid with thousands of implicit rows is not. Virtualize long lists rather than letting the grid create 10,000 tracks.',
       'Container queries require container-type, which creates a containment context and a new layout boundary. That is usually a performance win, but it disables percentage-based heights inside.',
       'Avoid layouts that depend on JavaScript measurement. Every measure-then-style cycle is a forced synchronous layout, and they compound during resize.',
       'content-visibility: auto on long sections skips layout and paint for offscreen content — often the single biggest win on a long documentation page.',

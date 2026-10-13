@@ -130,7 +130,7 @@ export default defineDoc({
         </p>
         <p>
           In dark mode the card is <em>lighter</em> than the canvas and the shadow barely
-          participates; in light mode the card is white and the page goes grey. Same token names,
+          participates; in light mode the card is white and the page goes gray. Same token names,
           opposite mechanics. That is why a card should never hard-code a background.
         </p>
       </>
@@ -183,7 +183,7 @@ export default defineDoc({
         id: 'stats',
         title: 'Stat tiles',
         description:
-          'The dashboard atom. The number is the largest thing, the label is the smallest, and the delta is paired with an arrow and a sign so it survives greyscale.',
+          'The dashboard atom. The number is the largest thing, the label is the smallest, and the delta is paired with an arrow and a sign so it survives grayscale.',
         render: (
           <PreviewStage center={false} minHeight={0} allowResize>
             <div className="grid w-full gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -532,7 +532,7 @@ export default defineDoc({
     contrast: [
       'The card border must reach 3:1 against the page if it is the only thing separating the card from the background.',
       'In dark mode the surface itself carries the separation, so the hairline can be softer. In light mode both surfaces are white and the hairline is doing all the work.',
-      'A selected card uses a border plus a 1px ring so the state survives greyscale and high-contrast mode.',
+      'A selected card uses a border plus a 1px ring so the state survives grayscale and high-contrast mode.',
     ],
     keyboard: [
       { keys: 'Tab', does: 'Reaches an interactive card as one stop. A static card is not focusable.' },
@@ -545,7 +545,7 @@ export default defineDoc({
       { attr: 'aria-labelledby', on: 'The card', note: 'Points at the card title, so the link announces as "api-gateway, link" rather than reading the whole card.' },
       { attr: 'aria-selected / aria-pressed', on: 'Selectable cards', note: 'aria-selected inside a listbox-like grid, aria-pressed for an independent toggle.' },
       { attr: '<article> or <li>', on: 'The card element', note: 'A collection of cards is a list. Marking it up as one gives screen-reader users the count for free.' },
-      { attr: 'aria-busy', on: 'A loading card', note: 'On the container, not on each skeleton line. Announcing twelve grey rectangles is noise.' },
+      { attr: 'aria-busy', on: 'A loading card', note: 'On the container, not on each skeleton line. Announcing twelve gray rectangles is noise.' },
     ],
     focus:
       'A 2px ring at 2px offset around the whole card. Because the card already has a border and a radius, the offset matters — a flush ring reads as a thicker border rather than as focus.',
@@ -707,7 +707,7 @@ export default defineDoc({
           { name: 'label', type: 'string', required: true, description: 'What the value measures. Overline case, always the smallest text in the tile.' },
           { name: 'value', type: 'ReactNode', required: true, description: 'The figure, at h2 with tabular numerals — or a word at h4 under layout="leading".' },
           { name: 'layout', type: "'stacked' | 'leading'", default: "'stacked'", description: 'stacked leads with the number; leading puts the icon in a 44px chip at the front and shrinks the value to 16px.' },
-          { name: 'tone', type: "'neutral' | 'accent' | 'success' | 'warning' | 'danger' | 'info'", default: "'neutral'", description: 'Colours the leading chip. Semantic, never decorative. The stacked layout has no chip and ignores it.' },
+          { name: 'tone', type: "'neutral' | 'accent' | 'success' | 'warning' | 'danger' | 'info'", default: "'neutral'", description: 'Colors the leading chip. Semantic, never decorative. The stacked layout has no chip and ignores it.' },
           { name: 'icon', type: 'ReactNode', description: 'Decorative glyph. Muted and top-right when stacked; inside the tinted chip when leading. Pass it at size 20.' },
           { name: 'progress', type: 'number', description: '0–100. Renders a ring in the chip in place of the icon, for a value that is a proportion. Leading layout only.' },
           { name: 'delta', type: 'number', description: 'Percentage change. Paired with an arrow, a sign and hidden text.' },
@@ -727,13 +727,13 @@ export default defineDoc({
     ],
     performance: [
       'content-visibility: auto on offscreen cards skips their layout and paint entirely. On a page with two hundred cards this is often the single biggest win.',
-      'Virtualise past about a hundred cards. Cards are heavier than table rows because each one is a small layout of its own.',
+      'Virtualize past about a hundred cards. Cards are heavier than table rows because each one is a small layout of its own.',
       'Do not animate box-shadow on a grid of cards during scroll. Shadow is painted on the CPU; use a pre-composited layer or animate opacity between two stacked shadows.',
       'Lazy-load card images with loading="lazy" and an explicit width and height, or the grid reflows as each one arrives.',
     ],
     mistakes: [
       'A div with onClick as the card root — not focusable, no Enter, announces as nothing.',
-      'Nested interactive elements inside a card that is itself a link. Invalid HTML and unpredictable behaviour.',
+      'Nested interactive elements inside a card that is itself a link. Invalid HTML and unpredictable behavior.',
       'Forgetting overflow-hidden on a card with an image, so the image squares off the rounded corners.',
       'Using a card to section a page, then wondering why the page looks busy. Sections want headings, not borders.',
       'Hover-only actions inside a card. Invisible on touch, unreachable by keyboard.',

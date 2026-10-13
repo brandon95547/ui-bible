@@ -120,7 +120,7 @@ export default defineDoc({
         </p>
         <p>
           Bottom-right is deliberate: out of the reading path, away from the primary action, and
-          away from the top-centre position where operating systems put their own notifications.
+          away from the top-center position where operating systems put their own notifications.
           Toasts stack upward with the newest closest to the corner, and we cap the stack at four —
           past that the user is watching a log, not reading a message.
         </p>
@@ -226,7 +226,7 @@ export default defineDoc({
         label: 'Position',
         value: 'Bottom-right, 20px inset',
         kind: 'space',
-        note: 'Out of the reading path and away from the primary action. Top-centre collides with OS notifications.',
+        note: 'Out of the reading path and away from the primary action. Top-center collides with OS notifications.',
       },
       {
         n: 4,
@@ -366,12 +366,12 @@ export default defineDoc({
     ],
     contrast: [
       'The overlay surface is lighter than the page in dark mode and white with a shadow in light mode, so both need their own contrast check against the toast text.',
-      'The action link must reach 4.5:1 against the toast background and must not rely on colour alone — ours underlines on hover and focus.',
+      'The action link must reach 4.5:1 against the toast background and must not rely on color alone — ours underlines on hover and focus.',
     ],
     keyboard: [
       { keys: 'Tab', does: 'Reaches the action and the dismiss button once a toast is present.' },
       { keys: 'Esc', does: 'Dismisses the most recent toast when focus is inside the toast region.' },
-      { keys: 'F6', does: 'Some screen readers use this to jump to the notification region. Keeping the region labelled makes that work.' },
+      { keys: 'F6', does: 'Some screen readers use this to jump to the notification region. Keeping the region labeled makes that work.' },
     ],
     aria: [
       { attr: 'role="region" + aria-label', on: 'The toast container', note: '"Notifications". Lets a screen-reader user navigate back to it deliberately.' },
@@ -544,12 +544,12 @@ toast({
       'Using a fixed three-second duration, which makes any two-line message unreadable.',
       'Putting the only copy of an API key, error ID or confirmation number in a toast.',
       'Stealing focus when a toast appears, which throws a keyboard user out of the field they were typing in.',
-      'Placing toasts top-centre on mobile, where they collide with the OS notification shade.',
+      'Placing toasts top-center on mobile, where they collide with the OS notification shade.',
     ],
     realWorld: [
       'Toast frequency is the metric that matters. If a user sees more than a handful per session, the product is narrating itself instead of just working.',
       'Undo-with-toast is measurably faster than confirm-then-delete for the overwhelming majority of users, and it is the pattern Gmail made standard twenty years ago.',
-      'Keep a notification centre for anything that would otherwise need a persistent toast. Then toasts can stay genuinely transient.',
+      'Keep a notification center for anything that would otherwise need a persistent toast. Then toasts can stay genuinely transient.',
       'Log every toast with tone and title. A spike in danger toasts is usually the first signal of an incident, ahead of your error tracker.',
     ],
   },

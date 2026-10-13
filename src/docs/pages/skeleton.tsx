@@ -130,7 +130,7 @@ export default defineDoc({
         </p>
         <p>
           Skeletons are <strong>aria-hidden</strong> and the region carries a single{' '}
-          <code>aria-busy</code>. Announcing twelve grey rectangles is noise; announcing "loading"
+          <code>aria-busy</code>. Announcing twelve gray rectangles is noise; announcing "loading"
           once and then the content when it arrives is the whole story a screen-reader user needs.
         </p>
       </>
@@ -316,7 +316,7 @@ export default defineDoc({
     { name: 'Body line', height: '12px', radius: '4px', maxWidth: '100%', use: 'Paragraph text. Last line at ~62%.' },
     { name: 'Heading', height: '20px', radius: '4px', maxWidth: '70%', use: 'Card and section titles.' },
     { name: 'Avatar', height: '20–40px', radius: 'full', use: 'Matches the real avatar size exactly.' },
-    { name: 'Button', height: '36px', radius: '8px', minWidth: '72px', use: 'Keeps the control radius so the shape is recognisable.' },
+    { name: 'Button', height: '36px', radius: '8px', minWidth: '72px', use: 'Keeps the control radius so the shape is recognizable.' },
     { name: 'Thumbnail', height: '56–96px', radius: '8px', use: 'Match the aspect ratio, not just the height.' },
   ],
 
@@ -328,7 +328,7 @@ export default defineDoc({
     },
     {
       title: 'Delay by 200ms',
-      why: 'Most requests finish faster. Without the delay, every fast response produces a flash of grey that users read as a bug rather than as speed.',
+      why: 'Most requests finish faster. Without the delay, every fast response produces a flash of gray that users read as a bug rather than as speed.',
       render: (
         <code className="font-mono text-[11px] leading-relaxed text-[var(--ds-success-text)]">
           const t = setTimeout(() =&gt; setShow(true), 200)
@@ -350,7 +350,7 @@ export default defineDoc({
     },
     {
       title: 'Put aria-busy on the region, not each block',
-      why: 'One announcement — "loading" — then the content. Twelve aria-labelled rectangles is noise that tells the user nothing they can act on.',
+      why: 'One announcement — "loading" — then the content. Twelve aria-labeled rectangles is noise that tells the user nothing they can act on.',
       render: (
         <code className="font-mono text-[11px] leading-relaxed text-[var(--ds-success-text)]">
           &lt;section aria-busy={'{'}loading{'}'}&gt;
@@ -363,7 +363,7 @@ export default defineDoc({
 
   dont: [
     {
-      title: 'Do not use a generic grey box',
+      title: 'Do not use a generic gray box',
       why: 'A single rectangle where a structured card will appear gives no shape information and guarantees a jump. It is a spinner with extra layout shift.',
       render: <Skeleton className="h-20 w-full" rounded="lg" />,
     },
@@ -390,7 +390,7 @@ export default defineDoc({
       why: 'The skeleton slides in, then the content fades in on top. That is two animations to show one piece of data, and it adds delay to something already late.',
       render: (
         <span className="text-caption text-[var(--ds-danger-text)]">
-          skeleton 220ms → data 200ms → 420ms of theatre
+          skeleton 220ms → data 200ms → 420ms of theater
         </span>
       ),
     },
@@ -421,7 +421,7 @@ export default defineDoc({
       'Never move focus when the skeleton is replaced. If focus was on a filter input, it must still be there when the results arrive — otherwise the user is thrown back to the top of the page mid-task.',
     screenReader: [
       'A screen-reader user gets nothing from a skeleton. Announce the state change once: "Loading" on entry, and the result count on completion.',
-      'Do not put text inside a skeleton. "Loading…" written into a grey bar is announced along with everything else and adds nothing.',
+      'Do not put text inside a skeleton. "Loading…" written into a gray bar is announced along with everything else and adds nothing.',
       'Keep the DOM structure stable. Replacing the whole subtree can move the screen reader’s virtual cursor back to the top of the page.',
     ],
     touch:
@@ -539,7 +539,7 @@ function useDelayed(active: boolean, ms = 200) {
       'content-visibility: auto on offscreen skeleton rows skips their layout and their animation entirely.',
     ],
     mistakes: [
-      'Rendering the skeleton immediately, so every fast request produces a flash of grey.',
+      'Rendering the skeleton immediately, so every fast request produces a flash of gray.',
       'A skeleton whose dimensions do not match the content, which turns a loading state into a layout shift.',
       'Leaving the shimmer running under prefers-reduced-motion.',
       'Announcing each skeleton block to screen readers instead of putting one aria-busy on the region.',

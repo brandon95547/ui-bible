@@ -405,14 +405,14 @@ export default defineDoc({
       render: (
         <span className="block max-w-[14rem] rounded-[var(--radius-md)] border border-[var(--ds-danger-border)] bg-[var(--ds-fg)] px-2.5 py-1.5 text-caption leading-snug text-[var(--ds-fg-inverse)]">
           Archived deployments are retained for 90 days, after which they are permanently removed
-          along with their logs, artefacts and any associated build caches, unless a legal hold
+          along with their logs, artifacts and any associated build caches, unless a legal hold
           applies.
         </span>
       ),
     },
     {
       title: 'Do not repeat a visible label',
-      why: 'A tooltip that says "Deploy" on a button labelled "Deploy" is pure noise, and it trains users that tooltips are not worth reading.',
+      why: 'A tooltip that says "Deploy" on a button labeled "Deploy" is pure noise, and it trains users that tooltips are not worth reading.',
       render: (
         <Tooltip content="Deploy">
           <Button variant="secondary" size="sm">
@@ -548,7 +548,7 @@ React.useEffect(() => {
   to   { opacity: 1; translate: 0 0; }
 }
 
-/* A Kbd on an already-inverted surface needs its own colours, not the ones
+/* A Kbd on an already-inverted surface needs its own colors, not the ones
    tuned for a light panel. */
 [role='tooltip'] kbd {
   border-color: rgb(255 255 255 / 0.25);
@@ -587,7 +587,7 @@ React.useEffect(() => {
 
   notes: {
     tips: [
-      'Use sentence case and no full stop. A tooltip is a label, not a sentence, and the full stop makes it read as truncated prose.',
+      'Use sentence case and no period. A tooltip is a label, not a sentence, and the period makes it read as truncated prose.',
       'Show the truncated text in full when a label is clipped — it is the one case where the tooltip and the label are legitimately the same string.',
       'Keep the tooltip out of the pointer’s path. Top placement is the default because bottom placement sits exactly where the cursor is heading.',
       'Do not animate position, only opacity and a 2px rise. A tooltip that slides between triggers draws far more attention than it deserves.',
@@ -595,7 +595,7 @@ React.useEffect(() => {
     ],
     performance: [
       'Render one tooltip element and re-point it, rather than mounting one per trigger. A table with two hundred icon buttons should not have two hundred hidden tooltips.',
-      'Compute placement on open, not on every scroll frame. Anchoring maths in a scroll listener is the usual cause of jank in dense tables.',
+      'Compute placement on open, not on every scroll frame. Anchoring math in a scroll listener is the usual cause of jank in dense tables.',
       'Clear the open timer on unmount. A tooltip that appears after its trigger has gone is a small but memorable bug.',
       'Skip the component entirely on coarse pointers — do not ship the listeners, the timers or the markup where hover does not exist.',
     ],
@@ -613,7 +613,7 @@ React.useEffect(() => {
       'Tooltips are where keyboard shortcuts get discovered. Products that put them there see measurably higher shortcut adoption than products that document them on a help page.',
       'In dense tables, tooltips on truncated cells are worth more than any amount of column-width tuning — the user gets the full value without leaving the row.',
       'The 400ms delay is worth testing on your own product. Toolbars with tightly packed controls often want longer; a single isolated icon can afford shorter.',
-      'If a designer asks for a tooltip with a link in it, the answer is a Popover. It is the most common request that this component cannot fulfil.',
+      'If a designer asks for a tooltip with a link in it, the answer is a Popover. It is the most common request that this component cannot fulfill.',
     ],
   },
 })

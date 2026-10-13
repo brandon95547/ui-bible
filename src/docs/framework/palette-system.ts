@@ -12,7 +12,7 @@ import {
 import type { Palette, PaletteColor } from '@/docs/data/flat-ui-colors'
 
 /* ===========================================================================
-   FROM TWENTY COLOURS TO A DESIGN SYSTEM
+   FROM TWENTY COLORS TO A DESIGN SYSTEM
 
    A palette gives you hues. A system needs surfaces, a text ramp, hover and
    active steps, borders, disabled states and a categorical set — roughly forty
@@ -22,13 +22,13 @@ import type { Palette, PaletteColor } from '@/docs/data/flat-ui-colors'
    rules for every palette, and records where each value came from.
    Two kinds of provenance, and the distinction is the whole point:
 
-     · TAKEN   — a literal palette colour, cited by its position and its name
+     · TAKEN   — a literal palette color, cited by its position and its name
      · DERIVED — computed, with the arithmetic stated
 
    The derivation is deliberately dull. It is not trying to be a better
    designer than the person who drew the palette; it is trying to be a
    consistent one, so that comparing two palettes compares the palettes rather
-   than two different sets of judgement calls. Where a real product would make
+   than two different sets of judgment calls. Where a real product would make
    a decision by eye, this makes it by rule and tells you it did.
    ======================================================================== */
 
@@ -102,7 +102,7 @@ export function derivePaletteSystem(palette: Palette): PaletteSystem {
      Anchored on the palette's darkest member. Every palette here has
      one, because a palette with no dark value is unusable as a strip and the
      designers all knew it. The ladder below it is derived: a page has to be
-     darker than the cards on it, and no palette ships two greys that happen to
+     darker than the cards on it, and no palette ships two grays that happen to
      be 15% apart. */
 
   const darkest = [...colors].sort((a, b) => luminance(hexToRgb(a.hex)) - luminance(hexToRgb(b.hex)))[0]
@@ -122,7 +122,7 @@ export function derivePaletteSystem(palette: Palette): PaletteSystem {
   /* A palette can only supply its own body text if it ships a neutral that is
      both pale and genuinely unsaturated. Two failure modes, both real:
 
-     · No neutral at all — the Dutch set has none. Mixing its palest colour
+     · No neutral at all — the Dutch set has none. Mixing its palest color
        toward white does NOT desaturate it: white has no hue to dilute with, so
        Lavender Rose at 55% white is still 95% saturated and body copy comes
        out pink. The ink has to be *constructed* — the hue kept as a whisper,
@@ -266,17 +266,17 @@ export function derivePaletteSystem(palette: Palette): PaletteSystem {
   ]
 
   /* -- semantic roles ----------------------------------------------------
-     Primary is the palette's first chromatic colour: designers lead with their
+     Primary is the palette's first chromatic color: designers lead with their
      signature, and every palette here does. The status roles are the
      nearest hue to each target, which is the honest version of a decision that
-     is usually made by eye and then rationalised. Where the nearest hue is not
+     is usually made by eye and then rationalized. Where the nearest hue is not
      close, the page says so rather than pretending. */
 
   /* The lightness and saturation floors are load-bearing, not tidiness. Flat
-     UI v1's nearest hue to 210° is Wet Asphalt — a 29%-saturation blue-grey
+     UI v1's nearest hue to 210° is Wet Asphalt — a 29%-saturation blue-gray
      drawn to be a *surface* — which beats Peter River by six degrees and
-     produces an "Info" button the colour of the page it sits on. A status
-     colour has to be chromatic and mid-light before it is the right hue.
+     produces an "Info" button the color of the page it sits on. A status
+     color has to be chromatic and mid-light before it is the right hue.
      Excluding the surface anchor matters for the same reason: it already has
      a job in section 02. */
   const chromatic = colors.filter(
@@ -327,11 +327,11 @@ export function derivePaletteSystem(palette: Palette): PaletteSystem {
     const drift = role.hue === null ? 0 : Math.round(hueDistance(hue(pick.hex), role.hue))
 
     // A darker member of the same hue is a better hover than anything computed
-    // — it is a colour the designer actually chose. Only fall back to
+    // — it is a color the designer actually chose. Only fall back to
     // arithmetic when the palette does not carry one.
     // Same hue, meaningfully darker, and still chromatic — the last clause is
     // what stops Peter River's hover becoming Wet Asphalt, which is six
-    // degrees away in hue and a surface grey in every other respect. Of the
+    // degrees away in hue and a surface gray in every other respect. Of the
     // candidates, the brightest: a hover is a step, not a plunge.
     const sibling = colors
       .filter(
@@ -360,7 +360,7 @@ export function derivePaletteSystem(palette: Palette): PaletteSystem {
         hex: pick.hex,
         origin:
           role.hue === null
-            ? `${cite(colors, pick)} — the palette's opening colour`
+            ? `${cite(colors, pick)} — the palette's opening color`
             : `${cite(colors, pick)}${drift > 45 ? ` — ${drift}° off the ideal ${role.label.toLowerCase()} hue, the nearest this palette carries` : ''}`,
         taken: true,
         ratio: contrast(pick.hex, on),

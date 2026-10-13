@@ -37,7 +37,7 @@
   --p-neutral-1000: #000000;
 
   /* Brand — C64 Purple from the Spanish Palette, the derivation's `primary`.
-     500 is the palette colour itself; lighter steps mix toward white, darker
+     500 is the palette color itself; lighter steps mix toward white, darker
      toward --ds-sunken, so both ends land inside the palette's own world rather
      than drifting to a generic violet. 900 comes out at #2c2c54 — Lucky Point,
      the palette's own second purple — which is the check that the anchors are
@@ -129,7 +129,7 @@
      A NEUTRAL BLACK GROUND, CARRYING THE SPANISH PALETTE
 
      The ground is black and has no hue at all: every surface below is a pure
-     neutral (r = g = b), so nothing in the chrome competes with the colour.
+     neutral (r = g = b), so nothing in the chrome competes with the color.
      The palette still runs the whole system — C64 Purple is the accent,
      Celestial Green / Spiced Butternut / Synthetic Pumpkin / Summer Sky carry
      status — but it now sits ON the page instead of BEING the page, which is
@@ -203,7 +203,7 @@
   --ds-layer-scrim: rgb(0 0 0 / 0.72);
 
   /* Foreground. Pure neutrals, like the ground: a faintly violet gray was
-     invisible on a violet page and reads as a colour cast on a black one.
+     invisible on a violet page and reads as a color cast on a black one.
      Ratios are against --ds-canvas; the second figure is the LIGHTEST ground
      the token can land on, which is the one that decides whether it passes.
 
@@ -233,10 +233,10 @@
   /* Brand — C64 Purple, the derivation's `primary`. The nearest thing this
      palette has to the violet the Bible already used, so the identity survives
      the swap; hover lightens and active darkens, per the elevation rule. */
-  /* One step under C64 Purple. The palette colour itself takes a white label at
+  /* One step under C64 Purple. The palette color itself takes a white label at
      4.28:1 — the derivation reports 4.3 and accepts it, but that is under AA for
      normal text, and this fill's whole job is carrying button labels. Darkened
-     until the label passes; the palette colour survives untouched as
+     until the label passes; the palette color survives untouched as
      --p-brand-500 and as the chart's eighth series. */
   --ds-accent: #6867c9;             /* derived from C64 Purple for label contrast */
   --ds-accent-hover: #7f7edb;       /* derived: lightened */
@@ -252,7 +252,7 @@
 
   /* Status — `-text` is the pair certified for text on `-subtle`.
      Roles are the derivation's, so they are checkable against the palette page.
-     Where it names a darker palette colour as the hover, that becomes `-active`
+     Where it names a darker palette color as the hover, that becomes `-active`
      instead: on a dark ground a control lightens under the pointer and darkens
      under the press, and inverting that would contradict the elevation rule two
      sections up. Every `-fg` is the measured pair for its fill. */
@@ -455,7 +455,7 @@
 /* ---------------------------------------------------------------------------
    LAYOUT
    The page frame, and the only copy of it. Theme-independent, so it sits
-   outside both semantic blocks: a container width does not change colour.
+   outside both semantic blocks: a container width does not change color.
 
    These belong to Grid & Layout, not to any component. The App Bar reads them
    so its brand lines up with the first column of the content beneath it —

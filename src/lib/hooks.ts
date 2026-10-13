@@ -16,7 +16,7 @@ export const useIsoLayoutEffect =
  * microtask batching, which is enough for our write volume.
  *
  * The stored value is adopted in a layout effect rather than in the state
- * initialiser, and that ordering is the whole subtlety. Pages are prerendered,
+ * initializer, and that ordering is the whole subtlety. Pages are prerendered,
  * and the machine that prerendered them had no localStorage — so a first
  * client render that reads storage disagrees with the HTML it is hydrating
  * wherever the reader has ever changed a setting, and React throws the whole
@@ -73,7 +73,7 @@ export function useEvent<A extends unknown[], R>(fn: (...args: A) => R) {
  */
 export function useMediaQuery(query: string, ssrDefault = false) {
   // `ssrDefault` on the first render in BOTH environments, not just on the
-  // server. Reading matchMedia in the initialiser would make the client's
+  // server. Reading matchMedia in the initializer would make the client's
   // first pass disagree with the prerendered HTML it is hydrating, which React
   // reports as a hydration error on every load at a viewport the prerender did
   // not assume. Agreeing first and correcting immediately after is what makes

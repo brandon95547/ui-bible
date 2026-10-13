@@ -115,7 +115,7 @@ function StrategyDemo({ strategy, busy }: { strategy: Strategy; busy: boolean })
 
   return (
     <div className="w-full max-w-md">
-      <Progress value={pct} label="Uploading build artefacts" showValue />
+      <Progress value={pct} label="Uploading build artifacts" showValue />
     </div>
   )
 }
@@ -215,7 +215,7 @@ export default defineDoc({
       'Any operation that takes longer than roughly 200ms and changes what is on screen.',
       'A first page load where content areas would otherwise be empty.',
       'A background refresh, where the existing content should stay visible and readable.',
-      'A user-initiated action that needs immediate acknowledgement in the control they pressed.',
+      'A user-initiated action that needs immediate acknowledgment in the control they pressed.',
     ],
     whenNotToUse: [
       {
@@ -239,7 +239,7 @@ export default defineDoc({
       <>
         <p>
           Start from the <strong>perception thresholds</strong>. Under 100ms is instantaneous. Up to
-          about a second the user stays focused and needs only a small acknowledgement. Past a
+          about a second the user stays focused and needs only a small acknowledgment. Past a
           second attention drifts and the interface must show progress. Past ten seconds people
           leave the tab, and holding the page hostage stops being a loading state and becomes a
           usability failure.
@@ -328,7 +328,7 @@ export default defineDoc({
       },
       {
         id: 'button',
-        title: 'In-place acknowledgement',
+        title: 'In-place acknowledgment',
         description:
           'The clearest feedback appears in the control the user just pressed. The button keeps its width, shows a spinner, and blocks a second submission.',
         render: (
@@ -432,8 +432,8 @@ export default defineDoc({
   sizes: [
     { name: 'Inline', icon: '12–14px', use: 'Inside a control, a table cell, or beside a label.' },
     { name: 'Control', icon: '16px', use: 'Inside a button, replacing the label without changing the width.' },
-    { name: 'Region', icon: '20–24px', use: 'Centred in a card or a panel that has no known layout.' },
-    { name: 'Page', height: 'Skeleton', use: 'Never a centred spinner on a full page — use a skeleton of the real layout.' },
+    { name: 'Region', icon: '20–24px', use: 'Centered in a card or a panel that has no known layout.' },
+    { name: 'Page', height: 'Skeleton', use: 'Never a centered spinner on a full page — use a skeleton of the real layout.' },
     { name: 'Bar', height: '2px', use: 'Pinned to the top of a table or the page during a background refresh.' },
   ],
 
@@ -471,7 +471,7 @@ export default defineDoc({
     },
     {
       title: 'Be optimistic when success is likely and cheap to undo',
-      why: 'Adding a tag, toggling a favourite, sending a message — show it immediately and reconcile after. The interface stops having a latency at all.',
+      why: 'Adding a tag, toggling a favorite, sending a message — show it immediately and reconcile after. The interface stops having a latency at all.',
       render: <OptimisticDemo />,
     },
   ],

@@ -248,7 +248,7 @@ export default defineDoc({
         <p>
           Tab has to indent, or the field is unusable for its one purpose. But a field that
           swallows Tab is a keyboard trap under 2.1.2, so <strong>Escape then Tab must
-          escape</strong>. That pair of behaviours is non-negotiable and it is the thing most
+          escape</strong>. That pair of behaviors is non-negotiable and it is the thing most
           in-page code fields get wrong.
         </p>
         <p>
@@ -394,7 +394,7 @@ export default defineDoc({
         label: 'Error row',
         value: 'Danger tone, semibold',
         kind: 'color',
-        note: 'The gutter number for the failing line changes weight and colour. It is what turns "line 6" from a number into a location.',
+        note: 'The gutter number for the failing line changes weight and color. It is what turns "line 6" from a number into a location.',
       },
       {
         n: 3,
@@ -549,10 +549,10 @@ export default defineDoc({
       { id: '3.3.3', name: 'Error Suggestion', level: 'AA' },
     ],
     contrast: [
-      'Every syntax colour owes 4.5:1 against the inset surface, in both themes. Themes ported from an editor almost always fail on strings and comments.',
+      'Every syntax color owes 4.5:1 against the inset surface, in both themes. Themes ported from an editor almost always fail on strings and comments.',
       'The gutter is non-content and may use the disabled tone — but the failing line’s number is content and owes full contrast.',
-      'The error state is carried by border, message and gutter together, so it survives greyscale and High Contrast Mode.',
-      'Do not distinguish syntax errors from schema errors by colour alone; the wording carries it.',
+      'The error state is carried by border, message and gutter together, so it survives grayscale and High Contrast Mode.',
+      'Do not distinguish syntax errors from schema errors by color alone; the wording carries it.',
     ],
     keyboard: [
       { keys: 'Tab', does: 'Inserts two spaces. Shift+Tab outdents.' },
@@ -728,9 +728,9 @@ function onKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
     ],
     performance: [
       'Debounce parsing by about 400ms. Parsing a large document on every keystroke is measurable, and every intermediate state is invalid anyway.',
-      'Do not tokenise for syntax colouring on every render. Memoise on the text, or a large payload re-highlights on each keypress.',
+      'Do not tokenize for syntax coloring on every render. Memoize on the text, or a large payload re-highlights on each keypress.',
       'Cap the document size you will validate live. Past a few hundred kilobytes, move validation to submit and say so.',
-      'Keep the gutter and body line-heights identical to the pixel. Any drift and the numbers desynchronise from the lines they label, which is worse than having no gutter.',
+      'Keep the gutter and body line-heights identical to the pixel. Any drift and the numbers desynchronize from the lines they label, which is worse than having no gutter.',
     ],
     mistakes: [
       'Showing the raw parser message with its byte offset.',
@@ -739,7 +739,7 @@ function onKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
       'Tab that leaves the field, making indentation impossible — or Tab with no escape hatch, which is a keyboard trap.',
       'A gutter that is selectable, so line numbers end up in the clipboard.',
       'Spellcheck left on, putting red squiggles under every key name.',
-      'Line-height drift between gutter and body, desynchronising the numbers from the lines.',
+      'Line-height drift between gutter and body, desynchronizing the numbers from the lines.',
       'Using it for a small known shape that should have been a form.',
     ],
     realWorld: [

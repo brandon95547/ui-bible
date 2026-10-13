@@ -160,7 +160,7 @@ export default defineDoc({
     purpose:
       'A dropdown trades screen space for a hidden list. That trade is only worth making when the options are too numerous to show, too well known to need showing, or too unimportant to deserve the space. Every dropdown is a small act of hiding, and it should be justified.',
     whenToUse: [
-      'There are more than about six known options and the user recognises them by name.',
+      'There are more than about six known options and the user recognizes them by name.',
       'The choice is secondary to the task and does not deserve permanent screen space.',
       'The option set is large or dynamic and needs filtering or server-side search.',
       'Multiple values may be selected from a long list, and the chosen ones need to stay visible.',
@@ -192,7 +192,7 @@ export default defineDoc({
         <p>
           Start with the <strong>native select</strong> and only leave it when you must. It ships
           with keyboard support, type-ahead, form participation, a native wheel picker on iOS and
-          Android, and correct behaviour with every assistive technology — for free, forever. A
+          Android, and correct behavior with every assistive technology — for free, forever. A
           custom listbox has to reimplement every one of those, and in practice most
           implementations get type-ahead and <code>aria-activedescendant</code> wrong.
         </p>
@@ -468,7 +468,7 @@ export default defineDoc({
     screenReader: [
       'Group headings must be presentational, not options. A screen reader that announces "Europe, option 4 of 9" when Europe is a heading is a broken experience.',
       'Announce the result count after filtering, debounced. Announcing on every keystroke floods the queue.',
-      'A native select announces its value, role and position in the set automatically. That is a lot of behaviour to give up.',
+      'A native select announces its value, role and position in the set automatically. That is a lot of behavior to give up.',
     ],
     touch:
       'Option rows are 44px on coarse pointers. Native selects should be preferred on mobile wherever possible — the OS picker is faster and more familiar than any custom sheet.',
@@ -594,9 +594,9 @@ const search = useMemo(
       'Set a sensible default rather than a placeholder wherever one exists. A pre-filled correct answer is faster than any picker.',
     ],
     performance: [
-      'Virtualise past about 200 options. Rendering 5,000 DOM nodes into a popover blocks the main thread for hundreds of milliseconds on a mid-range device.',
+      'Virtualize past about 200 options. Rendering 5,000 DOM nodes into a popover blocks the main thread for hundreds of milliseconds on a mid-range device.',
       'Debounce async search by 300–500ms and cancel in-flight requests with an AbortController — otherwise a slow early response can overwrite a fast later one.',
-      'Memoise the filtered list. Recomputing a filter over thousands of options on every keystroke is a common source of input lag.',
+      'Memoize the filtered list. Recomputing a filter over thousands of options on every keystroke is a common source of input lag.',
       'Render the popover only when open. Keeping a hidden list of 500 rows mounted costs memory and slows every parent re-render.',
     ],
     mistakes: [

@@ -65,9 +65,9 @@ export function PaletteSheet({ colors }: { colors: readonly PaletteColor[] }) {
 }
 
 /**
- * One colour, labelled in the only text colour that passes on it. The label is
+ * One color, labeled in the only text color that passes on it. The label is
  * not decoration — it is the first honest thing you learn about a swatch, and
- * a palette whose names all come out white is a palette with no text colours
+ * a palette whose names all come out white is a palette with no text colors
  * in it.
  */
 function SwatchCard({ color, format }: { color: PaletteColor; format: Format }) {
@@ -114,7 +114,7 @@ function SwatchCard({ color, format }: { color: PaletteColor; format: Format }) 
 
 /**
  * The palette with the labels taken away. Useful as an identifier — you
- * recognise a palette by its bar long before you recognise it by its names.
+ * recognize a palette by its bar long before you recognize it by its names.
  */
 export function PaletteStrip({
   colors,
@@ -150,12 +150,12 @@ const INK_COPY = {
 } as const
 
 /**
- * Every colour against white and against black. Read a row in both directions:
- * 4.86:1 on white is equally "this colour as text on a white page" and "white
- * as a label on this colour as a fill" — it is one relationship, not two.
+ * Every color against white and against black. Read a row in both directions:
+ * 4.86:1 on white is equally "this color as text on a white page" and "white
+ * as a label on this color as a fill" — it is one relationship, not two.
  *
  * The verdict column answers the question people mean when they ask whether a
- * colour is accessible, which is which surface it can be ink on. It is almost
+ * color is accessible, which is which surface it can be ink on. It is almost
  * never both; see the identity in palette.ts.
  */
 export function ContrastAudit({ colors }: { colors: readonly PaletteColor[] }) {
@@ -170,7 +170,7 @@ export function ContrastAudit({ colors }: { colors: readonly PaletteColor[] }) {
         <thead>
           <tr className="border-b border-[var(--ds-border-subtle)] bg-[var(--ds-surface-inset)]">
             <th scope="col" className="px-3 py-2 text-left text-label-sm font-medium text-[var(--ds-fg-muted)]">
-              Colour
+              Color
             </th>
             <th scope="col" className="px-3 py-2 text-left text-label-sm font-medium text-[var(--ds-fg-muted)]">
               On white

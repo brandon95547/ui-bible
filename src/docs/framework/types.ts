@@ -9,7 +9,7 @@ import type { Lang } from './highlight'
    "don't" lives, they know it for all 60 pages, and looking something up
    stops costing attention.
 
-   A section is omitted only when it is genuinely inapplicable (a colour ramp
+   A section is omitted only when it is genuinely inapplicable (a color ramp
    has no "recommended sizes"). Never omit one because it was hard to write.
    ======================================================================== */
 
@@ -64,7 +64,7 @@ export interface AnatomyPart {
   label: string
   value?: string
   note: string
-  /** Which measurement family this part belongs to. Colours the marker. */
+  /** Which measurement family this part belongs to. Colors the marker. */
   kind?: 'space' | 'size' | 'color' | 'type' | 'shape' | 'motion'
 }
 export interface AnatomySpec {
@@ -82,7 +82,7 @@ export interface TokenUse {
   usedFor: string
   /**
    * Optional sub-heading within the category — "Surfaces", "Interaction layers",
-   * "Foreground". Long colour lists are unreadable as one flat table; short ones
+   * "Foreground". Long color lists are unreadable as one flat table; short ones
    * are fine, so this is opt-in and pages that omit it render unchanged.
    */
   group?: string

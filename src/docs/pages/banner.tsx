@@ -122,7 +122,7 @@ export default defineDoc({
         <p>
           The most consequential decision on this page is <strong>role</strong>. A danger alert uses{' '}
           <code>role="alert"</code>, which interrupts a screen reader mid-sentence. Everything else
-          uses <code>role="status"</code>, which waits for a natural pause. Getting this backwards
+          uses <code>role="status"</code>, which waits for a natural pause. Getting this backward
           means your success messages talk over the user while your errors go unnoticed — and no
           visual review will catch it.
         </p>
@@ -254,7 +254,7 @@ export default defineDoc({
       { label: 'Title only', render: <div className="w-48"><Alert tone="info" title="Read-only project" /></div> },
       { label: 'With actions', render: <div className="w-48"><Alert tone="danger" title="Failed" actions={<Button size="xs" variant="primary" tone="danger">Retry</Button>} /></div> },
       { label: 'Dismissible', render: <div className="w-48"><Alert tone="info" title="Dismissible" onDismiss={() => {}} /></div> },
-      { label: 'Greyscale', render: <span style={{ filter: 'grayscale(1)' }}><MiniAlert tone="danger" /></span> },
+      { label: 'Grayscale', render: <span style={{ filter: 'grayscale(1)' }}><MiniAlert tone="danger" /></span> },
       { label: 'Stacked', render: <div className="flex w-48 flex-col gap-2"><MiniAlert tone="warning" /><MiniAlert tone="info" /></div> },
     ],
   },
@@ -284,9 +284,9 @@ export default defineDoc({
       {
         n: 1,
         label: 'Icon',
-        value: '17px, tone-coloured',
+        value: '17px, tone-colored',
         kind: 'shape',
-        note: 'The redundant encoding for the tone. It is the reason the message still works in greyscale and in high-contrast mode.',
+        note: 'The redundant encoding for the tone. It is the reason the message still works in grayscale and in high-contrast mode.',
       },
       {
         n: 2,
@@ -300,7 +300,7 @@ export default defineDoc({
         label: 'Fill',
         value: '14% alpha tint',
         kind: 'color',
-        note: 'A tint, not a solid. A solid status colour behind body text cannot reach 4.5:1 in both themes.',
+        note: 'A tint, not a solid. A solid status color behind body text cannot reach 4.5:1 in both themes.',
       },
       {
         n: 4,
@@ -314,7 +314,7 @@ export default defineDoc({
         label: 'Title and body',
         value: '13px / 540 and 13px / 400',
         kind: 'type',
-        note: 'The body is --ds-fg-secondary, not the tone colour. Colouring the whole message red reduces legibility and overstates the severity.',
+        note: 'The body is --ds-fg-secondary, not the tone color. Coloring the whole message red reduces legibility and overstates the severity.',
       },
       {
         n: 6,
@@ -374,11 +374,11 @@ export default defineDoc({
     },
     {
       title: 'Pair the tone with an icon and a word',
-      why: 'Colour alone fails in greyscale, for colour-blind users, and in High Contrast Mode. The icon and the title carry the severity independently.',
+      why: 'Color alone fails in grayscale, for color-blind users, and in High Contrast Mode. The icon and the title carry the severity independently.',
       render: (
         <span style={{ filter: 'grayscale(1)' }} className="block w-full">
           <Alert tone="danger" title="Payment declined">
-            Still unmistakably an error with no colour at all.
+            Still unmistakably an error with no color at all.
           </Alert>
         </span>
       ),
@@ -452,8 +452,8 @@ export default defineDoc({
       { id: '4.1.3', name: 'Status Messages', level: 'AA' },
     ],
     contrast: [
-      'Title and body sit on a tint, so both must be verified against the composited colour, not against the raw surface.',
-      'The icon uses the -text token because it sits on the tint. Using the solid tone colour there lands around 3:1 and fails.',
+      'Title and body sit on a tint, so both must be verified against the composited color, not against the raw surface.',
+      'The icon uses the -text token because it sits on the tint. Using the solid tone color there lands around 3:1 and fails.',
       'The border must reach 3:1 — it is the boundary that makes the alert a distinct region.',
     ],
     keyboard: [
@@ -549,7 +549,7 @@ async function onSubmit(e) {
 }
 
 /* A 14% tint, not a solid. Body text cannot reach 4.5:1 on a solid
-   status colour in both themes. */
+   status color in both themes. */
 .ds-alert--danger {
   background: var(--ds-danger-subtle);
   border-color: var(--ds-danger-border);
@@ -558,7 +558,7 @@ async function onSubmit(e) {
 
 .ds-alert__title { font-size: 13px; font-weight: 540; color: var(--ds-fg); }
 
-/* Body stays neutral — colouring the whole message reduces legibility
+/* Body stays neutral — coloring the whole message reduces legibility
    and overstates the severity. */
 .ds-alert__body {
   font-size: 13px;
@@ -582,7 +582,7 @@ async function onSubmit(e) {
         props: [
           { name: 'tone', type: "'info' | 'success' | 'warning' | 'danger' | 'accent' | 'neutral'", default: "'info'", description: 'Also selects the icon and the ARIA role.' },
           { name: 'title', type: 'ReactNode', description: 'Short and first. Screen-reader users hear the whole alert.' },
-          { name: 'children', type: 'ReactNode', description: 'Body copy. Rendered in neutral foreground, not the tone colour.' },
+          { name: 'children', type: 'ReactNode', description: 'Body copy. Rendered in neutral foreground, not the tone color.' },
           { name: 'actions', type: 'ReactNode', description: 'Up to two. A third means this should be a dialog.' },
           { name: 'onDismiss', type: '() => void', description: 'Adds a close button. Omit when the condition is unresolved.' },
           { name: 'icon', type: 'ReactNode', description: 'Overrides the tone icon. Keep it at 17px.' },
@@ -607,7 +607,7 @@ async function onSubmit(e) {
     mistakes: [
       'Using role="alert" for success messages, so the screen reader interrupts the user to say "Saved".',
       'Rendering the live region and its content at the same moment, so nothing is announced at all.',
-      'Colouring the entire message body in the tone colour, which reduces legibility and makes every alert feel like an emergency.',
+      'Coloring the entire message body in the tone color, which reduces legibility and makes every alert feel like an emergency.',
       'Putting a dismiss button on a condition that is still true, so the problem is hidden rather than resolved.',
       'Global banners that appear on every page. They are read once, then permanently filtered out.',
     ],

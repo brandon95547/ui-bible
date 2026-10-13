@@ -16,7 +16,7 @@ import { DocPage } from '@/docs/framework/DocPage'
 import { DeviceView } from '@/docs/framework/DeviceView'
 import { currentSectionId } from '@/docs/framework/anchors'
 import { loadPage } from '@/docs/registry'
-import { PAGE_BY_ID, neighbours, overviewSection } from '@/docs/nav'
+import { PAGE_BY_ID, neighbors, overviewSection } from '@/docs/nav'
 import { metaFor } from '@/docs/meta'
 import type { DocSpec } from '@/docs/framework/types'
 
@@ -54,7 +54,7 @@ function DocRoute({
   const seeded = React.useRef(initialSpec !== undefined)
 
   React.useEffect(() => {
-    let cancelled = false
+    let canceled = false
     if (seeded.current) {
       seeded.current = false
       return
@@ -68,16 +68,16 @@ function DocRoute({
     }
     loader()
       .then((m) => {
-        if (cancelled) return
+        if (canceled) return
         setSpec(m.default)
         setState('ready')
       })
       .catch((err) => {
         console.error(`Failed to load page "${id}"`, err)
-        if (!cancelled) setState('missing')
+        if (!canceled) setState('missing')
       })
     return () => {
-      cancelled = true
+      canceled = true
     }
   }, [id])
 
@@ -91,7 +91,7 @@ function DocRoute({
   }, [state, id])
 
   const meta = PAGE_BY_ID.get(id)
-  const { prev, next } = neighbours(id)
+  const { prev, next } = neighbors(id)
 
   if (state === 'loading') {
     return (
@@ -181,7 +181,7 @@ function Shell({ initialSpec }: { initialSpec?: DocSpec | null }) {
 
   // The prerendered document arrives with the right title; a client navigation
   // has to keep it right. Without this the tab, and every history entry the
-  // reader creates, is labelled with whichever page they happened to land on
+  // reader creates, is labeled with whichever page they happened to land on
   // first.
   React.useEffect(() => {
     document.title = metaFor(route).title

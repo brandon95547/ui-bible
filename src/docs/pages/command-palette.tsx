@@ -277,7 +277,7 @@ export default defineDoc({
         <p>
           A palette is a <strong>recognition device</strong> that pretends to be a recall device.
           The user does not need to remember the exact command name — they type three letters and
-          recognise the right row. That is why fuzzy subsequence matching matters:{' '}
+          recognize the right row. That is why fuzzy subsequence matching matters:{' '}
           <code>dtp</code> should find "Deploy to production", because that is how people type when
           they are moving fast.
         </p>
@@ -428,7 +428,7 @@ export default defineDoc({
         label: 'Vertical position',
         value: '12vh from the top',
         kind: 'space',
-        note: 'Not centred. The list grows downward, and a vertically centred panel jumps as results change — the single most disorienting thing a palette can do.',
+        note: 'Not centered. The list grows downward, and a vertically centered panel jumps as results change — the single most disorienting thing a palette can do.',
       },
       {
         n: 3,
@@ -719,7 +719,7 @@ function fuzzy(query: string, text: string) {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding-block-start: 12vh;        /* NOT centred: the list grows downward */
+  padding-block-start: 12vh;        /* NOT centered: the list grows downward */
   z-index: 96;
 }
 
@@ -772,7 +772,7 @@ function fuzzy(query: string, text: string) {
         name: 'Command',
         props: [
           { name: 'id', type: 'string', required: true, description: 'Stable. Used for the aria-activedescendant target and for recents.' },
-          { name: 'label', type: 'string', required: true, description: 'What the user types towards. Lead with the verb: "Deploy to production".' },
+          { name: 'label', type: 'string', required: true, description: 'What the user types toward. Lead with the verb: "Deploy to production".' },
           { name: 'keywords', type: 'string[]', description: 'Synonyms the label does not contain — "remove" for a delete command.' },
           { name: 'shortcut', type: 'string', description: 'Displayed on the row. Showing it is how the palette teaches itself out of a job.' },
           { name: 'destructive', type: 'boolean', default: 'false', description: 'Styles the row and forces a confirmation instead of running on Enter.' },
@@ -792,7 +792,7 @@ function fuzzy(query: string, text: string) {
     performance: [
       'Debounce the announced result count, not the filtering. Filtering must feel instant; announcing on every keystroke is what makes it unusable with a screen reader.',
       'Pre-index commands once at registration rather than lowercasing every label on every keystroke. With 300 commands that difference is visible.',
-      'Virtualise past roughly 100 visible rows — though a palette that regularly shows 100 rows needs better ranking, not a virtualiser.',
+      'Virtualize past roughly 100 visible rows — though a palette that regularly shows 100 rows needs better ranking, not a virtualizer.',
       'Mount the panel only when open. A permanently mounted palette holding a focus trap and a keydown listener is a subtle source of interference across the app.',
     ],
     mistakes: [
@@ -802,7 +802,7 @@ function fuzzy(query: string, text: string) {
       'A panel that resizes as results narrow, moving the row under the pointer.',
       'Running destructive commands directly on Enter.',
       'Section headers marked up as options, so the screen reader announces "Actions" as a runnable result.',
-      'Vertically centring the panel, so it jumps every time the result count changes.',
+      'Vertically centering the panel, so it jumps every time the result count changes.',
     ],
     realWorld: [
       'Adoption follows discoverability, not capability. Products that put a fake search box with a ⌘K chip in the header get several times the usage of ones that only bind the shortcut.',

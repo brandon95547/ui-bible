@@ -25,7 +25,7 @@ export function PreviewStage({
   lang = 'tsx',
   className,
   bodyClassName,
-  /** Vertically centres a single small specimen. Off for full layouts. */
+  /** Vertically centers a single small specimen. Off for full layouts. */
   center = true,
   minHeight = 180,
   padded = true,
@@ -413,7 +413,7 @@ export function KnobToggle({
   )
 }
 
-/** A single labelled specimen cell — used by the state matrix and examples. */
+/** A single labeled specimen cell — used by the state matrix and examples. */
 export function Specimen({
   label,
   note,

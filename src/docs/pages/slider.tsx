@@ -39,7 +39,7 @@ function Slider({
         <input
           type="range"
           aria-label={label}
-          // A bare number is often ambiguous read aloud — "70" versus "70 per cent".
+          // A bare number is often ambiguous read aloud — "70" versus "70 percent".
           aria-valuetext={format(value)}
           min={min}
           max={max}
@@ -152,7 +152,7 @@ function Playground() {
           onChange={setValue}
           step={Number(step)}
           disabled={disabled}
-          format={(v) => `${v} per cent`}
+          format={(v) => `${v} percent`}
         />
       </div>
     </PreviewStage>
@@ -272,7 +272,7 @@ export default defineDoc({
               <Row gap="sm" align="center" className="w-full">
                 <Volume2 size={16} className="shrink-0 text-[var(--ds-fg-muted)]" />
                 <div className="flex-1">
-                  <Slider label="Volume" value={60} size="sm" format={(v) => `${v} per cent`} />
+                  <Slider label="Volume" value={60} size="sm" format={(v) => `${v} percent`} />
                 </div>
               </Row>
               <Row gap="sm" align="center" className="w-full">
@@ -285,7 +285,7 @@ export default defineDoc({
                     max={400}
                     step={25}
                     size="sm"
-                    format={(v) => `${v} per cent`}
+                    format={(v) => `${v} percent`}
                   />
                 </div>
               </Row>
@@ -302,7 +302,7 @@ export default defineDoc({
           <PreviewStage minHeight={0} allowResize={false} center={false}>
             <Grid min="17rem">
               <Cell label="0–100, step 5" tone="good">
-                <Slider label="Good range" value={40} step={5} format={(v) => `${v} per cent`} />
+                <Slider label="Good range" value={40} step={5} format={(v) => `${v} percent`} />
               </Cell>
               <Cell label="0–10,000, step 1" tone="bad">
                 <Slider
@@ -409,7 +409,7 @@ export default defineDoc({
         label: 'Ticks',
         value: 'Meaningful stops only',
         kind: 'type',
-        note: 'The minimum, the maximum and any position that has a name. Labelling every step turns the control into a ruler.',
+        note: 'The minimum, the maximum and any position that has a name. Labeling every step turns the control into a ruler.',
       },
       {
         n: 7,
@@ -437,7 +437,7 @@ export default defineDoc({
 
   sizes: [
     { name: 'Small', height: '4px track', icon: '16px thumb', touch: '44px hit area', use: 'Inline beside an icon — volume, zoom, opacity.' },
-    { name: 'Medium', height: '6px track', icon: '20px thumb', touch: '44px hit area', use: 'The default. A labelled form field.' },
+    { name: 'Medium', height: '6px track', icon: '20px thumb', touch: '44px hit area', use: 'The default. A labeled form field.' },
     { name: 'Track length', minWidth: '10rem', maxWidth: '24rem', use: 'Below 10rem precision collapses; above 24rem the thumb travels further than the eye wants to follow.' },
     { name: 'Ticks', type: '12px', gap: 'Meaningful stops only', use: 'Minimum, maximum, and any position with a name.' },
     { name: 'Paired field', minWidth: '5rem', use: 'A Number Input beside the track for values that must be exact.' },
@@ -462,10 +462,10 @@ export default defineDoc({
     },
     {
       title: 'Give the value units in aria-valuetext',
-      why: '"70" read aloud is ambiguous. "70 per cent" is the value. The native aria-valuenow carries the number; valuetext carries the meaning.',
+      why: '"70" read aloud is ambiguous. "70 percent" is the value. The native aria-valuenow carries the number; valuetext carries the meaning.',
       render: (
         <code className="font-mono text-[11px] text-[var(--ds-success-text)]">
-          aria-valuetext="70 per cent"
+          aria-valuetext="70 percent"
         </code>
       ),
     },
@@ -501,7 +501,7 @@ export default defineDoc({
     },
     {
       title: 'Do not hide the value entirely',
-      why: 'Without a readout or a labelled effect, the user is guessing. A slider with no feedback is a control that cannot be used deliberately.',
+      why: 'Without a readout or a labeled effect, the user is guessing. A slider with no feedback is a control that cannot be used deliberately.',
       render: (
         <div className="w-40 py-2">
           <Slider label="no readout" value={37} />
@@ -534,9 +534,9 @@ export default defineDoc({
     ],
     contrast: [
       'The filled track must reach 3:1 against the unfilled track — the boundary between them is the value.',
-      'The thumb must reach 3:1 against both the track and the page background, which is why it is a white disc with a coloured ring rather than a solid fill.',
+      'The thumb must reach 3:1 against both the track and the page background, which is why it is a white disc with a colored ring rather than a solid fill.',
       'Tick labels are content and owe 4.5:1.',
-      'A disabled slider still has to show its value — grey it down, but do not make the position unreadable.',
+      'A disabled slider still has to show its value — gray it down, but do not make the position unreadable.',
     ],
     keyboard: [
       { keys: '← / ↓', does: 'Decreases by one step. → / ↑ increases.' },
@@ -548,14 +548,14 @@ export default defineDoc({
     aria: [
       { attr: 'role="slider"', on: 'The control', note: 'Implicit on input[type=range], which is the reason to build on it.' },
       { attr: 'aria-valuenow / valuemin / valuemax', on: 'The control', note: 'Native and automatic. A div-based slider has to maintain all three by hand, and they drift.' },
-      { attr: 'aria-valuetext', on: 'The control', note: 'The value with its units: "70 per cent", "30 days". Without it the number is announced with no meaning attached.' },
-      { attr: 'aria-label', on: 'The control', note: 'Or a real label element. An unlabelled slider announces as "slider, 70" with no indication of what it controls.' },
+      { attr: 'aria-valuetext', on: 'The control', note: 'The value with its units: "70 percent", "30 days". Without it the number is announced with no meaning attached.' },
+      { attr: 'aria-label', on: 'The control', note: 'Or a real label element. An unlabeled slider announces as "slider, 70" with no indication of what it controls.' },
       { attr: 'aria-orientation', on: 'A vertical slider', note: 'Changes which arrow keys are announced as increasing.' },
     ],
     focus:
       'The focus ring is on the thumb, because the thumb is what moves. It must be visible at both ends of the track, which means the halo cannot be clipped by the container — the slider needs vertical padding of its own.',
     screenReader: [
-      'Announce as "Sample rate, slider, 70 per cent". The label and the valuetext together are the whole announcement.',
+      'Announce as "Sample rate, slider, 70 percent". The label and the valuetext together are the whole announcement.',
       'Do not announce every intermediate value during a drag. The native control throttles this correctly; a custom one usually does not.',
       'For a two-thumb range, name each end: "Minimum price" and "Maximum price", not "slider" twice.',
     ],
@@ -575,7 +575,7 @@ export default defineDoc({
     step={5}                        // match how people talk about the value
     value={rate}
     onChange={setRate}
-    format={(v) => \`\${v} per cent\`}  // becomes aria-valuetext
+    format={(v) => \`\${v} percent\`}  // becomes aria-valuetext
   />
 </Field>
 
@@ -617,7 +617,7 @@ export default defineDoc({
       max="100"
       step="5"
       value="70"
-      aria-valuetext="70 per cent"
+      aria-valuetext="70 percent"
     />
     <span class="ds-slider__track" aria-hidden="true"></span>
     <span class="ds-slider__fill"  aria-hidden="true" style="inline-size: 70%"></span>
@@ -645,7 +645,7 @@ export default defineDoc({
   inset: 0;
   inline-size: 100%;
   block-size: 100%;
-  opacity: 0;                        /* keeps every native behaviour */
+  opacity: 0;                        /* keeps every native behavior */
   cursor: pointer;
   margin: 0;
 }
@@ -659,7 +659,7 @@ export default defineDoc({
 .ds-slider__track { inset-inline: 0; background: var(--ds-layer-active); }
 .ds-slider__fill  { inset-inline-start: 0; background: var(--ds-accent); }
 
-/* White disc with a coloured ring: 3:1 against both the track and the page,
+/* White disc with a colored ring: 3:1 against both the track and the page,
    in either theme. */
 .ds-slider__thumb {
   position: absolute;
@@ -695,7 +695,7 @@ input[type='range']:focus-visible ~ .ds-slider__thumb {
           { name: 'step', type: 'number', default: '1', description: 'The design decision. Match it to how people talk about the value.' },
           { name: 'format', type: '(v: number) => string', description: 'Produces the readout and aria-valuetext. Always include the units.' },
           { name: 'ticks', type: '{ value: number; label: string }[]', description: 'Meaningful stops only. Never one per step.' },
-          { name: 'label', type: 'string', required: true, description: 'Accessible name. An unlabelled slider announces as "slider, 70".' },
+          { name: 'label', type: 'string', required: true, description: 'Accessible name. An unlabeled slider announces as "slider, 70".' },
         ],
       },
     ],
@@ -744,7 +744,7 @@ function WithInput({ compact }: { compact?: boolean }) {
               label="Opacity"
               value={value}
               onChange={setValue}
-              format={(v) => `${v} per cent`}
+              format={(v) => `${v} percent`}
             />
           </div>
           <div className="w-[5.5rem] shrink-0">

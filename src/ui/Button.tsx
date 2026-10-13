@@ -496,7 +496,7 @@ export function SplitButton({
       className="relative inline-flex"
       {...inspect('SplitButton', {
         tokens: ['--ds-accent', '--radius-md', '--shadow-e4'],
-        why: 'The 1px divider between the action and the disclosure must be a translucent white/black overlay, not a border colour — on a filled button a solid border reads as a crack.',
+        why: 'The 1px divider between the action and the disclosure must be a translucent white/black overlay, not a border color — on a filled button a solid border reads as a crack.',
         a11y: 'The disclosure half owns aria-haspopup + aria-expanded. The primary half is a plain button so Enter always fires the default action.',
       })}
     >

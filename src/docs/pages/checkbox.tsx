@@ -255,7 +255,7 @@ export default defineDoc({
         label: 'Optical offset',
         value: '2px from the top',
         kind: 'space',
-        note: 'The box aligns with the cap height of the first line, not the line box. Centring on the line box drops it visibly low.',
+        note: 'The box aligns with the cap height of the first line, not the line box. Centering on the line box drops it visibly low.',
       },
       {
         n: 5,
@@ -269,7 +269,7 @@ export default defineDoc({
         label: 'Check animation',
         value: 'scale 0.5 → 1, 140ms',
         kind: 'motion',
-        note: 'The mark scales up from the centre as the fill lands. It reads as the box accepting the input rather than the mark being pasted on.',
+        note: 'The mark scales up from the center as the fill lands. It reads as the box accepting the input rather than the mark being pasted on.',
       },
     ],
   },
@@ -358,7 +358,7 @@ export default defineDoc({
     },
     {
       title: 'Do not pre-check a consent box',
-      why: 'Pre-ticked marketing consent is unlawful under GDPR and, more simply, it is not consent. Any box that grants a permission starts unchecked.',
+      why: 'Pre-checked marketing consent is unlawful under GDPR and, more simply, it is not consent. Any box that grants a permission starts unchecked.',
       render: (
         <Checkbox defaultChecked label="Share my data with partners" />
       ),
@@ -384,18 +384,18 @@ export default defineDoc({
     contrast: [
       'The unchecked border must reach 3:1 against the surface — it is the only thing showing the control exists.',
       'The checkmark must reach 3:1 against the checked fill. White on our accent is 4.6:1 in dark and 5.7:1 in light.',
-      'Never signal a checked state with fill colour alone. The checkmark is the redundant encoding.',
+      'Never signal a checked state with fill color alone. The checkmark is the redundant encoding.',
     ],
     keyboard: [
       { keys: 'Tab', does: 'Moves to each checkbox. Unlike radios, every checkbox in a group is tabbable.' },
-      { keys: 'Space', does: 'Toggles. Enter does not activate a checkbox — that is native behaviour, not a bug.' },
+      { keys: 'Space', does: 'Toggles. Enter does not activate a checkbox — that is native behavior, not a bug.' },
     ],
     aria: [
       { attr: '<input type="checkbox">', on: 'The control', note: 'Native gives role, state, keyboard and form participation with zero ARIA.' },
       { attr: '<label for>', on: 'The label', note: 'Provides the accessible name and extends the hit area. Not optional.' },
       { attr: 'indeterminate', on: 'The DOM property', note: 'There is no HTML attribute. It must be set in JavaScript, and it maps to aria-checked="mixed".' },
       { attr: 'aria-describedby', on: 'The input', note: 'Points at the description, so it is announced after the label.' },
-      { attr: 'aria-invalid', on: 'The input', note: 'For a required consent box that was not ticked.' },
+      { attr: 'aria-invalid', on: 'The input', note: 'For a required consent box that was not checked.' },
       { attr: '<fieldset> + <legend>', on: 'A group', note: 'The legend is announced before every option, giving each one its context.' },
     ],
     focus:
@@ -539,7 +539,7 @@ const some = selected.length > 0 && !all
       'Keep descriptions to one line. A checkbox with a paragraph attached is a decision that deserves a RadioCard or its own section.',
     ],
     performance: [
-      'For a table with thousands of selectable rows, store selection in a Set and virtualise. Rendering ten thousand inputs blocks the main thread for hundreds of milliseconds.',
+      'For a table with thousands of selectable rows, store selection in a Set and virtualize. Rendering ten thousand inputs blocks the main thread for hundreds of milliseconds.',
       'Derive indeterminate during render rather than storing it. A stored third state inevitably drifts out of sync with the children.',
       'Avoid a state update per checkbox in a large group — batch into one array update so the group re-renders once.',
     ],
@@ -552,7 +552,7 @@ const some = selected.length > 0 && !all
     realWorld: [
       'In permission and scope UIs, show the effective result of the selection as plain text underneath. Users routinely misjudge what a combination of scopes actually grants.',
       'For terms and conditions, put the checkbox after the text and keep the link opening in a new tab. Navigating away mid-form loses everything the user typed.',
-      'Log which options in a group are never selected. An option nobody chooses is either badly labelled or should not exist.',
+      'Log which options in a group are never selected. An option nobody chooses is either badly labeled or should not exist.',
       'When a table has both row selection and row navigation, keep the checkbox column separate and stop propagation on it. Otherwise selecting a row navigates away from it.',
     ],
   },

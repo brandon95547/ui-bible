@@ -58,7 +58,7 @@ export function SectionOverview({
           section={section}
           onNavigate={onNavigate}
           headed={false}
-          /* Components are things you recognise on sight; foundations are things
+          /* Components are things you recognize on sight; foundations are things
              you read about. Only the first earns a wireframe. */
           variant={section.id === 'components' ? 'preview' : 'text'}
         />

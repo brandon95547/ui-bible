@@ -253,7 +253,7 @@ export default defineDoc({
         id: 'logo',
         title: 'A logo costs error correction',
         description:
-          'Covering the centre means raising the correction level to H, which makes the symbol denser. It is a real trade, not a free bit of branding.',
+          'Covering the center means raising the correction level to H, which makes the symbol denser. It is a real trade, not a free bit of branding.',
         render: (
           <PreviewStage minHeight={0} allowResize={false} center={false}>
             <Grid min="13rem">
@@ -370,12 +370,12 @@ export default defineDoc({
         label: 'Error correction',
         value: 'M by default, H with a logo',
         kind: 'shape',
-        note: 'Level M tolerates about 15% damage; H tolerates 30% and makes the symbol denser. Only raise it when something covers the centre.',
+        note: 'Level M tolerates about 15% damage; H tolerates 30% and makes the symbol denser. Only raise it when something covers the center.',
       },
       {
         n: 6,
         label: 'Logo area',
-        value: '≤ 20% of the centre',
+        value: '≤ 20% of the center',
         kind: 'size',
         note: 'With a white gap around it. Past 20% even level H stops recovering reliably.',
       },
@@ -435,7 +435,7 @@ export default defineDoc({
       ),
     },
     {
-      title: 'Raise correction only when you cover the centre',
+      title: 'Raise correction only when you cover the center',
       why: 'Level H tolerates 30% damage and makes the symbol denser. It is the price of a logo, not a default to reach for.',
       render: (
         <Row gap="lg">
@@ -465,7 +465,7 @@ export default defineDoc({
     },
     {
       title: 'Do not tint the modules',
-      why: 'The contrast between module and field is what makes it readable. A brand-coloured code trades a real function for a decorative one.',
+      why: 'The contrast between module and field is what makes it readable. A brand-colored code trades a real function for a decorative one.',
       render: (
         <span className="inline-block" style={{ filter: 'hue-rotate(220deg) saturate(3)' }}>
           <QR size={96} />
@@ -494,7 +494,7 @@ export default defineDoc({
       'Module to field contrast must be as close to maximum as possible. This is a machine-vision requirement, and it is stricter than any WCAG ratio.',
       'The code keeps a white field in dark mode. Contrast against the page is the container’s problem, not the code’s.',
       'The URL beside it is content and owes 4.5:1.',
-      'In forced-colors mode the code must be exempt — a QR rendered in system colours is not scannable.',
+      'In forced-colors mode the code must be exempt — a QR rendered in system colors is not scannable.',
     ],
     keyboard: [
       { keys: 'Tab', does: 'Reaches the copy and download controls beside the code. The code itself is not focusable.' },
@@ -537,7 +537,7 @@ const isPhone = useMediaQuery('(max-width: 640px)')
 {isPhone ? <Link href={pairingUrl}>Continue</Link> : <QrCode value={pairingUrl} />}
 
 // Error correction is a trade, not a default. M is right until something
-// covers the centre; H makes the symbol denser.
+// covers the center; H makes the symbol denser.
 <QrCode
   value={url}
   errorCorrection={logo ? 'H' : 'M'}
@@ -601,7 +601,7 @@ const isPhone = useMediaQuery('(max-width: 640px)')
   word-break: break-all;             /* a long URL must stay fully visible */
 }
 
-/* A QR rendered in system colours is not scannable. */
+/* A QR rendered in system colors is not scannable. */
 @media (forced-colors: active) {
   .ds-qr svg { forced-color-adjust: none; }
 }
@@ -624,9 +624,9 @@ const isPhone = useMediaQuery('(max-width: 640px)')
         props: [
           { name: 'value', type: 'string', required: true, description: 'The encoded value. Keep it short — a long URL means more modules and a denser, harder-to-scan symbol.' },
           { name: 'size', type: 'number', default: '128', description: 'Pixels. 96 is the practical floor for reliable scanning on screen.' },
-          { name: 'errorCorrection', type: "'L' | 'M' | 'Q' | 'H'", default: "'M'", description: 'H only when a logo covers the centre. Higher levels make the symbol denser.' },
+          { name: 'errorCorrection', type: "'L' | 'M' | 'Q' | 'H'", default: "'M'", description: 'H only when a logo covers the center. Higher levels make the symbol denser.' },
           { name: 'quietZone', type: 'number', default: '4', description: 'Modules of margin. Reducing it is the most common cause of a code that will not read.' },
-          { name: 'logo', type: 'ReactNode', description: 'Centred, at most 20% of the symbol, with a white gap. Requires level H.' },
+          { name: 'logo', type: 'ReactNode', description: 'Centered, at most 20% of the symbol, with a white gap. Requires level H.' },
           { name: 'label', type: 'string', description: 'The accessible name. Defaults to "QR code linking to {value}".' },
         ],
       },
@@ -638,7 +638,7 @@ const isPhone = useMediaQuery('(max-width: 640px)')
       'Keep the encoded URL short. Every extra character adds modules, and a denser symbol is harder to scan at the same physical size — use a short link, not the canonical one.',
       'Show an expiry when the code is a session or a pairing token, and refresh it before it lapses rather than after.',
       'Offer a download for print, and export SVG rather than PNG so it stays sharp at any physical size.',
-      'Test on real hardware, at arm’s length, in poor light. A code that scans in a design review at 20cm may fail on a wall at two metres.',
+      'Test on real hardware, at arm’s length, in poor light. A code that scans in a design review at 20cm may fail on a wall at two meters.',
       'For Wi-Fi credentials, use the WIFI: URI scheme rather than a URL — the phone joins the network directly instead of opening a browser.',
     ],
     performance: [

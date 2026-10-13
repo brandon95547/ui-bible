@@ -163,7 +163,7 @@ function Anatomy() {
     <div className="relative py-14 pl-6 pr-16">
       {/* the specimen */}
       <div className="relative inline-flex">
-        {/* padding visualisation */}
+        {/* padding visualization */}
         <span
           aria-hidden
           className="pointer-events-none absolute inset-0 rounded-full anatomy-pad"

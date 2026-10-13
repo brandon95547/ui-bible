@@ -585,8 +585,8 @@ export default defineDoc({
     ],
     contrast: [
       'Item labels owe 4.5:1 — the label is the content. Icons and shortcuts are supplementary and may sit lower, but not below 3:1.',
-      'The active row must be distinguishable from idle rows without relying on colour alone at a 30px row height, where a faint wash disappears in daylight.',
-      'The destructive item carries both the danger colour and its own icon, so the severity survives greyscale.',
+      'The active row must be distinguishable from idle rows without relying on color alone at a 30px row height, where a faint wash disappears in daylight.',
+      'The destructive item carries both the danger color and its own icon, so the severity survives grayscale.',
       'The panel edge must reach 3:1 against the page behind it. On an overlay surface in dark mode this is easy to lose.',
     ],
     keyboard: [

@@ -313,7 +313,7 @@ export default defineDoc({
         label: 'Padding',
         value: '10px 12px',
         kind: 'space',
-        note: 'Slightly more vertical padding than a single-line input, because the first line needs to sit off the top edge rather than be optically centred.',
+        note: 'Slightly more vertical padding than a single-line input, because the first line needs to sit off the top edge rather than be optically centered.',
       },
       {
         n: 3,
@@ -348,7 +348,7 @@ export default defineDoc({
         label: 'Message',
         value: 'Stacks under the description',
         kind: 'space',
-        note: 'It never replaces the description. Losing the instructions at the moment of failure is exactly backwards.',
+        note: 'It never replaces the description. Losing the instructions at the moment of failure is exactly backward.',
       },
     ],
   },
@@ -389,7 +389,7 @@ export default defineDoc({
     },
     {
       title: 'Show the counter from the first character',
-      why: 'The limit is a constraint on what to write, not a punishment discovered afterwards. At 290 of 280 the user is rewriting, not trimming.',
+      why: 'The limit is a constraint on what to write, not a punishment discovered afterward. At 290 of 280 the user is rewriting, not trimming.',
       render: (
         <div className="w-full max-w-xs">
           <Field label="Summary" counter={{ value: 0, max: 280 }}>
@@ -483,7 +483,7 @@ export default defineDoc({
     contrast: [
       'The idle border owes 3:1 — it is the only thing showing an input is there.',
       'Placeholder text owes 4.5:1 like any other text. The common 2.5:1 placeholder is a contrast failure people excuse because it is "just a hint".',
-      'The error state changes the border, the message and the counter together, so it survives greyscale and High Contrast Mode.',
+      'The error state changes the border, the message and the counter together, so it survives grayscale and High Contrast Mode.',
       'The resize handle is a control and owes 3:1 against the field fill.',
     ],
     keyboard: [
@@ -502,7 +502,7 @@ export default defineDoc({
       { attr: 'maxlength', on: 'The field', note: 'Deliberately omitted when you want to allow going over. A hard maxlength swallows keystrokes with no explanation.' },
     ],
     focus:
-      'The focus halo must be visible on all four sides, which means the field cannot sit flush against a container edge. On error, focus moves to the first invalid field and the message is announced — not just coloured.',
+      'The focus halo must be visible on all four sides, which means the field cannot sit flush against a container edge. On error, focus moves to the first invalid field and the message is announced — not just colored.',
     screenReader: [
       'Announce the limit in the description, not only in the counter: "Up to 280 characters" is read once, at the point it is useful.',
       'Throttle counter announcements. Every keystroke is unusable; roughly every 20 characters, plus one at the limit and one when going over, is right.',

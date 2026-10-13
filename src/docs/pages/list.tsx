@@ -55,7 +55,7 @@ function List({
             <span className="flex min-w-0 flex-1 flex-col">
               <span className="truncate text-label text-[var(--ds-fg)]">{r.name}</span>
               {/* The second line is metadata, not a second title — one step
-                  down in size and two in colour. */}
+                  down in size and two in color. */}
               {lines === 2 && (
                 <span className="truncate text-caption text-[var(--ds-fg-muted)]">{r.meta}</span>
               )}
@@ -207,7 +207,7 @@ export default defineDoc({
         </p>
         <p>
           The second line is <strong>metadata, not a second title</strong>. One step down in size
-          and two in colour. If the two lines look like siblings, the row has no primary label and
+          and two in color. If the two lines look like siblings, the row has no primary label and
           the list stops being scannable.
         </p>
       </>
@@ -404,7 +404,7 @@ export default defineDoc({
         label: 'Metadata',
         value: '12px, --ds-fg-muted',
         kind: 'type',
-        note: 'One step down in size, two in colour. Equal weight makes the row read as two titles and the list stops being scannable.',
+        note: 'One step down in size, two in color. Equal weight makes the row read as two titles and the list stops being scannable.',
       },
       {
         n: 6,
@@ -470,7 +470,7 @@ export default defineDoc({
     },
     {
       title: 'Step the metadata down twice',
-      why: 'One step in size and two in colour. Equal weight makes the row read as two titles, and the list stops being scannable.',
+      why: 'One step in size and two in color. Equal weight makes the row read as two titles, and the list stops being scannable.',
       render: (
         <Stack gap="xs" className="w-52">
           <span className="text-label text-[var(--ds-fg)]">api-gateway</span>
@@ -686,7 +686,7 @@ export default defineDoc({
 .ds-list__text { display: flex; flex-direction: column; min-inline-size: 0; }
 .ds-list__title { color: var(--ds-fg); font-size: 13px; }
 
-/* One step down in size, two in colour. Equal weight makes the row read as
+/* One step down in size, two in color. Equal weight makes the row read as
    two titles. */
 .ds-list__meta  { color: var(--ds-fg-muted); font-size: 12px; }
 .ds-list__title,
@@ -747,14 +747,14 @@ export default defineDoc({
       'Give an empty list an explicit message. A blank container is indistinguishable from one that failed to load, and users refresh.',
       'Truncate the title from the end but keep the trailing content pinned. The status is frequently the reason the user is scanning at all.',
       'Add a sticky header with a count for long lists. "48 deployments" answers a question the user would otherwise scroll to guess at.',
-      'For selectable lists, put the checkbox in the leading slot and keep the row clickable for navigation. Two behaviours, two targets, no ambiguity.',
+      'For selectable lists, put the checkbox in the leading slot and keep the row clickable for navigation. Two behaviors, two targets, no ambiguity.',
       'If every row has an overflow menu, consider whether the actions belong at the top of the list instead — one toolbar beats fifty menus.',
     ],
     performance: [
-      'Virtualise past roughly 200 rows, and add aria-setsize and aria-posinset when you do — otherwise a windowed list reports "3 of 20" for 400 items.',
-      'Give rows a fixed height where you can. Variable heights force a measurement pass per row and make virtualisation far harder.',
-      'Memoise the row component on its item id. A list re-rendering every row on every keystroke elsewhere is the usual cause of a sluggish page.',
-      'Use content-visibility: auto on long non-virtualised lists to skip off-screen layout for free.',
+      'Virtualize past roughly 200 rows, and add aria-setsize and aria-posinset when you do — otherwise a windowed list reports "3 of 20" for 400 items.',
+      'Give rows a fixed height where you can. Variable heights force a measurement pass per row and make virtualization far harder.',
+      'Memoize the row component on its item id. A list re-rendering every row on every keystroke elsewhere is the usual cause of a sluggish page.',
+      'Use content-visibility: auto on long non-virtualized lists to skip off-screen layout for free.',
     ],
     mistakes: [
       'Divs instead of ul and li, so the item count is never announced.',

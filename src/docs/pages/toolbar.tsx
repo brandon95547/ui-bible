@@ -364,7 +364,7 @@ export default defineDoc({
                   <TbButton label="Underline" icon={<Underline size={15} />} />
                   <Divider orientation="vertical" className="mx-1 h-5" />
                   <TbButton label="Align left" icon={<AlignLeft size={15} />} pressed />
-                  <TbButton label="Align centre" icon={<AlignCenter size={15} />} />
+                  <TbButton label="Align center" icon={<AlignCenter size={15} />} />
                   <TbButton label="Align right" icon={<AlignRight size={15} />} />
                   <Divider orientation="vertical" className="mx-1 h-5" />
                   <TbButton label="Bulleted list" icon={<List size={15} />} />
@@ -386,8 +386,8 @@ export default defineDoc({
         ),
       },
       {
-        id: 'labelled',
-        title: 'Labelled controls',
+        id: 'labeled',
+        title: 'Labeled controls',
         description:
           'When the toolbar has room and the actions are infrequent, text labels beat icons. Recognition beats recall, and an unfamiliar glyph is recall.',
         render: (
@@ -591,7 +591,7 @@ export default defineDoc({
     },
     {
       title: 'Do not put a destructive action mid-strip',
-      why: 'The pointer travels across the whole strip. Delete belongs at the far end past a divider, where nothing safe sits beyond it to travel towards.',
+      why: 'The pointer travels across the whole strip. Delete belongs at the far end past a divider, where nothing safe sits beyond it to travel toward.',
       render: (
         <Toolbar label="Bad order" className="border-0 bg-transparent p-0">
           <TbButton label="Export" icon={<Download size={15} />} />
@@ -648,7 +648,7 @@ export default defineDoc({
     ],
     contrast: [
       'Idle glyphs must reach 4.5:1 — they are the label. A toolbar of 3:1 icons is unreadable for anyone in bright light.',
-      'The pressed state changes fill and glyph colour together, so which controls are active survives greyscale.',
+      'The pressed state changes fill and glyph color together, so which controls are active survives grayscale.',
       'Dividers are decorative only if the grouping is also carried by role="separator". If the line is the only grouping signal, it owes 3:1.',
     ],
     keyboard: [

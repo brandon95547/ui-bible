@@ -191,7 +191,7 @@ export function RadioGroup({
       {...inspect('RadioGroup', {
         tokens: ['--text-label', '--ds-fg-secondary'],
         why: 'Vertical is the default: a stacked list is scanned in one eye movement per item, and the options stay aligned on a single left edge. Go horizontal only for 2–3 very short labels.',
-        a11y: 'Arrow keys move between radios in a group and skip disabled ones — this is native behaviour you get for free from <input type=radio> with a shared name.',
+        a11y: 'Arrow keys move between radios in a group and skip disabled ones — this is native behavior you get for free from <input type=radio> with a shared name.',
       })}
     >
       <legend className="mb-2 text-label text-[var(--ds-fg-secondary)]">{legend}</legend>
@@ -313,10 +313,10 @@ export function Switch({
   // against the edge when on. Nobody reports that as a bug — it just looks slightly wrong in a
   // way that is hard to name, which is exactly the kind of thing this file exists to get right.
   const travel = size === 'sm' ? 'translate-x-2.5' : 'translate-x-3'
-  // A glyph inside the handle is the only channel that carries on/off without colour or
+  // A glyph inside the handle is the only channel that carries on/off without color or
   // position. Both of those fail somebody: position is invisible when the switch is the only
-  // one on screen with nothing to compare against, and the accent-vs-grey track is a narrow
-  // luminance gap in greyscale or with deuteranopia. Material offers exactly this as
+  // one on screen with nothing to compare against, and the accent-vs-gray track is a narrow
+  // luminance gap in grayscale or with deuteranopia. Material offers exactly this as
   // `thumbIcon` and gives the same reason for it.
   //
   // Only at md. The sm knob is 14px, and a check drawn at 9px inside it is a smudge that
@@ -345,7 +345,7 @@ export function Switch({
       {...inspect(`Switch · ${size}`, {
         tokens: ['--ds-accent', '--ds-border-strong', '--ease-emphasized'],
         why: 'The knob travels on an emphasized curve (fast out, settled in) over 180ms — long enough to read as movement, short enough that a rapid toggle never queues up. Travel is the content box minus the knob (12px at md), so the knob sits the same 4px off each end instead of being flush at one of them.',
-        a11y: 'role="switch" + aria-checked. A screen reader announces “on/off”, not “checked” — the correct mental model for something that saves instantly. The check in the handle is the third state channel after colour and position: greyscale and deuteranopia both flatten an accent-vs-grey track, and a lone switch has no neighbour to compare its knob position against.',
+        a11y: 'role="switch" + aria-checked. A screen reader announces “on/off”, not “checked” — the correct mental model for something that saves instantly. The check in the handle is the third state channel after color and position: grayscale and deuteranopia both flatten an accent-vs-gray track, and a lone switch has no neighbor to compare its knob position against.',
       })}
     >
       <span

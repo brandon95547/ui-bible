@@ -270,9 +270,9 @@ export default defineDoc({
       },
       {
         id: 'alignment',
-        title: 'Left or centred',
+        title: 'Left or centered',
         description:
-          'Centred suits a short heading and a single action. Left-aligned scans faster and is the only option once there is media beside the text.',
+          'Centered suits a short heading and a single action. Left-aligned scans faster and is the only option once there is media beside the text.',
         render: (
           <PreviewStage minHeight={0} allowResize={false} center={false}>
             <Stack gap="lg" className="w-full">
@@ -534,7 +534,7 @@ export default defineDoc({
     screenReader: [
       'The heading is the first thing announced after the landmark. It has to work as a standalone sentence, because that is how it will be heard.',
       'The eyebrow is read before the heading. Keep it short, or every visitor hears "Introducing, comma, new in twenty twenty-six point three" before the message.',
-      'Background media must be aria-hidden. A decorative video announced as an unlabelled region is pure noise at the top of the page.',
+      'Background media must be aria-hidden. A decorative video announced as an unlabeled region is pure noise at the top of the page.',
     ],
     touch:
       'Vertical padding halves on a phone — 48px becomes 24px, or the hero consumes the entire first screen and the content below is invisible. Actions stack full-width with the primary on top. Fluid heading sizing with clamp() is what stops a headline wrapping into five lines at 375px.',
@@ -655,7 +655,7 @@ export default defineDoc({
           { name: 'action', type: 'ReactNode', description: 'The single primary action. It is the reason the section exists.' },
           { name: 'secondaryAction', type: 'ReactNode', description: 'A tertiary button. Never a second primary one.' },
           { name: 'media', type: 'ReactNode', description: 'A panel beside the text, or a background image. Backgrounds are automatically scrimmed.' },
-          { name: 'align', type: "'left' | 'center'", default: "'left'", description: 'Centred suits a short heading and one action; left scans faster and is required with side media.' },
+          { name: 'align', type: "'left' | 'center'", default: "'left'", description: 'Centered suits a short heading and one action; left scans faster and is required with side media.' },
           { name: 'as', type: "'h1' | 'h2'", default: "'h1'", description: 'h2 when the hero is not the top of the page — the outline must stay correct.' },
         ],
       },

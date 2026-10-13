@@ -3,7 +3,7 @@ import { Button } from '@/ui/Button'
 import { Cell, Knob, KnobSelect, PreviewStage, Row, Stack, defineDoc } from '../framework/kit'
 
 const DURATIONS = [
-  { token: '--duration-instant', ms: 75, use: 'Colour change on a control the pointer is already over.' },
+  { token: '--duration-instant', ms: 75, use: 'Color change on a control the pointer is already over.' },
   { token: '--duration-fast', ms: 120, use: 'Hover, press, focus. The default for feedback.' },
   { token: '--duration-quick', ms: 160, use: 'Tooltips, small fades, icon rotation.' },
   { token: '--duration-normal', ms: 220, use: 'Popovers, dropdowns, accordions, tab panels.' },
@@ -146,7 +146,7 @@ export default defineDoc({
     ],
     whenNotToUse: [
       {
-        text: 'On a state change the user cannot perceive as movement, like a colour swap under the cursor.',
+        text: 'On a state change the user cannot perceive as movement, like a color swap under the cursor.',
         instead: 'a 75ms transition, or none at all',
       },
       {
@@ -172,7 +172,7 @@ export default defineDoc({
           obey, and past 700ms people begin clicking again.
         </p>
         <p>
-          Duration also has to scale with distance. A tooltip travelling 6px and a drawer travelling
+          Duration also has to scale with distance. A tooltip traveling 6px and a drawer traveling
           420px cannot share a duration: at 220ms the tooltip crawls and the drawer snaps. The rule
           of thumb is roughly <strong>1ms per 2px of travel</strong>, clamped to the token scale.
         </p>
@@ -298,7 +298,7 @@ export default defineDoc({
         label: 'Duration',
         value: '220ms',
         kind: 'motion',
-        note: 'The total time. Chosen from the distance travelled, not from taste. 1ms per 2px of movement is the working heuristic.',
+        note: 'The total time. Chosen from the distance traveled, not from taste. 1ms per 2px of movement is the working heuristic.',
       },
       {
         n: 2,
@@ -332,7 +332,7 @@ export default defineDoc({
   },
 
   tokens: [
-    { category: 'motion', token: '--duration-instant', value: '75ms', usedFor: 'Colour change under an already-hovering pointer' },
+    { category: 'motion', token: '--duration-instant', value: '75ms', usedFor: 'Color change under an already-hovering pointer' },
     { category: 'motion', token: '--duration-fast', value: '120ms', usedFor: 'Hover, press, focus feedback' },
     { category: 'motion', token: '--duration-quick', value: '160ms', usedFor: 'Tooltips, small fades, chevron rotation' },
     { category: 'motion', token: '--duration-normal', value: '220ms', usedFor: 'Popovers, dropdowns, accordions' },
@@ -346,7 +346,7 @@ export default defineDoc({
   ],
 
   sizes: [
-    { name: 'Micro', height: '75–120ms', use: 'State change on an element already under the pointer. Colour, opacity, border.' },
+    { name: 'Micro', height: '75–120ms', use: 'State change on an element already under the pointer. Color, opacity, border.' },
     { name: 'Small', height: '160ms', use: 'Travel under ~20px, or a fade with no movement. Tooltips, icon rotation.' },
     { name: 'Medium', height: '220ms', use: 'Travel of 20–150px. Popovers, dropdowns, accordion panels.' },
     { name: 'Large', height: '320ms', use: 'Travel of 150–400px. Dialogs, drawers, bottom sheets.' },
@@ -396,7 +396,7 @@ export default defineDoc({
     },
     {
       title: 'Set the transform-origin to the trigger',
-      why: 'A menu that scales from its top-left corner appears to grow out of the button that opened it. The same animation from centre reads as a surface that materialised out of nowhere.',
+      why: 'A menu that scales from its top-left corner appears to grow out of the button that opened it. The same animation from center reads as a surface that materialized out of nowhere.',
       render: (
         <div className="flex flex-col items-start gap-1">
           <span className="rounded-[var(--radius-sm)] bg-[var(--ds-accent)] px-2 py-1 text-caption text-[var(--ds-accent-fg)]">
@@ -462,7 +462,7 @@ export default defineDoc({
       { id: '2.3.1', name: 'Three Flashes or Below', level: 'A' },
     ],
     contrast: [
-      'Motion must not be the only way a state change is communicated. If a row slides in to indicate "new", it also needs a label or a colour.',
+      'Motion must not be the only way a state change is communicated. If a row slides in to indicate "new", it also needs a label or a color.',
       'Never flash anything more than three times per second. Beyond that it is a documented seizure trigger.',
     ],
     keyboard: [
@@ -581,7 +581,7 @@ if (document.startViewTransition) {
     ],
     mistakes: [
       'Using transition: all. The browser watches every animatable property, and an unrelated class change causes an unexpected animation.',
-      'Forgetting a transform-origin, so a scale-in appears to come from the centre of the screen instead of from its trigger.',
+      'Forgetting a transform-origin, so a scale-in appears to come from the center of the screen instead of from its trigger.',
       'Animating an element into view while its content is still loading. The user watches an empty box slide in and then fill.',
       'Setting reduced-motion durations to 0 instead of 0.01ms. transitionend never fires and any state machine waiting on it hangs forever.',
     ],

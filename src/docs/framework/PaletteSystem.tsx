@@ -8,7 +8,7 @@ import { ELEVATION, type PaletteSystem, type SystemToken } from './palette-syste
 /* ===========================================================================
    THE DERIVED SYSTEM, RENDERED ON ITS OWN SURFACE
 
-   Every block below paints the palette's own derived page colour and puts real
+   Every block below paints the palette's own derived page color and puts real
    controls on it. That is not decoration: a palette judged as twenty
    rectangles on a white documentation page has been judged on the one surface
    it will never be used on. The only honest preview of a dark theme is a dark
@@ -154,12 +154,12 @@ export function SemanticRows({ sys }: { sys: PaletteSystem }) {
               ))}
             </div>
             <p className="text-[11px]" style={{ color: sys.inkMuted }}>
-              Label on the fill: {role.on === '#ffffff' ? 'white' : 'the page colour'} at{' '}
+              Label on the fill: {role.on === '#ffffff' ? 'white' : 'the page color'} at{' '}
               {contrast(role.base.hex, role.on).toFixed(2)}:1
               {contrast(role.base.hex, role.on) < 4.5 &&
                 ' — under 4.5:1, so this fill can only carry large text.'}
               {' · '}
-              Hover {role.hover.taken ? 'is a palette colour' : 'is derived'}.
+              Hover {role.hover.taken ? 'is a palette color' : 'is derived'}.
             </p>
           </div>
         ))}
@@ -173,7 +173,7 @@ export function SemanticRows({ sys }: { sys: PaletteSystem }) {
 const BTN_ROLES = ['primary', 'success', 'info', 'warning', 'danger'] as const
 
 /**
- * The moment a palette stops being a picture. A colour that read as confident
+ * The moment a palette stops being a picture. A color that read as confident
  * in a swatch grid frequently cannot hold a five-character label, and there is
  * no way to find that out except by putting the label on it.
  */
@@ -444,9 +444,9 @@ export function AlertExamples({ sys }: { sys: PaletteSystem }) {
           )
         })}
         <p className="mt-1 text-[11px] leading-relaxed" style={{ color: sys.inkMuted }}>
-          Every one of these carries an icon and a word as well as a fill. Remove the colour and the
+          Every one of these carries an icon and a word as well as a fill. Remove the color and the
           four are still distinguishable — which is the test, because for a good number of readers
-          the colour was never there.
+          the color was never there.
         </p>
       </div>
     </Board>

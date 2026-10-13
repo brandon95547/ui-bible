@@ -279,7 +279,7 @@ export default defineDoc({
         id: 'types',
         title: 'Every type',
         description:
-          'Nine variations on the same control. The differences that matter are the keyboard on mobile, the autofill behaviour, and the adornments — not the visual style.',
+          'Nine variations on the same control. The differences that matter are the keyboard on mobile, the autofill behavior, and the adornments — not the visual style.',
         render: <Types />,
       },
       {
@@ -312,7 +312,7 @@ export default defineDoc({
                   </Field>
                 </Fieldset>
 
-                <Fieldset legend="Organisation">
+                <Fieldset legend="Organization">
                   <Field label="Company" htmlFor="g-co" optional>
                     <TextInput id="g-co" autoComplete="organization" />
                   </Field>
@@ -366,7 +366,7 @@ export default defineDoc({
         label: 'Label',
         value: '13px / 540, 6px above',
         kind: 'type',
-        note: 'Above the field for the shortest eye path and the most robust behaviour under translation. Muted weight so it never competes with the value the user typed.',
+        note: 'Above the field for the shortest eye path and the most robust behavior under translation. Muted weight so it never competes with the value the user typed.',
       },
       {
         n: 2,
@@ -401,7 +401,7 @@ export default defineDoc({
         label: 'Help text',
         value: '12px, muted, always present',
         kind: 'type',
-        note: 'Static guidance that never disappears. Validation messages stack below it rather than replacing it — losing the instructions at the moment of failure is exactly backwards.',
+        note: 'Static guidance that never disappears. Validation messages stack below it rather than replacing it — losing the instructions at the moment of failure is exactly backward.',
       },
     ],
   },
@@ -522,11 +522,11 @@ export default defineDoc({
     },
     {
       title: 'Do not stretch every field to the container',
-      why: 'A row of identical full-width fields gives no clue what any of them expects. It also produces a 900px-wide postcode field on a desktop layout.',
+      why: 'A row of identical full-width fields gives no clue what any of them expects. It also produces a 900px-wide postal code field on a desktop layout.',
       render: (
         <Stack gap="sm" className="w-full">
           <TextInput placeholder="Country" className="w-full" />
-          <TextInput placeholder="Postcode" className="w-full" />
+          <TextInput placeholder="Postal code" className="w-full" />
           <TextInput placeholder="House number" className="w-full" />
         </Stack>
       ),
@@ -546,11 +546,11 @@ export default defineDoc({
     contrast: [
       'The typed value must reach 4.5:1. Placeholder text also counts as text — ours is --ds-fg-muted at 4.6:1, which is the floor, not a target.',
       'The field border is the boundary of a control and must reach 3:1 against the surrounding surface, per WCAG 1.4.11.',
-      'Error state is never colour alone: the border changes, an icon appears, and the message is text.',
+      'Error state is never color alone: the border changes, an icon appears, and the message is text.',
     ],
     keyboard: [
       { keys: 'Tab', does: 'Moves between fields in DOM order.' },
-      { keys: 'Enter', does: 'Submits the form when the field is inside one — expected behaviour on single-field forms.' },
+      { keys: 'Enter', does: 'Submits the form when the field is inside one — expected behavior on single-field forms.' },
       { keys: '↑ / ↓', does: 'Steps a number input by its step value.' },
       { keys: 'Esc', does: 'Clears a search input that has a clear affordance.' },
       { keys: '⌘/Ctrl + A', does: 'Selects the field contents, not the page.' },
@@ -571,7 +571,7 @@ export default defineDoc({
       'On submit failure, move focus to the first invalid field and announce a summary of how many errors there are.',
     ],
     touch:
-      '44px targets on coarse pointers. Set autocapitalize and autocorrect appropriately — an email field that capitalises the first letter is a real source of failed logins.',
+      '44px targets on coarse pointers. Set autocapitalize and autocorrect appropriately — an email field that capitalizes the first letter is a real source of failed logins.',
   },
 
   code: {
@@ -701,7 +701,7 @@ export default defineDoc({
           { name: 'htmlFor', type: 'string', required: true, description: 'Must match the control id, or the label does nothing.' },
           { name: 'description', type: 'string', description: 'Static help. Always visible, never replaced by the error.' },
           { name: 'message', type: 'string', description: 'Validation message. Stacks below the description.' },
-          { name: 'status', type: "'default' | 'error' | 'success' | 'warning'", default: "'default'", description: 'Drives the message colour, the icon and the control border.' },
+          { name: 'status', type: "'default' | 'error' | 'success' | 'warning'", default: "'default'", description: 'Drives the message color, the icon and the control border.' },
           { name: 'required', type: 'boolean', description: 'Renders an asterisk plus a visually hidden "(required)".' },
           { name: 'optional', type: 'boolean', description: 'Renders "Optional" instead. Use when most fields are required.' },
           { name: 'counter', type: '{ value: number; max: number }', description: 'Right-aligned character count. Turns red past the limit.' },
@@ -744,7 +744,7 @@ export default defineDoc({
     ],
     mistakes: [
       'Omitting autocomplete. It fails WCAG 1.3.5 and it measurably reduces form completion.',
-      'Using type="number" for phone numbers, card numbers and postcodes. It strips leading zeros, allows exponent notation, and shows spinners nobody wants.',
+      'Using type="number" for phone numbers, card numbers and postal codes. It strips leading zeros, allows exponent notation, and shows spinners nobody wants.',
       'Putting the error message above the field. Screen readers announce it before the label, and sighted users read it before they know which field it belongs to.',
       'Disabling paste on password or confirmation fields. It breaks password managers and makes people choose weaker passwords.',
       'Trimming whitespace on blur without telling the user, so the value they see is not the value they typed.',

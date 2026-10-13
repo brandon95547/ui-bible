@@ -32,7 +32,7 @@ export function luminance(rgb: RGB) {
   return 0.2126 * r + 0.7152 * g + 0.0722 * b
 }
 
-/** WCAG contrast ratio between two opaque colours. 1 to 21. */
+/** WCAG contrast ratio between two opaque colors. 1 to 21. */
 export function contrast(a: string, b: string) {
   const l1 = luminance(hexToRgb(a))
   const l2 = luminance(hexToRgb(b))
@@ -41,7 +41,7 @@ export function contrast(a: string, b: string) {
 }
 
 /**
- * The label colour to put *on* a swatch. Pure black beats white on far more
+ * The label color to put *on* a swatch. Pure black beats white on far more
  * mid-tones than designers expect, so this is measured rather than guessed
  * from a lightness threshold.
  */
@@ -116,7 +116,7 @@ export function formatColor(hex: string, format: Format) {
 /* -- mixing ----------------------------------------------------------------
    Plain sRGB interpolation, which is what `color-mix(in srgb, …)` does. Not
    perceptually uniform, and deliberately so: these functions exist to derive
-   the hover, active, border and disabled steps that a twenty-colour palette
+   the hover, active, border and disabled steps that a twenty-color palette
    never ships, and matching the browser's own arithmetic means the generated
    CSS and the preview cannot disagree.
    ------------------------------------------------------------------------ */
@@ -142,7 +142,7 @@ export function withAlpha(hex: string, alpha: number) {
 
 /**
  * The ink that hits a target ratio against a background, found by bisection
- * between a base colour and that background.
+ * between a base color and that background.
  *
  * A derived text ramp built by mixing fixed percentages produces a different
  * ramp on every palette, and on the darker ones it produces a failing one.
@@ -175,7 +175,7 @@ export function hueDistance(a: number, b: number) {
 /* -- ordering -------------------------------------------------------------- */
 
 /**
- * Sorted by hue, then by lightness within a hue. Greys have no meaningful hue,
+ * Sorted by hue, then by lightness within a hue. Grays have no meaningful hue,
  * so anything under 12% saturation is collected at the end rather than being
  * scattered through the spectrum by a hue value that is essentially noise.
  */
@@ -191,7 +191,7 @@ export function byHue<T extends { hex: string }>(colors: readonly T[]): T[] {
   })
 }
 
-/** Darkest first. The order you want when you are hunting for a text colour. */
+/** Darkest first. The order you want when you are hunting for a text color. */
 export function byLightness<T extends { hex: string }>(colors: readonly T[]): T[] {
   return [...colors].sort((a, b) => luminance(hexToRgb(a.hex)) - luminance(hexToRgb(b.hex)))
 }
@@ -199,16 +199,16 @@ export function byLightness<T extends { hex: string }>(colors: readonly T[]): T[
 /* -- the audit ------------------------------------------------------------- */
 
 /* ---------------------------------------------------------------------------
-   THE ONLY QUESTION WORTH ASKING OF A LOOSE COLOUR
+   THE ONLY QUESTION WORTH ASKING OF A LOOSE COLOR
 
-   Not "is this colour accessible" — a colour on its own has no ratio. The
+   Not "is this color accessible" — a color on its own has no ratio. The
    useful question is which surface it can be ink on, and the answer is
    constrained by an identity worth knowing:
 
        contrast(c, white) × contrast(c, black) = 21,   for every c
 
-   because the two ratios are (1.05 / L+0.05) and (L+0.05 / 0.05). So a colour
-   that fails 4.5:1 on white necessarily clears 4.67:1 on black. Every colour
+   because the two ratios are (1.05 / L+0.05) and (L+0.05 / 0.05). So a color
+   that fails 4.5:1 on white necessarily clears 4.67:1 on black. Every color
    is ink somewhere. Almost none is ink on both — that needs both factors above
    4.5 out of a product of 21, which is a sliver around L ≈ 0.18.
 
@@ -217,13 +217,13 @@ export function byLightness<T extends { hex: string }>(colors: readonly T[]): T[
    ------------------------------------------------------------------------ */
 
 export interface ColorAudit {
-  /** Contrast against #ffffff — this colour as ink on white, and white as a label on it. */
+  /** Contrast against #ffffff — this color as ink on white, and white as a label on it. */
   onWhite: number
   /** Contrast against #000000 — the same relationship, inverted. */
   onBlack: number
   /** The ratio the swatch's own label achieves, which is the better of the two. */
   labelRatio: number
-  /** Which surface this colour can carry body text on. */
+  /** Which surface this color can carry body text on. */
   ink: 'light' | 'dark' | 'both'
 }
 

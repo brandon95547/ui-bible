@@ -422,7 +422,7 @@ export default defineDoc({
         label: 'Marker',
         value: '23px, 13px icon',
         kind: 'size',
-        note: 'Odd-numbered so the 1px connector lands exactly on its centre. At 24px the line sits half a pixel off and looks bent.',
+        note: 'Odd-numbered so the 1px connector lands exactly on its center. At 24px the line sits half a pixel off and looks bent.',
       },
       {
         n: 2,
@@ -484,7 +484,7 @@ export default defineDoc({
   ],
 
   sizes: [
-    { name: 'Marker', height: '23px', icon: '13px', use: 'Odd-numbered, so a 1px connector lands on its exact centre.' },
+    { name: 'Marker', height: '23px', icon: '13px', use: 'Odd-numbered, so a 1px connector lands on its exact center.' },
     { name: 'Compact', gap: '12px between events', use: 'Long feeds and audit logs, where density beats breathing room.' },
     { name: 'Default', gap: '20px between events', use: 'The default. Enough separation to read events as distinct.' },
     { name: 'Gutter', gap: '12px', use: 'Marker to text. Fixed regardless of what the marker contains.' },
@@ -607,10 +607,10 @@ export default defineDoc({
       { id: '2.4.3', name: 'Focus Order', level: 'A' },
     ],
     contrast: [
-      'Marker tones must not rely on colour alone. Each carries its own icon — a tick, a warning triangle — so the outcome survives greyscale.',
+      'Marker tones must not rely on color alone. Each carries its own icon — a tick, a warning triangle — so the outcome survives grayscale.',
       'The connector is decorative when the ordered list already conveys sequence, and may sit at subtle contrast.',
       'Timestamps are content and owe 4.5:1, even though they read as secondary.',
-      'In a stepper, the completed and future states must differ by fill as well as colour.',
+      'In a stepper, the completed and future states must differ by fill as well as color.',
     ],
     keyboard: [
       { keys: 'Tab', does: 'Reaches only genuinely interactive events. A read-only timeline has no tab stops at all.' },
@@ -620,7 +620,7 @@ export default defineDoc({
     aria: [
       { attr: '<ol> / <li>', on: 'The timeline', note: 'The order is the information. An ordered list conveys both sequence and count.' },
       { attr: '<time datetime>', on: 'Each timestamp', note: 'Machine-readable, and it lets assistive tech and translation tools handle the value properly.' },
-      { attr: 'aria-hidden', on: 'Markers and connectors', note: 'Decoration. The outcome must also be in the text, or a colour-only marker conveys nothing.' },
+      { attr: 'aria-hidden', on: 'Markers and connectors', note: 'Decoration. The outcome must also be in the text, or a color-only marker conveys nothing.' },
       { attr: 'aria-current="step"', on: 'The active step in a stepper', note: 'The only way "you are here" reaches a screen-reader user.' },
       { attr: 'aria-live="polite"', on: 'A live feed', note: 'Announces new events as they arrive. Throttle it — a busy feed will otherwise talk continuously.' },
     ],
@@ -716,7 +716,7 @@ const byDay = groupBy(events, (e) => startOfDay(e.at).toISOString())`,
 .ds-timeline__marker {
   position: relative;
   z-index: 1;                        /* above the line, so it is never crossed */
-  /* Odd, so the 1px connector lands on its exact centre. At 24px the line
+  /* Odd, so the 1px connector lands on its exact center. At 24px the line
      sits half a pixel off and looks bent. */
   inline-size: 23px;
   block-size: 23px;
@@ -773,7 +773,7 @@ const byDay = groupBy(events, (e) => startOfDay(e.at).toISOString())`,
           { name: 'title', type: 'ReactNode', required: true, description: 'Past tense and specific: "Rolled back to 4019", not "Rollback".' },
           { name: 'meta', type: 'ReactNode', description: 'Actor then time, in that order — the actor is what people scan an audit trail for.' },
           { name: 'icon', type: 'ReactNode', description: '13px inside the marker. Carries the outcome alongside the tone.' },
-          { name: 'tone', type: "'neutral' | 'success' | 'danger' | 'accent'", default: "'neutral'", description: 'Colours the marker. Always paired with an icon so it survives greyscale.' },
+          { name: 'tone', type: "'neutral' | 'success' | 'danger' | 'accent'", default: "'neutral'", description: 'Colors the marker. Always paired with an icon so it survives grayscale.' },
           { name: 'detail', type: 'ReactNode', description: 'An inset panel under the title. Inside the event block, never a second column.' },
           { name: 'href', type: 'string', description: 'Makes the whole event a link to its detail view.' },
         ],
@@ -790,7 +790,7 @@ const byDay = groupBy(events, (e) => startOfDay(e.at).toISOString())`,
       'Link each event to its own detail view rather than expanding in place. Expansion moves everything below the event the user just clicked.',
     ],
     performance: [
-      'Paginate or virtualise past a few hundred events. Audit trails grow without limit and a naive render eventually locks the page.',
+      'Paginate or virtualize past a few hundred events. Audit trails grow without limit and a naive render eventually locks the page.',
       'Format timestamps with a shared Intl formatter rather than constructing one per row.',
       'Update relative times on an interval, not on every render — one tick per minute is enough and avoids re-rendering the whole feed on unrelated state changes.',
       'Draw the connector with a pseudo-element rather than an extra node. In a thousand-event feed that is a thousand elements saved.',
@@ -800,8 +800,8 @@ const byDay = groupBy(events, (e) => startOfDay(e.at).toISOString())`,
       'Alternating sides, which breaks on mobile and makes the reading order ambiguous.',
       'Relative timestamps only, so the order and the exact moment are both unknowable.',
       'Divs instead of an ordered list, conveying neither sequence nor count.',
-      'Colour-only markers, so the outcome disappears in greyscale.',
-      'An even-numbered marker size, leaving the connector visibly off-centre.',
+      'Color-only markers, so the outcome disappears in grayscale.',
+      'An even-numbered marker size, leaving the connector visibly off-center.',
       'Detail as a second column, breaking the single axis the timeline is built on.',
       'A live feed announcing every event to screen readers with no throttle.',
     ],

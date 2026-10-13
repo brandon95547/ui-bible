@@ -103,8 +103,8 @@ export function Alert({
       )}
       {...inspect(`Alert · ${tone}`, {
         tokens: [`--ds-${tone}-subtle`, `--ds-${tone}-border`, '--radius-lg', '--text-body-sm'],
-        why: 'Icon, title and body share one 12px gutter so the text block has a single left edge. The fill is a 14%-alpha tint, not a solid — a solid status colour behind body text never reaches 4.5:1 in both themes.',
-        a11y: 'Danger uses role="alert" (interrupts); everything else uses role="status" (waits for a pause). Getting this backwards makes screen readers talk over the user.',
+        why: 'Icon, title and body share one 12px gutter so the text block has a single left edge. The fill is a 14%-alpha tint, not a solid — a solid status color behind body text never reaches 4.5:1 in both themes.',
+        a11y: 'Danger uses role="alert" (interrupts); everything else uses role="status" (waits for a pause). Getting this backward makes screen readers talk over the user.',
       })}
     >
       <span className={cn('mt-0.5 shrink-0', skin.icon)} aria-hidden>
@@ -284,7 +284,7 @@ export function Toast({ item, onDismiss }: { item: ToastItem; onDismiss: () => v
 }
 
 /* ===========================================================================
-   SNACKBAR — one line, one action, bottom-centre. The Material lineage.
+   SNACKBAR — one line, one action, bottom-center. The Material lineage.
    ======================================================================== */
 
 export function Snackbar({
@@ -527,7 +527,7 @@ export function Skeleton({
       {...inspect('Skeleton', {
         tokens: ['--ds-layer-active', '--ds-layer-hover', '--radius-sm'],
         why: 'A skeleton must match the *shape and position* of the real content, not just occupy space — otherwise the page visibly jumps when data lands and the user loses their place. Show it only after ~200ms; below that it flashes.',
-        a11y: 'aria-hidden, with a single aria-busy region wrapping the whole block. Announcing twelve grey rectangles is noise.',
+        a11y: 'aria-hidden, with a single aria-busy region wrapping the whole block. Announcing twelve gray rectangles is noise.',
       })}
     />
   )

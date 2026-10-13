@@ -8,7 +8,7 @@ const POUR = [
   {
     letter: 'P',
     name: 'Perceivable',
-    body: 'Information must be available to at least one sense the user has. Text alternatives, 4.5:1 contrast, no meaning carried by colour alone, content that reflows at 320px.',
+    body: 'Information must be available to at least one sense the user has. Text alternatives, 4.5:1 contrast, no meaning carried by color alone, content that reflows at 320px.',
   },
   {
     letter: 'O',
@@ -18,7 +18,7 @@ const POUR = [
   {
     letter: 'U',
     name: 'Understandable',
-    body: 'Predictable behaviour and plain language. Consistent navigation, labels that stay put, errors that say what went wrong and how to fix it.',
+    body: 'Predictable behavior and plain language. Consistent navigation, labels that stay put, errors that say what went wrong and how to fix it.',
   },
   {
     letter: 'R',
@@ -217,7 +217,7 @@ export default defineDoc({
       { label: 'AA text', note: '4.5:1', render: <span className="text-body-sm text-[var(--ds-fg-secondary)]">Body copy</span> },
       { label: 'AA large', note: '3:1', render: <span className="text-h4 text-[var(--ds-fg-muted)]">Heading</span> },
       { label: 'Target', note: '44 × 44 min', render: <span className="grid h-11 w-11 place-items-center rounded-[var(--radius-md)] border border-dashed border-[var(--ds-accent-border)] text-[10px] text-[var(--ds-accent-text)]">44</span> },
-      { label: 'Redundant', note: 'Icon + colour + word', render: <Badge tone="danger" dot>Failed</Badge> },
+      { label: 'Redundant', note: 'Icon + color + word', render: <Badge tone="danger" dot>Failed</Badge> },
       { label: 'Announced', note: 'aria-live', render: <span className="text-caption text-[var(--ds-success-text)]">3 items selected</span> },
       { label: 'Reduced motion', render: <span className="text-caption text-[var(--ds-fg-muted)]">durations → 1ms</span> },
       { label: 'Screen reader only', render: <span className="text-caption text-[var(--ds-fg-muted)]">.sr-only-ds</span> },
@@ -369,8 +369,8 @@ export default defineDoc({
       ),
     },
     {
-      title: 'Do not convey state with colour alone',
-      why: 'Roughly 300 million people cannot reliably distinguish red from green. Add an icon, a word, or a pattern — the greyscale test is the check.',
+      title: 'Do not convey state with color alone',
+      why: 'Roughly 300 million people cannot reliably distinguish red from green. Add an icon, a word, or a pattern — the grayscale test is the check.',
       render: (
         <Row gap="sm">
           <span className="h-6 w-16 rounded-[var(--radius-sm)]" style={{ background: '#35c98a' }} />
@@ -407,7 +407,7 @@ export default defineDoc({
       { id: '4.1.2', name: 'Name, Role, Value', level: 'A' },
     ],
     contrast: [
-      'Body text 4.5:1. Large text and UI boundaries 3:1. Focus rings 3:1 against both neighbours.',
+      'Body text 4.5:1. Large text and UI boundaries 3:1. Focus rings 3:1 against both neighbors.',
       'Alpha fills must be composited against their real background before measuring.',
       'Disabled controls are exempt — which is exactly why disabling is not an accessibility fix.',
       'Turn on Inspector Mode in this app and hover any text to see the live ratio.',
@@ -533,7 +533,7 @@ html { scroll-padding-block-start: 6.5rem; }
     ],
     performance: [
       'A live region that updates on every keystroke floods the screen-reader queue. Debounce announcements to about 500ms.',
-      'Very large accessibility trees slow screen readers down. Virtualise long lists and set aria-rowcount so the total is still announced.',
+      'Very large accessibility trees slow screen readers down. Virtualize long lists and set aria-rowcount so the total is still announced.',
       'aria-hidden on a subtree is cheap; removing it from the DOM is cheaper. Prefer conditional rendering for anything genuinely absent.',
       'The inert attribute is more efficient than a JavaScript focus trap and handles pointer events too. Use it where support allows.',
     ],

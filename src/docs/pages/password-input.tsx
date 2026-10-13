@@ -138,7 +138,7 @@ export default defineDoc({
       <>
         <p>
           <strong>Blocking paste makes accounts less secure.</strong> It is the clearest example in
-          this whole system of security theatre producing the opposite of its intent: users who
+          this whole system of security theater producing the opposite of its intent: users who
           cannot paste stop using password managers and start using passwords they can type from
           memory. Allow paste, everywhere, including on the confirm field.
         </p>
@@ -149,9 +149,9 @@ export default defineDoc({
           either fills nothing or overwrites the saved entry with a half-typed value.
         </p>
         <p>
-          A strength meter that only shows a coloured bar teaches nothing. It has to show{' '}
+          A strength meter that only shows a colored bar teaches nothing. It has to show{' '}
           <strong>the rules and which ones are met</strong>, live, as the user types. "Weak" with
-          no explanation is a rejection; three unticked checkboxes are instructions.
+          no explanation is a rejection; three unchecked checkboxes are instructions.
         </p>
       </>
     ),
@@ -204,7 +204,7 @@ export default defineDoc({
         id: 'meter',
         title: 'The meter must show the rules',
         description:
-          'A bar labelled "Weak" is a rejection. The same bar with three live checks is a set of instructions the user can act on without guessing.',
+          'A bar labeled "Weak" is a rejection. The same bar with three live checks is a set of instructions the user can act on without guessing.',
         render: (
           <PreviewStage minHeight={0} allowResize={false} center={false}>
             <Grid min="16rem">
@@ -407,7 +407,7 @@ export default defineDoc({
   dont: [
     {
       title: 'Do not block paste or autofill',
-      why: 'It is the clearest case of security theatre in the whole system. The users it inconveniences are exactly the ones using a password manager, and they are the ones with strong passwords.',
+      why: 'It is the clearest case of security theater in the whole system. The users it inconveniences are exactly the ones using a password manager, and they are the ones with strong passwords.',
       render: (
         <span className="text-caption text-[var(--ds-danger-text)]">
           onPaste → preventDefault → users type “Summer2024!” instead
@@ -461,9 +461,9 @@ export default defineDoc({
       { id: '4.1.2', name: 'Name, Role, Value', level: 'A' },
     ],
     contrast: [
-      'The mask dots owe 4.5:1. They are how a user counts what they typed, and browsers often render them lighter than the input colour.',
-      'The strength meter must not rely on colour alone — the label ("Weak", "Strong") carries the same information for the 8% who cannot distinguish red from green.',
-      'Met and unmet rules differ by icon as well as colour, for the same reason.',
+      'The mask dots owe 4.5:1. They are how a user counts what they typed, and browsers often render them lighter than the input color.',
+      'The strength meter must not rely on color alone — the label ("Weak", "Strong") carries the same information for the 8% who cannot distinguish red from green.',
+      'Met and unmet rules differ by icon as well as color, for the same reason.',
       'The reveal glyph at 16px owes 4.5:1 against the field fill.',
     ],
     keyboard: [
@@ -476,7 +476,7 @@ export default defineDoc({
       { attr: 'autocomplete', on: 'The field', note: 'current-password or new-password. This is a functional attribute, and 1.3.5 requires it.' },
       { attr: 'aria-pressed', on: 'The reveal toggle', note: 'It is a toggle button. Its label should also change — "Show password" / "Hide password".' },
       { attr: 'aria-describedby', on: 'The field', note: 'Points at the requirements list, so the rules are read before the user types rather than after they fail.' },
-      { attr: 'role="status"', on: 'The Caps Lock warning', note: 'Polite. It must be announced, not merely coloured, or the user who most needs it never learns.' },
+      { attr: 'role="status"', on: 'The Caps Lock warning', note: 'Polite. It must be announced, not merely colored, or the user who most needs it never learns.' },
       { attr: 'aria-live="polite"', on: 'The strength label', note: 'Debounced to roughly every 500ms. Announcing on every keystroke is unusable.' },
       { attr: 'aria-invalid', on: 'The field', note: 'On a failed sign-in, set on the form rather than the field — you do not know which of the two was wrong, and guessing helps an attacker.' },
     ],
@@ -485,7 +485,7 @@ export default defineDoc({
     screenReader: [
       'Announce the requirements before the user types, via aria-describedby. Discovering them through failure is the worst possible order.',
       'The reveal toggle must announce its state: "Show password, toggle button, not pressed".',
-      'Caps Lock must be announced, not just coloured. It is the one warning where the affected user is least able to see what went wrong.',
+      'Caps Lock must be announced, not just colored. It is the one warning where the affected user is least able to see what went wrong.',
       'WCAG 2.2’s Accessible Authentication criterion means no cognitive test may be required to sign in — paste, autofill and a reveal toggle are how you satisfy it.',
     ],
     touch:
@@ -584,7 +584,7 @@ function toggleReveal(el: HTMLInputElement) {
 .ds-password input[aria-invalid='true'] { border-color: var(--ds-danger-border); }
 .ds-password[data-caps='true'] input   { border-color: var(--ds-warning-border); }
 
-/* Colour is never the only signal: the label says "Weak" or "Strong" too. */
+/* Color is never the only signal: the label says "Weak" or "Strong" too. */
 .ds-strength__bar { block-size: 4px; border-radius: 999px; }
 .ds-strength__bar[data-level='1'] { background: var(--ds-danger); }
 .ds-strength__bar[data-level='4'] { background: var(--ds-success); }
@@ -629,7 +629,7 @@ function toggleReveal(el: HTMLInputElement) {
       'The caret jumping to the end when the user toggles reveal.',
       'Enforcing composition rules at sign-in, where the password already exists.',
       'Custom mask characters, which break password-manager detection and screen-reader announcements.',
-      'A Caps Lock warning that is coloured but never announced.',
+      'A Caps Lock warning that is colored but never announced.',
     ],
     realWorld: [
       'NIST guidance has recommended against composition rules and forced rotation for years. Length and a breach check outperform every symbol requirement ever shipped.',

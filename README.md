@@ -62,23 +62,23 @@ Five sections. Only **Components** is subdivided, and only one level deep.
 
 | Section         | Contents                                                                                                                                     |
 | --------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Foundations** | Tokens, colour, typography, spacing, grid, radius, elevation, icons, motion, animation, breakpoints, accessibility, dark theme, light theme    |
+| **Foundations** | Tokens, color, typography, spacing, grid, radius, elevation, icons, motion, animation, breakpoints, accessibility, dark theme, light theme    |
 | **Components**  | 65 components in seven groups — see below                                                                                                     |
 | **Color**       | Palettes we did not draw — Flat UI Colors 2's fourteen and Sonora — plus the page on converting one into something shippable                   |
 | **Patterns**    | Dashboards, desktop, mobile, and the empty / error / loading states                                                                            |
 | **Principles**  | The UX laws every rule in here derives from                                                                                                    |
 
-**Foundations owns our colour; Color owns everyone else's.** The ramps, the semantic
+**Foundations owns our color; Color owns everyone else's.** The ramps, the semantic
 roles and the contrast contract are a foundation and stay there. A borrowed palette has
 no tokens, no theming and no authority — it is a reference you are being shown how to
 convert. The argument for *how* you convert one lives once, on **Using a Palette**,
 instead of once per palette.
 
-Each palette page then *performs* that conversion: twenty colours in, a working dark
+Each palette page then *performs* that conversion: twenty colors in, a working dark
 theme out, in seven numbered sections — text ramp, surfaces, semantic roles, real
-components, chart colours, alerts, elevation — plus the CSS to paste. Nothing on those
+components, chart colors, alerts, elevation — plus the CSS to paste. Nothing on those
 pages is transcribed. `palette-system.ts` derives every value from the hex and records
-which of two things it is: **taken** (a literal palette colour, cited by its position in
+which of two things it is: **taken** (a literal palette color, cited by its position in
 the 5×4 grid and its name) or **derived** (computed, with the arithmetic stated). A
 transcription error cannot survive contact with the audit table, and a derivation that
 misses its target renders its own ratio in red.
@@ -100,7 +100,7 @@ comparable rather than to out-design the people who drew them:
   low alpha on every palette; tinting it with the brand hue is how a dark theme starts
   looking bruised.
 
-Run against Flat UI v1 the derivation reproduces the hand-made poster it was modelled on
+Run against Flat UI v1 the derivation reproduces the hand-made poster it was modeled on
 exactly — all six roles, both members of every pair. That is the check that the rules
 encode taste rather than merely being consistent.
 
@@ -120,7 +120,7 @@ Components already uses.
 | ---------------- | ----- | ---------------------------------------------------------------------------------------------------------------------------- |
 | **Navigation**   | 9     | App Bar, Sidebar, Bottom Navigation, Tabs, Breadcrumbs, Pagination, Menu, Mega Menu, Tree View                                 |
 | **Actions**      | 6     | Button, Button Group, Split Button, Toolbar, Code Snippet, Command Palette                                                     |
-| **Inputs**       | 22    | Text Field, Textarea, Number, Password, Search, Phone, JSON, Select, Combobox, Multi-select, Transfer List, Checkbox, Radio Button, Switch, Slider, Colour, Date, Time, File Upload, Pin, Rating, Form |
+| **Inputs**       | 22    | Text Field, Textarea, Number, Password, Search, Phone, JSON, Select, Combobox, Multi-select, Transfer List, Checkbox, Radio Button, Switch, Slider, Color, Date, Time, File Upload, Pin, Rating, Form |
 | **Feedback**     | 7     | Dialog, Toast, Banner, Tooltip, Popover, Progress Indicator, Skeleton                                                          |
 | **Surfaces**     | 7     | Card, Accordion, Drawer, Backdrop, Divider, Carousel, Jumbotron                                                                |
 | **Data Display** | 11    | Avatar, Badge, Chip, List, Data Table, Timeline, Gallery, Chart, QR Code, AI Label, KBD                                        |
@@ -147,7 +147,7 @@ Two entries collapse into one when they differ only by:
 | **size**      | a navigation rail is a Sidebar at its collapsed width       |
 | **vendor**    | a snackbar is a Toast with a Material accent                |
 
-They stay separate when the behaviour, the failure modes and the accessibility
+They stay separate when the behavior, the failure modes and the accessibility
 contract genuinely differ. Not before.
 
 An alias may only ever be claimed by one component, and may never be another
@@ -160,7 +160,7 @@ relying on review.
 Every page is the same nine sections in the same order:
 
 1. Live preview — real interactive controls plus a full interaction-state matrix
-2. Anatomy — every part labelled and measured, with the reason for each number
+2. Anatomy — every part labeled and measured, with the reason for each number
 3. Design tokens used — read live from the running stylesheet
 4. Recommended sizes — height, padding, radius, icon, gaps, touch target
 5. Do — with the reason why

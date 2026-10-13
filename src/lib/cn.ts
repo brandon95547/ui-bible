@@ -20,7 +20,7 @@ const twMerge = extendTailwindMerge({
             'body',
             // Every scale step has to be listed here. `text-ui` was added to the
             // theme and not to this list, so tailwind-merge read it as a text
-            // COLOUR and dropped it from any cn() that also set one — which is
+            // COLOR and dropped it from any cn() that also set one — which is
             // every NavItem, silently leaving navigation labels at the
             // inherited 16px instead of 15px.
             'ui',

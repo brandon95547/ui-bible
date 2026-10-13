@@ -197,7 +197,7 @@ export default defineDoc({
 
   overview: {
     purpose:
-      'Motion defines the vocabulary — durations and curves. Animation defines the sentences: the small set of named patterns that everything in the product is built from. A closed set means an animation is recognisable across screens, and a new engineer does not have to invent one.',
+      'Motion defines the vocabulary — durations and curves. Animation defines the sentences: the small set of named patterns that everything in the product is built from. A closed set means an animation is recognizable across screens, and a new engineer does not have to invent one.',
     whenToUse: [
       'When an element enters or leaves the screen and the user needs to know where from and where to.',
       'When something expands or collapses and the surrounding layout has to reflow.',
@@ -211,7 +211,7 @@ export default defineDoc({
       },
       {
         text: 'To draw ongoing attention to something the user has already seen.',
-        instead: 'a badge or a colour change',
+        instead: 'a badge or a color change',
       },
       {
         text: 'On a list that re-renders on every keystroke.',
@@ -228,7 +228,7 @@ export default defineDoc({
         <p>
           The single most useful idea here is <strong>object continuity</strong>. If a surface grows
           out of the button that opened it, the user understands it as the same object in a new
-          state. If it fades in at the centre of the screen, they understand it as a new, unrelated
+          state. If it fades in at the center of the screen, they understand it as a new, unrelated
           thing that has interrupted them. Same content, entirely different mental model — and it
           costs one line of <code>transform-origin</code>.
         </p>
@@ -446,8 +446,8 @@ export default defineDoc({
       ),
     },
     {
-      title: 'Do not scale from the centre for anchored surfaces',
-      why: 'A menu that grows from its own centre appears out of nowhere. The user loses the link back to the control they just pressed.',
+      title: 'Do not scale from the center for anchored surfaces',
+      why: 'A menu that grows from its own center appears out of nowhere. The user loses the link back to the control they just pressed.',
       render: (
         <div className="flex flex-col items-start gap-1">
           <span className="rounded-[4px] bg-[var(--ds-danger)] px-1.5 py-0.5 text-[10px] text-white">trigger</span>
@@ -462,7 +462,7 @@ export default defineDoc({
       why: 'The skeleton slides in, then the data arrives and fades in on top. The user watches two animations to see one piece of content.',
       render: (
         <span className="text-caption text-[var(--ds-fg-muted)]">
-          skeleton 220ms → data 200ms → total 420ms of theatre
+          skeleton 220ms → data 200ms → total 420ms of theater
         </span>
       ),
     },
@@ -476,7 +476,7 @@ export default defineDoc({
     ],
     contrast: [
       'A shimmer must not exceed a 3:1 luminance swing, or it reads as a flash for photosensitive users.',
-      'Never animate a colour through a state that fails contrast, even briefly — text is readable at both ends and unreadable in the middle.',
+      'Never animate a color through a state that fails contrast, even briefly — text is readable at both ends and unreadable in the middle.',
     ],
     keyboard: [
       { keys: 'Esc', does: 'Cancels an in-progress enter animation and dismisses immediately.' },
@@ -570,7 +570,7 @@ function close() {
       'Prototype animations at half speed. Anything that looks wrong at 0.5× is wrong at 1× too — you simply cannot see it yet.',
       'The View Transitions API handles cross-page continuity with far less code than a hand-rolled FLIP implementation. Feature-detect it and fall back to an instant swap.',
       'For exit animations, keep the node mounted for exactly the exit duration. A mismatch of even 40ms produces a visible flicker.',
-      'Reuse animation names across components. Six names that everyone recognises beat sixty bespoke keyframes nobody can audit.',
+      'Reuse animation names across components. Six names that everyone recognizes beat sixty bespoke keyframes nobody can audit.',
     ],
     performance: [
       'CSS animations on transform and opacity run on the compositor and survive a busy main thread. A requestAnimationFrame loop does not.',

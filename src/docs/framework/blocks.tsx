@@ -284,7 +284,7 @@ const catMeta: Record<TokenCategory, { label: string; icon: React.ReactNode }> =
 const CAT_ORDER: TokenCategory[] = ['color', 'spacing', 'radius', 'shadow', 'typography', 'motion']
 
 /**
- * The resolved value of one token, click-to-copy. Colour values get a swatch;
+ * The resolved value of one token, click-to-copy. Color values get a swatch;
  * alpha tokens sit on a checkerboard so a 4.5% white wash is still visible
  * rather than reading as an empty chip.
  */

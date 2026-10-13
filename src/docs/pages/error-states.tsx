@@ -522,7 +522,7 @@ export default defineDoc({
       { id: '1.4.1', name: 'Use of Color', level: 'A' },
     ],
     contrast: [
-      'Error text on a tinted fill uses --ds-danger-text, the pair certified at 4.5:1. The solid danger colour there lands around 3:1 and fails.',
+      'Error text on a tinted fill uses --ds-danger-text, the pair certified at 4.5:1. The solid danger color there lands around 3:1 and fails.',
       'Never signal an error with a red border alone. The border plus an icon plus a message is the minimum.',
       'A red field border must reach 3:1 against the surface — it is a meaningful boundary under WCAG 1.4.11.',
     ],
@@ -618,7 +618,7 @@ async function onSubmit(values: Values) {
     },
     css: {
       lang: 'css',
-      code: `/* Field level: border + icon + message. Never colour alone. */
+      code: `/* Field level: border + icon + message. Never color alone. */
 .ds-input[aria-invalid='true'] {
   border-color: var(--ds-danger-border);
 }
@@ -656,7 +656,7 @@ async function onSubmit(values: Values) {
 
   notes: {
     tips: [
-      'Write the error copy at the same time as the happy path. Errors written afterwards are always generic, because by then nobody remembers what could go wrong.',
+      'Write the error copy at the same time as the happy path. Errors written afterward are always generic, because by then nobody remembers what could go wrong.',
       'Include a timestamp on page-level errors. Support can correlate it with logs far faster than they can from a description.',
       'For offline, keep the app usable read-only and queue the writes. "You are offline, changes will sync" is a much better product than a modal that blocks everything.',
       'Distinguish "failed" from "stale". A chart showing four-minute-old data with a warning is more useful than an empty box.',
@@ -665,7 +665,7 @@ async function onSubmit(values: Values) {
       'Error boundaries should wrap regions, not the app. One boundary at the root turns every component failure into a white screen.',
       'Cap retries and use exponential backoff. An aggressive retry loop against a struggling service is how a partial outage becomes a full one.',
       'Do not re-render the whole page on error. Keep the failed region isolated so the rest of the tree is untouched.',
-      'Log errors with a sampled rate in production. A failing component in a virtualised list can otherwise emit thousands of identical reports per second.',
+      'Log errors with a sampled rate in production. A failing component in a virtualized list can otherwise emit thousands of identical reports per second.',
     ],
     mistakes: [
       'Clearing the form on submit failure, turning a five-second retry into ten minutes of retyping.',

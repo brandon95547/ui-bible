@@ -164,7 +164,7 @@ export default defineDoc({
         id: 'collapse',
         title: 'Collapsing',
         description:
-          'Press the ellipsis to expand. Keeping the first and the last two is the pattern users recognise from file managers.',
+          'Press the ellipsis to expand. Keeping the first and the last two is the pattern users recognize from file managers.',
         render: (
           <PreviewStage center={false} minHeight={0} allowResize={false}>
             <div className="w-full max-w-md">
@@ -204,7 +204,7 @@ export default defineDoc({
       },
       {
         n: 2,
-        label: 'Ancestor colour',
+        label: 'Ancestor color',
         value: '--ds-fg-muted',
         kind: 'color',
         note: 'Muted and underlined only on hover. A row of six blue underlined links is louder than the page it describes.',
@@ -353,7 +353,7 @@ export default defineDoc({
     ],
     contrast: [
       'Ancestor links use --ds-fg-muted at 12px, which sits at 4.6:1 — the floor. Do not go lighter to make them recede further.',
-      'The separator is decorative and exempt, but it should still be visible enough to read as a separator rather than a rendering artefact.',
+      'The separator is decorative and exempt, but it should still be visible enough to read as a separator rather than a rendering artifact.',
       'Hover must change more than the cursor. Ours moves the label to full foreground contrast.',
     ],
     keyboard: [

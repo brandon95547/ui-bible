@@ -83,7 +83,7 @@ export default defineDoc({
       'Identifying the author of a comment, a commit, an activity item.',
       'Showing who is in a conversation, a team or a review.',
       'Anywhere a name would be repeated so often that the text becomes noise.',
-      'Representing an organisation or a project, in a square rather than a circle.',
+      'Representing an organization or a project, in a square rather than a circle.',
     ],
     whenNotToUse: [
       {
@@ -112,7 +112,7 @@ export default defineDoc({
         <p>
           The <strong>fallback chain is the component</strong>: image, then initials, then a
           generic glyph. A broken image icon is the one outcome that must never happen, and it is
-          the default behaviour of an <code>&lt;img&gt;</code> — so the error handler is not
+          the default behavior of an <code>&lt;img&gt;</code> — so the error handler is not
           optional, it is the main path for most users.
         </p>
         <p>
@@ -122,10 +122,10 @@ export default defineDoc({
           grapheme of the first and last parts and accept that some names yield one character.
         </p>
         <p>
-          <strong>Colour must not be the identity.</strong> Deriving a background from a hash of
-          the name is useful for scanning, but two people will collide, and colour alone is
+          <strong>Color must not be the identity.</strong> Deriving a background from a hash of
+          the name is useful for scanning, but two people will collide, and color alone is
           unreadable for anyone who cannot distinguish it. The initials carry the meaning; the
-          colour only helps.
+          color only helps.
         </p>
       </>
     ),
@@ -161,7 +161,7 @@ export default defineDoc({
         id: 'sizes',
         title: 'Sizes',
         description:
-          'Below 20px initials stop being legible and the avatar becomes a coloured dot. That is the floor — anything smaller should be a Badge.',
+          'Below 20px initials stop being legible and the avatar becomes a colored dot. That is the floor — anything smaller should be a Badge.',
         render: (
           <PreviewStage minHeight={0} allowResize={false} center={false}>
             <Row gap="lg" align="center">
@@ -179,7 +179,7 @@ export default defineDoc({
         id: 'stack',
         title: 'Stacked groups',
         description:
-          'Overlapped by about a third with a ring in the surface colour, so each face stays separable. Past four, count the rest.',
+          'Overlapped by about a third with a ring in the surface color, so each face stays separable. Past four, count the rest.',
         render: (
           <PreviewStage minHeight={0} allowResize={false} center={false}>
             <Stack gap="lg" className="items-center">
@@ -199,7 +199,7 @@ export default defineDoc({
         id: 'shape',
         title: 'Round for people, square for things',
         description:
-          'A durable convention: circles are people, rounded squares are organisations, repositories and projects. Mixing them makes a list unscannable.',
+          'A durable convention: circles are people, rounded squares are organizations, repositories and projects. Mixing them makes a list unscannable.',
         render: (
           <PreviewStage minHeight={0} allowResize={false} center={false}>
             <Grid min="14rem">
@@ -210,7 +210,7 @@ export default defineDoc({
                   ))}
                 </Row>
               </Cell>
-              <Cell label="Organisations" tone="good">
+              <Cell label="Organizations" tone="good">
                 <Row gap="sm">
                   <Avatar name="Acme Corp" size="md" square />
                   <Avatar name="Globex" size="md" square />
@@ -263,14 +263,14 @@ export default defineDoc({
       </Row>
     ),
     caption:
-      'A circle carrying initials, a presence dot ringed in the surface colour, and a stack overlapped by a third with a counter for the rest.',
+      'A circle carrying initials, a presence dot ringed in the surface color, and a stack overlapped by a third with a counter for the rest.',
     parts: [
       {
         n: 1,
         label: 'Shape',
         value: 'Circle, or 8px square',
         kind: 'shape',
-        note: 'Circles are people; rounded squares are organisations and projects. The convention is strong enough that breaking it makes a mixed list unscannable.',
+        note: 'Circles are people; rounded squares are organizations and projects. The convention is strong enough that breaking it makes a mixed list unscannable.',
       },
       {
         n: 2,
@@ -291,14 +291,14 @@ export default defineDoc({
         label: 'Background',
         value: 'Derived from the name',
         kind: 'color',
-        note: 'A hash into the visualisation palette. It aids scanning and is never the identity — two people will collide.',
+        note: 'A hash into the visualization palette. It aids scanning and is never the identity — two people will collide.',
       },
       {
         n: 5,
         label: 'Presence dot',
         value: '~28% of the diameter',
         kind: 'size',
-        note: 'Ringed in the surface colour so it separates from the avatar beneath, and positioned at the bottom-right where a face is least informative.',
+        note: 'Ringed in the surface color so it separates from the avatar beneath, and positioned at the bottom-right where a face is least informative.',
       },
       {
         n: 6,
@@ -327,7 +327,7 @@ export default defineDoc({
     { category: 'color', token: '--ds-warning', usedFor: 'Away presence' },
     { category: 'color', token: '--ds-danger', usedFor: 'Busy presence' },
     { category: 'radius', token: 'full', usedFor: 'People' },
-    { category: 'radius', token: '--radius-md', value: '8px', usedFor: 'Organisations and projects' },
+    { category: 'radius', token: '--radius-md', value: '8px', usedFor: 'Organizations and projects' },
     { category: 'typography', token: 'weight', value: '600', usedFor: 'Initials, which are small and need the weight' },
   ],
 
@@ -337,7 +337,7 @@ export default defineDoc({
     { name: 'md', height: '32px', type: '11px', use: 'The default. List rows and comment authors.' },
     { name: 'lg', height: '40px', type: '13px', use: 'Card headers and hover cards.' },
     { name: 'xl', height: '56px', type: '18px', use: 'A profile header, where the avatar is the subject.' },
-    { name: 'Presence dot', height: '~28% of diameter', use: 'With a 2px ring in the surface colour. Below 20px there is no room for it.' },
+    { name: 'Presence dot', height: '~28% of diameter', use: 'With a 2px ring in the surface color. Below 20px there is no room for it.' },
   ],
 
   do: [
@@ -363,7 +363,7 @@ export default defineDoc({
       ),
     },
     {
-      title: 'Ring stacked avatars in the surface colour',
+      title: 'Ring stacked avatars in the surface color',
       why: 'Without the ring, two adjacent avatars merge into one shape and the group becomes uncountable.',
       render: <AvatarStack people={PEOPLE} max={4} size="md" />,
     },
@@ -381,8 +381,8 @@ export default defineDoc({
 
   dont: [
     {
-      title: 'Do not use colour as the identity',
-      why: 'Two people will hash to the same colour, and colour alone is unreadable for anyone who cannot distinguish it. The initials carry the meaning.',
+      title: 'Do not use color as the identity',
+      why: 'Two people will hash to the same color, and color alone is unreadable for anyone who cannot distinguish it. The initials carry the meaning.',
       render: (
         <Row gap="sm">
           {['#6366f1', '#6366f1', '#10b981'].map((c, i) => (
@@ -393,7 +393,7 @@ export default defineDoc({
     },
     {
       title: 'Do not go below 20px',
-      why: 'Initials stop being legible and the avatar becomes a coloured dot that identifies nobody. If that is all the space there is, use text.',
+      why: 'Initials stop being legible and the avatar becomes a colored dot that identifies nobody. If that is all the space there is, use text.',
       render: (
         <Row gap="sm" align="center">
           <span className="grid h-3.5 w-3.5 place-items-center rounded-full bg-[var(--p-viz-1)] text-[6px] font-semibold text-white">
@@ -405,7 +405,7 @@ export default defineDoc({
     },
     {
       title: 'Do not mix circles and squares in one list',
-      why: 'The shape carries meaning. A list alternating people and organisations with no shape distinction takes real effort to scan.',
+      why: 'The shape carries meaning. A list alternating people and organizations with no shape distinction takes real effort to scan.',
       render: (
         <Row gap="sm">
           <Avatar name="Ada Lovelace" size="md" />
@@ -440,7 +440,7 @@ export default defineDoc({
     contrast: [
       'Initials must reach 4.5:1 against their derived background. A palette generated by hashing will produce failures unless the foreground is chosen per swatch.',
       'The presence dot needs its 2px ring to reach 3:1 against whatever is beneath — the avatar itself is an unpredictable background.',
-      'Presence must not rely on colour alone: an accessible label carries the state, since green and amber are indistinguishable for many users at 8px.',
+      'Presence must not rely on color alone: an accessible label carries the state, since green and amber are indistinguishable for many users at 8px.',
       'A stack ring owes 3:1 against the adjacent avatar, or the group merges into one shape.',
     ],
     keyboard: [
@@ -450,8 +450,8 @@ export default defineDoc({
     aria: [
       { attr: 'alt', on: 'The image', note: 'The person’s name, not "avatar" or "profile picture". If the name is already beside it, alt="" and let the text speak.' },
       { attr: 'aria-hidden', on: 'A decorative avatar', note: 'When the name is right next to it, the avatar is duplication — hide it rather than announcing the name twice.' },
-      { attr: 'aria-label', on: 'The presence dot', note: '"Online". A coloured dot with no label is meaningless to a screen reader and to many sighted users.' },
-      { attr: 'aria-label', on: 'A stack', note: '"Ada, Grace, Alan and 3 others". Six unlabelled images is six announcements of nothing.' },
+      { attr: 'aria-label', on: 'The presence dot', note: '"Online". A colored dot with no label is meaningless to a screen reader and to many sighted users.' },
+      { attr: 'aria-label', on: 'A stack', note: '"Ada, Grace, Alan and 3 others". Six unlabeled images is six announcements of nothing.' },
       { attr: 'role="img"', on: 'An initials avatar', note: 'With aria-label naming the person. Two letters read literally are "A, L", which identifies nobody.' },
     ],
     focus:
@@ -501,7 +501,7 @@ function initials(name: string) {
   return (first + last).toUpperCase()
 }
 
-// Colour aids scanning; it is never the identity. Two people will collide.
+// Color aids scanning; it is never the identity. Two people will collide.
 function hue(name: string) {
   let h = 0
   for (const ch of name) h = (h * 31 + ch.codePointAt(0)!) % VIZ_COLORS.length
@@ -560,7 +560,7 @@ function hue(name: string) {
   user-select: none;
 }
 
-/* Rounded squares are organisations, repositories and projects. */
+/* Rounded squares are organizations, repositories and projects. */
 .ds-avatar--square { border-radius: var(--radius-md); }
 
 /* Scales with the avatar rather than stepping, so 20px and 56px read as the
@@ -600,10 +600,10 @@ function hue(name: string) {
       {
         name: 'Avatar',
         props: [
-          { name: 'name', type: 'string', required: true, description: 'Drives the initials, the derived colour and the accessible label. Required even when an image is present.' },
+          { name: 'name', type: 'string', required: true, description: 'Drives the initials, the derived color and the accessible label. Required even when an image is present.' },
           { name: 'src', type: 'string', description: 'Falls back to initials on error. The onError handler is the main path for most users.' },
           { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl'", default: "'md'", description: '20px to 56px. Below xs, initials stop being legible.' },
-          { name: 'square', type: 'boolean', default: 'false', description: 'For organisations, repositories and projects. Circles are for people.' },
+          { name: 'square', type: 'boolean', default: 'false', description: 'For organizations, repositories and projects. Circles are for people.' },
           { name: 'status', type: "'online' | 'away' | 'busy' | 'offline'", description: 'Adds a ringed presence dot with a visually hidden label.' },
         ],
       },
@@ -621,9 +621,9 @@ function hue(name: string) {
   notes: {
     tips: [
       'Serve avatars at twice their display size for high-density screens and no larger. A 512px image rendered at 32px is 250 KB thrown away.',
-      'Cache the derived colour per user id rather than recomputing the hash on every render — it also keeps the colour stable if the display name changes.',
+      'Cache the derived color per user id rather than recomputing the hash on every render — it also keeps the color stable if the display name changes.',
       'Show the full name on hover via a Tooltip in dense lists, and always have the name in text somewhere for touch users.',
-      'For organisations, prefer a logo over initials where one exists, but keep the same square shape so the list stays scannable.',
+      'For organizations, prefer a logo over initials where one exists, but keep the same square shape so the list stays scannable.',
       'Uploaded avatars should be cropped to a square on the client before upload. A component that squashes non-square photos is a component nobody trusts with their face.',
     ],
     performance: [
@@ -637,16 +637,16 @@ function hue(name: string) {
       'Three or more initials, illegible at small sizes.',
       'alt="avatar" instead of the person’s name.',
       'The name announced twice — once by the avatar and once by the text beside it.',
-      'Colour as the only identity signal, which collides and fails in greyscale.',
+      'Color as the only identity signal, which collides and fails in grayscale.',
       'Avatars below 20px, where initials become an unreadable smudge.',
       'A presence dot with no accessible label.',
       'object-fit missing, squashing every non-square photo.',
     ],
     realWorld: [
       'Most users never upload a photo. The initials path is the main path, not the fallback, and it deserves the majority of the design attention.',
-      'Name-derived colours are genuinely useful for scanning a long activity feed — but only alongside the initials, never instead of them.',
+      'Name-derived colors are genuinely useful for scanning a long activity feed — but only alongside the initials, never instead of them.',
       'Stacked avatars work best at three or four. Past that people stop counting and start reading it as "a lot", at which point the number is doing the work.',
-      'Square avatars for organisations is one of the most reliable conventions in product UI. Users pick it up without being told, and breaking it is immediately disorienting.',
+      'Square avatars for organizations is one of the most reliable conventions in product UI. Users pick it up without being told, and breaking it is immediately disorienting.',
     ],
   },
 })

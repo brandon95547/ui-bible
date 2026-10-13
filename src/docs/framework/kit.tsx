@@ -63,7 +63,7 @@ export function Stack({
   )
 }
 
-/** A labelled cell in a comparison grid. */
+/** A labeled cell in a comparison grid. */
 export function Cell({
   label,
   sub,
@@ -124,7 +124,7 @@ export function Grid({
   )
 }
 
-/* ---- token visualisers --------------------------------------------------- */
+/* ---- token visualizers --------------------------------------------------- */
 
 export function Swatch({
   name,

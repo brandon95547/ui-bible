@@ -203,7 +203,7 @@ function MeasureDemo() {
 function HierarchyDemo() {
   return (
     <div className="grid w-full gap-4 md:grid-cols-2">
-      <Cell label="Hierarchy by size + weight + colour" tone="good">
+      <Cell label="Hierarchy by size + weight + color" tone="good">
         <div className="flex flex-col gap-1">
           <span className="text-overline uppercase text-[var(--ds-accent-text)]">Billing</span>
           <h3 className="text-h3 text-[var(--ds-fg)]">Invoice 2026-0431</h3>
@@ -355,7 +355,7 @@ export default defineDoc({
 
   overview: {
     purpose:
-      'The type scale is the primary tool for hierarchy. Before colour, before borders, before elevation — size, weight and spacing tell the user what matters, in what order, and where one idea ends and the next begins. A screen with correct typography and no colour is still usable; the reverse is not true.',
+      'The type scale is the primary tool for hierarchy. Before color, before borders, before elevation — size, weight and spacing tell the user what matters, in what order, and where one idea ends and the next begins. A screen with correct typography and no color is still usable; the reverse is not true.',
     whenToUse: [
       'Always. Every string in the product should be one of the fourteen named styles.',
       'To establish hierarchy: exactly one h1 per screen, then h2 for sections, h3 for subsections.',
@@ -369,7 +369,7 @@ export default defineDoc({
       },
       {
         text: 'A second typeface for emphasis.',
-        instead: 'weight, size or colour within the same family',
+        instead: 'weight, size or color within the same family',
       },
       {
         text: 'Uppercase for anything longer than three words.',
@@ -377,7 +377,7 @@ export default defineDoc({
       },
       {
         text: 'Italics for UI labels — Inter’s italic is optically lighter and hurts scanning.',
-        instead: 'a muted colour or a smaller size',
+        instead: 'a muted color or a smaller size',
       },
       {
         text: 'A px font size, or a px line height, anywhere.',
@@ -495,7 +495,7 @@ export default defineDoc({
         id: 'hierarchy',
         title: 'Hierarchy',
         description:
-          'The left block varies size, weight and colour together. The right varies only size. Both have the same information; only one of them can be scanned.',
+          'The left block varies size, weight and color together. The right varies only size. Both have the same information; only one of them can be scanned.',
         render: (
           <PreviewStage center={false} minHeight={0} allowResize={false}>
             <HierarchyDemo />
@@ -558,7 +558,7 @@ export default defineDoc({
       </div>
     ),
     caption:
-      'A heading, its supporting paragraph, and its metadata. Three styles, three colours, three spacing values — none of them chosen by eye.',
+      'A heading, its supporting paragraph, and its metadata. Three styles, three colors, three spacing values — none of them chosen by eye.',
     parts: [
       {
         n: 1,
@@ -593,7 +593,7 @@ export default defineDoc({
         label: 'Metadata',
         value: '12px, --ds-fg-muted',
         kind: 'type',
-        note: 'Two steps down and two colour steps back. Both together, because size alone in a dense UI is not enough separation.',
+        note: 'Two steps down and two color steps back. Both together, because size alone in a dense UI is not enough separation.',
       },
     ],
   },
@@ -727,10 +727,10 @@ export default defineDoc({
     },
     {
       title: 'Do not set long text in uppercase',
-      why: 'Uppercase removes ascenders and descenders, which is what the eye uses to recognise word shapes. Reading speed drops measurably past about three words.',
+      why: 'Uppercase removes ascenders and descenders, which is what the eye uses to recognize word shapes. Reading speed drops measurably past about three words.',
       render: (
         <p className="text-body-sm uppercase tracking-wide text-[var(--ds-fg-secondary)]">
-          Your subscription will renew automatically on the 26th unless cancelled beforehand
+          Your subscription will renew automatically on the 26th unless canceled beforehand
         </p>
       ),
     },
@@ -746,8 +746,8 @@ export default defineDoc({
       ),
     },
     {
-      title: 'Do not centre body copy',
-      why: 'Centred text gives every line a different starting x-position, so the return sweep has to search for the start of each line. Acceptable for one or two lines; punishing for four.',
+      title: 'Do not center body copy',
+      why: 'Centered text gives every line a different starting x-position, so the return sweep has to search for the start of each line. Acceptable for one or two lines; punishing for four.',
       render: (
         <p className="max-w-[38ch] text-center text-body-sm leading-relaxed text-[var(--ds-fg-secondary)]">
           Every line begins somewhere new, so the eye has to hunt for the start of each one, which is
@@ -781,7 +781,7 @@ export default defineDoc({
     contrast: [
       'Body text must reach 4.5:1. Text at 18.66px regular or 14px bold counts as "large" and needs only 3:1 — but do not design to the exception.',
       '--ds-fg-muted at 12px is the tightest pair in the system. It is verified at 4.6:1 on --ds-surface in both themes; do not use it on --ds-surface-inset without rechecking.',
-      'Never rely on font weight alone to create contrast. A 400-weight and a 600-weight of the same colour measure identically.',
+      'Never rely on font weight alone to create contrast. A 400-weight and a 600-weight of the same color measure identically.',
     ],
     keyboard: [
       { keys: '⌘ / Ctrl +', does: 'Browser zoom. The layout must survive 200% without horizontal scrolling.' },
@@ -793,7 +793,7 @@ export default defineDoc({
       { attr: 'lang', on: '<html> and inline spans', note: 'Drives hyphenation, quotation marks and pronunciation. A French phrase inside English copy needs its own lang.' },
     ],
     focus:
-      'Text itself is not focusable, but links inside prose are. Keep the underline: colour alone fails WCAG 1.4.1 for inline links inside body text.',
+      'Text itself is not focusable, but links inside prose are. Keep the underline: color alone fails WCAG 1.4.1 for inline links inside body text.',
     screenReader: [
       'Do not skip heading levels. An h2 followed by an h4 tells a screen-reader user that they missed a section.',
       'Visual size is not semantic level. Styling a <p> to look like a heading gives sighted users a heading and everyone else nothing.',
@@ -840,7 +840,7 @@ export default defineDoc({
     },
     css: {
       lang: 'css',
-      caption: 'The base layer. Feature settings matter more than most teams realise.',
+      caption: 'The base layer. Feature settings matter more than most teams realize.',
       code: `body {
   font-family: var(--font-sans);
 
@@ -849,7 +849,7 @@ export default defineDoc({
   font-size: 1rem;           /* 16px at the default root */
   line-height: 1.6;          /* unitless: survives inheritance and zoom */
 
-  /* Inter stylistic sets: disambiguated l/1/I, single-storey a in caps,
+  /* Inter stylistic sets: disambiguated l/1/I, single-story a in caps,
      and a rounder zero. Materially improves scanning in dense UI. */
   font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11', 'ss03';
   font-variant-ligatures: contextual;
@@ -903,7 +903,7 @@ table, code, kbd, pre, [data-tabular] {
 
   notes: {
     tips: [
-      'Inter’s cv02/cv03/cv04/cv11 stylistic sets disambiguate l, 1, I and the single-storey a. In a product full of IDs and tokens this is a real usability gain, not a flourish.',
+      'Inter’s cv02/cv03/cv04/cv11 stylistic sets disambiguate l, 1, I and the single-story a. In a product full of IDs and tokens this is a real usability gain, not a flourish.',
       'text-wrap: balance on headings prevents a single-word last line. Use it on headings only — it is O(n²) on long paragraphs and browsers cap it around six lines anyway.',
       'When a label and its value sit on one row, align them on the baseline rather than the box. Different font sizes have different box heights but share a baseline.',
       'If a heading needs to be smaller to fit, the container is too narrow or the heading is too long. Shrinking the type is the last resort, not the first.',
@@ -924,12 +924,12 @@ table, code, kbd, pre, [data-tabular] {
       'Applying letter-spacing to small text to "make it airier". Below 13px, added tracking reduces legibility — the letters stop forming words.',
     ],
     realWorld: [
-      'Ask a colleague to read a screen from two metres away. Whatever they read first is your actual hierarchy, regardless of what you intended.',
+      'Ask a colleague to read a screen from two meters away. Whatever they read first is your actual hierarchy, regardless of what you intended.',
       'Set your browser’s default text size to 20px and reload the product. Everything sized in rem grows with it; everything in px stays exactly where it was, and that difference is the audit.',
       'Take the phone outside. Sizes that were fine on a calibrated monitor at arm’s length in a dim room are the first thing to fail in daylight on a moving train.',
       'Set the measure before you set the type size. Once the column width is right, the size that fits comfortably inside it is usually obvious.',
-      'For dense enterprise tables, 13px with 1.6 line height is the practical floor for the cell text. Below that, error rates in data entry rise noticeably — and the header row is a label, not a licence to go to 10px.',
-      'Localisation adds roughly 30% length going from English to German. Design headings and buttons to survive that without re-wrapping the layout.',
+      'For dense enterprise tables, 13px with 1.6 line height is the practical floor for the cell text. Below that, error rates in data entry rise noticeably — and the header row is a label, not a license to go to 10px.',
+      'Localization adds roughly 30% length going from English to German. Design headings and buttons to survive that without re-wrapping the layout.',
     ],
   },
 })

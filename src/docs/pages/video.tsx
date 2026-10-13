@@ -427,7 +427,7 @@ export default defineDoc({
       {
         n: 3,
         label: 'Play affordance',
-        value: '56px, centred',
+        value: '56px, centered',
         kind: 'size',
         note: 'Large and unmissable. It is the only control that matters before playback starts, and it must be a real button.',
       },
@@ -478,7 +478,7 @@ export default defineDoc({
     { name: 'Full-width', minWidth: '100%', height: '16:9', use: 'A demo that is the subject of the page.' },
     { name: 'Thumbnail', height: '16:9', minWidth: '160px', use: 'In a list or a grid. Poster plus a duration badge, no controls.' },
     { name: 'Control bar', height: '40px', padding: '0 8px', touch: '44px on coarse pointers', use: 'Over a gradient scrim, since white on an arbitrary frame has no contrast.' },
-    { name: 'Play affordance', height: '56px', use: 'Centred, unmissable, and a real button.' },
+    { name: 'Play affordance', height: '56px', use: 'Centered, unmissable, and a real button.' },
     { name: 'Captions', type: '13–16px', use: 'User-resizable. Positioned above the control bar, never behind it.' },
   ],
 
@@ -749,14 +749,14 @@ video::-webkit-media-text-track-container { inset-block-end: 56px; }
       'Keep product demos under two minutes. Completion falls off a cliff past that, and a long video is nearly always three short ones.',
       'Publish the transcript as a real page. It is indexable, translatable, and often the version people actually use.',
       'Never link a video as the only documentation of a process. Text can be searched, copied and followed at the reader’s pace.',
-      'For short interaction demos, an optimised looping clip with no audio and no controls is often better as an animated image than as a video element.',
+      'For short interaction demos, an optimized looping clip with no audio and no controls is often better as an animated image than as a video element.',
     ],
     performance: [
       'preload="metadata" gets you the duration and the poster without downloading the file. preload="auto" on a page with several videos will saturate the connection.',
       'Serve WebM with an MP4 fallback. The savings are substantial and the fallback is one extra source element.',
       'Never autoplay more than one video on a page. Each decode competes for the same main thread and the same battery.',
       'Use an intersection observer to pause off-screen videos. A looping clip playing behind the fold is pure waste.',
-      'The poster is often the largest contentful paint on a video page — size and prioritise it like a hero image.',
+      'The poster is often the largest contentful paint on a video page — size and prioritize it like a hero image.',
     ],
     mistakes: [
       'No captions, which fails WCAG 1.2.2 at level A.',

@@ -69,7 +69,7 @@ export function InspectorProvider({ children }: { children: React.ReactNode }) {
   )
 }
 
-/* -- colour maths for the live contrast readout --------------------------- */
+/* -- color math for the live contrast readout --------------------------- */
 
 function parseRGB(input: string): [number, number, number, number] | null {
   const m = input.match(/rgba?\(([^)]+)\)/)
@@ -341,7 +341,7 @@ function InspectorOverlay({ onClose }: { onClose: () => void }) {
                 <Row k="Tracking" v={m.letterSpacing} />
               </Group>
 
-              <Group title="Colour">
+              <Group title="Color">
                 <Row k="Text" v={m.color} swatch={m.color} />
                 <Row k="Background" v={m.background} swatch={m.background} />
                 {m.contrast !== null && (

@@ -29,13 +29,13 @@ export default defineDoc({
     id: 'snackbars',
     title: 'Snackbars',
     tagline:
-      'One line, one action, bottom centre, inverted surface. The Material lineage of the toast, and still the right shape when the message is a single sentence with an Undo.',
+      'One line, one action, bottom center, inverted surface. The Material lineage of the toast, and still the right shape when the message is a single sentence with an Undo.',
     keywords: ['undo', 'material', 'bottom', 'notification', 'transient', 'inverse'],
   },
 
   overview: {
     purpose:
-      'A snackbar is a system utterance: a short statement of fact with at most one action, rendered on an inverted surface so it clearly does not belong to the page. It is the tightest possible confirmation, and the inversion is what makes it readable at a glance without any tone colour at all.',
+      'A snackbar is a system utterance: a short statement of fact with at most one action, rendered on an inverted surface so it clearly does not belong to the page. It is the tightest possible confirmation, and the inversion is what makes it readable at a glance without any tone color at all.',
     whenToUse: [
       'A one-line confirmation with a single Undo: archived, deleted, moved, sent.',
       'A brief offline or connectivity notice at the bottom of a mobile screen.',
@@ -68,7 +68,7 @@ export default defineDoc({
         <p>
           The defining feature is the <strong>inverted surface</strong>. In a dark app it is light;
           in a light app it is dark. That flip is doing real work: it says "this is the system
-          speaking, not part of the page", instantly and without spending a status colour. It is
+          speaking, not part of the page", instantly and without spending a status color. It is
           also why a snackbar needs no icon and no tone.
         </p>
         <p>
@@ -77,9 +77,9 @@ export default defineDoc({
           belongs in a dialog or an inline surface.
         </p>
         <p>
-          Bottom-centre is the historical Material position and it remains correct on mobile, where
+          Bottom-center is the historical Material position and it remains correct on mobile, where
           it sits in the thumb zone directly above the bottom navigation. On desktop, prefer toasts
-          bottom-right — a centred bar on a 2560px monitor is a long way from where the user is
+          bottom-right — a centered bar on a 2560px monitor is a long way from where the user is
           looking.
         </p>
       </>
@@ -138,7 +138,7 @@ export default defineDoc({
         render: (
           <PreviewStage center={false} minHeight={0} allowResize={false}>
             <div className="grid w-full gap-4 sm:grid-cols-2">
-              <Cell label="Snackbar" sub="One line, one action, bottom centre">
+              <Cell label="Snackbar" sub="One line, one action, bottom center">
                 <Snackbar message="Message archived" action={{ label: 'Undo', onClick: () => {} }} />
               </Cell>
               <Cell label="Toast" sub="Title, description, tone, bottom right">
@@ -177,14 +177,14 @@ export default defineDoc({
       </div>
     ),
     caption:
-      'Message, one action, one dismiss. The bar is the inverse of the app surface and carries no tone colour.',
+      'Message, one action, one dismiss. The bar is the inverse of the app surface and carries no tone color.',
     parts: [
       {
         n: 1,
         label: 'Surface',
         value: '--ds-fg as background',
         kind: 'color',
-        note: 'The foreground colour used as a background. It inverts automatically with the theme, with no second token needed.',
+        note: 'The foreground color used as a background. It inverts automatically with the theme, with no second token needed.',
       },
       {
         n: 2,
@@ -198,7 +198,7 @@ export default defineDoc({
         label: 'Max width',
         value: '576px',
         kind: 'size',
-        note: 'About 90 characters. Wide enough for a real sentence, narrow enough to read in one fixation from a centred position.',
+        note: 'About 90 characters. Wide enough for a real sentence, narrow enough to read in one fixation from a centered position.',
       },
       {
         n: 4,
@@ -217,7 +217,7 @@ export default defineDoc({
       {
         n: 6,
         label: 'Position',
-        value: 'Bottom centre, 20px inset',
+        value: 'Bottom center, 20px inset',
         kind: 'space',
         note: 'On mobile, above the safe-area inset and clear of any bottom navigation. A snackbar covering the tab bar is a trap.',
       },
@@ -300,7 +300,7 @@ export default defineDoc({
     },
     {
       title: 'Do not stack snackbars',
-      why: 'Unlike toasts, snackbars are designed to be singular. Two at once means the second is covering the first, and the bottom-centre position has no room to stack cleanly.',
+      why: 'Unlike toasts, snackbars are designed to be singular. Two at once means the second is covering the first, and the bottom-center position has no room to stack cleanly.',
       render: (
         <Stack gap="xs" className="w-full">
           <Snackbar message="First message" />
@@ -310,7 +310,7 @@ export default defineDoc({
       ),
     },
     {
-      title: 'Do not use tone colour on a snackbar',
+      title: 'Do not use tone color on a snackbar',
       why: 'The inversion is the signal. A red snackbar competes with the inversion and ends up reading as neither a system message nor an error.',
       render: (
         <div className="inline-flex min-h-[46px] w-full max-w-md items-center gap-4 rounded-[var(--radius-md)] bg-[var(--ds-danger)] px-4 py-2.5 text-white shadow-e4">
@@ -333,7 +333,7 @@ export default defineDoc({
     ],
     contrast: [
       'The inverted surface gives very high contrast for the message — around 15:1 in both themes — which is one of the pattern’s advantages.',
-      'The action colour must be checked against the inverted background, not the page. Our accent reaches 4.9:1 on the dark bar and 5.4:1 on the light one.',
+      'The action color must be checked against the inverted background, not the page. Our accent reaches 4.9:1 on the dark bar and 5.4:1 on the light one.',
       'Never rely on the inversion alone to signal severity. A snackbar has no tone; if severity matters, it is the wrong component.',
     ],
     keyboard: [
@@ -483,7 +483,7 @@ useEffect(() => {
     ],
     mistakes: [
       'Two actions, which makes the timeout into a silent default choice.',
-      'Stacking snackbars, which the bottom-centre position cannot accommodate.',
+      'Stacking snackbars, which the bottom-center position cannot accommodate.',
       'Covering the bottom navigation on mobile, blocking it for the whole duration.',
       'Offering Undo for something that cannot actually be undone. A failing Undo is worse than none.',
       'Using both snackbars and toasts in the same product, so the distinction looks arbitrary.',

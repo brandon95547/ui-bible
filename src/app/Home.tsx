@@ -18,12 +18,12 @@ const PRINCIPLES = [
   {
     icon: 'Eye',
     title: 'Hierarchy before decoration',
-    body: 'Size, weight, spacing and position do the work. Colour is the last tool reached for, not the first — it is the one that fails in greyscale, in sunlight, and for 300 million people.',
+    body: 'Size, weight, spacing and position do the work. Color is the last tool reached for, not the first — it is the one that fails in grayscale, in sunlight, and for 300 million people.',
   },
   {
     icon: 'Accessibility',
     title: 'Accessible by construction',
-    body: 'Contrast, focus order, keyboard paths and semantics are inputs to the design, not an audit performed on it afterwards.',
+    body: 'Contrast, focus order, keyboard paths and semantics are inputs to the design, not an audit performed on it afterward.',
   },
   {
     icon: 'Gauge',
@@ -246,11 +246,11 @@ export function Home({ onNavigate, onOpenPalette }: { onNavigate: (id: string) =
           {[
             [
               'Take the closest thing that already exists.',
-              'If a page here covers 80% of your case, use it and accept the other 20%. A near-match that everyone recognises beats a perfect one nobody has seen before.',
+              'If a page here covers 80% of your case, use it and accept the other 20%. A near-match that everyone recognizes beats a perfect one nobody has seen before.',
             ],
             [
               'If you must extend, extend the token, not the component.',
-              'A new colour goes in the semantic tier and gets a name that says what it means. Hard-coding a hex into a component is how a system quietly dies.',
+              'A new color goes in the semantic tier and gets a name that says what it means. Hard-coding a hex into a component is how a system quietly dies.',
             ],
             [
               'Bring the reasoning with the change.',

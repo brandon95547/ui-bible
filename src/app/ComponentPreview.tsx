@@ -803,7 +803,7 @@ const PREVIEWS: Record<string, () => React.ReactElement> = {
           h={54}
           className="rounded-[5px] bg-[linear-gradient(to_top_right,#000,transparent),linear-gradient(to_right,#fff,var(--p-brand-500))]"
         />
-        {/* A hue wheel, so it has to be literal rather than tokenised — but the
+        {/* A hue wheel, so it has to be literal rather than tokenized — but the
             literals were the old iris/emerald/amber set and survived the palette
             swap looking like a different product. Spanish palette now. */}
         <Bar

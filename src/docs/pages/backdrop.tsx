@@ -593,7 +593,7 @@ const scrimVisible = dialogOpen || drawerOpen`,
       'Reuse one backdrop instance across every overlay in the app. Two stacked scrims is the most common way this component goes wrong.',
       'Fade the scrim slightly slower than the overlay it sits behind, so the dimming reads as settling rather than arriving.',
       'If clicking the scrim would lose unsaved work, do not silently suppress it — confirm instead. A dialog that ignores an outside click with no feedback reads as frozen.',
-      'Match Escape to outside-click behaviour exactly. If one dismisses, both must.',
+      'Match Escape to outside-click behavior exactly. If one dismisses, both must.',
       'Test with the page scrolled halfway down. Scroll-lock bugs are invisible at the top of the page and obvious anywhere else.',
     ],
     performance: [

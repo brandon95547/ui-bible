@@ -95,7 +95,7 @@ function TreeView({
     } else if (e.key === 'ArrowRight') {
       e.preventDefault()
       // Right on a closed folder opens it; on an open one it descends. That
-      // two-step behaviour is what makes a tree navigable without a mouse.
+      // two-step behavior is what makes a tree navigable without a mouse.
       if (isParent && !isOpen) setOpen(cur.node.id, true)
       else if (isParent && isOpen) focus(rows[i + 1].node.id)
     } else if (e.key === 'ArrowLeft') {
@@ -273,7 +273,7 @@ export default defineDoc({
         <p>
           A tree is <strong>navigated as the flat list it renders as</strong>. Down moves to the
           next visible row regardless of depth; Right opens a closed node and descends an open one;
-          Left closes an open node and jumps to the parent of a leaf. That two-step behaviour of
+          Left closes an open node and jumps to the parent of a leaf. That two-step behavior of
           the horizontal arrows is what lets someone traverse a deep tree without a mouse, and it
           is the part most implementations get wrong.
         </p>
@@ -316,7 +316,7 @@ export default defineDoc({
         id: 'guides',
         title: 'Indent guides',
         description:
-          'A hairline per level makes it possible to trace a deep child back to its parent across a tall tree. Without them, depth 4 and depth 5 are a 14px judgement.',
+          'A hairline per level makes it possible to trace a deep child back to its parent across a tall tree. Without them, depth 4 and depth 5 are a 14px judgment.',
         render: (
           <PreviewStage minHeight={0} allowResize={false} center={false}>
             <Grid min="15rem">
@@ -338,7 +338,7 @@ export default defineDoc({
         render: (
           <PreviewStage minHeight={0} allowResize={false} center={false}>
             <div className="w-full max-w-xs">
-              {['Organisation', 'Region', 'Team', 'Project', 'Environment', 'Deployment'].map(
+              {['Organization', 'Region', 'Team', 'Project', 'Environment', 'Deployment'].map(
                 (l, i) => (
                   <div
                     key={l}
@@ -457,7 +457,7 @@ export default defineDoc({
       {
         n: 4,
         label: 'Indent guide',
-        value: '1px at the parent’s chevron centre',
+        value: '1px at the parent’s chevron center',
         kind: 'shape',
         note: 'Aligned to the chevron, not the label, so the line traces the actual branch. Without it, tracing a deep child to its parent across a tall tree is guesswork.',
       },
@@ -630,7 +630,7 @@ export default defineDoc({
       { attr: 'aria-expanded', on: 'Parents only', note: 'Its absence is what tells assistive tech a node is a leaf. Never set it to false on something with no children.' },
       { attr: 'aria-level', on: 'Every node', note: 'One-indexed depth. This is how depth reaches a screen-reader user, since indentation does not.' },
       { attr: 'aria-selected', on: 'Every node', note: 'With aria-multiselectable on the tree when more than one can be selected.' },
-      { attr: 'aria-setsize / aria-posinset', on: 'Nodes in a virtualised tree', note: 'Required once rows are windowed, or "3 of 400" becomes "3 of 20".' },
+      { attr: 'aria-setsize / aria-posinset', on: 'Nodes in a virtualized tree', note: 'Required once rows are windowed, or "3 of 400" becomes "3 of 20".' },
     ],
     focus:
       'One roving tab stop. The tree remembers the last-focused node and returns there on re-entry. When a node is removed, focus moves to its nearest sibling and then to its parent — never to the body. Collapsing a parent that contains the focused node must move focus to that parent.',
@@ -736,7 +736,7 @@ const [expanded, setExpanded] = usePersistentState('tree:open', ['src'])`,
   transform: rotate(90deg);
 }
 
-/* Aligned to the parent's chevron centre, so the line traces the branch
+/* Aligned to the parent's chevron center, so the line traces the branch
    rather than the text. */
 .ds-tree__guide {
   position: absolute;
@@ -776,9 +776,9 @@ const [expanded, setExpanded] = usePersistentState('tree:open', ['src'])`,
       'Give the chevron its own hit area of at least 20px. Expanding and selecting are different intents, and hitting a 12px glyph to separate them is unreasonable.',
     ],
     performance: [
-      'Virtualise past roughly 200 visible rows, and add aria-setsize and aria-posinset when you do — without them a windowed tree reports "3 of 20" for a 400-node level.',
+      'Virtualize past roughly 200 visible rows, and add aria-setsize and aria-posinset when you do — without them a windowed tree reports "3 of 20" for a 400-node level.',
       'Keep expansion state in a Set of ids, not as a flag on each node. Toggling a flag deep in a nested object forces a rebuild of the whole tree on every click.',
-      'Memoise the flattened list on the node data and the expanded set. Re-flattening on every render is the usual cause of a tree that feels sluggish to arrow through.',
+      'Memoize the flattened list on the node data and the expanded set. Re-flattening on every render is the usual cause of a tree that feels sluggish to arrow through.',
       'Load branches lazily past a few hundred nodes, and prefetch on hover over a chevron — the fetch usually finishes before the click lands.',
     ],
     mistakes: [

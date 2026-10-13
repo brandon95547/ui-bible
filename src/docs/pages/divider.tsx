@@ -180,8 +180,8 @@ export default defineDoc({
         ),
       },
       {
-        id: 'labelled',
-        title: 'Labelled dividers',
+        id: 'labeled',
+        title: 'Labeled dividers',
         description:
           'An "or" between two alternative paths. It is the one case where the divider is genuinely carrying meaning rather than just separating.',
         render: (
@@ -227,7 +227,7 @@ export default defineDoc({
     states: [
       { label: 'Horizontal', render: <div className="w-40"><Divider /></div> },
       { label: 'Vertical', render: <Divider orientation="vertical" className="h-8" /> },
-      { label: 'Labelled', render: <div className="w-40"><Divider label="or" /></div> },
+      { label: 'Labeled', render: <div className="w-40"><Divider label="or" /></div> },
       {
         label: 'Inset',
         render: (
@@ -289,10 +289,10 @@ export default defineDoc({
       },
       {
         n: 2,
-        label: 'Colour',
+        label: 'Color',
         value: '--ds-border-subtle',
         kind: 'color',
-        note: 'The lightest border token. A divider drawn in the default border colour competes with the edges of the components around it.',
+        note: 'The lightest border token. A divider drawn in the default border color competes with the edges of the components around it.',
       },
       {
         n: 3,
@@ -311,7 +311,7 @@ export default defineDoc({
       {
         n: 5,
         label: 'Label',
-        value: '12px, muted, centred',
+        value: '12px, muted, centered',
         kind: 'type',
         note: 'The line breaks around the label rather than running behind it. A label sitting on top of an unbroken rule reads as struck through.',
       },
@@ -347,7 +347,7 @@ export default defineDoc({
     { name: 'Horizontal', height: '1px', gap: '20px above, 16px below', use: 'Between sections of equal weight. The asymmetry is not optional.' },
     { name: 'Vertical', height: '16–20px', gap: '8px inline', use: 'In a toolbar or a metadata row. Always shorter than the row it sits in.' },
     { name: 'Inset', gap: 'Aligned to content', use: 'In a list with leading content, starting at the text rather than the container edge.' },
-    { name: 'Labelled', height: '1px', gap: '12px either side of the label', use: 'The line breaks around the label, never runs behind it.' },
+    { name: 'Labeled', height: '1px', gap: '12px either side of the label', use: 'The line breaks around the label, never runs behind it.' },
     { name: 'Card footer', gap: '0 — the padding provides it', use: 'Full-bleed to the card edge, with the footer’s own padding doing the spacing.' },
   ],
 
@@ -456,7 +456,7 @@ export default defineDoc({
       'A decorative divider has no contrast requirement — it is aria-hidden and carries nothing.',
       'A divider that is the only grouping signal is meaningful non-text content and owes 3:1 under 1.4.11.',
       'In forced-colors mode, a divider drawn as a background disappears. Use a border or set forced-color-adjust so the boundary survives.',
-      'A labelled divider’s text is content and owes 4.5:1.',
+      'A labeled divider’s text is content and owes 4.5:1.',
     ],
     keyboard: [
       { keys: '—', does: 'A divider is never focusable and never interactive.' },
@@ -469,11 +469,11 @@ export default defineDoc({
       { attr: '<hr>', on: 'A thematic break in prose', note: 'The native element already has role="separator". Reach for it before a styled div.' },
     ],
     focus:
-      'A divider is never in the focus order. If it needs to be — as a resize handle, for instance — it is a different component with role="separator", tabindex and aria-valuenow, not a divider with extra behaviour.',
+      'A divider is never in the focus order. If it needs to be — as a resize handle, for instance — it is a different component with role="separator", tabindex and aria-valuenow, not a divider with extra behavior.',
     screenReader: [
       'A decorative divider should be silent. Twelve "separator" announcements down a settings page is noise that obscures the content.',
       'Where a divider genuinely groups, the group should also carry a label — role="group" with aria-label conveys far more than a bare separator.',
-      'A labelled divider announces its label. "or" between two sign-in options is meaningful and should be heard.',
+      'A labeled divider announces its label. "or" between two sign-in options is meaningful and should be heard.',
     ],
     touch:
       'Dividers are not targets and need no touch consideration of their own — but they do compete for vertical space. On a phone, prefer spacing: a settings page with eight rules is eight pixels of ink and eight interruptions in a column that is already narrow.',
@@ -490,7 +490,7 @@ export default defineDoc({
 // Vertical, in a toolbar. Always shorter than the row.
 <Divider orientation="vertical" className="h-5" />
 
-// Labelled — the one case where the divider carries meaning.
+// Labeled — the one case where the divider carries meaning.
 <Divider label="or" />
 
 // Meaningful: between groups in a menu, where the line is the ONLY grouping
@@ -535,8 +535,8 @@ export default defineDoc({
   <button type="button">…</button>
 </div>
 
-<!-- Labelled: the rule breaks around the word rather than running behind it. -->
-<div class="ds-divider ds-divider--labelled">
+<!-- Labeled: the rule breaks around the word rather than running behind it. -->
+<div class="ds-divider ds-divider--labeled">
   <span>or</span>
 </div>`,
     },
@@ -562,7 +562,7 @@ export default defineDoc({
 
 /* The line breaks AROUND the label. A label on an unbroken rule reads as
    struck through. */
-.ds-divider--labelled {
+.ds-divider--labeled {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -571,8 +571,8 @@ export default defineDoc({
   color: var(--ds-fg-muted);
   font-size: 12px;
 }
-.ds-divider--labelled::before,
-.ds-divider--labelled::after {
+.ds-divider--labeled::before,
+.ds-divider--labeled::after {
   content: '';
   flex: 1;
   block-size: 1px;
@@ -598,7 +598,7 @@ export default defineDoc({
         name: 'Divider',
         props: [
           { name: 'orientation', type: "'horizontal' | 'vertical'", default: "'horizontal'", description: 'Vertical dividers are always shorter than the row they sit in.' },
-          { name: 'label', type: 'ReactNode', description: 'Breaks the rule around a centred label. The one case where a divider carries meaning.' },
+          { name: 'label', type: 'ReactNode', description: 'Breaks the rule around a centered label. The one case where a divider carries meaning.' },
           { name: 'decorative', type: 'boolean', default: 'true', description: 'aria-hidden by default. Set false only where the line is the sole grouping signal.' },
           { name: 'className', type: 'string', description: 'Where the inset and the vertical height are applied — both are context, not variants.' },
         ],
@@ -616,7 +616,7 @@ export default defineDoc({
     ],
     performance: [
       'Prefer a border or a pseudo-element over an extra DOM node in long lists. A thousand-row list with a divider element per row is a thousand nodes for a thousand pixels.',
-      'Use a single background-image with a linear-gradient for repeated dividers in a virtualised list rather than an element per gap.',
+      'Use a single background-image with a linear-gradient for repeated dividers in a virtualized list rather than an element per gap.',
       'A 1px background can render at 0.5px or 1.5px on fractional device pixel ratios. Use a border where crispness matters, or accept the softness — it is usually invisible.',
     ],
     mistakes: [

@@ -60,7 +60,7 @@ export default defineDoc({
       'Stating the status of a row, card or record: Live, Failed, Draft, Pending.',
       'Showing an unread or pending count on a navigation item or tab.',
       'Marking something as new, beta, deprecated or recommended.',
-      'Categorising a list item where the category is informational rather than filterable.',
+      'Categorizing a list item where the category is informational rather than filterable.',
     ],
     whenNotToUse: [
       {
@@ -92,10 +92,10 @@ export default defineDoc({
           Shape is the fastest categorical signal available and it costs nothing.
         </p>
         <p>
-          The rule that matters most: <strong>colour is never the only signal</strong>. A green
-          badge and a red badge are identical to a large number of readers, in greyscale, and in
+          The rule that matters most: <strong>color is never the only signal</strong>. A green
+          badge and a red badge are identical to a large number of readers, in grayscale, and in
           high-contrast mode. Every status badge carries a word, and most carry a dot as well. If
-          removing the colour loses information, the badge is broken.
+          removing the color loses information, the badge is broken.
         </p>
         <p>
           The <code>subtle</code> variant is the default because a page usually has several badges
@@ -191,15 +191,15 @@ export default defineDoc({
         ),
       },
       {
-        id: 'greyscale',
-        title: 'The greyscale test',
+        id: 'grayscale',
+        title: 'The grayscale test',
         description:
-          'Run any badge row through a greyscale filter. If you can still tell the states apart, the colour was reinforcing. If not, it was load-bearing.',
+          'Run any badge row through a grayscale filter. If you can still tell the states apart, the color was reinforcing. If not, it was load-bearing.',
         render: (
           <PreviewStage center={false} minHeight={0} allowResize={false}>
             <div className="grid w-full gap-4 sm:grid-cols-2">
               <div className="flex flex-col gap-2">
-                <span className="text-overline uppercase text-[var(--ds-fg-muted)]">Colour</span>
+                <span className="text-overline uppercase text-[var(--ds-fg-muted)]">Color</span>
                 <Row gap="sm">
                   <Badge tone="success" dot>Live</Badge>
                   <Badge tone="warning" dot>Degraded</Badge>
@@ -207,7 +207,7 @@ export default defineDoc({
                 </Row>
               </div>
               <div className="flex flex-col gap-2" style={{ filter: 'grayscale(1)' }}>
-                <span className="text-overline uppercase text-[var(--ds-fg-muted)]">Greyscale</span>
+                <span className="text-overline uppercase text-[var(--ds-fg-muted)]">Grayscale</span>
                 <Row gap="sm">
                   <Badge tone="success" dot>Live</Badge>
                   <Badge tone="warning" dot>Degraded</Badge>
@@ -319,7 +319,7 @@ export default defineDoc({
   do: [
     {
       title: 'Pair the tone with a word',
-      why: 'The word is what survives greyscale, colour blindness and high-contrast mode. The colour makes it faster to find; it should never be what makes it understandable.',
+      why: 'The word is what survives grayscale, color blindness and high-contrast mode. The color makes it faster to find; it should never be what makes it understandable.',
       render: (
         <Row gap="sm">
           <Badge tone="success" dot>Live</Badge>
@@ -378,8 +378,8 @@ export default defineDoc({
       ),
     },
     {
-      title: 'Do not rely on colour alone',
-      why: 'These three are indistinguishable in greyscale, to a deuteranope, and in Windows High Contrast Mode. There is simply no information present.',
+      title: 'Do not rely on color alone',
+      why: 'These three are indistinguishable in grayscale, to a deuteranope, and in Windows High Contrast Mode. There is simply no information present.',
       render: (
         <Row gap="sm">
           <span className="h-[22px] w-14 rounded-full" style={{ background: '#35c98a' }} />
@@ -419,7 +419,7 @@ export default defineDoc({
       { id: '1.4.11', name: 'Non-text Contrast', level: 'AA' },
     ],
     contrast: [
-      'The label must reach 4.5:1 against the fill. That is why -text exists as a separate token from the base colour.',
+      'The label must reach 4.5:1 against the fill. That is why -text exists as a separate token from the base color.',
       'The status dot is a meaningful graphic and must reach 3:1 against the fill it sits on.',
       'Solid badges use the -fg token, which is verified against the solid fill. Using -text there would fail.',
     ],
@@ -430,11 +430,11 @@ export default defineDoc({
       { attr: 'No role', on: 'Static badges', note: 'A badge is text. Adding role="status" to a static label makes screen readers announce it on every re-render.' },
       { attr: 'aria-label', on: 'CountBadge', note: '"3 unread notifications" rather than the bare number, which announces as a meaningless "3".' },
       { attr: 'aria-live="polite"', on: 'A badge that changes', note: 'Only when the change is important and the user did not cause it — a build going from Queued to Failed.' },
-      { attr: 'sr-only text', on: 'Dot-only indicators', note: 'A coloured dot with no text is invisible to assistive tech. Add a visually hidden word.' },
+      { attr: 'sr-only text', on: 'Dot-only indicators', note: 'A colored dot with no text is invisible to assistive tech. Add a visually hidden word.' },
     ],
     focus: 'Badges are never focusable. If it needs focus, it is a chip or a button.',
     screenReader: [
-      'A badge is read as part of its surrounding content: "api-gateway, Live". That is why the word matters more than the colour.',
+      'A badge is read as part of its surrounding content: "api-gateway, Live". That is why the word matters more than the color.',
       'Do not put a badge before the thing it describes in the DOM — it will be announced before the user knows what it applies to.',
       'For a count badge, the accessible name should include the noun. "12" alone is meaningless out of context.',
     ],
@@ -551,7 +551,7 @@ const STATUS = {
           { name: 'tone', type: "'neutral' | 'accent' | 'success' | 'warning' | 'danger' | 'info'", default: "'neutral'", description: 'Semantic role. Never chosen for aesthetics.' },
           { name: 'variant', type: "'subtle' | 'solid' | 'outline'", default: "'subtle'", description: 'Subtle by default. Solid for the one badge that must interrupt.' },
           { name: 'size', type: "'sm' | 'md'", default: "'md'", description: '18px or 22px tall.' },
-          { name: 'dot', type: 'boolean', default: 'false', description: 'Adds a 6px status dot. The redundant encoding for colour.' },
+          { name: 'dot', type: 'boolean', default: 'false', description: 'Adds a 6px status dot. The redundant encoding for color.' },
           { name: 'icon', type: 'ReactNode', description: 'Leading glyph, 11px. Use instead of a dot when the icon adds meaning.' },
         ],
       },
@@ -574,7 +574,7 @@ const STATUS = {
       'For "New" and "Beta" markers, add an expiry. A badge that says New for eight months is worse than no badge at all.',
     ],
     performance: [
-      'Badges are cheap, but a table with a thousand of them is a thousand extra DOM nodes. In a virtualised list, that cost only applies to visible rows — make sure the virtualiser knows about them.',
+      'Badges are cheap, but a table with a thousand of them is a thousand extra DOM nodes. In a virtualized list, that cost only applies to visible rows — make sure the virtualizer knows about them.',
       'Avoid animating badge appearance in a list. Fifty badges animating in on filter change is a strobe.',
       'A count badge that updates from a websocket should batch. One re-render per event on a busy stream is a common source of dropped frames.',
     ],

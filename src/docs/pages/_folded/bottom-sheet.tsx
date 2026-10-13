@@ -19,7 +19,7 @@ const ACTIONS = [
   { label: 'Copy link', icon: <Link2 size={17} /> },
   { label: 'Duplicate', icon: <Copy size={17} /> },
   { label: 'Rename', icon: <Pencil size={17} /> },
-  { label: 'Add to favourites', icon: <Star size={17} /> },
+  { label: 'Add to favorites', icon: <Star size={17} /> },
 ]
 
 function ActionList({ long }: { long?: boolean }) {
@@ -255,7 +255,7 @@ export default defineDoc({
     reasoning: (
       <>
         <p>
-          A centred dialog on a phone is a surface the thumb cannot comfortably reach, dismissed by
+          A centered dialog on a phone is a surface the thumb cannot comfortably reach, dismissed by
           a control in the far corner. The sheet solves both by moving to the bottom: its actions
           land in the comfortable third of the screen, and its dismissal is a push in the direction
           it came from rather than a stretch to a 24px ✕.

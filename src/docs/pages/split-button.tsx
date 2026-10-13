@@ -645,10 +645,10 @@ const target = TARGETS.find((t) => t.id === preferred)!
       'Keep the chevron rotation on transform. Animating anything that affects layout inside a joined control makes the seam visibly shift.',
     ],
     mistakes: [
-      'Labelling the primary with the family verb ("Deploy") so nobody can tell what the wide half will actually do.',
+      'Labeling the primary with the family verb ("Deploy") so nobody can tell what the wide half will actually do.',
       'Leaving aria-expanded hardcoded to false, so assistive tech never learns the menu opened.',
       'Giving the chevron half no accessible name, producing an anonymous button immediately after the action.',
-      'Making the whole control open the menu, which turns a split button into a mislabelled Menu.',
+      'Making the whole control open the menu, which turns a split button into a mislabeled Menu.',
       'Returning focus to the body after the menu closes, dropping a keyboard user back at the top of the page.',
       'A 32px chevron on touch, where every miss runs the primary action.',
     ],

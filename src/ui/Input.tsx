@@ -152,7 +152,7 @@ export function controlShell(status: FieldStatus, disabled?: boolean, readOnly?:
     status === 'error' && 'border-[var(--ds-danger-border)] hover:border-[var(--ds-danger)]',
     status === 'success' && 'border-[var(--ds-success-border)]',
     status === 'warning' && 'border-[var(--ds-warning-border)]',
-    // Focus is a border colour change plus a 3px halo. The halo is what makes
+    // Focus is a border color change plus a 3px halo. The halo is what makes
     // it visible at a glance; the border change is what makes it precise.
     'focus:outline-none focus-visible:outline-none',
     status === 'error'
@@ -227,7 +227,7 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(func
         {...inspect(`TextInput · ${size}`, {
           tokens: ['--ds-field', '--ds-border-interactive', '--ds-accent', '--radius-md'],
           why: 'The control is inset (darker than the surface) so it reads as a hole you can pour text into, not a raised button you press. 12px horizontal padding gives the caret breathing room at the left edge.',
-          a11y: 'aria-invalid flips on error. Focus adds a 3px halo — the border colour alone is a 1px cue and fails for low-vision users.',
+          a11y: 'aria-invalid flips on error. Focus adds a 3px halo — the border color alone is a 1px cue and fails for low-vision users.',
         })}
       >
         {inputEl}

@@ -43,7 +43,7 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   tone?: Tone
   variant?: 'subtle' | 'solid' | 'outline'
   size?: 'sm' | 'md'
-  /** A 6px status dot. Carries meaning that colour alone cannot in greyscale. */
+  /** A 6px status dot. Carries meaning that color alone cannot in grayscale. */
   dot?: boolean
   icon?: React.ReactNode
 }
@@ -72,7 +72,7 @@ export function Badge({
       {...inspect(`Badge · ${tone} · ${variant}`, {
         tokens: [`--ds-${tone === 'neutral' ? 'layer-active' : tone + '-subtle'}`, '--text-caption'],
         why: 'Fully rounded (pill) so it never competes with the 8px-radius language of interactive controls — a shape difference tells the user “this is a label, not a button” before they read a word.',
-        a11y: 'Colour is never the only signal: pair a tone with a dot, an icon, or a word. 8% of men cannot separate the red and green tones.',
+        a11y: 'Color is never the only signal: pair a tone with a dot, an icon, or a word. 8% of men cannot separate the red and green tones.',
       })}
       {...rest}
     >
@@ -146,7 +146,7 @@ export function Chip({
   // readers never expose a nested control, so "remove this token" simply was not reachable.
   //
   // So when the chip both acts and removes, the pill becomes a plain container and the two
-  // real buttons sit inside it as siblings. The container carries the shape and the colour;
+  // real buttons sit inside it as siblings. The container carries the shape and the color;
   // each button carries its own name, its own focus ring and its own hit area.
   const split = interactive && !!onRemove
   const Comp = (split ? 'span' : interactive ? 'button' : 'span') as React.ElementType
@@ -267,7 +267,7 @@ export function Avatar({
     .map((w) => w[0])
     .join('')
     .toUpperCase()
-  // Deterministic hue from the name — same person, same colour, every time.
+  // Deterministic hue from the name — same person, same color, every time.
   const hue = React.useMemo(() => {
     let h = 0
     for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) % 8
@@ -302,7 +302,7 @@ export function Avatar({
         }
         {...inspect(`Avatar · ${size}`, {
           tokens: ['--p-viz-1…8', '--ds-fg', '--radius-full', '--ds-border-subtle'],
-          why: 'The fill is tinted from a deterministic hash of the name, so the same person is always the same colour and users start recognising them by shape before reading. The tint is an alpha mix, so it lifts off a card and a drawer as readily as off the page. A 1px inset ring keeps a light photo from bleeding into a light surface.',
+          why: 'The fill is tinted from a deterministic hash of the name, so the same person is always the same color and users start recognizing them by shape before reading. The tint is an alpha mix, so it lifts off a card and a drawer as readily as off the page. A 1px inset ring keeps a light photo from bleeding into a light surface.',
           a11y: 'Initials take the standard foreground rather than the identity hue: at 22% the tint stays dark enough for --ds-fg to clear 4.5:1 on every surface, which the hue itself did not. The image carries alt=""; the accessible name comes from the surrounding link or the adjacent text. An avatar alone is decorative.',
         })}
       >

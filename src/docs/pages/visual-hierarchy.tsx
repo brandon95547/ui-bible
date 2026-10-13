@@ -13,13 +13,13 @@ import { Knob, KnobSelect, KnobToggle, Row, Stack, defineDoc } from '../framewor
 
    The failure this page exists to prevent is real and was found in production:
    a drawer panel correctly raised one step, with every card, tile and rail
-   inside it painted with a translucent wash of the PAGE colour. The wash
+   inside it painted with a translucent wash of the PAGE color. The wash
    composites against its parent, so the identical class read "slightly
    lighter" on the page and "a hole" inside the panel. Nobody wrote a wrong
    value; somebody wrote a value that has no fixed meaning.
    ======================================================================== */
 
-/* -- colour maths, so the demos can show real numbers ---------------------- */
+/* -- color math, so the demos can show real numbers ---------------------- */
 
 type RGB = [number, number, number]
 
@@ -92,7 +92,7 @@ function WashTrap() {
       const i = LADDER.indexOf(groundHex)
       return hexToRgb(LADDER[Math.min(i + 1, LADDER.length - 1)])
     }
-    /* The wash: 30% of the *page* colour, whatever it lands on. */
+    /* The wash: 30% of the *page* color, whatever it lands on. */
     return composite(hexToRgb(groundHex), hexToRgb(RAMP.canvas), 0.3)
   }
 
@@ -111,7 +111,7 @@ function WashTrap() {
           const ground = hexToRgb(g.hex)
           const tile = resolve(g.hex)
           const delta = relLuminance(tile) - relLuminance(ground)
-          /* Three outcomes, not two. A wash of the page colour painted ON the
+          /* Three outcomes, not two. A wash of the page color painted ON the
              page composites to the page — it does not sink, it simply stops
              existing, and calling that "a hole" would overstate it. The hole is
              what the same class does one container up. */
@@ -146,7 +146,7 @@ function WashTrap() {
       <p className="text-caption text-[var(--ds-fg-secondary)]">
         {treatment === 'ladder step'
           ? 'A rung is picked relative to whatever it lands on, so the tile reads as raised in both containers.'
-          : 'One class, two meanings, neither of them the intended one. The wash is 30% of the page colour: on the page it composites to the page and the tile disappears; inside the panel it drags 30% of the way back down and reads as a hole punched in it.'}
+          : 'One class, two meanings, neither of them the intended one. The wash is 30% of the page color: on the page it composites to the page and the tile disappears; inside the panel it drags 30% of the way back down and reads as a hole punched in it.'}
       </p>
     </Stack>
   )
@@ -215,7 +215,7 @@ function Channels() {
   const [fill, setFill] = React.useState(true)
   const [marker, setMarker] = React.useState(false)
   const [weight, setWeight] = React.useState(false)
-  const [colour, setColour] = React.useState(false)
+  const [color, setColor] = React.useState(false)
   const selected = 1
 
   return (
@@ -224,7 +224,7 @@ function Channels() {
         <KnobToggle label="Fill" checked={fill} onChange={setFill} />
         <KnobToggle label="Marker bar" checked={marker} onChange={setMarker} />
         <KnobToggle label="Type weight" checked={weight} onChange={setWeight} />
-        <KnobToggle label="Foreground" checked={colour} onChange={setColour} />
+        <KnobToggle label="Foreground" checked={color} onChange={setColor} />
       </Row>
 
       <div
@@ -240,7 +240,7 @@ function Channels() {
               style={{
                 background: on && fill ? 'var(--ds-layer-selected)' : undefined,
                 fontWeight: on && weight ? 600 : 400,
-                color: on && colour ? 'var(--ds-accent-text)' : 'var(--ds-fg-secondary)',
+                color: on && color ? 'var(--ds-accent-text)' : 'var(--ds-fg-secondary)',
               }}
             >
               {on && marker && (
@@ -256,11 +256,11 @@ function Channels() {
       </div>
 
       <p className="text-caption text-[var(--ds-fg-secondary)]">
-        {[fill, marker, weight, colour].filter(Boolean).length === 0
+        {[fill, marker, weight, color].filter(Boolean).length === 0
           ? 'Nothing marks the selected row. Whatever else is true, this is the failure state.'
-          : fill && ![marker, weight, colour].some(Boolean)
+          : fill && ![marker, weight, color].some(Boolean)
             ? 'Fill alone. It works here, and it stops working the moment this list sits on a lighter surface or the user has a low-contrast display.'
-            : 'More than one channel. The selection survives a change of ground, a colour-blind reader and a dimmed screen.'}
+            : 'More than one channel. The selection survives a change of ground, a color-blind reader and a dimmed screen.'}
       </p>
     </Stack>
   )
@@ -275,7 +275,7 @@ export default defineDoc({
     id: 'visual-hierarchy',
     title: 'Visual Hierarchy',
     tagline:
-      'Decide what an element IS before you decide what colour it is. Role determines elevation; elevation is then expressed with lightness, contrast, borders and space — and contrast that is not carrying meaning is noise.',
+      'Decide what an element IS before you decide what color it is. Role determines elevation; elevation is then expressed with lightness, contrast, borders and space — and contrast that is not carrying meaning is noise.',
     keywords: [
       'hierarchy',
       'elevation',
@@ -311,7 +311,7 @@ export default defineDoc({
         id: 'channels',
         title: 'The four channels',
         description:
-          'Lightness, a marker, type weight and foreground colour. Fill is the one everyone reaches for and the only one that depends on what is underneath it.',
+          'Lightness, a marker, type weight and foreground color. Fill is the one everyone reaches for and the only one that depends on what is underneath it.',
         render: <Channels />,
       },
     ],
@@ -424,7 +424,7 @@ export default defineDoc({
     },
     {
       title: 'Give selection at least two channels',
-      why: 'A tint alone is fragile: it shifts with whatever is beneath it, it vanishes on a dimmed screen, and it is invisible to a reader who cannot distinguish the hue. A marker bar, type weight or foreground colour costs nothing and makes the state survive.',
+      why: 'A tint alone is fragile: it shifts with whatever is beneath it, it vanishes on a dimmed screen, and it is invisible to a reader who cannot distinguish the hue. A marker bar, type weight or foreground color costs nothing and makes the state survive.',
     },
     {
       title: 'Let contrast mean something',
@@ -438,7 +438,7 @@ export default defineDoc({
 
   dont: [
     {
-      title: 'Do not paint a surface with a wash of the page colour',
+      title: 'Do not paint a surface with a wash of the page color',
       why: 'It is the single most common way the ramp gets inverted. On the page it lands slightly lighter and looks fine; inside a raised panel it lands most of the way back down to the page and reads as a hole punched in the panel.',
     },
     {
@@ -450,7 +450,7 @@ export default defineDoc({
       why: 'They answer different questions — "you are pointing at this" and "you are on this". When a hover in one part of a list matches a selection in another, the component has no state at all.',
     },
     {
-      title: 'Do not draw a border in the same colour as what it sits on',
+      title: 'Do not draw a border in the same color as what it sits on',
       why: 'It measures 1:1 and does nothing but consume a pixel. This is why boundaries are alpha values: one token stays visible across every level, instead of being correct at the level it was first written for.',
     },
     {
@@ -500,7 +500,7 @@ export default defineDoc({
       },
       {
         attr: 'aria-disabled',
-        on: 'De-emphasised controls',
+        on: 'De-emphasized controls',
         note: 'Disabled is the one state permitted to drop below 4.5:1, and only because it is also announced.',
       },
     ],
@@ -602,9 +602,9 @@ raisesCorrectly('#303030', '#101010', 0.3)   // false — inside a drawer, a hol
 
   notes: {
     tips: [
-      'The fastest review question for any surface is "what is this?" — if the answer is a role, the value follows. If the answer is a colour, the decision has not been made yet.',
+      'The fastest review question for any surface is "what is this?" — if the answer is a role, the value follows. If the answer is a color, the decision has not been made yet.',
       'Most "this looks off but I cannot say why" reactions are a hierarchy violation, and naming the level that is wrong turns a taste argument into a one-line fix.',
-      'Try deleting the box before adjusting its colour. A surprising number of surface problems are really boxing problems, and the fix removes code.',
+      'Try deleting the box before adjusting its color. A surprising number of surface problems are really boxing problems, and the fix removes code.',
       'When a component renders in two places — a card and a drawer, a page and a modal — its surface must be a function of the parent, not a constant. That is an argument for a class per level, not a value per component.',
       'Interactivity outranks depth. A control inside a well still goes up, because "you can act on this" is a stronger claim than "this is recessed".',
     ],
@@ -614,15 +614,15 @@ raisesCorrectly('#303030', '#101010', 0.3)   // false — inside a drawer, a hol
       'Animating background-color forces paint. Animate opacity or transform where the effect allows it.',
     ],
     mistakes: [
-      'Painting a surface with a translucent wash of the page colour, so the same class reads as raised on the page and as a hole inside a panel.',
+      'Painting a surface with a translucent wash of the page color, so the same class reads as raised on the page and as a hole inside a panel.',
       'Reaching for a darker value to make something recede, in a theme where receding is what the page already does.',
       'Expressing selection with a fill alone, then discovering it is indistinguishable from hover once the list moves to a different surface.',
-      'Bordering in an opaque colour that happens to match the current parent, which works until the component is reused one level up.',
+      'Bordering in an opaque color that happens to match the current parent, which works until the component is reused one level up.',
       'Adding a box for every group, until the screen is boxes and the actual content is four levels of padding away.',
       'Treating a token ladder as the principle. The ladder is one implementation of it for one theme; the reasoning is what transfers.',
     ],
     realWorld: [
-      'Found in production: a drawer correctly raised one step, with its status tiles, phase rail and every card inside it painted with a 30% wash of the page colour. The panel was right and everything in it was inverted — including the "in progress" row, which came out darker than the idle rows around it.',
+      'Found in production: a drawer correctly raised one step, with its status tiles, phase rail and every card inside it painted with a 30% wash of the page color. The panel was right and everything in it was inverted — including the "in progress" row, which came out darker than the idle rows around it.',
       'The same audit found three borders at 1.00:1, all of them the correct token for the surface the component was originally written on, and all of them invisible after it moved.',
       'A component rendered in two containers is the reliable way to catch this. If a class only looks right in one of them, it was never a level — it was a coincidence.',
       'Hierarchy bugs survive review because each individual value looks defensible in isolation. They are found by composing the stack, not by reading the diff.',

@@ -196,7 +196,7 @@ export default defineDoc({
         <p>
           Ellipses are not decoration — they are how the control stays a fixed width. Without
           truncation, page 400 of 500 renders five hundred targets. First, last, current, and one
-          or two neighbours is enough for every real navigation, and the width never changes as the
+          or two neighbors is enough for every real navigation, and the width never changes as the
           user moves through the set.
         </p>
       </>
@@ -224,7 +224,7 @@ export default defineDoc({
         id: 'truncation',
         title: 'Truncation keeps the width fixed',
         description:
-          'First, last, current and its neighbours. The control is the same width on page 2 and page 47, so the Next button never moves out from under the pointer.',
+          'First, last, current and its neighbors. The control is the same width on page 2 and page 47, so the Next button never moves out from under the pointer.',
         render: (
           <PreviewStage minHeight={0} allowResize={false}>
             <Stack gap="md" className="items-center">
@@ -338,7 +338,7 @@ export default defineDoc({
         label: 'Siblings',
         value: '1 either side',
         kind: 'space',
-        note: 'One neighbour covers "the next one" and "the one I just left". Two is defensible on wide tables; zero makes the control read as broken.',
+        note: 'One neighbor covers "the next one" and "the one I just left". Two is defensible on wide tables; zero makes the control read as broken.',
       },
       {
         n: 6,
@@ -376,7 +376,7 @@ export default defineDoc({
     { name: 'Medium', height: '32px', minWidth: '32px', type: '12px', gap: '2px', touch: '44px on coarse pointers', use: 'The default.' },
     { name: 'Range summary', type: '12px', use: 'Left of the controls on desktop, above them on mobile.' },
     { name: 'Page size select', height: '32px', minWidth: '7rem', use: '10 / 25 / 50 / 100. Persist the choice — it is a preference, not a per-visit decision.' },
-    { name: 'Load more', height: '36px', minWidth: '10rem', use: 'Centred under the list, with the loaded-of-total count beneath it.' },
+    { name: 'Load more', height: '36px', minWidth: '10rem', use: 'Centered under the list, with the loaded-of-total count beneath it.' },
   ],
 
   do: [
@@ -481,7 +481,7 @@ export default defineDoc({
       { id: '4.1.3', name: 'Status Messages', level: 'AA' },
     ],
     contrast: [
-      'The current page must be distinguishable from the rest by more than a tint — it carries a fill and an inverted label, so the state survives greyscale.',
+      'The current page must be distinguishable from the rest by more than a tint — it carries a fill and an inverted label, so the state survives grayscale.',
       'Disabled arrows may use the disabled tone; they are not targets. Idle page numbers are targets and owe 4.5:1.',
       'The ellipsis is decorative and aria-hidden, so it is exempt — which is only true because it is genuinely not interactive.',
     ],
