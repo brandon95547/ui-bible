@@ -19,7 +19,7 @@ import type { Palette, PaletteColor } from '@/docs/data/flat-ui-colors'
    values, of which a palette ships twenty and none of the boring ones.
 
    Everything here derives the missing thirty from the twenty, by the same
-   rules for all fourteen palettes, and records where each value came from.
+   rules for every palette, and records where each value came from.
    Two kinds of provenance, and the distinction is the whole point:
 
      · TAKEN   — a literal palette colour, cited by its position and its name
@@ -99,7 +99,7 @@ export function derivePaletteSystem(palette: Palette): PaletteSystem {
   const colors = palette.colors
 
   /* -- surfaces ----------------------------------------------------------
-     Anchored on the palette's darkest member. Every one of the fourteen has
+     Anchored on the palette's darkest member. Every palette here has
      one, because a palette with no dark value is unusable as a strip and the
      designers all knew it. The ladder below it is derived: a page has to be
      darker than the cards on it, and no palette ships two greys that happen to
@@ -206,7 +206,7 @@ export function derivePaletteSystem(palette: Palette): PaletteSystem {
      Solved for contrast rather than mixed by percentage. A fixed 22%-toward-
      the-background step gives a different ramp on every palette and a failing
      one on the darkest; solving means "secondary text" means 8:1 everywhere,
-     which is what makes the fourteen pages comparable. */
+     which is what makes the pages comparable. */
 
   const inkSecondary = mixToContrast(ink, page, 8)
   const inkTertiary = mixToContrast(ink, page, 5.5)
@@ -267,7 +267,7 @@ export function derivePaletteSystem(palette: Palette): PaletteSystem {
 
   /* -- semantic roles ----------------------------------------------------
      Primary is the palette's first chromatic colour: designers lead with their
-     signature, and every one of these fourteen does. The status roles are the
+     signature, and every palette here does. The status roles are the
      nearest hue to each target, which is the honest version of a decision that
      is usually made by eye and then rationalised. Where the nearest hue is not
      close, the page says so rather than pretending. */
@@ -440,7 +440,7 @@ export function systemCss(sys: PaletteSystem) {
     `  --${p.id}-${k}: ${v};`.padEnd(42) + `/* ${note} */`
 
   return `/* ${p.title} — a dark theme derived from the twenty.
-   ${p.author}, Flat UI Colors 2. Values marked "taken" are the palette's own;
+   ${p.origin ? p.author : `${p.author}, Flat UI Colors 2`}. Values marked "taken" are the palette's own;
    everything else is computed from them by the rules on this page. */
 :root {
   /* surfaces */

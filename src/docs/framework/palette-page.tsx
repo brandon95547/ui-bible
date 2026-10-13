@@ -17,7 +17,7 @@ import { FLAT_UI_SOURCE, type Palette } from '@/docs/data/flat-ui-colors'
 
 /* ===========================================================================
    ONE PALETTE, ONE PAGE
-   Fourteen palettes share one page shape, because the questions you ask of a
+   Every palette shares one page shape, because the questions you ask of a
    borrowed palette are always the same four: what is in it, what can hold
    text, what does it look like doing a job, and how do I get it into the
    codebase. What differs between them is the answer, and every answer here is
@@ -25,7 +25,7 @@ import { FLAT_UI_SOURCE, type Palette } from '@/docs/data/flat-ui-colors'
    error in the data cannot survive contact with the audit table.
 
    The argument for *why* you treat a borrowed palette this way lives once, on
-   the Using a Palette page. It is not repeated fourteen times.
+   the Using a Palette page. It is not repeated on every one of these.
    ======================================================================== */
 
 const num = (n: number) => n.toFixed(2)
@@ -41,13 +41,21 @@ export function definePalettePage(p: Palette): DocSpec {
   const totalTokens =
     sys.surfaces.length + sys.text.length + sys.semantic.length * 3 + sys.chart.length
 
+  /* -- provenance ---------------------------------------------------------
+     The fourteen from Flat UI Colors 2 share a page prefix, a namespace and a
+     credit line. A palette from anywhere else brings its own. */
+
+  const pageId = p.origin?.page ?? `flat-ui-${p.id}`
+  const ns = p.origin?.namespace ?? `flat-${p.id}`
+  const byline = p.origin ? p.author : `${p.author}, Flat UI Colors 2`
+
   /* -- generated code ----------------------------------------------------- */
 
-  const vars = p.colors.map((c) => `  --flat-${p.id}-${c.slug}: ${c.hex};`).join('\n')
+  const vars = p.colors.map((c) => `  --${ns}-${c.slug}: ${c.hex};`).join('\n')
 
   const css = `/* ---- The twenty, verbatim. Namespaced, so a borrowed value can never
         be mistaken for one of ours. ---------------------------------------- */
-/* ${p.title} — ${p.author}, Flat UI Colors 2 */
+/* ${p.title} — ${byline} */
 :root {
 ${vars}
 }
@@ -61,7 +69,7 @@ ${systemCss(sys)}`
 const ${p.id.toUpperCase()}_SERIES = [
 ${byLightness(p.colors)
   .slice(-6)
-  .map((c) => `  'var(--flat-${p.id}-${c.slug})', // ${c.name}`)
+  .map((c) => `  'var(--${ns}-${c.slug})', // ${c.name}`)
   .join('\n')}
 ]
 
@@ -72,7 +80,7 @@ ${byLightness(p.colors)
    Math.max(contrast(p.colors[0].hex, '#ffffff'), contrast(p.colors[0].hex, '#000000')),
  )}:1.
 <span style={{
-  background: 'var(--flat-${p.id}-${p.colors[0].slug})',
+  background: 'var(--${ns}-${p.colors[0].slug})',
   color: '${readableOn(p.colors[0].hex)}',
 }}>
   ${p.colors[0].name}
@@ -80,12 +88,12 @@ ${byLightness(p.colors)
 
   return defineDoc({
     meta: {
-      id: `flat-ui-${p.id}`,
+      id: pageId,
       title: p.title,
       tagline: p.character,
       keywords: [
         'palette',
-        'flat ui colors',
+        ...(p.origin ? [] : ['flat ui colors']),
         'swatches',
         'hex',
         p.author.toLowerCase(),
@@ -98,10 +106,14 @@ ${byLightness(p.colors)
         <PreviewStage label={`${p.colors.length} colours`} center={false} minHeight={0} allowResize={false}>
           <div className="flex w-full flex-col gap-4">
             <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1 text-caption text-[var(--ds-fg-muted)]">
-              <span>
-                Drawn by <span className="text-[var(--ds-fg-secondary)]">{p.author}</span> for Flat UI
-                Colors 2.
-              </span>
+              {p.origin ? (
+                <span>{p.origin.credit}</span>
+              ) : (
+                <span>
+                  Drawn by <span className="text-[var(--ds-fg-secondary)]">{p.author}</span> for Flat
+                  UI Colors 2.
+                </span>
+              )}
               <a
                 href={p.source ?? FLAT_UI_SOURCE}
                 target="_blank"
@@ -121,7 +133,7 @@ ${byLightness(p.colors)
         {
           id: 'text',
           title: '01 · Text colours',
-          description: `A palette ships hues, not a text ramp. These five are solved against the page background rather than mixed by percentage — "secondary" means 8:1 on every one of the fourteen palettes, so the pages stay comparable and none of them ships a ramp that fails. Disabled sits below the floor deliberately; it is the one role WCAG exempts.`,
+          description: `A palette ships hues, not a text ramp. These five are solved against the page background rather than mixed by percentage — "secondary" means 8:1 on every palette in this section, so the pages stay comparable and none of them ships a ramp that fails. Disabled sits below the floor deliberately; it is the one role WCAG exempts.`,
           render: (
             <PreviewStage center={false} minHeight={0} allowResize={false}>
               <TokenRows sys={sys} tokens={sys.text} />
@@ -241,7 +253,7 @@ ${byLightness(p.colors)
       {
         title: 'Do not call a colour accessible without naming the surface',
         why: `${audit.onWhite} of these ${audit.total} can set body text on a white page and ${audit.onBlack} can on a black one${
-          audit.both ? `, and ${audit.both} manage both` : ' — and none manage both'
+          audit.both ? `, and ${audit.both === 1 ? 'one manages' : `${audit.both} manage`} both` : ' — and none manage both'
         }. The two sets are nearly disjoint by arithmetic, not by taste. Pick the surface first and the palette divides itself.`,
       },
     ],
@@ -254,7 +266,7 @@ ${byLightness(p.colors)
       ],
       contrast: [
         `${audit.onWhite} of ${audit.total} colours clear 4.5:1 against white and can carry body text on a light page. ${audit.onBlack} clear it against black. ${
-          audit.both === 0 ? 'None do both.' : `${audit.both} do both.`
+          audit.both === 0 ? 'None do both.' : audit.both === 1 ? 'One does both.' : `${audit.both} do both.`
         }`,
         'Those two sets are nearly disjoint for a reason, not by accident: a colour’s contrast with white multiplied by its contrast with black is always exactly 21. Clearing 4.5:1 on one surface leaves at most 4.67:1 on the other.',
         `${audit.largeOnWhite} of ${audit.total} reach 3:1 on white, which is the bar for large text, icons, borders and chart marks — a much larger set, and the one most of this palette is genuinely for.`,
@@ -308,9 +320,11 @@ ${byLightness(p.colors)
         'Copying the hexes into a design file and the CSS separately. They will drift, and the design file will win the argument for about six months.',
       ],
       realWorld: [
-        `Credit stays attached: this set was drawn by ${p.author}${
-          p.dribbble ? ` (@${p.dribbble} on Dribbble)` : ''
-        } and published in Flat UI Colors 2 by Ahmet Sülek.`,
+        p.origin
+          ? `Credit stays attached. ${p.origin.credit}`
+          : `Credit stays attached: this set was drawn by ${p.author}${
+              p.dribbble ? ` (@${p.dribbble} on Dribbble)` : ''
+            } and published in Flat UI Colors 2 by Ahmet Sülek.`,
         'Palettes like this one age visibly. A 2013 flat palette reads as 2013 — which is useful when that is the intent and a liability when it is not.',
         'The fastest legitimate use is prototyping: grab a palette, get the categorical colours out of the way, and spend the argument you saved on hierarchy instead.',
       ],

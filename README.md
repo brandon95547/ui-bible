@@ -64,7 +64,7 @@ Five sections. Only **Components** is subdivided, and only one level deep.
 | --------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Foundations** | Tokens, colour, typography, spacing, grid, radius, elevation, icons, motion, animation, breakpoints, accessibility, dark theme, light theme    |
 | **Components**  | 65 components in seven groups — see below                                                                                                     |
-| **Color**       | Palettes we did not draw — Flat UI Colors 2's fourteen — plus the page on converting one into something shippable                              |
+| **Color**       | Palettes we did not draw — Flat UI Colors 2's fourteen and Sonora — plus the page on converting one into something shippable                   |
 | **Patterns**    | Dashboards, desktop, mobile, and the empty / error / loading states                                                                            |
 | **Principles**  | The UX laws every rule in here derives from                                                                                                    |
 
@@ -72,7 +72,7 @@ Five sections. Only **Components** is subdivided, and only one level deep.
 roles and the contrast contract are a foundation and stay there. A borrowed palette has
 no tokens, no theming and no authority — it is a reference you are being shown how to
 convert. The argument for *how* you convert one lives once, on **Using a Palette**,
-instead of fourteen times.
+instead of once per palette.
 
 Each palette page then *performs* that conversion: twenty colours in, a working dark
 theme out, in seven numbered sections — text ramp, surfaces, semantic roles, real
@@ -83,11 +83,11 @@ the 5×4 grid and its name) or **derived** (computed, with the arithmetic stated
 transcription error cannot survive contact with the audit table, and a derivation that
 misses its target renders its own ratio in red.
 
-The rules are deliberately dull, because their job is to make fourteen palettes
+The rules are deliberately dull, because their job is to make fifteen palettes
 comparable rather than to out-design the people who drew them:
 
 - **Text** is *solved*, not mixed. Bisection finds the ink that hits 8:1 against the
-  page, so "secondary" means the same thing on all fourteen — a fixed percentage step
+  page, so "secondary" means the same thing on all fifteen — a fixed percentage step
   gives a different ramp on every palette and a failing one on the darkest.
 - **Semantic roles** take the nearest hue to each target, then the *brightest* of the
   near-ties. That second clause is the rule, not a tie-break: palettes are drawn in
@@ -104,8 +104,17 @@ Run against Flat UI v1 the derivation reproduces the hand-made poster it was mod
 exactly — all six roles, both members of every pair. That is the check that the rules
 encode taste rather than merely being consistent.
 
-The section is flat while there is one source. A second (Material, IBM, Tailwind) turns
-it into `groups`, one per source — the shape Components already uses.
+Fourteen of the fifteen are one collection. The fifteenth, **Sonora**, is the palette
+of Suno's interface, read out of its stylesheet and set in the same twenty-swatch shape:
+eight hues, each as the step Suno's dark theme binds an accent to with the step below it,
+plus four neutrals. Its data lives in `src/docs/data/sonora-colors.ts`, with the rule the
+twenty were chosen by. A palette from outside Flat UI Colors 2 carries an `origin` — its
+page id, its custom-property namespace and one sentence of credit — and the page builder
+needs nothing else.
+
+The section is flat while there is one collection: a single page is not a group. A second
+collection (Material, IBM, Tailwind) turns it into `groups`, one per source — the shape
+Components already uses.
 
 | Component group  | Count | Contents                                                                                                                     |
 | ---------------- | ----- | ---------------------------------------------------------------------------------------------------------------------------- |

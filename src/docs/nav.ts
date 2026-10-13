@@ -790,11 +790,12 @@ const MEDIA: NavPage[] = [
    which is a different kind of page: no tokens, no theming, no authority.
    A palette here is a reference you are being shown how to convert, and the
    conversion is the point. Using a Palette carries that argument once so the
-   fourteen palette pages do not each repeat it.
+   palette pages do not each repeat it.
 
-   Flat and staying flat until there is a second source. When Material, IBM or
-   Tailwind's ramps arrive, this becomes `groups` with one per source — the
-   same shape Components already uses.
+   Fourteen are Flat UI Colors 2's. Sonora is the first from anywhere else, and
+   one page is not a group: the section stays flat until a second COLLECTION
+   arrives. When Material, IBM or Tailwind's ramps do, this becomes `groups`
+   with one per source — the same shape Components already uses.
    ======================================================================== */
 
 const COLOR: NavPage[] = [
@@ -902,6 +903,13 @@ const COLOR: NavPage[] = [
     blurb: 'Bright primaries over cool slate, with five usable greys. Jan Losert.',
     keywords: ['united kingdom', 'britain', 'slate', 'navy', 'jan losert'],
     swatches: ['#00a8ff', '#4cd137', '#8c7ae6', '#e84118', '#353b48', '#2f3640'],
+  },
+  {
+    id: 'sonora',
+    title: 'Sonora Palette',
+    blurb: 'Eight saturated hues in pairs over warm cream and near-black, drawn for a dark product. After Suno.',
+    keywords: ['suno', 'strawberry', 'dumbo', 'aura', 'dark product', 'music'],
+    swatches: ['#fd429c', '#ff6a00', '#f5d907', '#02d95c', '#8b6efe', '#f7f4ef'],
   },
 ]
 

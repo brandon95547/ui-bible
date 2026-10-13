@@ -1,19 +1,25 @@
 import { Badge } from '@/ui/Display'
 import { PaletteStrip } from '../framework/PaletteSheet'
 import { auditPalette, byLightness, contrast, readableOn } from '../framework/palette'
-import { FLAT_UI_PALETTES, palette } from '../data/flat-ui-colors'
+import { palette } from '../data/flat-ui-colors'
+import { PALETTES } from '../data/palettes'
 import { PreviewStage, Row, Stack, defineDoc } from '../framework/kit'
 
 /* ---------------------------------------------------------------------------
-   The argument that the fourteen palette pages deliberately do not repeat.
+   The argument that the palette pages deliberately do not repeat.
    ------------------------------------------------------------------------ */
 
 const US = palette('us')
 const DEFO = palette('defo')
 
+/** How many palettes carry a color that is text on white AND on black. Counted,
+ *  not written down: the sentence over the table is about exactly this number. */
+const OVERLAPPING = PALETTES.filter((p) => auditPalette(p.colors).both > 0).length
+const COUNT = ['none', 'one', 'two', 'three', 'four', 'five', 'six']
+
 /** Every palette in the section, ranked by how much of it survives a white page. */
 function PaletteLeague() {
-  const rows = FLAT_UI_PALETTES.map((p) => ({ p, a: auditPalette(p.colors) })).sort(
+  const rows = PALETTES.map((p) => ({ p, a: auditPalette(p.colors) })).sort(
     (a, b) => b.a.onWhite - a.a.onWhite,
   )
 
@@ -194,14 +200,17 @@ export default defineDoc({
 
   preview: {
     render: (
-      <PreviewStage label="Fourteen palettes, measured" center={false} minHeight={0} allowResize={false}>
+      <PreviewStage label="Fifteen palettes, measured" center={false} minHeight={0} allowResize={false}>
         <Stack gap="sm" className="w-full">
           <p className="text-body-sm text-[var(--ds-fg-secondary)]">
-            Every palette in this section, ranked by how many of its twenty colours can carry body
-            text on a white page. Read the first two columns together: every row adds up to exactly
-            twenty, with nothing counted twice, because a colour that clears 4.5:1 on white cannot
-            also clear it on black. Choosing the surface is what splits a palette in two, and not
-            one of these fourteen was drawn expecting you to choose.
+            Every palette in this section, ranked by how many of its twenty colors can carry body
+            text on a white page. Read the first two columns together: a row adds up to twenty, or
+            to twenty-one where a single color is counted twice. A color’s contrast with white
+            times its contrast with black is always 21, so clearing 4.5:1 on one leaves at most
+            4.67:1 on the other — the two sets can only meet in that sliver, and{' '}
+            {COUNT[OVERLAPPING] ?? OVERLAPPING} of these fifteen have a color sitting in it.
+            Choosing the surface is what splits a palette in two, and not one of them was drawn
+            expecting you to choose.
           </p>
           <PaletteLeague />
         </Stack>
@@ -394,11 +403,11 @@ import { readableOn } from '@/docs/framework/palette'
       'If two palettes look interchangeable as strips, they are interchangeable in your product. Pick on the audit numbers instead.',
       'A palette is a fast way to lose an argument about colour and get on with the layout. That is a legitimate reason to use one.',
       'Sorting by hue tells you which colours can sit next to each other; sorting by lightness tells you which ones can be read. Both orders are on every palette page.',
-      'Every palette page carries the conversion already done — surfaces, a solved text ramp, semantic roles with hover and active, chart colours and the CSS to paste. Read it as a worked example rather than a deliverable: the rules are consistent across all fourteen precisely so that they are comparable, which is not the same as being right for your product.',
+      'Every palette page carries the conversion already done — surfaces, a solved text ramp, semantic roles with hover and active, chart colours and the CSS to paste. Read it as a worked example rather than a deliverable: the rules are consistent across all fifteen precisely so that they are comparable, which is not the same as being right for your product.',
     ],
     performance: [
       'Twenty custom properties cost nothing. Twenty custom properties defined inside a component that mounts a hundred times cost something — define them once at :root.',
-      'Do not ship all fourteen palettes to the browser. Each page in this section imports only its own, and your product should import only the one it uses.',
+      'Do not ship all fifteen palettes to the browser. Each page in this section imports only its own, and your product should import only the one it uses.',
     ],
     mistakes: [
       'Treating the palette as complete. Twenty values with no neutrals, no ramp and no dark-theme counterpart is a third of a colour system.',

@@ -16,8 +16,20 @@ export interface PaletteColor {
   slug: string
 }
 
+/** What a palette from outside Flat UI Colors 2 has to say about itself. The
+ *  fourteen here share a collection, a page prefix and a namespace; one from
+ *  anywhere else has none of the three. */
+export interface PaletteOrigin {
+  /** Its page id and filename. */
+  page: string
+  /** The namespace of its custom properties: `--<namespace>-<slug>`. */
+  namespace: string
+  /** One sentence saying where the values came from. */
+  credit: string
+}
+
 export interface Palette {
-  /** Page id and filename: `flat-ui-<id>`. */
+  /** Page id and filename: `flat-ui-<id>`, unless `origin` names another. */
   id: string
   title: string
   /** The designer who drew it. */
@@ -28,6 +40,8 @@ export interface Palette {
   source?: string
   /** One sentence on what this palette actually is, in this system's voice. */
   character: string
+  /** Set only on a palette that Flat UI Colors 2 did not publish. */
+  origin?: PaletteOrigin
   colors: PaletteColor[]
 }
 
