@@ -1,5 +1,4 @@
 import { ExternalLink } from 'lucide-react'
-import { PreviewStage } from './PreviewStage'
 import {
   ContrastSection,
   CoreSection,
@@ -11,7 +10,7 @@ import {
   StateSpecimen,
   ThemeOverview,
 } from './ThemeSheet'
-import { buttonContrast, classifyTheme, classLabel, contrastRows, describe, themeCss } from './theme-system'
+import { buttonContrast, classifyTheme, contrastRows, describe, themeCss } from './theme-system'
 import { defineDoc } from './types'
 import type { DocSpec } from './types'
 import type { SiteTheme } from '@/docs/data/site-theme'
@@ -23,19 +22,23 @@ import type { SiteTheme } from '@/docs/data/site-theme'
    them. This is built from a website and asks what was made: what the
    interface looks like, in the order someone rebuilding it needs to know.
 
-     00  the overview      a screen of it, drawn from the tokens
-     01  surfaces          the ladder, what sits on which rung, and the states
-     02  the core palette  text, borders, status — and nothing else
-     03  elements          the standard controls, built from 01 and 02
-     04  contrast          text on the surfaces it is actually put on
-     05  decorative        shut
-     06  raw tokens        shut
+     01  the overview      a screen of it, drawn from the tokens
+     02  surfaces          the ladder, what sits on which rung, and the states
+     03  the core palette  text, borders, status — and nothing else
+     04  elements          the standard controls, built from 02 and 03
+     05  contrast          text on the surfaces it is actually put on
+     06  decorative        shut
+     07  raw tokens        shut
 
    The order is the argument. A sheet that opens on every color in a
    stylesheet teaches that the stylesheet is the theme; one that opens on the
-   page color and a button teaches what the site looks like. 05 and 06 are
-   real, complete and closed, because the moment they are open they are the
-   loudest thing on the page.
+   page color and a button teaches what the site looks like. 06 and 07 are
+   real and closed, because the moment they are open they are the loudest
+   thing on the page.
+
+   These are the page's own sections (DocSpec.sheet), not examples under a
+   "Live preview". A palette is not a component: it has no controls and no
+   states, and nothing on it is live.
 
    Nothing below is specific to one site. Hand it a SiteTheme and it draws
    that site; a role the data does not have is a section that is not there.
@@ -100,92 +103,75 @@ export function defineThemePage(theme: SiteTheme): DocSpec {
       ],
     },
 
-    preview: {
-      contents: [
-        { id: 'surfaces', title: 'Surfaces and elevation' },
-        { id: 'core', title: 'Core palette' },
-        { id: 'elements', title: 'Interface elements' },
-        { id: 'contrast', title: 'Contrast' },
-        { id: 'decorative', title: 'Decorative' },
-        { id: 'raw', title: 'Raw tokens' },
-      ],
-      render: (
-        <PreviewStage label={classLabel(cls)} center={false} minHeight={0} allowResize={false}>
+    /* Not a `preview`. There is nothing here to change the controls of: this
+       is what a website looks like, set down, and each group of values is a
+       section in its own right. The boards are drawn bare for the same reason
+       — a stage with a theme switch and a device toggle around a list of
+       another site's colors offers to do things that would make it wrong. */
+    sheet: [
+      {
+        id: 'overview',
+        title: 'Theme overview',
+        description: `${theme.credit} What follows is a screen of the interface drawn from its own tokens, and under it the handful of values that screen is made of.`,
+        render: (
           <div className="flex w-full flex-col gap-4">
-            <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1 text-caption text-[var(--ds-fg-muted)]">
-              <span>{theme.credit}</span>
-              <a
-                href={theme.source}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-1 text-[var(--ds-accent-text)] underline decoration-[var(--ds-accent-border)] underline-offset-2 hover:decoration-current"
-              >
-                Original
-                <ExternalLink size={12} aria-hidden />
-              </a>
-            </div>
             <ThemeOverview theme={theme} cls={cls} />
+            <a
+              href={theme.source}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1 self-start text-caption text-[var(--ds-accent-text)] underline decoration-[var(--ds-accent-border)] underline-offset-2 hover:decoration-current"
+            >
+              See the original at {theme.source.replace(/^https?:\/\//, '')}
+              <ExternalLink size={12} aria-hidden />
+            </a>
           </div>
-        </PreviewStage>
-      ),
-      examples: [
-        {
-          id: 'surfaces',
-          title: '01 · Surfaces and elevation',
-          description: `${observed.length} surfaces were seen in use, from the page up${
-            inferred.length ? `; ${inferred.length} more are the next steps of the same ramp` : ''
-          }. A level is where a component was found, not where its gray sorts — which is why the dialog and the menu are not on the rungs you would guess. Hover and selected are underneath, on their own, because neither is a level.`,
-          render: (
-            <PreviewStage center={false} minHeight={0} allowResize={false}>
-              <ElevationSection theme={theme} />
-            </PreviewStage>
-          ),
-        },
-        {
-          id: 'core',
-          title: '02 · Core palette',
-          description:
-            'What goes on those surfaces, in three groups: the text, the lines, and the handful of colors that mean something. Each has our name for the role, the site’s name for the value, and what it is for. Surfaces are not repeated here.',
-          render: (
-            <PreviewStage center={false} minHeight={0} allowResize={false}>
-              <CoreSection theme={theme} />
-            </PreviewStage>
-          ),
-        },
-        {
-          id: 'elements',
-          title: '03 · Interface elements',
-          description:
-            'The standard controls, assembled from the two sections above and nothing else. This is the check on them: if a button built from these roles does not look like the site’s button, a role is wrong.',
-          render: (
-            <PreviewStage center={false} minHeight={0} allowResize={false}>
-              <ElementsSection theme={theme} />
-            </PreviewStage>
-          ),
-        },
-        {
-          id: 'contrast',
-          title: '04 · Contrast',
-          description:
-            'Each text color against each surface it is actually set on, and each button label against its own fill. A theme has already chosen its surfaces, so these are the only ratios a reader will ever meet.',
-          render: <ContrastSection theme={theme} />,
-        },
-        {
-          id: 'decorative',
-          title: '05 · Decorative colors and special effects',
-          description: `Shut by default. ${decorativeCount} treatments the interface uses now and then — a promotional button, an indicator, glass over artwork — grouped by the job each does. They are recorded so they can be reproduced, and kept out of the way so they are not mistaken for the theme.`,
-          render: <DecorativeSection theme={theme} />,
-        },
-        {
-          id: 'raw',
-          title: '06 · Raw tokens',
-          description: `Shut by default. The ${rawRamps} ramps in ${theme.site}’s stylesheet. ${chromaticRamps} of them are hues, and the sections above take a status color from ${
-            new Set(theme.semantic.map((s) => s.ref?.replace(/-\d+$/, ''))).size
-          } of those. The rest of what is here is the difference between a stylesheet and a theme.`,
-          render: <RawSection theme={theme} />,
-        },
-      ],
-    },
+        ),
+      },
+      {
+        id: 'surfaces',
+        title: 'Surfaces and elevation',
+        description: `${observed.length} surfaces were seen in use, from the page up${
+          inferred.length ? `; ${inferred.length} more are the next steps of the same ramp` : ''
+        }. A level is where a component was found, not where its gray sorts — which is why the dialog and the menu are not on the rungs you would guess. Hover and selected are underneath, on their own, because neither is a level.`,
+        render: <ElevationSection theme={theme} />,
+      },
+      {
+        id: 'core',
+        title: 'Core palette',
+        description:
+          'What goes on those surfaces, in three groups: the text, the lines, and the handful of colors that mean something. Each has our name for the role, the site’s name for the value, and what it is for. Surfaces are not repeated here.',
+        render: <CoreSection theme={theme} />,
+      },
+      {
+        id: 'elements',
+        title: 'Interface elements',
+        description:
+          'The standard controls, assembled from the two sections above and nothing else. This is the check on them: if a button built from these roles does not look like the site’s button, a role is wrong.',
+        render: <ElementsSection theme={theme} />,
+      },
+      {
+        id: 'contrast',
+        title: 'Contrast',
+        description:
+          'Each text color against each surface it is actually set on, and each button label against its own fill. A theme has already chosen its surfaces, so these are the only ratios a reader will ever meet.',
+        render: <ContrastSection theme={theme} />,
+      },
+      {
+        id: 'decorative',
+        title: 'Decorative colors and special effects',
+        description: `Shut by default. ${decorativeCount} treatments the interface uses now and then — a promotional button, an indicator, glass over artwork — grouped by the job each does. They are recorded so they can be reproduced, and kept out of the way so they are not mistaken for the theme.`,
+        render: <DecorativeSection theme={theme} />,
+      },
+      {
+        id: 'raw',
+        title: 'Raw tokens',
+        description: `Shut by default. The ${rawRamps} ramps in ${theme.site}’s stylesheet. ${chromaticRamps} of them are hues, and the sections above take a status color from ${
+          new Set(theme.semantic.map((s) => s.ref?.replace(/-\d+$/, ''))).size
+        } of those. The rest of what is here is the difference between a stylesheet and a theme.`,
+        render: <RawSection theme={theme} />,
+      },
+    ],
 
     do: [
       {

@@ -70,6 +70,7 @@ export function DocPage({
       // section, not sections, and numbering them would say otherwise.
       spec.preview.contents?.forEach((c) => out.push({ ...c, depth: c.depth ?? 1 }))
     }
+    spec.sheet?.forEach((b) => out.push({ id: b.id, title: b.title }))
     if (spec.anatomy) out.push({ id: 'anatomy', title: 'Anatomy' })
     if (spec.palette) out.push({ id: 'palette', title: 'Color palette' })
     if (spec.tokens?.length) out.push({ id: 'tokens', title: 'Design tokens' })
@@ -207,6 +208,14 @@ export function DocPage({
               </div>
             </Section>
           )}
+
+          {/* SHEET — a page that is a body of values opens on those values,
+              each group a section of its own. See DocSpec.sheet. */}
+          {spec.sheet?.map((b) => (
+            <Section key={b.id} id={b.id} index={num(b.id)} title={b.title} description={b.description}>
+              {b.render}
+            </Section>
+          ))}
 
           {/* 2 — ANATOMY */}
           {spec.anatomy && (

@@ -154,6 +154,16 @@ export interface DocSpec {
    */
   overview?: Overview
   preview?: PreviewSpec
+  /**
+   * Sections that open the page, in place of a live preview. For a page that
+   * documents a body of values rather than a component — a theme sheet has
+   * nothing to "preview": there are no controls to change and no states to put
+   * it in, and calling its first section one promises a playground it is not.
+   *
+   * Numbered and listed in "On this page" like every other section, and
+   * rendered before Do. A page has these or a `preview`, not both.
+   */
+  sheet?: { id: string; title: string; description?: string; render: ReactNode }[]
   anatomy?: AnatomySpec
   /**
    * Renders the complete theme palette — every primitive ramp and every

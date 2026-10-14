@@ -197,6 +197,11 @@ Every page is the same nine sections in the same order:
 This is not decoration. Once a reader learns where "don't" lives, they know it for every
 page, and looking something up stops costing attention.
 
+One kind of page opens differently. A theme sheet documents a body of values, not a
+component — it has no controls to change and no states to put it in — so it has no Live
+preview. Its groups of values are the page's own opening sections (`DocSpec.sheet`),
+numbered like any others, and Do, Don't, Accessibility, Code and Notes follow as usual.
+
 The running component comes first: a page opens on the thing itself, not on prose about
 it. `DocSpec.overview` still exists and every written page still carries its copy, but it
 is no longer rendered — reinstating it is one block in `DocPage.tsx`.
