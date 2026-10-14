@@ -145,7 +145,7 @@ const sizes: Record<ButtonSize, string> = {
   xs: 'h-7 px-2.5 text-label-sm gap-1.5',
   sm: 'h-8 px-3 text-label gap-1.5',
   md: 'h-9 px-3.5 text-label gap-2',
-  lg: 'h-11 px-5 text-body-lg font-medium gap-2',
+  lg: 'h-11 px-5 text-label-lg gap-2',
 }
 
 /* Shape is its own axis. A pill's ends are round, so the label is given a

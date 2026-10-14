@@ -308,7 +308,7 @@ export default defineDoc({
       {
         n: 5,
         label: 'Type',
-        value: '11px, 500 weight',
+        value: '12px, 500 weight',
         kind: 'type',
         note: 'Sans, not monospace. Monospace means "these literal characters"; a key is a physical object, and the two must not be confused.',
       },
@@ -337,11 +337,11 @@ export default defineDoc({
     { category: 'color', token: '--ds-fg-inverse', usedFor: 'Keycaps on an inverted surface, such as inside a Tooltip' },
     { category: 'spacing', token: '--space-1', value: '4px', usedFor: 'Gap between caps in a chord' },
     { category: 'radius', token: '5px', usedFor: 'Keycap corners — tighter than a button' },
-    { category: 'typography', token: 'font-sans', value: '11px / 500', usedFor: 'The label. Never monospace.' },
+    { category: 'typography', token: 'font-sans', value: '12px / 500', usedFor: 'The label. Never monospace.' },
   ],
 
   sizes: [
-    { name: 'Default', height: '18px', minWidth: '18px', padding: '0 5px', type: '11px', use: 'In menus, tooltips and lists.' },
+    { name: 'Default', height: '18px', minWidth: '18px', padding: '0 5px', type: '12px', use: 'In menus, tooltips and lists.' },
     { name: 'In prose', height: '1.35em', minWidth: '1.35em', type: '0.85em', use: 'Sized relative to the surrounding text so it never disturbs the line height.' },
     { name: 'Large', height: '24px', minWidth: '24px', type: '13px', use: 'A cheatsheet or a keyboard-shortcuts page, where the keys are the content.' },
     { name: 'Chord gap', gap: '4px', use: 'Between caps. 6px to the surrounding text, marking the chord as one unit.' },
@@ -443,7 +443,7 @@ export default defineDoc({
       { id: '4.1.2', name: 'Name, Role, Value', level: 'A' },
     ],
     contrast: [
-      'The label owes 4.5:1 at 11px — small text has no exemption, and this is some of the smallest text in the system.',
+      'The label owes 4.5:1 at 12px — small text has no exemption, and this is some of the smallest text in the system.',
       'The keycap border owes 3:1: it is what makes the element read as a key rather than as emphasized text.',
       'On an inverted surface such as a Tooltip, the cap needs its own border and fill values. Reusing the light-surface tokens produces an invisible key.',
       'In forced-colors mode the fill is dropped, so the border must be a real border rather than a box-shadow.',

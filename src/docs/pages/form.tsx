@@ -680,7 +680,7 @@ export default defineDoc({
       {
         n: 5,
         label: 'Label',
-        value: '13px, 6px above',
+        value: '15px, 6px above',
         kind: 'type',
         note: 'Above the field, always. Never inside it — a placeholder disappears at the exact moment the user needs it.',
       },
@@ -725,7 +725,7 @@ export default defineDoc({
     { category: 'color', token: '--ds-danger-text', usedFor: 'Error messages' },
     { category: 'color', token: '--ds-danger-border', usedFor: 'Invalid control border' },
     { category: 'color', token: '--ds-success-text', usedFor: 'Save confirmation' },
-    { category: 'typography', token: '--text-label', value: '13px', usedFor: 'Field labels' },
+    { category: 'typography', token: '--text-label', value: '15px', usedFor: 'Field labels' },
     { category: 'typography', token: '--text-caption', value: '12px', usedFor: 'Hints and errors' },
   ],
 

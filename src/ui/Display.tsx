@@ -62,7 +62,7 @@ export function Badge({
     <span
       className={cn(
         'inline-flex items-center gap-1.5 whitespace-nowrap rounded-full font-medium',
-        size === 'sm' ? 'h-[18px] px-1.5 text-overline tracking-normal' : 'h-[22px] px-2 text-caption',
+        size === 'sm' ? 'h-[18px] px-1.5 text-badge' : 'h-[22px] px-2 text-badge',
         variant === 'subtle' && cn('ring-1 ring-inset', toneSubtle[tone]),
         variant === 'solid' && toneSolid[tone],
         variant === 'outline' &&
@@ -70,7 +70,7 @@ export function Badge({
         className,
       )}
       {...inspect(`Badge · ${tone} · ${variant}`, {
-        tokens: [`--ds-${tone === 'neutral' ? 'layer-active' : tone + '-subtle'}`, '--text-caption'],
+        tokens: [`--ds-${tone === 'neutral' ? 'layer-active' : tone + '-subtle'}`, '--text-badge'],
         why: 'Fully rounded (pill) so it never competes with the 8px-radius language of interactive controls — a shape difference tells the user “this is a label, not a button” before they read a word.',
         a11y: 'Color is never the only signal: pair a tone with a dot, an icon, or a word. 8% of men cannot separate the red and green tones.',
       })}
@@ -239,11 +239,12 @@ export function Chip({
    ======================================================================== */
 
 const avatarSizes = {
-  xs: 'h-5 w-5 text-[9px]',
-  sm: 'h-6 w-6 text-[10px]',
-  md: 'h-8 w-8 text-[11px]',
-  lg: 'h-10 w-10 text-[13px]',
-  xl: 'h-14 w-14 text-[18px]',
+  // Initials are read, so they hold the 12px floor even in the smallest circle.
+  xs: 'h-5 w-5 text-label-xs',
+  sm: 'h-6 w-6 text-label-xs',
+  md: 'h-8 w-8 text-label-xs',
+  lg: 'h-10 w-10 text-label-sm',
+  xl: 'h-14 w-14 text-h3',
 } as const
 
 export function Avatar({
@@ -371,7 +372,7 @@ export function Kbd({ children, className }: { children: React.ReactNode; classN
       className={cn(
         'inline-grid h-[19px] min-w-[19px] place-items-center rounded-[5px] px-1.5',
         'border border-b-2 border-[var(--ds-border)] bg-[var(--ds-surface-raised)]',
-        'font-sans text-[11px] font-medium leading-none text-[var(--ds-fg-secondary)]',
+        'font-sans text-label-xs leading-none text-[var(--ds-fg-secondary)]',
         className,
       )}
     >
@@ -515,19 +516,19 @@ export function Tooltip({
           className={cn(
             'absolute z-[80] flex items-center gap-2 whitespace-nowrap',
             'rounded-[var(--radius-md)] border border-[var(--ds-border)] bg-[var(--ds-surface-overlay)]',
-            'px-2.5 py-1.5 text-caption text-[var(--ds-fg)] shadow-e3',
+            'px-2.5 py-1.5 text-body-sm text-[var(--ds-fg)] shadow-e3',
             'animate-[scale-in_120ms_cubic-bezier(0.2,0,0,1)_both]',
             pos,
           )}
           {...inspect('Tooltip', {
-            tokens: ['--ds-surface-overlay', '--shadow-e3', '--radius-md', '--text-caption'],
+            tokens: ['--ds-surface-overlay', '--shadow-e3', '--radius-md', '--text-body-sm'],
             why: '400ms open delay stops tooltips firing while the pointer merely crosses the toolbar; 0ms close keeps them from trailing the cursor. 7px offset clears the focus ring without breaking the visual link.',
             a11y:
               'Wired with aria-describedby and shown on focus as well as hover. Escape dismisses it without moving the pointer, and it is a DOM child of the trigger so the pointer can travel onto it without it vanishing — the two halves of WCAG 1.4.13. It is deliberately NOT pointer-events-none: that made it unhoverable, which is the failure that criterion exists to name. Never put an action, a link, or the element’s only name inside one.',
           })}
         >
           {content}
-          {shortcut && <Kbd className="h-4 min-w-4 text-[10px]">{shortcut}</Kbd>}
+          {shortcut && <Kbd className="h-4 min-w-4">{shortcut}</Kbd>}
         </span>
       )}
     </span>

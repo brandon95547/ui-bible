@@ -444,7 +444,7 @@ export default defineDoc({
       {
         n: 3,
         label: 'Title',
-        value: '13px, 500 when open',
+        value: '15px, 500 when open',
         kind: 'type',
         note: 'The weight change is the second signal alongside the chevron. It must not change the row height, so the font must have a real medium weight.',
       },
@@ -494,8 +494,8 @@ export default defineDoc({
   ],
 
   sizes: [
-    { name: 'Small', height: '44px trigger', padding: '10px 12px', type: '12px', use: 'Inside a card or a sidebar, where the accordion is secondary to the surrounding content.' },
-    { name: 'Medium', height: '52px trigger', padding: '14px 16px', type: '13px', use: 'The default. FAQ pages and settings sections.' },
+    { name: 'Small', height: '44px trigger', padding: '10px 12px', type: '14px', use: 'Inside a card or a sidebar, where the accordion is secondary to the surrounding content.' },
+    { name: 'Medium', height: '52px trigger', padding: '14px 16px', type: '15px', use: 'The default. FAQ pages and settings sections.' },
     { name: 'Panel', padding: '0 16px 16px', use: 'No top padding — the trigger already provides it.' },
     { name: 'Indent', gap: 'Title left edge', use: 'The panel aligns to the title, not the container edge.' },
     { name: 'Measure', maxWidth: '40rem', use: 'About 70 characters. An accordion stretched across a wide page produces unreadable lines when opened.' },

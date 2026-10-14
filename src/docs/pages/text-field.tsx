@@ -364,7 +364,7 @@ export default defineDoc({
       {
         n: 1,
         label: 'Label',
-        value: '13px / 540, 6px above',
+        value: '15px / 500, 6px above',
         kind: 'type',
         note: 'Above the field for the shortest eye path and the most robust behavior under translation. Muted weight so it never competes with the value the user typed.',
       },
@@ -427,10 +427,10 @@ export default defineDoc({
   ],
 
   sizes: [
-    { name: 'Small', height: '32px', padding: '0 10px', radius: '8px', icon: '14px', type: '13px', minWidth: '120px', touch: '44px (padded)', use: 'Toolbars, table filters, inline editing.' },
-    { name: 'Medium', height: '36px', padding: '0 12px', radius: '8px', icon: '15px', type: '15px', minWidth: '160px', maxWidth: '40ch', touch: '44px (padded)', use: 'The default for every form.' },
+    { name: 'Small', height: '32px', padding: '0 10px', radius: '8px', icon: '14px', type: '14px', minWidth: '120px', touch: '44px (padded)', use: 'Toolbars, table filters, inline editing.' },
+    { name: 'Medium', height: '36px', padding: '0 12px', radius: '8px', icon: '15px', type: '16px', minWidth: '160px', maxWidth: '40ch', touch: '44px (padded)', use: 'The default for every form.' },
     { name: 'Large', height: '44px', padding: '0 14px', radius: '12px', icon: '17px', type: '17px', minWidth: '200px', maxWidth: '40ch', touch: '44px (native)', use: 'Mobile forms, authentication, checkout.' },
-    { name: 'Textarea', height: '88px min', padding: '10px 12px', radius: '8px', type: '15px', maxWidth: '68ch', use: 'Roughly four lines by default. Auto-grows to twelve, then scrolls.' },
+    { name: 'Textarea', height: '88px min', padding: '10px 12px', radius: '8px', type: '16px', maxWidth: '68ch', use: 'Roughly four lines by default. Auto-grows to twelve, then scrolls.' },
   ],
 
   do: [

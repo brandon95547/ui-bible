@@ -3,20 +3,24 @@ import { Callout } from '@/ui/Surface'
 import { Cell, PreviewStage, Row, Stack, defineDoc } from '../framework/kit'
 
 const SCALE = [
-  { token: 'text-display', px: 44, lh: 1.08, ls: '-0.028em', w: 620, use: 'Marketing hero. One per page, at most.' },
-  { token: 'text-h1', px: 32, lh: 1.16, ls: '-0.022em', w: 620, use: 'Page title. Exactly one per screen.' },
-  { token: 'text-h2', px: 24, lh: 1.25, ls: '-0.017em', w: 600, use: 'Major section.' },
-  { token: 'text-h3', px: 19, lh: 1.35, ls: '-0.012em', w: 600, use: 'Subsection, dialog title.' },
-  { token: 'text-h4', px: 16, lh: 1.45, ls: '-0.006em', w: 600, use: 'Card title, group heading.' },
-  { token: 'text-body-lg', px: 17, lh: 1.62, ls: '-0.004em', w: 400, use: 'Lead paragraph, long-form reading.' },
-  { token: 'text-body', px: 16, lh: 1.6, ls: '-0.002em', w: 400, use: 'Body copy and every input. The workhorse.' },
-  { token: 'text-ui', px: 15, lh: 1.4, ls: '-0.001em', w: 470, use: 'Navigation, menus, list rows — text you click.' },
-  { token: 'text-body-sm', px: 13, lh: 1.6, ls: '0', w: 400, use: 'Supporting copy: help text, table cells.' },
-  { token: 'text-label', px: 13, lh: 1.2, ls: '0.001em', w: 540, use: 'Buttons, form labels, tabs.' },
-  { token: 'text-label-sm', px: 12, lh: 1.2, ls: '0.004em', w: 540, use: 'Compact controls, table headers.' },
-  { token: 'text-caption', px: 12, lh: 1.45, ls: '0.002em', w: 400, use: 'Metadata, timestamps, hints.' },
-  { token: 'text-overline', px: 12, lh: 1.2, ls: '0.09em', w: 600, use: 'Section eyebrows. Always uppercase.' },
-  { token: 'text-code', px: 13, lh: 1.65, ls: '-0.005em', w: 400, use: 'Inline and block code.' },
+  { token: 'text-display', px: 72, lh: 1, ls: '-0.0133em', w: 500, use: 'Marketing hero. One per page, at most. 48px on a phone.', sample: 'Make a book' },
+  { token: 'text-title-serif', px: 48, lh: 1, ls: '-0.025em', w: 300, serif: true, use: 'A title that sells: sign-in, plan names (at 24/36).', sample: 'Welcome back' },
+  { token: 'text-h1', px: 40, lh: 1.4, ls: '0', w: 300, use: 'Page title. Exactly one per screen. Light.' },
+  { token: 'text-h2', px: 24, lh: 1.3333, ls: '-0.025em', w: 500, use: 'Dialog title, major section.' },
+  { token: 'text-h3', px: 18, lh: 1.3333, ls: '0', w: 600, use: 'Section heading — a row of cards, a group.' },
+  { token: 'text-h4', px: 16, lh: 1.5, ls: '0', w: 500, use: 'Card title: body size at medium.' },
+  { token: 'text-body-lg', px: 17, lh: 1.5, ls: '0', w: 400, use: 'Lead paragraph, long-form reading.' },
+  { token: 'text-body', px: 16, lh: 1.5, ls: '0', w: 400, use: 'Body copy and every input. The workhorse.' },
+  { token: 'text-ui', px: 15, lh: 1.4, ls: '0', w: 400, use: 'Navigation, menus, list rows, tabs — text you click.' },
+  { token: 'text-body-sm', px: 14, lh: 1.4286, ls: '0', w: 400, use: 'Supporting copy: help text, table cells, tooltips, search.' },
+  { token: 'text-label-lg', px: 17, lh: 1.4118, ls: '0', w: 500, use: 'Label on a large (44px) button.' },
+  { token: 'text-label', px: 15, lh: 1.6, ls: '0', w: 500, use: 'Buttons (32–40px), form labels.' },
+  { token: 'text-label-sm', px: 14, lh: 1.7143, ls: '0', w: 500, use: 'Compact (28px) controls, table headers.' },
+  { token: 'text-label-xs', px: 12, lh: 1.1667, ls: '0', w: 500, use: 'The smallest controls, keys, initials.' },
+  { token: 'text-caption', px: 12, lh: 1.3333, ls: '0', w: 400, use: 'Metadata, timestamps, hints.' },
+  { token: 'text-badge', px: 12, lh: 1.25, ls: '0', w: 500, use: 'Badges, tags, counts. Held at the floor.' },
+  { token: 'text-overline', px: 12, lh: 1.25, ls: '0.09em', w: 500, use: 'Section eyebrows. Always uppercase.' },
+  { token: 'text-code', px: 13, lh: 1.65, ls: '0', w: 400, use: 'Inline and block code.' },
 ]
 
 /* The four units, and the one question that picks between them. Kept as data
@@ -38,7 +42,7 @@ const UNITS = [
   {
     unit: 'em',
     forWhat: 'Measurements that are genuinely relative to the current font: letter-spacing, and optical nudges of an inline icon.',
-    why: 'Tracking is a proportion of the letterform, not a fixed distance. −0.02em stays right at 15px and at 44px; −0.7px is wrong at both ends of that range.',
+    why: 'Tracking is a proportion of the letterform, not a fixed distance. −0.025em stays right at 24px and at 48px; −0.7px is wrong at both ends of that range.',
     example: 'letter-spacing: -0.017em;',
   },
   {
@@ -116,13 +120,13 @@ function ResponsiveDemo() {
         <div className="flex flex-col gap-2">
           <span
             className="text-[var(--ds-fg)]"
-            style={{ fontSize: 'clamp(1.75rem, 1.25rem + 2.2vw, 2.75rem)', lineHeight: 1.12, letterSpacing: '-0.025em', fontWeight: 620 }}
+            style={{ fontSize: 'clamp(3rem, 2.2rem + 2.5vw, 4.5rem)', lineHeight: 1, letterSpacing: '-0.0133em', fontWeight: 500 }}
           >
             A display heading scales
           </span>
           <p className="max-w-[68ch] text-body-sm leading-relaxed text-[var(--ds-fg-secondary)]">
             One column becomes two. The measure narrows from 68ch to whatever fits. The hero drops
-            from 44px to 28px because at 390px it would otherwise be four words per line. The
+            from 72px to 48px because at 390px it would otherwise be two words per line. The
             paragraph you are reading does not move.
           </p>
         </div>
@@ -153,7 +157,7 @@ function ScaleSpecimen() {
             <tr key={s.token} className="border-b border-[var(--ds-border-subtle)] last:border-0">
               <td className="py-3 pr-4">
                 <span
-                  className={s.token === 'text-code' ? 'font-mono' : undefined}
+                  className={s.token === 'text-code' ? 'font-mono' : s.serif ? 'font-serif' : undefined}
                   style={{
                     fontSize: s.px,
                     lineHeight: s.lh,
@@ -163,7 +167,7 @@ function ScaleSpecimen() {
                     display: 'block',
                   }}
                 >
-                  {s.token === 'text-overline' ? 'Section label' : 'The quick brown fox'}
+                  {s.sample ?? (s.token === 'text-overline' ? 'Section label' : 'The quick brown fox')}
                 </span>
               </td>
               <td className="py-3 pr-4 align-middle">
@@ -243,11 +247,11 @@ const ROLES = [
     detail: 'Sidebar rows, menu items, list rows, tabs — text that is clicked rather than read.',
   },
   {
-    size: '13px',
-    rem: '0.8125rem',
+    size: '14px',
+    rem: '0.875rem',
     token: 'text-body-sm',
     role: 'Supporting text',
-    detail: 'Help text, table cells, and anything explaining something already on the screen.',
+    detail: 'Help text, table cells, tooltips, and anything explaining something already on the screen.',
   },
   {
     size: '12px',
@@ -346,7 +350,7 @@ export default defineDoc({
     id: 'typography',
     title: 'Typography',
     tagline:
-      'Fourteen named styles, one variable family, four units, and a floor nothing readable goes under. Typography is ninety-five percent of an interface — everything else is arrangement.',
+      'Eighteen named styles, one variable family and an accent serif, four units, and a floor nothing readable goes under. Typography is ninety-five percent of an interface — everything else is arrangement.',
     keywords: [
       'font', 'type scale', 'line height', 'measure', 'leading', 'tracking', 'inter',
       'rem', 'em', 'ch', 'units', 'font size', 'readable', 'minimum size', 'responsive type', 'clamp',
@@ -357,7 +361,7 @@ export default defineDoc({
     purpose:
       'The type scale is the primary tool for hierarchy. Before color, before borders, before elevation — size, weight and spacing tell the user what matters, in what order, and where one idea ends and the next begins. A screen with correct typography and no color is still usable; the reverse is not true.',
     whenToUse: [
-      'Always. Every string in the product should be one of the fourteen named styles.',
+      'Always. Every string in the product should be one of the eighteen named styles.',
       'To establish hierarchy: exactly one h1 per screen, then h2 for sections, h3 for subsections.',
       'To signal function: ui for text you click, body for prose and inputs, caption for metadata.',
       'To constrain reading width — measure is a typographic decision, not a layout one.',
@@ -368,8 +372,8 @@ export default defineDoc({
         instead: 'the nearest step, or more whitespace around it',
       },
       {
-        text: 'A second typeface for emphasis.',
-        instead: 'weight, size or color within the same family',
+        text: 'A second typeface for emphasis, or for any interface text.',
+        instead: 'weight, size or color within the same family — the one accent serif is for a title that sells, nothing else',
       },
       {
         text: 'Uppercase for anything longer than three words.',
@@ -393,7 +397,7 @@ export default defineDoc({
         <p>
           <strong>Four sizes carry a product, and none of them is small.</strong> Body copy and
           every input are 16px. Navigation, menus and list rows — the text you click rather than
-          read — are 15px. Supporting copy that explains something already on screen is 13px.
+          read — are 15px. Supporting copy that explains something already on screen is 14px.
           Metadata is 12px, and 12px is the floor: nothing readable is set smaller, anywhere, on
           any screen. A size chosen below that line is a decision to make part of the product
           unusable for the people who need it most.
@@ -407,17 +411,22 @@ export default defineDoc({
           slightly smaller input; it is a screen that jumps sideways when you tap it.
         </p>
         <p>
-          Every heading has negative tracking, and the larger it is the more negative it gets.
-          Letterforms designed for body sizes have spacing built in for small text; at 32px that
-          spacing reads as gaps. Tightening display sizes and leaving small sizes alone —{' '}
-          <strong>optical sizing by hand</strong> — is what separates typography that looks
-          designed from typography that looks defaulted.
+          <strong>Weight carries the hierarchy.</strong> Medium for anything that is clicked or
+          that titles something; regular for anything that is read; light for the largest sizes,
+          where a heavy stroke shouts; semibold only for a section heading. A 40px page title set
+          light is calm where the same title at 600 is loud, and it leaves medium to mean
+          &ldquo;you can press this&rdquo;. Large type is also tightened — the display line, the
+          serif title and the dialog title carry negative tracking, because spacing built in for
+          small text reads as gaps at 48px — and small type is left alone:{' '}
+          <strong>optical sizing by hand</strong>.
         </p>
         <p>
-          Line height is inversely related to size. A 44px display line at 1.08 and a 13px caption
-          at 1.6 are the same optical rhythm: as type gets smaller, the eye needs proportionally
-          more vertical room to find the next line. Applying a single line-height to everything is
-          the most common reason a page "feels cramped" without anyone being able to say why.
+          Line height follows the job, not a single ratio. Reading text gets room — 16 on 24 —
+          and a display line is set solid, 72 on 72, because at that size the gaps between lines
+          read as gaps between ideas. A light page title is the deliberate exception: 40 on 56,
+          because thin strokes need air around them to hold their weight. Applying one
+          line-height to everything is the most common reason a page "feels cramped" without
+          anyone being able to say why.
         </p>
         <p>
           <strong>Units are not a style preference.</strong> Sizes are in{' '}
@@ -431,8 +440,8 @@ export default defineDoc({
         </p>
         <p>
           And type does not shrink on a phone. Responsive typography is for{' '}
-          <strong>display sizes only</strong> — a 44px hero has to come down at 390px or it is four
-          words per line. Everything at or below h4 holds its size at every width, because a phone
+          <strong>display sizes only</strong> — a 72px hero has to come down to 48px at 390px or it is
+          two words per line. Everything at or below h4 holds its size at every width, because a phone
           is held further from the eye than a laptop, not nearer, and it is the surface most likely
           to be read one-handed on a train. What responds is the layout: the measure narrows,
           columns collapse, and less fits on the screen. That last part is the honest cost, and it
@@ -601,18 +610,24 @@ export default defineDoc({
   tokens: [
     { category: 'typography', token: '--font-sans', value: 'Inter Variable', usedFor: 'All interface text' },
     { category: 'typography', token: '--font-mono', value: 'JetBrains Mono Variable', usedFor: 'Code, tokens, IDs, tabular data' },
-    { category: 'typography', token: '--text-display', value: '44px / 1.08 / −0.028em', usedFor: 'Marketing hero' },
-    { category: 'typography', token: '--text-h1', value: '32px / 1.16 / −0.022em', usedFor: 'Page title' },
-    { category: 'typography', token: '--text-h2', value: '24px / 1.25 / −0.017em', usedFor: 'Section heading' },
-    { category: 'typography', token: '--text-h3', value: '19px / 1.35 / −0.012em', usedFor: 'Subsection, dialog title' },
-    { category: 'typography', token: '--text-h4', value: '16px / 1.45 / −0.006em', usedFor: 'Card title' },
-    { category: 'typography', token: '--text-body-lg', value: '1.0625rem / 1.62', usedFor: 'Lead paragraph, long-form' },
-    { category: 'typography', token: '--text-body', value: '1rem / 1.6', usedFor: 'Body copy and every input' },
-    { category: 'typography', token: '--text-ui', value: '0.9375rem / 1.4 / 470', usedFor: 'Navigation, menus, list rows' },
-    { category: 'typography', token: '--text-body-sm', value: '0.8125rem / 1.6', usedFor: 'Supporting copy, table cells' },
-    { category: 'typography', token: '--text-label', value: '0.8125rem / 1.2 / 540', usedFor: 'Buttons, form labels, tabs' },
-    { category: 'typography', token: '--text-caption', value: '0.75rem / 1.45', usedFor: 'Metadata — the floor' },
-    { category: 'typography', token: '--text-overline', value: '0.75rem / 0.09em / 600', usedFor: 'Eyebrows, uppercase only' },
+    { category: 'typography', token: '--font-serif', value: 'ui-serif (New York) → Georgia', usedFor: 'One accent: a title that sells' },
+    { category: 'typography', token: '--text-display', value: '72px / 1 / −0.0133em / 500', usedFor: 'Marketing hero (48px on a phone)' },
+    { category: 'typography', token: '--text-title-serif', value: '48px / 1 / −0.025em / 300', usedFor: 'Sign-in title, plan names' },
+    { category: 'typography', token: '--text-h1', value: '40px / 1.4 / 300', usedFor: 'Page title' },
+    { category: 'typography', token: '--text-h2', value: '24px / 1.3333 / −0.025em / 500', usedFor: 'Dialog title, major section' },
+    { category: 'typography', token: '--text-h3', value: '18px / 1.3333 / 600', usedFor: 'Section heading' },
+    { category: 'typography', token: '--text-h4', value: '16px / 1.5 / 500', usedFor: 'Card title' },
+    { category: 'typography', token: '--text-body-lg', value: '1.0625rem / 1.5', usedFor: 'Lead paragraph, long-form' },
+    { category: 'typography', token: '--text-body', value: '1rem / 1.5', usedFor: 'Body copy and every input' },
+    { category: 'typography', token: '--text-ui', value: '0.9375rem / 1.4 / 400', usedFor: 'Navigation, menus, list rows, tabs' },
+    { category: 'typography', token: '--text-body-sm', value: '0.875rem / 1.4286', usedFor: 'Supporting copy, table cells, tooltips' },
+    { category: 'typography', token: '--text-label-lg', value: '1.0625rem / 1.4118 / 500', usedFor: 'Large (44px) buttons' },
+    { category: 'typography', token: '--text-label', value: '0.9375rem / 1.6 / 500', usedFor: 'Buttons, form labels' },
+    { category: 'typography', token: '--text-label-sm', value: '0.875rem / 1.7143 / 500', usedFor: 'Compact controls, table headers' },
+    { category: 'typography', token: '--text-label-xs', value: '0.75rem / 1.1667 / 500', usedFor: 'Smallest controls, keys, initials' },
+    { category: 'typography', token: '--text-caption', value: '0.75rem / 1.3333', usedFor: 'Metadata — the floor' },
+    { category: 'typography', token: '--text-badge', value: '0.75rem / 1.25 / 500', usedFor: 'Badges, tags, counts — at the floor' },
+    { category: 'typography', token: '--text-overline', value: '0.75rem / 0.09em / 500', usedFor: 'Eyebrows, uppercase only' },
     { category: 'color', token: '--ds-fg', usedFor: 'Headings' },
     { category: 'color', token: '--ds-fg-secondary', usedFor: 'Body' },
     { category: 'color', token: '--ds-fg-muted', usedFor: 'Captions and metadata' },
@@ -621,16 +636,19 @@ export default defineDoc({
   ],
 
   sizes: [
-    { name: 'Display', height: '44px', type: '620 weight', maxWidth: '18ch', use: 'Marketing hero only. Never inside the product UI.' },
-    { name: 'H1', height: '32px', type: '620 weight', maxWidth: '28ch', use: 'One per screen, in the page header.' },
-    { name: 'H2', height: '24px', type: '600 weight', maxWidth: '40ch', use: 'Major sections within a page.' },
-    { name: 'H3', height: '19px', type: '600 weight', maxWidth: '48ch', use: 'Subsections and dialog titles.' },
-    { name: 'H4', height: '16px', type: '600 weight', maxWidth: '56ch', use: 'Card titles and group headings.' },
+    { name: 'Display', height: '72px', type: '500 weight', maxWidth: '18ch', use: 'Marketing hero only. 48px on a phone. Never inside the product UI.' },
+    { name: 'Serif title', height: '48px', type: '300 weight, serif', maxWidth: '22ch', use: 'Sign-in title; plan names at 24px. The one accent.' },
+    { name: 'H1', height: '40px', type: '300 weight', maxWidth: '28ch', use: 'One per screen, in the page header. Light.' },
+    { name: 'H2', height: '24px', type: '500 weight', maxWidth: '40ch', use: 'Dialog titles and major sections.' },
+    { name: 'H3', height: '18px', type: '600 weight', maxWidth: '48ch', use: 'Section headings — a row of cards, a group.' },
+    { name: 'H4', height: '16px', type: '500 weight', maxWidth: '56ch', use: 'Card titles.' },
     { name: 'Body large', height: '17px', type: '400 weight', maxWidth: '68ch', use: 'Documentation and long-form reading.' },
     { name: 'Body', height: '16px', type: '400 weight', maxWidth: '68ch', use: 'Prose, and every field the user types into.' },
-    { name: 'UI', height: '15px', type: '470 weight', maxWidth: '40ch', use: 'Navigation, menus, list rows. Never shrinks on a phone.' },
-    { name: 'Body small', height: '13px', type: '400 weight', maxWidth: '72ch', use: 'Supporting copy: help text, table cells, dense panels.' },
+    { name: 'UI', height: '15px', type: '400 weight', maxWidth: '40ch', use: 'Navigation, menus, list rows, tabs. Never shrinks on a phone.' },
+    { name: 'Body small', height: '14px', type: '400 weight', maxWidth: '72ch', use: 'Supporting copy: help text, table cells, tooltips.' },
+    { name: 'Label', height: '15px', type: '500 weight', maxWidth: '—', use: 'Button and form labels; 17 on a 44px button, 14 on a 28px one, 12 on the smallest.' },
     { name: 'Caption', height: '12px', type: '400 weight', maxWidth: '60ch', use: 'Timestamps, counts, hints. The floor — nothing readable goes under it.' },
+    { name: 'Badge', height: '12px', type: '500 weight', maxWidth: '—', use: 'Badges, tags, counts. Held at the floor, never 10 or 11.' },
   ],
 
   do: [
@@ -691,12 +709,13 @@ export default defineDoc({
     },
     {
       title: 'Set an explicit weight on every heading style',
-      why: 'Variable fonts interpolate. Relying on a browser default gives you 700 in some contexts and 400 in others, and the difference is visible when two headings sit side by side.',
+      why: 'Variable fonts interpolate. Relying on a browser default gives you 700 in some contexts and 400 in others, and the difference is visible when two headings sit side by side. Four weights, each with one job: light for the largest sizes, regular to read, medium to click or to title, semibold for a section heading.',
       render: (
         <Row gap="lg" align="baseline">
-          <span className="text-h3" style={{ fontWeight: 600 }}>600</span>
-          <span className="text-h3" style={{ fontWeight: 620 }}>620</span>
-          <span className="text-h3" style={{ fontWeight: 700 }}>700</span>
+          <span className="text-h3" style={{ fontWeight: 300 }}>300 light</span>
+          <span className="text-h3" style={{ fontWeight: 400 }}>400 regular</span>
+          <span className="text-h3" style={{ fontWeight: 500 }}>500 medium</span>
+          <span className="text-h3" style={{ fontWeight: 600 }}>600 semibold</span>
         </Row>
       ),
     },
@@ -705,11 +724,11 @@ export default defineDoc({
   dont: [
     {
       title: 'Do not clamp() ordinary UI text',
-      why: 'clamp() is for display sizes, where a 44px hero genuinely cannot stay 44px at 390px. Applied to body or navigation it produces text that is 15px on the machine you designed on and 13px on the device most people read it on — a shrink nobody asked for, in the one place it hurts.',
+      why: 'clamp() is for display sizes, where a 72px hero genuinely cannot stay 72px at 390px. Applied to body or navigation it produces text that is 15px on the machine you designed on and 13px on the device most people read it on — a shrink nobody asked for, in the one place it hurts.',
       render: (
         <div className="flex flex-col gap-1 font-mono text-code">
           <span className="text-[var(--ds-fg-muted)] line-through">font-size: clamp(0.8125rem, 2vw, 0.9375rem);</span>
-          <span className="text-[var(--ds-success)]">font-size: clamp(1.75rem, 1.25rem + 2.2vw, 2.75rem); /* display only */</span>
+          <span className="text-[var(--ds-success)]">font-size: clamp(3rem, 2.2rem + 2.5vw, 4.5rem); /* display only */</span>
         </div>
       ),
     },
@@ -868,26 +887,28 @@ table, code, kbd, pre, [data-tabular] {
    ch for the measure, because a measure is counted in characters. */
 .prose p { line-height: 1.6; max-inline-size: 68ch; }
 
-/* Headings tighten as they grow. Tracking in em: a proportion of the
-   letterform, so one value is right at 19px and at 44px. */
-.h1 { font-size: 2rem;      line-height: 1.16; letter-spacing: -0.022em; font-weight: 620; }
-.h2 { font-size: 1.5rem;    line-height: 1.25; letter-spacing: -0.017em; font-weight: 600; }
-.h3 { font-size: 1.1875rem; line-height: 1.35; letter-spacing: -0.012em; font-weight: 600; }
+/* Weight carries the hierarchy: light for the largest sizes, medium to
+   title or to click, semibold only for a section heading. Large type is
+   tightened, in em so one value is right at any size. */
+.h1 { font-size: 2.5rem;    line-height: 1.4;    font-weight: 300; }
+.h2 { font-size: 1.5rem;    line-height: 1.3333; letter-spacing: -0.025em; font-weight: 500; }
+.h3 { font-size: 1.125rem;  line-height: 1.3333; font-weight: 600; }
 
 /* Text you click. 15px at every width — a phone gets the same size a
    desktop does, because it is held further away, not nearer. */
-.ui { font-size: 0.9375rem; line-height: 1.4; font-weight: 470; }
+.ui { font-size: 0.9375rem; line-height: 1.4; font-weight: 400; }
 
 /* clamp() is for display type ONLY. The floor is the size the heading is
    allowed to reach on a phone, and it is still bigger than body. */
 .display {
-  font-size: clamp(1.75rem, 1.25rem + 2.2vw, 2.75rem);
-  line-height: 1.1;
-  letter-spacing: -0.026em;
+  font-size: clamp(3rem, 2.2rem + 2.5vw, 4.5rem);
+  line-height: 1;
+  letter-spacing: -0.0133em;
+  font-weight: 500;
 }
 
 /* Nothing readable below 12px, and 12px is metadata only. */
-.caption { font-size: 0.75rem; line-height: 1.45; }`,
+.caption { font-size: 0.75rem; line-height: 1.3333; }`,
     },
   },
 
@@ -928,7 +949,7 @@ table, code, kbd, pre, [data-tabular] {
       'Set your browser’s default text size to 20px and reload the product. Everything sized in rem grows with it; everything in px stays exactly where it was, and that difference is the audit.',
       'Take the phone outside. Sizes that were fine on a calibrated monitor at arm’s length in a dim room are the first thing to fail in daylight on a moving train.',
       'Set the measure before you set the type size. Once the column width is right, the size that fits comfortably inside it is usually obvious.',
-      'For dense enterprise tables, 13px with 1.6 line height is the practical floor for the cell text. Below that, error rates in data entry rise noticeably — and the header row is a label, not a license to go to 10px.',
+      'For dense enterprise tables, 14px on 20px is the practical floor for the cell text. Below that, error rates in data entry rise noticeably — and the header row is a label, not a license to go to 10px.',
       'Localization adds roughly 30% length going from English to German. Design headings and buttons to survive that without re-wrapping the layout.',
     ],
   },

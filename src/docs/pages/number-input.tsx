@@ -278,9 +278,9 @@ export default defineDoc({
   ],
 
   sizes: [
-    { name: 'Small', height: '32px', padding: '0 6px 0 10px', type: '13px', minWidth: '5.5rem', use: 'Table cells and dense filter bars.' },
-    { name: 'Medium', height: '36px', padding: '0 8px 0 12px', type: '15px', minWidth: '7rem', use: 'The default.' },
-    { name: 'Large', height: '44px', padding: '0 10px 0 14px', type: '16px', minWidth: '8rem', use: 'Touch-first layouts and checkout quantities.' },
+    { name: 'Small', height: '32px', padding: '0 6px 0 10px', type: '14px', minWidth: '5.5rem', use: 'Table cells and dense filter bars.' },
+    { name: 'Medium', height: '36px', padding: '0 8px 0 12px', type: '16px', minWidth: '7rem', use: 'The default.' },
+    { name: 'Large', height: '44px', padding: '0 10px 0 14px', type: '17px', minWidth: '8rem', use: 'Touch-first layouts and checkout quantities.' },
     { name: 'Stepper', height: '16px', minWidth: '20px', touch: '44px combined on coarse pointers', use: 'Stacked. Disabled at the bounds, never removed.' },
     { name: 'Currency', minWidth: '9rem', use: 'Extra room for the symbol prefix and two decimal places.' },
   ],

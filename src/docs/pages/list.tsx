@@ -395,7 +395,7 @@ export default defineDoc({
       {
         n: 4,
         label: 'Title',
-        value: '13px, --ds-fg',
+        value: '15px, --ds-fg',
         kind: 'type',
         note: 'The only full-contrast text in the row. Everything else is metadata and steps down.',
       },
@@ -434,12 +434,12 @@ export default defineDoc({
     { category: 'spacing', token: '--space-3', value: '12px', usedFor: 'Leading gap' },
     { category: 'spacing', token: '--space-3-5', value: '14px', usedFor: 'Row horizontal padding' },
     { category: 'radius', token: '--radius-lg', value: '12px', usedFor: 'Container corners' },
-    { category: 'typography', token: '--text-label', value: '13px', usedFor: 'Row titles' },
+    { category: 'typography', token: '--text-label', value: '15px', usedFor: 'Row titles' },
   ],
 
   sizes: [
-    { name: 'Compact', height: '32px', padding: '4px 12px', type: '12px', use: 'Dense sets a user scans rather than reads — a file list, a log.' },
-    { name: 'One line', height: '40px', padding: '8px 14px', type: '13px', touch: '44px on coarse pointers', use: 'The default for a scannable set.' },
+    { name: 'Compact', height: '32px', padding: '4px 12px', type: '15px', use: 'Dense sets a user scans rather than reads — a file list, a log.' },
+    { name: 'One line', height: '40px', padding: '8px 14px', type: '15px', touch: '44px on coarse pointers', use: 'The default for a scannable set.' },
     { name: 'Two lines', height: '52px', padding: '10px 14px', use: 'When the metadata is what distinguishes items.' },
     { name: 'With avatar', height: '56px', gap: '12px', use: 'A 32px avatar plus padding. Larger avatars belong in a Card.' },
     { name: 'Key column', minWidth: '7rem', maxWidth: '12rem', use: 'Fixed, so every value starts on the same edge.' },
@@ -684,7 +684,7 @@ export default defineDoc({
 }
 
 .ds-list__text { display: flex; flex-direction: column; min-inline-size: 0; }
-.ds-list__title { color: var(--ds-fg); font-size: 13px; }
+.ds-list__title { color: var(--ds-fg); font-size: 0.9375rem; }
 
 /* One step down in size, two in color. Equal weight makes the row read as
    two titles. */

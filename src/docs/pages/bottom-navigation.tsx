@@ -138,7 +138,7 @@ export default defineDoc({
         <p>
           <strong>Labels stay visible.</strong> An icon-only bottom bar turns recognition into
           recall on the surface where the user has the least patience and the least screen. The
-          labels are 11px, which is small, but a small label that is always present beats a tooltip
+          labels are 12px, which is small, but a small label that is always present beats a tooltip
           that touch cannot summon.
         </p>
         <p>
@@ -257,7 +257,7 @@ export default defineDoc({
       {
         n: 4,
         label: 'Label',
-        value: '11px, always visible',
+        value: '12px, always visible',
         kind: 'type',
         note: 'Small, but present. An icon-only bar turns recognition into recall on the surface with the least patience.',
       },
@@ -287,7 +287,7 @@ export default defineDoc({
     { category: 'spacing', token: 'height', value: '56px + inset', usedFor: 'Bar height' },
     { category: 'spacing', token: 'item min-width', value: '64px', usedFor: 'Thumb accuracy floor' },
     { category: 'spacing', token: 'gap', value: '4px', usedFor: 'Icon to label' },
-    { category: 'typography', token: '--text-overline', value: '11px', usedFor: 'Labels' },
+    { category: 'typography', token: '--text-overline', value: '12px', usedFor: 'Labels' },
     { category: 'motion', token: 'duration', value: '140–180ms', usedFor: 'Pill and color transition' },
   ],
 
@@ -399,7 +399,7 @@ export default defineDoc({
     ],
     contrast: [
       'The active item must be distinguishable from the inactive ones by more than color. Ours changes the fill, the icon color and the label weight together.',
-      'The inactive label at 11px must still reach 4.5:1. Small text has no contrast exemption.',
+      'The inactive label at 12px must still reach 4.5:1. Small text has no contrast exemption.',
       'The top edge of the bar must reach 3:1 against the content, or the bar merges into the list behind it.',
     ],
     keyboard: [

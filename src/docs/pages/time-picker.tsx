@@ -458,9 +458,9 @@ export default defineDoc({
   ],
 
   sizes: [
-    { name: 'Small', height: '32px field', minWidth: '6rem', type: '13px', use: 'In a table filter or beside a compact date field.' },
-    { name: 'Medium', height: '36px field', minWidth: '7rem', type: '15px', use: 'The default. 9rem when the format is 12-hour.' },
-    { name: 'Large', height: '44px field', minWidth: '8rem', type: '16px', use: 'Touch layouts and booking flows.' },
+    { name: 'Small', height: '32px field', minWidth: '6rem', type: '14px', use: 'In a table filter or beside a compact date field.' },
+    { name: 'Medium', height: '36px field', minWidth: '7rem', type: '16px', use: 'The default. 9rem when the format is 12-hour.' },
+    { name: 'Large', height: '44px field', minWidth: '8rem', type: '17px', use: 'Touch layouts and booking flows.' },
     { name: 'Slot list', minWidth: '9rem', height: 'max 224px', use: 'About eight rows before scrolling, opened at the current value.' },
     { name: 'Slot', height: '30px', padding: '0 8px', touch: '44px on coarse pointers', use: 'Dense — every row is a handful of characters.' },
   ],

@@ -445,11 +445,9 @@ function TreeNode({
         <span className="shrink-0 text-[var(--ds-fg-muted)]">
           <GroupIcon name={icon} size={depth === 0 ? 13 : 12} />
         </span>
-        {/* Both levels are category labels, and both are set at 12px / 600 — the
-            size the scale reserves for text that names a group rather than
-            being read. The section is uppercased and tracked on top of that,
-            which is the only thing separating the two levels typographically;
-            the indent and the icon carry the rest. */}
+        {/* Both levels are category labels, set to name a group rather than to
+            be read: the section as an uppercase, tracked 12px eyebrow, the
+            category beneath it at 14px. The indent and the icon carry the rest. */}
         <span
           className={cn(
             'flex-1 truncate',
@@ -560,7 +558,7 @@ function NavRow({
             className="absolute -left-[14px] top-1/2 h-4 w-[2px] -translate-y-1/2 rounded-r-full bg-[var(--ds-accent)]"
           />
         )}
-        {/* text-ui is 15px / 21px / 470. This is the text the whole Bible is
+        {/* text-ui is 15px / 21px / 400. This is the text the whole Bible is
             operated through, and it was 12px at 540 — a caption doing a
             destination's job. The active row goes to 500, which is a weight
             step you can see without it reading as a different typeface. */}

@@ -259,7 +259,7 @@ export default defineDoc({
         label: 'Block height',
         value: 'Matches the line box',
         kind: 'size',
-        note: 'A 13px line with 1.6 line-height occupies about 21px. Use 12px for the bar so it reads as text without inflating the row.',
+        note: 'A 14px line with 1.4286 line-height occupies 20px. Use 12px for the bar so it reads as text without inflating the row.',
       },
       {
         n: 2,

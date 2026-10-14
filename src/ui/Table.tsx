@@ -115,7 +115,7 @@ export function DataTable<T>({
       )}
       {...inspect(`DataTable · ${density}`, {
         tokens: ['--ds-surface', '--ds-surface-inset', '--ds-border-subtle', '--text-body-sm'],
-        why: 'Row height 44px at normal density: two 13px lines of metadata fit, and it clears the 44px touch minimum for a whole-row target. Horizontal rules only — vertical rules turn a scannable grid into a spreadsheet and add 20-odd lines of visual noise per screen.',
+        why: 'Row height 44px at normal density: two 14px lines of metadata fit, and it clears the 44px touch minimum for a whole-row target. Horizontal rules only — vertical rules turn a scannable grid into a spreadsheet and add 20-odd lines of visual noise per screen.',
         a11y: 'A real <table> with <th scope>. aria-sort on the sorted header. Numeric columns are right-aligned with tabular figures so digits line up by place value.',
       })}
     >

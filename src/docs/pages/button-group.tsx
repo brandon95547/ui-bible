@@ -435,14 +435,14 @@ export default defineDoc({
     { category: 'spacing', token: 'gap', value: '0px', usedFor: 'Between members' },
     { category: 'spacing', token: '--space-3', value: '12px', usedFor: 'Minimum gap to the next control' },
     { category: 'radius', token: '--radius-md', value: '8px', usedFor: 'Outer corners only' },
-    { category: 'typography', token: '--text-label', value: '13px', usedFor: 'Member labels' },
+    { category: 'typography', token: '--text-label', value: '15px', usedFor: 'Member labels' },
     { category: 'motion', token: '--duration-fast', value: '120ms', usedFor: 'Hover and press transitions' },
   ],
 
   sizes: [
-    { name: 'Small', height: '32px', padding: '0 10px', radius: '6px outer', icon: '15px', type: '12px', use: 'Table toolbars, card headers, anywhere beside a small input.' },
-    { name: 'Medium', height: '36px', padding: '0 14px', radius: '8px outer', icon: '16px', type: '13px', use: 'The default. Page-level controls and filter bars.' },
-    { name: 'Large', height: '44px', padding: '0 18px', radius: '10px outer', icon: '18px', type: '15px', use: 'Touch-first layouts and marketing surfaces.' },
+    { name: 'Small', height: '32px', padding: '0 10px', radius: '6px outer', icon: '15px', type: '15px', use: 'Table toolbars, card headers, anywhere beside a small input.' },
+    { name: 'Medium', height: '36px', padding: '0 14px', radius: '8px outer', icon: '16px', type: '15px', use: 'The default. Page-level controls and filter bars.' },
+    { name: 'Large', height: '44px', padding: '0 18px', radius: '10px outer', icon: '18px', type: '17px', use: 'Touch-first layouts and marketing surfaces.' },
     { name: 'Icon only', height: 'Matches size', padding: 'Square', touch: '44px on coarse pointers', use: 'Formatting bars. Every member still needs an accessible name.' },
   ],
 

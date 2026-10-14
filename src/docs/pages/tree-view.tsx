@@ -496,13 +496,13 @@ export default defineDoc({
     { category: 'spacing', token: 'indent', value: '14px per level', usedFor: 'Depth' },
     { category: 'spacing', token: 'gap', value: '6px', usedFor: 'Chevron to icon to label' },
     { category: 'radius', token: '--radius-sm', value: '6px', usedFor: 'Row corners' },
-    { category: 'typography', token: '--text-label-sm', value: '12px', usedFor: 'Row labels' },
+    { category: 'typography', token: '--text-label-sm', value: '14px', usedFor: 'Row labels' },
     { category: 'motion', token: '--duration-fast', value: '140ms', usedFor: 'Chevron rotation' },
   ],
 
   sizes: [
-    { name: 'Compact', height: '24px', gap: '6px', icon: '12px', type: '12px', use: 'File explorers and inspectors, where vertical density is the point.' },
-    { name: 'Default', height: '28px', gap: '6px', icon: '13px', type: '12px', use: 'The default. Category pickers and taxonomies.' },
+    { name: 'Compact', height: '24px', gap: '6px', icon: '12px', type: '14px', use: 'File explorers and inspectors, where vertical density is the point.' },
+    { name: 'Default', height: '28px', gap: '6px', icon: '13px', type: '14px', use: 'The default. Category pickers and taxonomies.' },
     { name: 'Touch', height: '36px', touch: 'Full-row target', use: 'The row is the target, so 36px is acceptable where a 36px button would not be.' },
     { name: 'Indent', gap: '14px per level', use: 'Fixed. Four levels is the practical ceiling before the label loses its room.' },
     { name: 'Chevron hit area', minWidth: '20px', use: 'Larger than the 12px glyph, so expanding does not require pixel accuracy.' },
@@ -717,7 +717,7 @@ const [expanded, setExpanded] = usePersistentState('tree:open', ['src'])`,
   gap: 6px;
   block-size: 28px;
   border-radius: var(--radius-sm);
-  font-size: 12px;
+  font-size: 0.875rem;
   color: var(--ds-fg-secondary);
   /* Depth comes from a custom property so one rule covers every level. */
   padding-inline-start: calc(8px + var(--depth, 0) * 14px);

@@ -345,9 +345,9 @@ export default defineDoc({
   ],
 
   sizes: [
-    { name: 'Small', height: '32px', padding: '0 10px primary', icon: '15px', type: '12px', minWidth: '28px chevron', use: 'Table toolbars and card headers.' },
-    { name: 'Medium', height: '36px', padding: '0 14px primary', icon: '16px', type: '13px', minWidth: '32px chevron', use: 'The default. Page-level primary actions.' },
-    { name: 'Large', height: '44px', padding: '0 18px primary', icon: '18px', type: '15px', minWidth: '40px chevron', use: 'Touch-first layouts and empty-state calls to action.' },
+    { name: 'Small', height: '32px', padding: '0 10px primary', icon: '15px', type: '15px', minWidth: '28px chevron', use: 'Table toolbars and card headers.' },
+    { name: 'Medium', height: '36px', padding: '0 14px primary', icon: '16px', type: '15px', minWidth: '32px chevron', use: 'The default. Page-level primary actions.' },
+    { name: 'Large', height: '44px', padding: '0 18px primary', icon: '18px', type: '17px', minWidth: '40px chevron', use: 'Touch-first layouts and empty-state calls to action.' },
     { name: 'Menu', minWidth: '13rem', maxWidth: '20rem', use: 'Wide enough for the longest option without truncation; capped so a long label wraps instead of stretching the panel.' },
     { name: 'Menu row', height: '30px', padding: '0 10px', use: '44px on coarse pointers. Two-line rows go to 44px everywhere.' },
   ],

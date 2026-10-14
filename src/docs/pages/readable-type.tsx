@@ -95,7 +95,7 @@ function ShrinkComparison() {
           {['Overview', 'Deployments', 'Monitoring'].map((label, i) => (
             <span
               key={label}
-              style={{ fontSize: s ? 15 : 12, lineHeight: s ? '21px' : '16px', fontWeight: i === 1 ? 500 : 470 }}
+              style={{ fontSize: s ? 15 : 12, lineHeight: s ? '21px' : '16px', fontWeight: 400 }}
               className={`flex items-center rounded-[var(--radius-sm)] px-2 ${s ? 'h-8' : 'h-6'} ${
                 i === 1
                   ? 'bg-[var(--ds-layer-selected)] text-[var(--ds-fg)]'
@@ -107,7 +107,7 @@ function ShrinkComparison() {
           ))}
         </div>
         <div className="flex flex-col gap-1.5 border-t border-[var(--ds-border-subtle)] pt-3">
-          <p style={{ fontSize: s ? 16 : 13, lineHeight: 1.6 }} className="max-w-[46ch] text-[var(--ds-fg-secondary)]">
+          <p style={{ fontSize: s ? 16 : 13, lineHeight: 1.5 }} className="max-w-[46ch] text-[var(--ds-fg-secondary)]">
             The last build reached every production region. Nothing is waiting on approval.
           </p>
           <p style={{ fontSize: s ? 12 : 10 }} className="text-[var(--ds-fg-muted)]">
@@ -319,7 +319,7 @@ export default defineDoc({
                 <p className="mt-1 max-w-[72ch] leading-relaxed">
                   Nothing a reader has to read is set below 12px, on any screen, in any density
                   mode — and 12px itself is for metadata. Everything a user must read to act
-                  correctly is 13px or larger, and everything they read continuously is 16px.
+                  correctly is 14px or larger, and everything they read continuously is 16px.
                 </p>
               </Callout>
             </Stack>
@@ -352,7 +352,7 @@ export default defineDoc({
     states: [
       { label: 'Body', note: '16px — prose and inputs', render: <span className="text-body text-[var(--ds-fg)]">Renews on the 26th</span> },
       { label: 'UI', note: '15px — text you click', render: <span className="text-ui text-[var(--ds-fg)]">Deployments</span> },
-      { label: 'Supporting', note: '13px — explains what is there', render: <span className="text-body-sm text-[var(--ds-fg-secondary)]">Applies to this workspace</span> },
+      { label: 'Supporting', note: '14px — explains what is there', render: <span className="text-body-sm text-[var(--ds-fg-secondary)]">Applies to this workspace</span> },
       { label: 'Caption', note: '12px — the floor', render: <span className="text-caption text-[var(--ds-fg-muted)]">4 minutes ago</span> },
       { label: 'Below the floor', note: '11px — not allowed', render: <span style={{ fontSize: 11 }} className="text-[var(--ds-fg-muted)]">4 minutes ago</span> },
       { label: 'Phone', note: 'Identical to desktop', render: <span className="text-ui text-[var(--ds-fg)]">Deployments</span> },
@@ -379,7 +379,7 @@ export default defineDoc({
       {
         n: 1,
         label: 'Navigation text',
-        value: '15px / 21px / 470',
+        value: '15px / 21px / 400',
         kind: 'type',
         note: 'Read from the corner of the eye by someone deciding where to go next, not by someone already looking at it. One step under body, and never under 15px.',
       },
@@ -393,7 +393,7 @@ export default defineDoc({
       {
         n: 3,
         label: 'Body',
-        value: '16px / 1.6',
+        value: '16px / 24px',
         kind: 'type',
         note: 'The default for prose and for every input. Below 16px an input also makes iOS Safari zoom the page on focus, which leaves the reader scrolled sideways.',
       },
@@ -415,9 +415,9 @@ export default defineDoc({
   },
 
   tokens: [
-    { category: 'typography', token: '--text-body', value: '1rem / 1.6', usedFor: 'Body copy and every input' },
-    { category: 'typography', token: '--text-ui', value: '0.9375rem / 1.4 / 470', usedFor: 'Navigation, menus, list rows' },
-    { category: 'typography', token: '--text-body-sm', value: '0.8125rem / 1.6', usedFor: 'Supporting copy' },
+    { category: 'typography', token: '--text-body', value: '1rem / 1.5', usedFor: 'Body copy and every input' },
+    { category: 'typography', token: '--text-ui', value: '0.9375rem / 1.4 / 400', usedFor: 'Navigation, menus, list rows, tabs' },
+    { category: 'typography', token: '--text-body-sm', value: '0.875rem / 1.4286', usedFor: 'Supporting copy' },
     { category: 'typography', token: '--text-caption', value: '0.75rem / 1.45', usedFor: 'Metadata — the floor' },
     { category: 'typography', token: '--text-display', value: 'clamp(1.75rem → 2.75rem)', usedFor: 'The one place responsive sizing belongs' },
     { category: 'color', token: '--ds-fg-secondary', usedFor: 'Body at 4.5:1 or better' },
@@ -427,8 +427,8 @@ export default defineDoc({
 
   sizes: [
     { name: 'Body', height: '16px', type: '400 weight', maxWidth: '68ch', touch: 'n/a', use: 'Prose and every input. The size the product is read at.' },
-    { name: 'UI', height: '15px', type: '470 weight', maxWidth: '40ch', touch: '44px row on coarse pointers', use: 'Navigation, menus, list rows, tabs.' },
-    { name: 'Supporting', height: '13px', type: '400 weight', maxWidth: '72ch', use: 'Help text and table cells. Never the only copy explaining a control.' },
+    { name: 'UI', height: '15px', type: '400 weight', maxWidth: '40ch', touch: '44px row on coarse pointers', use: 'Navigation, menus, list rows, tabs.' },
+    { name: 'Supporting', height: '14px', type: '400 weight', maxWidth: '72ch', use: 'Help text and table cells. Never the only copy explaining a control.' },
     { name: 'Caption', height: '12px', type: '400 weight', maxWidth: '60ch', use: 'Timestamps, counts, hints. The floor.' },
     { name: 'Below 12px', height: '—', use: 'Not a size. If something only fits at 11px, cut the string or widen the container.' },
   ],
@@ -459,11 +459,11 @@ export default defineDoc({
     },
     {
       title: 'Reserve clamp() for display type',
-      why: 'A 44px hero genuinely cannot stay 44px at 390px — that is four words a line. Everything at h3 and below already fits at every width, so scaling it can only make it smaller than it was designed to be.',
+      why: 'A 72px hero genuinely cannot stay 72px at 390px — that is two words a line. Everything at h3 and below already fits at every width, so scaling it can only make it smaller than it was designed to be.',
       render: (
         <span
           className="text-[var(--ds-fg)]"
-          style={{ fontSize: 'clamp(1.5rem, 1.1rem + 1.8vw, 2.75rem)', lineHeight: 1.12, fontWeight: 620, letterSpacing: '-0.025em' }}
+          style={{ fontSize: 'clamp(3rem, 2.2rem + 2.5vw, 4.5rem)', lineHeight: 1, fontWeight: 500, letterSpacing: '-0.0133em' }}
         >
           Resize the window
         </span>
@@ -577,7 +577,7 @@ export default defineDoc({
 /* Line heights are unitless: they multiply against whatever size the
    element ends up at, so they survive inheritance and user zoom. */
 body { font-size: var(--text-body); line-height: 1.6; }
-.nav-item { font-size: var(--text-ui); line-height: 1.4; font-weight: 470; }
+.nav-item { font-size: var(--text-ui); line-height: 1.4; font-weight: 400; }
 
 /* em only for what is genuinely relative to the current font. */
 h2 { letter-spacing: -0.017em; }

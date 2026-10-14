@@ -291,9 +291,9 @@ export default defineDoc({
   ],
 
   sizes: [
-    { name: 'Small', height: '16px', gap: '10px', radius: '4px', icon: '11px', type: '13px', touch: '44px (row)', use: 'Table row selection and dense lists only.' },
-    { name: 'Medium', height: '18px', gap: '10px', radius: '4px', icon: '13px', type: '13px', touch: '44px (row)', use: 'The default everywhere else.' },
-    { name: 'With description', height: '18px', gap: '10px', type: '13px / 12px', maxWidth: '60ch', use: 'Adds a second line. Keep the description to one line where possible.' },
+    { name: 'Small', height: '16px', gap: '10px', radius: '4px', icon: '11px', type: '14px', touch: '44px (row)', use: 'Table row selection and dense lists only.' },
+    { name: 'Medium', height: '18px', gap: '10px', radius: '4px', icon: '13px', type: '14px', touch: '44px (row)', use: 'The default everywhere else.' },
+    { name: 'With description', height: '18px', gap: '10px', type: '14px / 12px', maxWidth: '60ch', use: 'Adds a second line. Keep the description to one line where possible.' },
   ],
 
   do: [

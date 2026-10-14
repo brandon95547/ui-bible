@@ -736,7 +736,7 @@ export default defineDoc({
       {
         n: 5,
         label: 'Tile',
-        value: 'label 12px, value 28px',
+        value: 'label 12px, value 24px',
         kind: 'type',
         note: 'The number is the largest thing and the label the smallest, so the eye lands on the value and only then learns what it measures.',
       },
@@ -782,7 +782,7 @@ export default defineDoc({
     { category: 'color', token: '--ds-border-subtle', usedFor: 'Panel edges and rules' },
     { category: 'color', token: '--ds-success-text', usedFor: 'Positive delta' },
     { category: 'color', token: '--ds-danger-text', usedFor: 'Negative delta' },
-    { category: 'typography', token: '--text-h2', value: '28px', usedFor: 'KPI values' },
+    { category: 'typography', token: '--text-h2', value: '24px', usedFor: 'KPI values' },
     { category: 'radius', token: '--radius-xl', usedFor: 'Panels and tiles' },
   ],
 

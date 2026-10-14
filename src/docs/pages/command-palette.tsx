@@ -492,10 +492,10 @@ export default defineDoc({
 
   sizes: [
     { name: 'Panel', maxWidth: '36rem', radius: '20px', use: 'Capped to the viewport with 16px of margin on small screens.' },
-    { name: 'Input', height: '48px', padding: '0 14px', type: '15px', use: 'The only input on screen; sized to be looked at, not filled in carefully.' },
+    { name: 'Input', height: '48px', padding: '0 14px', type: '16px', use: 'The only input on screen; sized to be looked at, not filled in carefully.' },
     { name: 'List', height: 'max 24rem', use: 'About eight rows. Fixed height so the panel never resizes as results narrow.' },
-    { name: 'Row', height: '32px', padding: '0 8px', gap: '10px', type: '13px', touch: '44px on coarse pointers', use: 'Dense. Two-line rows go to 44px and cut the visible count to five.' },
-    { name: 'Section header', height: '24px', type: '11px uppercase', use: 'Quiet. It is a divider with a name, not a destination.' },
+    { name: 'Row', height: '32px', padding: '0 8px', gap: '10px', type: '15px', touch: '44px on coarse pointers', use: 'Dense. Two-line rows go to 44px and cut the visible count to five.' },
+    { name: 'Section header', height: '24px', type: '12px uppercase', use: 'Quiet. It is a divider with a name, not a destination.' },
     { name: 'Footer', height: '32px', type: '12px', use: 'The keyboard legend. Drop it on touch, where there is no keyboard to legend.' },
   ],
 
@@ -731,7 +731,7 @@ function fuzzy(query: string, text: string) {
   animation: scale-in 180ms cubic-bezier(0.32, 0.72, 0, 1) both;
 }
 
-.ds-palette__input { block-size: 48px; font-size: 15px; }
+.ds-palette__input { block-size: 48px; font-size: 1rem; }
 
 /* Fixed height. A panel that shrinks as results narrow moves the row the
    pointer is aiming at. */

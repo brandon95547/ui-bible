@@ -312,7 +312,7 @@ export default defineDoc({
       {
         n: 5,
         label: 'Title and body',
-        value: '13px / 540 and 13px / 400',
+        value: '15px / 500 and 14px / 400',
         kind: 'type',
         note: 'The body is --ds-fg-secondary, not the tone color. Coloring the whole message red reduces legibility and overstates the severity.',
       },
@@ -556,12 +556,12 @@ async function onSubmit(e) {
 }
 .ds-alert--danger .ds-alert__icon { color: var(--ds-danger-text); }
 
-.ds-alert__title { font-size: 13px; font-weight: 540; color: var(--ds-fg); }
+.ds-alert__title { font-size: 0.9375rem; font-weight: 500; color: var(--ds-fg); }
 
 /* Body stays neutral — coloring the whole message reduces legibility
    and overstates the severity. */
 .ds-alert__body {
-  font-size: 13px;
+  font-size: 0.875rem;
   line-height: 1.6;
   color: var(--ds-fg-secondary);
 }

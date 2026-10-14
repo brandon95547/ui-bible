@@ -458,7 +458,7 @@ export default defineDoc({
 
   sizes: [
     { name: 'Panel', minWidth: '11rem', maxWidth: '18rem', radius: '12px', padding: '4px', use: 'Sized to the longest label, capped so nothing stretches the layout.' },
-    { name: 'Row', height: '30px', padding: '0 8px', gap: '10px', type: '13px', touch: '44px on coarse pointers', use: 'The default.' },
+    { name: 'Row', height: '30px', padding: '0 8px', gap: '10px', type: '15px', touch: '44px on coarse pointers', use: 'The default.' },
     { name: 'Row with description', height: '44px', padding: '6px 8px', use: 'Two lines. Use sparingly — a menu of descriptions is a list, not a menu.' },
     { name: 'Icon', icon: '14px', use: 'One step below body. Reserved as a gutter even on items without one.' },
     { name: 'Separator', height: '1px', gap: '4px', use: 'Full panel width, inside the padding.' },
@@ -716,7 +716,7 @@ export default defineDoc({
   block-size: 30px;
   padding-inline: 8px;
   border-radius: var(--radius-md);
-  font-size: 13px;
+  font-size: 0.9375rem;
   color: var(--ds-fg-secondary);
 }
 

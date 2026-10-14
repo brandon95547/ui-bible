@@ -406,7 +406,7 @@ export default defineDoc({
     { category: 'spacing', token: '--space-1', value: '4px', usedFor: 'Gap between symbols' },
     { category: 'spacing', token: 'touch padding', value: '12px', usedFor: 'Grows each target to 44px on coarse pointers' },
     { category: 'radius', token: '--radius-xs', value: '4px', usedFor: 'Focus target corners' },
-    { category: 'typography', token: '--text-body-sm', value: '13px', usedFor: 'The label beside the symbols' },
+    { category: 'typography', token: '--text-body-sm', value: '14px', usedFor: 'The label beside the symbols' },
     { category: 'motion', token: '--duration-fast', value: '120ms', usedFor: 'Hover fill transition' },
   ],
 
@@ -414,7 +414,7 @@ export default defineDoc({
     { name: 'Small', icon: '14px', gap: '4px', use: 'Table rows, card metadata, search results. Read-only in practice.' },
     { name: 'Medium', icon: '20px', gap: '4px', touch: '44px padded', use: 'The default for collecting a rating in a form.' },
     { name: 'Large', icon: '28px', gap: '6px', touch: '44px padded', use: 'When the rating is the question the page is asking.' },
-    { name: 'Label', type: '13px', gap: '8px from the symbols', use: 'Always present in the interactive form.' },
+    { name: 'Label', type: '14px', gap: '8px from the symbols', use: 'Always present in the interactive form.' },
     { name: 'Count', type: '12px', use: 'Beside the average. An aggregate without a count is not comparable to anything.' },
   ],
 

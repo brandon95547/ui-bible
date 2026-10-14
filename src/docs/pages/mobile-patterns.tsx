@@ -641,7 +641,7 @@ export default defineDoc({
     { category: 'spacing', token: 'bottom bar', value: '56px + inset', usedFor: 'Navigation' },
     { category: 'motion', token: 'duration', value: '200–260ms', usedFor: 'Page transitions' },
     { category: 'motion', token: 'gesture threshold', value: '64–110px', usedFor: 'Swipe and pull commit points' },
-    { category: 'typography', token: '--text-body', value: '15px', usedFor: 'Body text. 16px on inputs, to stop iOS zooming' },
+    { category: 'typography', token: '--text-body', value: '16px', usedFor: 'Body text and inputs. 16px is also what stops iOS zooming' },
   ],
 
   sizes: [

@@ -343,13 +343,13 @@ export default defineDoc({
     { category: 'spacing', token: 'gap', value: '6px', usedFor: 'Icon or avatar to label' },
     { category: 'spacing', token: 'row gap', value: '8px', usedFor: 'Between chips' },
     { category: 'radius', token: 'full', usedFor: 'Pill shape' },
-    { category: 'typography', token: '--text-label', value: '13px', usedFor: 'Label' },
+    { category: 'typography', token: '--text-label', value: '15px', usedFor: 'Label' },
     { category: 'motion', token: 'duration', value: '120ms', usedFor: 'Hover and selection transition' },
   ],
 
   sizes: [
     { name: 'Small', height: '24px', padding: '0 8px', radius: 'full', icon: '12px', type: '12px', touch: '44px (padded)', use: 'Inside inputs as tokens, and in dense table toolbars.' },
-    { name: 'Medium', height: '28px', padding: '0 10px', radius: 'full', icon: '13px', type: '13px', touch: '44px (padded)', use: 'The default. Filter bars and applied-filter rows.' },
+    { name: 'Medium', height: '28px', padding: '0 10px', radius: 'full', icon: '13px', type: '15px', touch: '44px (padded)', use: 'The default. Filter bars and applied-filter rows.' },
     { name: 'With remove', height: '28px', padding: '0 4px 0 10px', gap: '6px', use: 'Right padding drops to make room for the 18px remove button.' },
     { name: 'With avatar', height: '28px', padding: '0 10px 0 6px', gap: '6px', use: 'Left padding drops so the 20px avatar sits flush inside the pill.' },
   ],
@@ -562,7 +562,7 @@ function remove(id: string, index: number) {
   border-radius: 999px;
   background: var(--ds-surface);
   color: var(--ds-fg-secondary);
-  font-size: 13px;
+  font-size: 0.9375rem;
   font-weight: 500;
   transition: all 120ms var(--ease-standard);
 }

@@ -277,7 +277,7 @@ export default defineDoc({
       {
         n: 3,
         label: 'Type',
-        value: '12px, 1.4 leading',
+        value: '14px, 1.4286 leading',
         kind: 'type',
         note: 'One step below body. It is supplementary information and should not compete with the content behind it.',
       },
@@ -319,14 +319,14 @@ export default defineDoc({
     { category: 'spacing', token: 'padding', value: '6px 10px', usedFor: 'Tooltip padding' },
     { category: 'spacing', token: 'offset', value: '6px', usedFor: 'Gap from the trigger' },
     { category: 'radius', token: '--radius-md', value: '8px', usedFor: 'Tooltip corners' },
-    { category: 'typography', token: '--text-caption', value: '12px / 1.4', usedFor: 'Tooltip text' },
+    { category: 'typography', token: '--text-body-sm', value: '14px / 1.4286', usedFor: 'Tooltip text' },
     { category: 'shadow', token: '--shadow-e3', usedFor: 'Lifts it clear of the surface behind' },
     { category: 'motion', token: 'open delay', value: '400ms', usedFor: 'Hover intent' },
     { category: 'motion', token: '--duration-fast', value: '120ms', usedFor: 'Fade and 2px rise on enter' },
   ],
 
   sizes: [
-    { name: 'Tooltip', height: '26px single line', padding: '6px 10px', radius: '8px', type: '12px', maxWidth: '16rem', use: 'One or two lines. Three means it should be a Popover.' },
+    { name: 'Tooltip', height: '26px single line', padding: '6px 10px', radius: '8px', type: '14px', maxWidth: '16rem', use: 'One or two lines. Three means it should be a Popover.' },
     { name: 'Offset', gap: '6px', use: 'From the trigger, on every side. Clears the focus ring.' },
     { name: 'Viewport margin', gap: '8px', use: 'Minimum distance from any viewport edge before flipping.' },
     { name: 'Shortcut', height: '18px', use: 'A Kbd on the inverted surface, at the trailing edge.' },
@@ -533,8 +533,8 @@ React.useEffect(() => {
   color: var(--ds-fg-inverse);
   padding: 6px 10px;
   border-radius: var(--radius-md);
-  font-size: 12px;
-  line-height: 1.4;
+  font-size: 0.875rem;
+  line-height: 1.4286;
   /* The ceiling is the point: three lines means it should be a Popover. */
   max-inline-size: 16rem;
   box-shadow: var(--shadow-e3);

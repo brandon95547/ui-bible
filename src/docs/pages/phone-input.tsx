@@ -426,7 +426,7 @@ export default defineDoc({
   ],
 
   sizes: [
-    { name: 'Small', height: '32px', padding: '0 10px', type: '13px', minWidth: '13rem', use: 'Dense CRM forms and table filters.' },
+    { name: 'Small', height: '32px', padding: '0 10px', type: '14px', minWidth: '13rem', use: 'Dense CRM forms and table filters.' },
     { name: 'Medium', height: '36px', padding: '0 10px', type: '15px', minWidth: '15rem', use: 'The default.' },
     { name: 'Large', height: '44px', padding: '0 12px', type: '16px', minWidth: '16rem', use: 'Sign-up and checkout, especially on touch.' },
     { name: 'Country button', minWidth: '5rem', use: 'Wide enough for a four-character dial code plus a flag and a chevron without truncating.' },

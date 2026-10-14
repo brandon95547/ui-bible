@@ -367,13 +367,13 @@ export default defineDoc({
     { category: 'spacing', token: '--space-0-5', value: '2px', usedFor: 'Gap between page numbers' },
     { category: 'spacing', token: '--space-2', value: '8px', usedFor: 'Gap to Prev and Next' },
     { category: 'radius', token: '--radius-md', value: '8px', usedFor: 'Page target corners' },
-    { category: 'typography', token: '--text-label-sm', value: '12px', usedFor: 'Page numbers, tabular figures' },
+    { category: 'typography', token: '--text-label', value: '15px', usedFor: 'Page numbers, tabular figures' },
     { category: 'motion', token: '--duration-fast', value: '120ms', usedFor: 'Hover transition' },
   ],
 
   sizes: [
-    { name: 'Small', height: '28px', minWidth: '28px', type: '12px', gap: '2px', use: 'Inside a card or a compact table footer.' },
-    { name: 'Medium', height: '32px', minWidth: '32px', type: '12px', gap: '2px', touch: '44px on coarse pointers', use: 'The default.' },
+    { name: 'Small', height: '28px', minWidth: '28px', type: '15px', gap: '2px', use: 'Inside a card or a compact table footer.' },
+    { name: 'Medium', height: '32px', minWidth: '32px', type: '15px', gap: '2px', touch: '44px on coarse pointers', use: 'The default.' },
     { name: 'Range summary', type: '12px', use: 'Left of the controls on desktop, above them on mobile.' },
     { name: 'Page size select', height: '32px', minWidth: '7rem', use: '10 / 25 / 50 / 100. Persist the choice — it is a preference, not a per-visit decision.' },
     { name: 'Load more', height: '36px', minWidth: '10rem', use: 'Centered under the list, with the loaded-of-total count beneath it.' },
@@ -591,7 +591,7 @@ function onPageSizeChange(next: number) {
   display: grid;
   place-items: center;
   border-radius: var(--radius-md);
-  font-size: 12px;
+  font-size: 0.9375rem;
   font-variant-numeric: tabular-nums;
   color: var(--ds-fg-secondary);
 }

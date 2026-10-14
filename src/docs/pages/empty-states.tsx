@@ -285,7 +285,7 @@ export default defineDoc({
       {
         n: 3,
         label: 'Title',
-        value: '19px · text-h3',
+        value: '18px · text-h3',
         kind: 'type',
         note: 'A real heading element, so screen-reader users landing in the region understand it immediately.',
       },
@@ -542,12 +542,12 @@ function DeploymentList({ items, query, filters, loading, error }) {
   color: var(--ds-fg-muted);
 }
 
-.ds-empty__title { font-size: 1.1875rem; font-weight: 600; }
+.ds-empty__title { font-size: 1.125rem; font-weight: 600; }
 
 /* Centered text needs a narrower measure — every line starts somewhere new */
 .ds-empty__desc {
   max-inline-size: 24rem;
-  font-size: 13px;
+  font-size: 0.875rem;
   line-height: 1.6;
   color: var(--ds-fg-muted);
 }

@@ -252,7 +252,7 @@ export default defineDoc({
           table are the single most common formatting mistake in enterprise software.
         </p>
         <p>
-          Row height at normal density is <strong>44px</strong>: two lines of 13px metadata fit, and
+          Row height at normal density is <strong>44px</strong>: two lines of 14px metadata fit, and
           it clears the touch minimum for a whole-row target. Compact goes to 36px for power users
           on large screens, relaxed to 56px when rows carry avatars. Density should be a user
           preference, not a decision made once by a designer.
@@ -379,15 +379,15 @@ export default defineDoc({
     { category: 'spacing', token: 'cell padding', value: '12 / 14 / 16px', usedFor: 'compact / normal / relaxed' },
     { category: 'spacing', token: 'row height', value: '36 / 44 / 56px', usedFor: 'The three densities' },
     { category: 'radius', token: '--radius-xl', value: '16px', usedFor: 'Table wrapper corners' },
-    { category: 'typography', token: '--text-body-sm', value: '13px', usedFor: 'Cell content' },
-    { category: 'typography', token: '--text-label-sm', value: '12px', usedFor: 'Header labels' },
+    { category: 'typography', token: '--text-body-sm', value: '14px', usedFor: 'Cell content' },
+    { category: 'typography', token: '--text-label-sm', value: '14px', usedFor: 'Header labels' },
   ],
 
   sizes: [
-    { name: 'Compact', height: '36px', padding: '0 12px', type: '13px', touch: 'pointer only', use: 'Power users on large screens. Offer it; never default to it.' },
-    { name: 'Normal', height: '44px', padding: '0 14px', type: '13px', touch: '44px', use: 'The default. Holds two lines of metadata and clears the touch minimum.' },
-    { name: 'Relaxed', height: '56px', padding: '0 16px', type: '13px', touch: '56px', use: 'Rows with avatars, thumbnails, or two-line cells.' },
-    { name: 'Header', height: '36px', padding: '0 14px', type: '12px / 500', use: 'Always shorter than a data row.' },
+    { name: 'Compact', height: '36px', padding: '0 12px', type: '14px', touch: 'pointer only', use: 'Power users on large screens. Offer it; never default to it.' },
+    { name: 'Normal', height: '44px', padding: '0 14px', type: '14px', touch: '44px', use: 'The default. Holds two lines of metadata and clears the touch minimum.' },
+    { name: 'Relaxed', height: '56px', padding: '0 16px', type: '14px', touch: '56px', use: 'Rows with avatars, thumbnails, or two-line cells.' },
+    { name: 'Header', height: '36px', padding: '0 14px', type: '14px / 500', use: 'Always shorter than a data row.' },
     { name: 'Selection column', minWidth: '40px', use: 'Fixed width. Never let it flex.' },
     { name: 'Numeric column', maxWidth: '10ch', use: 'Right-aligned, tabular. Wide enough for the largest plausible value.' },
   ],
@@ -621,7 +621,7 @@ const columns: Column<Deploy>[] = [
     },
     css: {
       lang: 'css',
-      code: `.ds-table { inline-size: 100%; border-collapse: collapse; font-size: 13px; }
+      code: `.ds-table { inline-size: 100%; border-collapse: collapse; font-size: 0.875rem; }
 
 /* Horizontal rules only. Vertical rules turn this into a spreadsheet. */
 .ds-table tbody tr { border-block-end: 1px solid var(--ds-border-subtle); }
@@ -631,7 +631,7 @@ const columns: Column<Deploy>[] = [
   block-size: 36px;                    /* shorter than a data row */
   padding-inline: 14px;
   text-align: start;
-  font-size: 12px;
+  font-size: 0.875rem;
   font-weight: 500;
   color: var(--ds-fg-muted);
   background: var(--ds-surface-inset);

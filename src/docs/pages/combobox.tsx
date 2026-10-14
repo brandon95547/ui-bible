@@ -333,9 +333,9 @@ export default defineDoc({
   ],
 
   sizes: [
-    { name: 'Small', height: '32px', padding: '0 30px 0 10px', type: '13px', use: 'Table filters and dense forms.' },
-    { name: 'Medium', height: '36px', padding: '0 34px 0 12px', type: '15px', minWidth: '12rem', use: 'The default.' },
-    { name: 'Large', height: '44px', padding: '0 38px 0 14px', type: '16px', use: 'Touch layouts and single-field pages.' },
+    { name: 'Small', height: '32px', padding: '0 30px 0 10px', type: '14px', use: 'Table filters and dense forms.' },
+    { name: 'Medium', height: '36px', padding: '0 34px 0 12px', type: '16px', minWidth: '12rem', use: 'The default.' },
+    { name: 'Large', height: '44px', padding: '0 38px 0 14px', type: '17px', use: 'Touch layouts and single-field pages.' },
     { name: 'Panel', height: 'max 256px', maxWidth: 'Matches the input', use: 'About 8 rows. Fixed height so it never resizes as the query narrows.' },
     { name: 'Option', height: '30px', padding: '0 8px', touch: '44px on coarse pointers', use: '44px when a description is present, at every pointer type.' },
   ],

@@ -343,8 +343,8 @@ export default defineDoc({
   ],
 
   sizes: [
-    { name: 'Small', height: '32px', padding: '0 10px', radius: '8px', icon: '14px', type: '13px', minWidth: '120px', use: 'Table filters, toolbars, inline controls.' },
-    { name: 'Medium', height: '36px', padding: '0 12px', radius: '8px', icon: '15px', type: '15px', minWidth: '160px', maxWidth: '32rem', use: 'The default for every form.' },
+    { name: 'Small', height: '32px', padding: '0 10px', radius: '8px', icon: '14px', type: '14px', minWidth: '120px', use: 'Table filters, toolbars, inline controls.' },
+    { name: 'Medium', height: '36px', padding: '0 12px', radius: '8px', icon: '15px', type: '16px', minWidth: '160px', maxWidth: '32rem', use: 'The default for every form.' },
     { name: 'Large', height: '44px', padding: '0 14px', radius: '12px', icon: '17px', type: '17px', minWidth: '200px', use: 'Mobile and touch-first forms.' },
     { name: 'Popover', height: '256px max', padding: '4px', radius: '12px', use: 'About eight single-line rows before it scrolls.' },
     { name: 'Option row', height: '30px / 44px', padding: '6px 10px', radius: '6px', use: '30px for a single line, 44px when a description is present.' },

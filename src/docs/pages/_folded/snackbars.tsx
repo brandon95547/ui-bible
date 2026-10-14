@@ -191,7 +191,7 @@ export default defineDoc({
         label: 'Height',
         value: '46px minimum',
         kind: 'size',
-        note: 'One line of 13px text with 12px of vertical padding. Grows to two lines and no further.',
+        note: 'One line of 14px text with 12px of vertical padding. Grows to two lines and no further.',
       },
       {
         n: 3,
@@ -436,15 +436,15 @@ useEffect(() => {
   animation: slide-up 220ms var(--ease-emphasized) both;
 }
 
-.ds-snackbar__message { font-size: 13px; }
+.ds-snackbar__message { font-size: 0.875rem; }
 
 /* Uppercase is used here and nowhere else — it separates the action
    from the message without a border or a background. */
 .ds-snackbar__action {
   text-transform: uppercase;
   letter-spacing: 0.02em;
-  font-size: 13px;
-  font-weight: 540;
+  font-size: 0.9375rem;
+  font-weight: 500;
   color: var(--ds-accent);
 }
 

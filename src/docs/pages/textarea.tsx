@@ -364,14 +364,14 @@ export default defineDoc({
     { category: 'color', token: '--ds-fg-muted', usedFor: 'Placeholder, description, counter' },
     { category: 'spacing', token: 'padding', value: '10px 12px', usedFor: 'Field padding' },
     { category: 'radius', token: '--radius-md', value: '8px', usedFor: 'Field corners' },
-    { category: 'typography', token: '--text-body', value: '15px / 1.6', usedFor: 'Typed text and its leading' },
+    { category: 'typography', token: '--text-body', value: '16px / 1.6', usedFor: 'Typed text and its leading' },
     { category: 'motion', token: '--duration-fast', value: '120ms', usedFor: 'Border and halo transition' },
   ],
 
   sizes: [
-    { name: 'Small', height: '2 rows ≈ 56px', padding: '8px 10px', radius: '8px', type: '13px', use: 'Inline comment boxes and dense forms.' },
-    { name: 'Medium', height: '4 rows ≈ 96px', padding: '10px 12px', radius: '8px', type: '15px', use: 'The default. Descriptions and notes.' },
-    { name: 'Large', height: '6 rows ≈ 152px', padding: '12px 14px', radius: '12px', type: '16px', use: 'The main content field on a page dedicated to writing.' },
+    { name: 'Small', height: '2 rows ≈ 56px', padding: '8px 10px', radius: '8px', type: '14px', use: 'Inline comment boxes and dense forms.' },
+    { name: 'Medium', height: '4 rows ≈ 96px', padding: '10px 12px', radius: '8px', type: '16px', use: 'The default. Descriptions and notes.' },
+    { name: 'Large', height: '6 rows ≈ 152px', padding: '12px 14px', radius: '12px', type: '17px', use: 'The main content field on a page dedicated to writing.' },
     { name: 'Autosize ceiling', height: '12 rows', use: 'Grows with content to here, then scrolls. Non-negotiable — without it the submit button leaves the screen.' },
     { name: 'Measure', maxWidth: '36rem', use: 'About 70 characters per line. Wider and the eye loses the start of the next line.' },
   ],

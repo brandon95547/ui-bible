@@ -109,7 +109,7 @@ export default defineDoc({
         </p>
         <p>
           Icons need <strong>optical</strong> alignment, not mathematical alignment. A 16px icon
-          next to 13px text should align on the text's cap height, not its line box; a triangle
+          next to 15px text should align on the text's cap height, not its line box; a triangle
           inside a circular button needs to sit about 1px right of center because its visual mass is
           on the left. These corrections are small and they are the difference between "designed"
           and "assembled".

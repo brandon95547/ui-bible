@@ -348,9 +348,9 @@ export default defineDoc({
   ],
 
   sizes: [
-    { name: 'Small', height: '32px', padding: '0 36px 0 10px', type: '13px', use: 'Re-authentication inside a dialog.' },
-    { name: 'Medium', height: '36px', padding: '0 40px 0 12px', type: '15px', use: 'The default.' },
-    { name: 'Large', height: '44px', padding: '0 44px 0 14px', type: '16px', use: 'Sign-in and sign-up pages, where the field is the page.' },
+    { name: 'Small', height: '32px', padding: '0 36px 0 10px', type: '14px', use: 'Re-authentication inside a dialog.' },
+    { name: 'Medium', height: '36px', padding: '0 40px 0 12px', type: '16px', use: 'The default.' },
+    { name: 'Large', height: '44px', padding: '0 44px 0 14px', type: '17px', use: 'Sign-in and sign-up pages, where the field is the page.' },
     { name: 'Reveal toggle', height: '28px', minWidth: '28px', touch: '44px on coarse pointers', use: 'Inside the field, right-aligned, 6px from the edge.' },
     { name: 'Strength bar', height: '4px', radius: 'full', use: 'Full field width, directly beneath it, with the label beside the value.' },
   ],

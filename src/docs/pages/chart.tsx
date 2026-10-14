@@ -716,7 +716,7 @@ const indexed = rows.map((r) => ({
     css: {
       lang: 'css',
       code: `.ds-chart figcaption {
-  font-size: 13px;
+  font-size: 0.9375rem;
   color: var(--ds-fg);
   margin-block-end: 4px;
 }

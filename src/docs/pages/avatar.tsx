@@ -332,10 +332,10 @@ export default defineDoc({
   ],
 
   sizes: [
-    { name: 'xs', height: '20px', type: '9px', use: 'Inside a Chip or a dense table cell. The floor for legible initials.' },
-    { name: 'sm', height: '24px', type: '10px', use: 'Table rows and inline mentions.' },
-    { name: 'md', height: '32px', type: '11px', use: 'The default. List rows and comment authors.' },
-    { name: 'lg', height: '40px', type: '13px', use: 'Card headers and hover cards.' },
+    { name: 'xs', height: '20px', type: '12px', use: 'Inside a Chip or a dense table cell. The floor for legible initials.' },
+    { name: 'sm', height: '24px', type: '12px', use: 'Table rows and inline mentions.' },
+    { name: 'md', height: '32px', type: '12px', use: 'The default. List rows and comment authors.' },
+    { name: 'lg', height: '40px', type: '14px', use: 'Card headers and hover cards.' },
     { name: 'xl', height: '56px', type: '18px', use: 'A profile header, where the avatar is the subject.' },
     { name: 'Presence dot', height: '~28% of diameter', use: 'With a 2px ring in the surface color. Below 20px there is no room for it.' },
   ],

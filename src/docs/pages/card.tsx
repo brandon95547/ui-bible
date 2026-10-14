@@ -199,7 +199,7 @@ export default defineDoc({
         id: 'stats-leading',
         title: 'Stat tiles — leading chip',
         description:
-          'layout="leading" moves the icon into a 44px tinted chip at the front and drops the value from 32px to 16px. Use it when the value is a word rather than a figure — a state, a phase, a verdict. The chip carries the tone so the value itself can stay plain text, and a ring can replace the icon where the fact is a proportion.',
+          'layout="leading" moves the icon into a 44px tinted chip at the front and drops the value from 24px to 16px. Use it when the value is a word rather than a figure — a state, a phase, a verdict. The chip carries the tone so the value itself can stay plain text, and a ring can replace the icon where the fact is a proportion.',
         render: (
           <PreviewStage center={false} minHeight={0} allowResize>
             <div className="grid w-full gap-3 sm:grid-cols-2 lg:grid-cols-3">

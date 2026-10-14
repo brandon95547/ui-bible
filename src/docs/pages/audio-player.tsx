@@ -897,7 +897,7 @@ export default defineDoc({
     { name: 'Bars (row)', minWidth: '48', maxWidth: '72', use: 'Roughly one per 3–4px of width. Fewer at narrow widths, never more.' },
     { name: 'Bars (full)', minWidth: '96', maxWidth: '120', use: 'Enough to resolve a phrase; more is a smear at any realistic width.' },
     { name: 'Play button', height: '28px row · 48px full', use: 'Filled with the accent. It is the only affordance that is never ambiguous.' },
-    { name: 'Time', type: '11px', minWidth: '36px row · none full', use: 'Fixed width in a row so the waveform does not resize as the clock counts.' },
+    { name: 'Time', type: '12px', minWidth: '36px row · none full', use: 'Fixed width in a row so the waveform does not resize as the clock counts.' },
   ],
 
   do: [
@@ -1136,7 +1136,7 @@ for (const [id, p] of players) if (!visible.has(id)) { p.destroy(); players.dele
   flex: 0 0 auto;
   min-inline-size: 36px;
   text-align: end;
-  font-size: 11px;
+  font-size: 0.75rem;
   font-variant-numeric: tabular-nums;
   color: var(--ds-fg-muted);
 }

@@ -241,7 +241,7 @@ export default defineDoc({
       {
         n: 1,
         label: 'Legend',
-        value: '13px / 540, 10px above',
+        value: '15px / 500, 10px above',
         kind: 'type',
         note: 'A real <legend>. It gives the group a name and is read before each option, so "Automatic" becomes "Deployment, Automatic".',
       },
@@ -292,9 +292,9 @@ export default defineDoc({
   ],
 
   sizes: [
-    { name: 'Small', height: '16px', gap: '10px', type: '13px', touch: '44px (row)', use: 'Dense filter panels and table toolbars.' },
-    { name: 'Medium', height: '18px', gap: '10px', type: '13px', touch: '44px (row)', use: 'The default in every form.' },
-    { name: 'With description', height: '18px', gap: '10px', type: '13px / 12px', maxWidth: '60ch', use: 'When an option needs a sentence of explanation.' },
+    { name: 'Small', height: '16px', gap: '10px', type: '14px', touch: '44px (row)', use: 'Dense filter panels and table toolbars.' },
+    { name: 'Medium', height: '18px', gap: '10px', type: '14px', touch: '44px (row)', use: 'The default in every form.' },
+    { name: 'With description', height: '18px', gap: '10px', type: '14px / 12px', maxWidth: '60ch', use: 'When an option needs a sentence of explanation.' },
     { name: 'Card', height: 'auto', padding: '14px', radius: '12px', minWidth: '200px', use: 'Plans, billing intervals, anything with a real trade-off.' },
     { name: 'Segmented', height: '32px', padding: '2px track', radius: '8px / 6px', use: '2–5 short labels where space is tight and the change is instant.' },
   ],

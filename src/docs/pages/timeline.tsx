@@ -448,7 +448,7 @@ export default defineDoc({
       {
         n: 5,
         label: 'Title',
-        value: '13px, --ds-fg',
+        value: '15px, --ds-fg',
         kind: 'type',
         note: 'Past tense and specific: "Rolled back to 4019", not "Rollback". The timeline is a record of what happened.',
       },

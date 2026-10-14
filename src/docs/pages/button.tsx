@@ -693,8 +693,9 @@ export default defineDoc({
     { category: 'radius', token: '--radius-sm', value: '6px', usedFor: 'xs corners on the rounded shape' },
     { category: 'radius', token: '--radius-md', value: '8px', usedFor: 'sm and md corners on the rounded shape' },
     { category: 'radius', token: '--radius-lg', value: '12px', usedFor: 'lg corners on the rounded shape' },
-    { category: 'typography', token: '--text-label', value: '13px / 540', usedFor: 'sm and md labels' },
-    { category: 'typography', token: '--text-body-lg', value: '17px', usedFor: 'lg label' },
+    { category: 'typography', token: '--text-label-sm', value: '14px / 500', usedFor: 'xs label' },
+    { category: 'typography', token: '--text-label', value: '15px / 500', usedFor: 'sm and md labels' },
+    { category: 'typography', token: '--text-label-lg', value: '17px / 500', usedFor: 'lg label' },
     { category: 'motion', token: '--ease-standard', value: 'cubic-bezier(0.2, 0, 0, 1)', usedFor: 'Color and wash transitions' },
     { category: 'motion', token: 'duration', value: '120ms', usedFor: 'Hover and press feedback' },
     { category: 'motion', token: 'backdrop blur', value: '16px', usedFor: 'Nav and both glass variants' },
@@ -708,7 +709,7 @@ export default defineDoc({
       radius: 'pill',
       icon: '13px',
       gap: '6px',
-      type: '12px / 540',
+      type: '14px / 500',
       minWidth: '56px',
       touch: '44px (padded)',
       use: 'Inside table rows, chips and dense toolbars. Never as a form’s primary action.',
@@ -720,7 +721,7 @@ export default defineDoc({
       radius: 'pill',
       icon: '14px',
       gap: '6px',
-      type: '13px / 540',
+      type: '15px / 500',
       minWidth: '64px',
       touch: '44px (padded)',
       use: 'Card footers, panel headers, secondary toolbars, filter bars.',
@@ -732,7 +733,7 @@ export default defineDoc({
       radius: 'pill',
       icon: '16px',
       gap: '8px',
-      type: '13px / 540',
+      type: '15px / 500',
       minWidth: '72px',
       maxWidth: '20rem',
       touch: '44px (padded)',
@@ -1032,7 +1033,7 @@ import { Save, Trash2, Plus, Copy } from 'lucide-react'
   white-space: nowrap;
   user-select: none;
   font: inherit;
-  font-weight: 540;
+  font-weight: 500;
   border: 0;
   border-radius: 9999px;
   color: var(--btn-text);
@@ -1080,10 +1081,10 @@ import { Save, Trash2, Plus, Copy } from 'lucide-react'
 }
 
 /* --- sizes: the padding is the pill's --- */
-.ds-btn--xs { height: 28px; padding-inline: 12px; font-size: 12px; }
-.ds-btn--sm { height: 32px; padding-inline: 14px; font-size: 13px; }
-.ds-btn--md { height: 36px; padding-inline: 16px; font-size: 13px; }
-.ds-btn--lg { height: 44px; padding-inline: 24px; font-size: 17px; }
+.ds-btn--xs { height: 28px; padding-inline: 12px; font-size: 0.875rem; }  /* 14px */
+.ds-btn--sm { height: 32px; padding-inline: 14px; font-size: 0.9375rem; } /* 15px */
+.ds-btn--md { height: 36px; padding-inline: 16px; font-size: 0.9375rem; } /* 15px */
+.ds-btn--lg { height: 44px; padding-inline: 24px; font-size: 1.0625rem; } /* 17px */
 .ds-btn--icon { padding-inline: 0; aspect-ratio: 1; }
 
 /* --- shapes --- */

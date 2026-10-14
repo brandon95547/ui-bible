@@ -596,7 +596,7 @@ export default defineDoc({
       {
         n: 7,
         label: 'Column heading',
-        value: '11px overline, muted',
+        value: '12px overline, muted',
         kind: 'type',
         note: 'This is the component. Headings are what turn sixty links into three decisions; without them the panel really is the wall of choice Hick’s law warns about.',
       },
@@ -634,7 +634,7 @@ export default defineDoc({
     { category: 'radius', token: '--radius-xl', usedFor: 'Panel corners' },
     { category: 'spacing', token: 'padding', value: '20px', usedFor: 'Panel inset' },
     { category: 'spacing', token: 'column gap', value: '32px', usedFor: 'Between columns' },
-    { category: 'typography', token: '--text-overline', value: '11px', usedFor: 'Column headings' },
+    { category: 'typography', token: '--text-overline', value: '12px', usedFor: 'Column headings' },
     { category: 'motion', token: 'openDelay', value: '120ms', usedFor: 'Hover intent in' },
     { category: 'motion', token: 'closeDelay', value: '240ms', usedFor: 'Grace period out' },
   ],
@@ -767,7 +767,7 @@ export default defineDoc({
       { id: '4.1.2', name: 'Name, Role, Value', level: 'A' },
     ],
     contrast: [
-      'Column headings are 11px muted text and still need 4.5:1. They are the most important text in the panel — being small is not an exemption.',
+      'Column headings are 12px muted text and still need 4.5:1. They are the most important text in the panel — being small is not an exemption.',
       'The panel must reach 3:1 against the page behind it. Its own border does that job in dark themes, where the shadow does almost nothing.',
       'The open trigger must be distinguishable from its siblings by more than the chevron rotation, which is invisible to anyone not watching for it.',
     ],

@@ -344,9 +344,9 @@ export default defineDoc({
   ],
 
   sizes: [
-    { name: 'Small', height: '32px', padding: '0 28px 0 28px', icon: '14px', type: '13px', use: 'Table toolbars and filter bars, where it narrows what is already visible.' },
-    { name: 'Medium', height: '36px', padding: '0 32px', icon: '15px', type: '15px', minWidth: '16rem', use: 'The default. App headers and page-level search.' },
-    { name: 'Large', height: '48px', padding: '0 44px', icon: '18px', type: '16px', use: 'A dedicated search page, where the field is the subject of the screen.' },
+    { name: 'Small', height: '32px', padding: '0 28px 0 28px', icon: '14px', type: '14px', use: 'Table toolbars and filter bars, where it narrows what is already visible.' },
+    { name: 'Medium', height: '36px', padding: '0 32px', icon: '15px', type: '16px', minWidth: '16rem', use: 'The default. App headers and page-level search.' },
+    { name: 'Large', height: '48px', padding: '0 44px', icon: '18px', type: '17px', use: 'A dedicated search page, where the field is the subject of the screen.' },
     { name: 'Clear button', height: '20px', minWidth: '20px', touch: '44px on coarse pointers', use: 'Appears only when there is a query.' },
     { name: 'Suggestion panel', maxWidth: 'Matches the field', height: 'max 18rem', use: 'About 8 rows before it scrolls. Wider than the field reads as a different component.' },
   ],

@@ -329,8 +329,8 @@ export default defineDoc({
   ],
 
   sizes: [
-    { name: 'Small', height: '32px', padding: '0 10px', type: '12px', gap: '4px', touch: '44px (padded)', use: 'Inside a card or a panel header.' },
-    { name: 'Medium', height: '36px', padding: '0 12px', type: '13px', gap: '4px', touch: '44px (padded)', use: 'Page-level sections. The default.' },
+    { name: 'Small', height: '32px', padding: '0 10px', type: '14px', gap: '4px', touch: '44px (padded)', use: 'Inside a card or a panel header.' },
+    { name: 'Medium', height: '36px', padding: '0 12px', type: '15px', gap: '4px', touch: '44px (padded)', use: 'Page-level sections. The default.' },
     { name: 'Full width', height: '36px', minWidth: '96px per tab', use: 'Two to four tabs on mobile, distributed evenly.' },
     { name: 'Count badge', height: '18px', use: 'Accent on the active tab, neutral on the rest.' },
   ],

@@ -416,7 +416,7 @@ export default defineDoc({
   ],
 
   sizes: [
-    { name: 'Small', height: '32px min', padding: '4px', gap: '4px', type: '13px', use: 'Table filters and dense forms.' },
+    { name: 'Small', height: '32px min', padding: '4px', gap: '4px', type: '14px', use: 'Table filters and dense forms.' },
     { name: 'Medium', height: '36px min', padding: '6px', gap: '6px', type: '15px', minWidth: '14rem', use: 'The default.' },
     { name: 'Large', height: '44px min', padding: '8px', gap: '6px', type: '16px', use: 'Touch layouts and recipient fields.' },
     { name: 'Token', height: '24px', padding: '0 4px 0 8px', radius: 'full', type: '12px', use: 'Smaller than a standalone Chip so several fit inside the field.' },

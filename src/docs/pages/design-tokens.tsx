@@ -307,7 +307,7 @@ export default defineDoc({
     { category: 'spacing', token: 'Tailwind scale', value: '0.25rem base', usedFor: 'gap-*, p-*, m-* — every step is a multiple of 4px' },
     { category: 'radius', token: '--radius-xs … --radius-3xl', value: '4 → 28px', usedFor: 'Seven steps, no more' },
     { category: 'shadow', token: '--shadow-e0 … --shadow-e5', usedFor: 'Six elevation levels' },
-    { category: 'typography', token: '--text-display … --text-overline', usedFor: 'Thirteen named type styles' },
+    { category: 'typography', token: '--text-display … --text-overline', usedFor: 'Seventeen named type styles' },
     { category: 'motion', token: '--ease-standard', usedFor: 'The default curve for almost everything' },
     { category: 'motion', token: '--duration-fast … --duration-deliberate', value: '120 → 640ms', usedFor: 'Seven duration steps' },
   ],

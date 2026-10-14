@@ -305,14 +305,13 @@ export default defineDoc({
     { category: 'spacing', token: 'padding-x', value: '8px (md), 6px (sm)', usedFor: 'Horizontal padding' },
     { category: 'spacing', token: 'gap', value: '6px', usedFor: 'Dot or icon to label' },
     { category: 'radius', token: 'full', usedFor: 'Pill shape' },
-    { category: 'typography', token: '--text-caption', value: '12px', usedFor: 'Medium label' },
-    { category: 'typography', token: '--text-overline', value: '11px', usedFor: 'Small label' },
+    { category: 'typography', token: '--text-badge', value: '12px / 500', usedFor: 'Label, at both sizes' },
   ],
 
   sizes: [
-    { name: 'Small', height: '18px', padding: '0 6px', radius: 'full', type: '11px / 500', minWidth: '18px', use: 'Inside table cells, next to a title, in dense toolbars.' },
+    { name: 'Small', height: '18px', padding: '0 6px', radius: 'full', type: '12px / 500', minWidth: '18px', use: 'Inside table cells, next to a title, in dense toolbars.' },
     { name: 'Medium', height: '22px', padding: '0 8px', radius: 'full', type: '12px / 500', minWidth: '22px', use: 'The default. List rows, cards, page headers.' },
-    { name: 'Count', height: '18px', padding: '0 4px', radius: 'full', type: '11px tabular', minWidth: '18px', use: 'Navigation items and tabs. Caps at 99+.' },
+    { name: 'Count', height: '18px', padding: '0 4px', radius: 'full', type: '12px tabular', minWidth: '18px', use: 'Navigation items and tabs. Caps at 99+.' },
     { name: 'Dot only', height: '8px', radius: 'full', use: 'A presence indicator with no number. Needs an accessible name.' },
   ],
 

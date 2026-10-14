@@ -258,7 +258,7 @@ export function Stat({
             tone === 'neutral' ? '--ds-layer-active' : `--ds-${tone}-subtle`,
             '--ds-fg-muted',
           ],
-          why: 'The chip carries the tone, which frees the value to be a plain word rather than a figure. The label sits at 11px overline above a 16px value — a quarter of the stacked layout’s emphasis, because this tile reports a fact you read once, not a number you watch.',
+          why: 'The chip carries the tone, which frees the value to be a plain word rather than a figure. The label sits at 12px overline above a 16px value — a quarter of the stacked layout’s emphasis, because this tile reports a fact you read once, not a number you watch.',
           a11y: 'The chip icon is decorative and hidden: the label names the field and the value states it, so the tone is never the only thing carrying the meaning.',
         })}
       >

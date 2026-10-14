@@ -628,7 +628,7 @@ export default defineDoc({
     { category: 'color', token: '--ds-surface-overlay', usedFor: 'Command palette' },
     { category: 'shadow', token: '--shadow-e5', usedFor: 'Palette elevation' },
     { category: 'motion', token: 'duration', value: '0ms', usedFor: 'Selection change — never animated' },
-    { category: 'typography', token: '--text-label', value: '13px', usedFor: 'Row titles at both densities' },
+    { category: 'typography', token: '--text-label', value: '15px', usedFor: 'Row titles at both densities' },
   ],
 
   sizes: [
