@@ -64,50 +64,14 @@ Five sections. Only **Components** is subdivided, and only one level deep.
 | --------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Foundations** | Tokens, color, typography, spacing, grid, radius, elevation, icons, motion, animation, breakpoints, accessibility, dark theme, light theme    |
 | **Components**  | 65 components in seven groups — see below                                                                                                     |
-| **Color**       | Color we did not draw — Flat UI Colors 2's fourteen palettes, the Sonora theme sheet, and the page on converting a palette into something shippable |
+| **Color**       | Color we did not draw — the Sonora theme sheet                                                                                                |
 | **Patterns**    | Dashboards, desktop, mobile, and the empty / error / loading states                                                                            |
 | **Principles**  | The UX laws every rule in here derives from                                                                                                    |
 
 **Foundations owns our color; Color owns everyone else's.** The ramps, the semantic
-roles and the contrast contract are a foundation and stay there. A borrowed palette has
-no tokens, no theming and no authority — it is a reference you are being shown how to
-convert. The argument for *how* you convert one lives once, on **Using a Palette**,
-instead of once per palette.
-
-Each palette page then *performs* that conversion: twenty colors in, a working dark
-theme out, in seven numbered sections — text ramp, surfaces, semantic roles, real
-components, chart colors, alerts, elevation — plus the CSS to paste. Nothing on those
-pages is transcribed. `palette-system.ts` derives every value from the hex and records
-which of two things it is: **taken** (a literal palette color, cited by its position in
-the 5×4 grid and its name) or **derived** (computed, with the arithmetic stated). A
-transcription error cannot survive contact with the audit table, and a derivation that
-misses its target renders its own ratio in red.
-
-The rules are deliberately dull, because their job is to make fifteen palettes
-comparable rather than to out-design the people who drew them:
-
-- **Text** is *solved*, not mixed. Bisection finds the ink that hits 8:1 against the
-  page, so "secondary" means the same thing on all fifteen — a fixed percentage step
-  gives a different ramp on every palette and a failing one on the darkest.
-- **Semantic roles** take the nearest hue to each target, then the *brightest* of the
-  near-ties. That second clause is the rule, not a tie-break: palettes are drawn in
-  light/dark pairs (Emerald and Nephritis differ by 0.12° of hue), and sorting by hue
-  alone lets floating-point noise orphan the pair the designer drew for exactly this.
-- **Brightness always means relative luminance**, never HSL lightness. The two disagree
-  where it matters: Sun Flower and Orange are 50.2% and 51.2% lightness — HSL calls the
-  orange brighter — while their luminances are 0.58 and 0.41.
-- **Elevation is never derived.** A shadow is the absence of light, so it is black at
-  low alpha on every palette; tinting it with the brand hue is how a dark theme starts
-  looking bruised.
-
-Run against Flat UI v1 the derivation reproduces the hand-made poster it was modeled on
-exactly — all six roles, both members of every pair. That is the check that the rules
-encode taste rather than merely being consistent.
-
-Fourteen of the fifteen are one collection. The fifteenth, **Sonora**, is a different
-kind of page: a **theme sheet**, built by `defineThemePage` from a `SiteTheme` rather than
-by `definePalettePage` from a `Palette`. A palette page asks what could be made of twenty
-swatches; a theme sheet sets down a finished theme, organized by job instead of by hue:
+roles and the contrast contract are a foundation and stay there. Color holds one page,
+**Sonora**: a **theme sheet**, built by `defineThemePage` from a `SiteTheme`, that sets
+down a finished theme organized by job instead of by hue:
 
 1. **Surfaces and elevation** — the ladder, E0 up, with the components on each rung.
    Levels are assigned by where components sit, not by sorting grays; hover and selected
@@ -120,12 +84,11 @@ swatches; a theme sheet sets down a finished theme, organized by job instead of 
 Every row says whether it was **observed** (measured in use) or **inferred** (a real value
 whose role is a reading), and a role a theme does not have is a row that is not there.
 Nothing in the builder is specific to Sonora: the next theme is a new file beside
-`src/docs/data/sonora-theme.ts`. The twenty swatches are still in `sonora-colors.ts`,
-still in the comparison on **Using a Palette**, and shown on the sheet under Raw tokens.
+`src/docs/data/sonora-theme.ts`. The twenty swatches in `sonora-colors.ts` are shown on
+the sheet under Raw tokens.
 
-The section is flat while there is one collection: a single page is not a group. A second
-collection (Material, IBM, Tailwind) turns it into `groups`, one per source — the shape
-Components already uses.
+The section is flat while it has one page: a single page is not a group. A second turns
+it into `groups`, one per kind — the shape Components already uses.
 
 | Component group  | Count | Contents                                                                                                                     |
 | ---------------- | ----- | ---------------------------------------------------------------------------------------------------------------------------- |

@@ -37,7 +37,7 @@ export function SectionOverview({
           </span>
           <h1 className="text-h1 text-[var(--ds-fg)]">{section.title}</h1>
           <Badge tone="neutral" variant="subtle" size="sm">
-            {pages.length} pages
+            {pages.length} {pages.length === 1 ? 'page' : 'pages'}
           </Badge>
           {written < pages.length && (
             <Badge tone="neutral" variant="subtle" size="sm">

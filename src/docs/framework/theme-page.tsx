@@ -16,9 +16,8 @@ import type { SiteTheme } from '@/docs/data/site-theme'
 /* ===========================================================================
    ONE THEME, ONE SHEET
 
-   A palette page is built from twenty swatches and asks what could be made of
-   them. This is built from a theme and sets it down in the order someone
-   building with it needs to know.
+   Built from a theme, and set down in the order someone building with it
+   needs to know.
 
      01  surfaces          the ladder, what sits on which rung, and the states
      02  the core palette  text, borders, status — and nothing else

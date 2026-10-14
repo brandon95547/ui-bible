@@ -1,19 +1,19 @@
-import type { Palette } from './flat-ui-colors'
+import type { Palette } from './site-theme'
 
 /* ===========================================================================
    SONORA — 20 colors
    The palette of Suno's interface, read out of the stylesheet at suno.com on
-   2026-10-13 and set in the 5×4 shape every palette in this section has.
+   2026-10-13 and set as a 5×4 swatch grid.
 
    Suno ships ramps, not twenty swatches: one neutral ("dumbo", nineteen steps)
-   and nine hues of nine or more. So unlike the Flat UI sets, these twenty were
-   chosen — by one rule, stated here so the choice can be checked:
+   and nine hues of nine or more. So these twenty were chosen — by one rule,
+   stated here so the choice can be checked:
 
      · Eight hues. For each, the step Suno's own dark theme binds an accent
        token to (accent-brand is strawberry-600, accent-error is vermilion-500,
-       and so on), with the step below it in the same ramp as its pair. That is
-       the light-over-dark column a Flat UI palette is drawn in. The ninth hue,
-       brown, is bound to no accent and is left out.
+       and so on), with the step below it in the same ramp as its pair: a
+       light-over-dark column. The ninth hue, brown, is bound to no accent and
+       is left out.
      · Four neutrals. The two palest their light theme stands on, a mid gray,
        and the surface their dark theme raises a control to.
 

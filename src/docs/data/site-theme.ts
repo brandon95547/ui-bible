@@ -1,11 +1,10 @@
-import type { Palette } from './flat-ui-colors'
 
 /* ===========================================================================
    A WEBSITE'S THEME, AS IT WAS FOUND
 
-   A palette page answers "what colors does this designer offer". A theme sheet
-   answers a different question: "what does this website actually look like, and
-   how would I build something that looks like it". Those are not the same data.
+   A theme sheet answers one question: "what does this website actually look
+   like, and how would I build something that looks like it". That is not the
+   same data as a list of the colors a stylesheet offers.
    A stylesheet carries every color anyone on the team ever needed once — nine
    ramps, a promotional gradient, other companies' brand colors — and a sheet
    that lists them all describes the stylesheet, not the interface.
@@ -165,6 +164,36 @@ export interface DecorativeGroup {
   purpose: string
   note?: string
   items: DecorativeItem[]
+}
+
+/** One swatch of a swatch grid. */
+export interface PaletteColor {
+  name: string
+  hex: string
+  /** kebab-case name, used for the generated CSS custom property. */
+  slug: string
+}
+
+/** Where a swatch grid came from. */
+export interface PaletteOrigin {
+  /** Its page id and filename. */
+  page: string
+  /** The namespace of its custom properties: `--<namespace>-<slug>`. */
+  namespace: string
+  /** One sentence saying where the values came from. */
+  credit: string
+}
+
+/** The same stylesheet read as a 5×4 swatch grid, shown under Raw tokens. */
+export interface Palette {
+  id: string
+  title: string
+  author: string
+  source?: string
+  /** One sentence on what the grid is, in this system's voice. */
+  character: string
+  origin?: PaletteOrigin
+  colors: PaletteColor[]
 }
 
 /** One of the site's own ramps, verbatim, for the collapsed reference. */

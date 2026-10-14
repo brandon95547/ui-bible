@@ -971,7 +971,7 @@ export function RawSection({ theme }: { theme: SiteTheme }) {
           <div className="flex flex-col gap-2">
             <span className="text-label text-[var(--ds-fg)]">The {palette.colors.length} swatches</span>
             <p className="max-w-[70ch] text-caption text-[var(--ds-fg-muted)]">
-              The same ramps as a swatch grid, hues in pairs, as the other palettes in this section are set.
+              The same ramps as a swatch grid, hues in pairs.
             </p>
             <div className="grid gap-x-4 gap-y-1.5" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(11rem, 1fr))' }}>
               {palette.colors.map((c) => (
