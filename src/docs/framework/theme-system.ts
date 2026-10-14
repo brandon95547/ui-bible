@@ -92,15 +92,6 @@ export interface ThemeClass {
   reason: string
 }
 
-const SCHEME_LABEL: Record<Scheme, string> = { dark: 'Dark', light: 'Light' }
-const CHROMA_LABEL: Record<Chroma, string> = {
-  monochrome: 'Monochrome',
-  accented: 'Neutral with an accent',
-  colorful: 'Colorful',
-}
-
-export const classLabel = (c: ThemeClass) => `${SCHEME_LABEL[c.scheme]} · ${CHROMA_LABEL[c.chroma]}`
-
 export function classifyTheme(theme: SiteTheme): ThemeClass {
   const page = theme.elevation[0]?.hex ?? '#000000'
   const pageLuminance = luminance(hexToRgb(page))
@@ -260,10 +251,10 @@ export function themeCss(theme: SiteTheme) {
   // In ramp order, so the primitives read as the ramp they are steps of.
   const primitives = [...ramp.keys()].filter((name) => used.has(name)).map((name) => `  --${ns}-${name}: ${ramp.get(name)};`)
 
-  return `/* ${theme.title} — ${theme.site}'s interface theme, as read on ${theme.captured}.
+  return `/* ${theme.title} — the theme as custom properties.
    Roles reference primitives; a value is written once. */
 :root {
-  /* primitives — the steps of ${theme.site}'s ramps this theme uses */
+  /* primitives — the ramp steps this theme uses */
 ${primitives.join('\n')}
 
   /* surfaces — the elevation ladder, page first */

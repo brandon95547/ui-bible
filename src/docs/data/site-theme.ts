@@ -8,8 +8,7 @@ import type { Palette } from './flat-ui-colors'
    how would I build something that looks like it". Those are not the same data.
    A stylesheet carries every color anyone on the team ever needed once — nine
    ramps, a promotional gradient, other companies' brand colors — and a sheet
-   that lists them all describes the stylesheet, not the interface. Suno's has
-   ninety chromatic values in it and the product is black, gray and cream.
+   that lists them all describes the stylesheet, not the interface.
 
    So this shape is organized by JOB rather than by hue, and it has no slot for
    "the palette". There is a ladder of surfaces, the text and borders that go on
@@ -175,40 +174,20 @@ export interface RawRamp {
   steps: { step: string; hex: string; alpha?: number }[]
 }
 
-/** The words on the overview's specimen, so it reads as this site and not as lorem. */
-export interface SpecimenCopy {
-  nav: string[]
-  /** Index into `nav` of the current page. */
-  current: number
-  search: string
-  heading: string
-  /** The outlined action beside the heading. */
-  more: string
-  /** The filled action in the navigation. */
-  action: string
-  cards: { title: string; meta: string }[]
-}
-
 export interface SiteTheme {
   /** Page id and filename. */
   id: string
   title: string
-  /** The website's name. */
+  /* Where the values came from. A record for whoever maintains the file, and a
+     search keyword; the page does not print it. */
   site: string
   source: string
-  /** ISO date the interface was read. A theme sheet is a dated observation. */
+  /** ISO date the values were read. */
   captured: string
-  /** The pages that were read, so the limits of the observation are on record. */
-  pages: string[]
   /** Namespace of the generated custom properties: `--<namespace>-…`. */
   namespace: string
-  /** One sentence saying where the values came from. */
-  credit: string
-  /** One line on what the interface is, in this system's voice. */
+  /** One line on what the theme is, in this system's voice. */
   summary: string
-  /** The typefaces in use. Noted, not reproduced — we do not ship their fonts. */
-  type?: { ui: string; display?: string }
-  specimen: SpecimenCopy
 
   elevation: ElevationLevel[]
   /** A sentence for anything the ladder deliberately leaves out. */

@@ -2,27 +2,16 @@ import { SONORA } from './sonora-colors'
 import type { SiteTheme } from './site-theme'
 
 /* ===========================================================================
-   SONORA — the theme of Suno's interface
+   SONORA — the theme
 
-   Read off suno.com on 2026-10-13, signed out: the landing page, the app shell
-   at /explore (sidebar, search, cards, player bar, an open menu, the log-in
-   dialog) and the sign-in page. The signed-in product was not read, and where
-   that limits what can be said, the entry says so.
+   One neutral ramp ("dumbo", nineteen steps from #101012 to #fcfbf9) used at
+   both ends: three near-blacks for surfaces, a cream for text and for the one
+   filled button, and white at 4–15% for every border and every hover.
 
-   The earlier reading of the same stylesheet is in sonora-colors.ts and is
-   still here, under `raw.palette`. It chose twenty swatches the way a palette
-   site would — eight hues in pairs and four neutrals — and it is an accurate
-   account of what Suno's stylesheet OFFERS. It was a misleading account of
-   what Suno LOOKS like, because sixteen of its twenty are colors the interface
-   touches a few pixels at a time. Hot pink was "primary" on that page. On the
-   site, pink is a notification dot.
+   The twenty swatches in sonora-colors.ts are the same ramps as a palette, and
+   are shown under Raw tokens.
 
-   What the interface is actually made of is one neutral ramp ("dumbo",
-   nineteen steps from #101012 to #fcfbf9) used at both ends: three near-blacks
-   for surfaces, a cream for text and for the one filled button, and white at
-   4–15% for every border and every hover. That is what this file records.
-
-   Names in `source` are Suno's, verbatim. Names in `key` are ours.
+   Names in `source` are the source's own. Names in `key` are ours.
    ======================================================================== */
 
 const WHITE = '#ffffff'
@@ -33,31 +22,13 @@ export const SONORA_THEME: SiteTheme = {
   site: 'Suno',
   source: 'https://suno.com',
   captured: '2026-10-13',
-  pages: ['suno.com/home', 'suno.com/explore', 'suno.com/sign-in'],
   namespace: 'sonora',
-  credit: 'Read off Suno’s interface, signed out, as it rendered on 2026-10-13.',
   summary:
     'Near-black surfaces three steps deep, cream text, and one cream button. Every border and every hover is white at low alpha, and the only color in the frame is whatever the artwork brings.',
-  type: { ui: 'Neue Montreal', display: 'Editorial New' },
-  specimen: {
-    nav: ['Home', 'Explore', 'Create', 'Library'],
-    current: 1,
-    search: 'Search for songs, playlists, creators, or genres',
-    heading: 'Staff Picks',
-    more: 'See all',
-    action: 'Log in',
-    cards: [
-      { title: 'Dead Nights', meta: '164K plays' },
-      { title: 'Shades and Styles', meta: '82K plays' },
-      { title: 'How it feels', meta: '61K plays' },
-    ],
-  },
 
   /* -- surfaces ------------------------------------------------------------
-     Three are named and painted. The ramp goes on above them and the
-     stylesheet does paint backgrounds with the next two steps, so they are
-     listed — as the continuation of the ladder, not as levels anyone was seen
-     using. */
+     Three are named and in use. The next two steps of the ramp are listed as
+     the continuation of the ladder, and marked inferred. */
   elevation: [
     {
       level: 0,
@@ -101,8 +72,7 @@ export const SONORA_THEME: SiteTheme = {
       label: 'Step above',
       ref: 'dumbo-200',
       hex: '#2e2e33',
-      purpose:
-        'The next step of the same ramp. The stylesheet paints backgrounds with it, but it has no name and was on none of the pages read.',
+      purpose: 'The next step of the same ramp. It has no role name and no component assigned to it.',
       components: [],
       evidence: 'inferred',
       basis: 'A bg-dumbo-200 utility in the stylesheet; no rendered use seen',
@@ -119,9 +89,6 @@ export const SONORA_THEME: SiteTheme = {
       basis: 'A bg-dumbo-250 utility in the stylesheet; no rendered use seen',
     },
   ],
-  elevationNote:
-    'The stylesheet also names a background-base, pure black. Nothing on the pages read was painted with it, so it has no level here.',
-
   placements: [
     {
       component: 'Navigation',
@@ -134,7 +101,7 @@ export const SONORA_THEME: SiteTheme = {
       component: 'Cards',
       level: null,
       treatment:
-        'No surface. A song is its artwork with two lines of text under it, straight on the page. Marketing cards are a 4% white wash with a 10% white outline, 24px radius.',
+        'No surface. A media card is artwork with two lines of text under it, straight on the page. A bordered card is a 4% white wash with a 10% white outline, 24px radius.',
       evidence: 'observed',
       basis: 'Song cards on /explore; feature cards on /home',
     },
@@ -236,7 +203,7 @@ export const SONORA_THEME: SiteTheme = {
       source: 'foreground-tertiary',
       ref: 'dumbo-600',
       hex: '#a3a3a3',
-      purpose: 'Navigation rows that are not current, artist names, play counts.',
+      purpose: 'Navigation rows that are not current, bylines, counts.',
       evidence: 'observed',
       basis: 'Sidebar rows and card metadata on /explore',
     },
@@ -333,7 +300,7 @@ export const SONORA_THEME: SiteTheme = {
       source: 'accent-blue',
       ref: 'dodger-blue-600',
       hex: '#1f8bff',
-      purpose: 'Suno names no information role. This is the blue it tints notices with, at 10–20%.',
+      purpose: 'There is no named information role. This is the blue that tints notices, at 10–20%.',
       evidence: 'inferred',
       basis: 'bg-accent-blue/10 and border-accent-blue utilities; no "info" token exists',
     },
@@ -349,7 +316,7 @@ export const SONORA_THEME: SiteTheme = {
       radius: '9999px',
       purpose: 'The one filled action on a screen: Log in, Join, Subscribe.',
       evidence: 'observed',
-      basis: 'Log in in the sidebar; Join Suno for free in the header',
+      basis: 'The filled button in the sidebar and in the header',
     },
     {
       key: 'button-secondary',
@@ -416,7 +383,7 @@ export const SONORA_THEME: SiteTheme = {
           css: 'linear-gradient(90deg, #ff6a00 0%, #fd429c 52%, #f8441b 100%)',
           value: 'An image, white label',
           usage:
-            'The site paints a photograph of a gradient, not a CSS one. It is drawn here from Suno’s own orange, pink and red as a stand-in.',
+            'An image of a gradient rather than a CSS one. Drawn here from the orange, pink and red ramps as a stand-in.',
           evidence: 'observed',
         },
       ],
@@ -551,6 +518,6 @@ export const SONORA_THEME: SiteTheme = {
     ],
     palette: SONORA,
     omitted:
-      'Left out on purpose: Tailwind’s stock palette, which the stylesheet carries alongside Suno’s own ramps, two extra steps of dandelion (850 and 950), and ten brand colors belonging to other companies for its share buttons. None of them is Suno’s theme.',
+      'Left out on purpose: two extra steps of dandelion (850 and 950), and third-party brand colors used only on share buttons.',
   },
 }

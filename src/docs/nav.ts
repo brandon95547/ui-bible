@@ -910,7 +910,7 @@ const COLOR: NavPage[] = [
     id: 'sonora',
     title: 'Sonora Palette',
     blurb:
-      'Suno’s interface as it is: three near-blacks, cream text and one cream button. A theme sheet, not a swatch grid.',
+      'Three near-blacks, cream text and one cream button. A theme sheet, not a swatch grid.',
     keywords: ['suno', 'theme', 'monochrome', 'elevation', 'surfaces', 'dumbo', 'dark product', 'music'],
     // The interface, not the stylesheet: the three surfaces, then the three
     // text steps. No hue is here because none is in the chrome.

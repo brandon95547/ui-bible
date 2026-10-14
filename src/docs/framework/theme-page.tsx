@@ -1,4 +1,3 @@
-import { ExternalLink } from 'lucide-react'
 import {
   ContrastSection,
   CoreSection,
@@ -8,7 +7,6 @@ import {
   PrimarySpecimen,
   RawSection,
   StateSpecimen,
-  ThemeOverview,
 } from './ThemeSheet'
 import { buttonContrast, classifyTheme, contrastRows, describe, themeCss } from './theme-system'
 import { defineDoc } from './types'
@@ -16,32 +14,28 @@ import type { DocSpec } from './types'
 import type { SiteTheme } from '@/docs/data/site-theme'
 
 /* ===========================================================================
-   ONE WEBSITE, ONE SHEET
+   ONE THEME, ONE SHEET
 
    A palette page is built from twenty swatches and asks what could be made of
-   them. This is built from a website and asks what was made: what the
-   interface looks like, in the order someone rebuilding it needs to know.
+   them. This is built from a theme and sets it down in the order someone
+   building with it needs to know.
 
-     01  the overview      a screen of it, drawn from the tokens
-     02  surfaces          the ladder, what sits on which rung, and the states
-     03  the core palette  text, borders, status — and nothing else
-     04  elements          the standard controls, built from 02 and 03
-     05  contrast          text on the surfaces it is actually put on
-     06  decorative        shut
-     07  raw tokens        shut
+     01  surfaces          the ladder, what sits on which rung, and the states
+     02  the core palette  text, borders, status — and nothing else
+     03  elements          the standard controls, built from 01 and 02
+     04  contrast          text on the surfaces it is actually put on
+     05  decorative        shut
+     06  raw tokens        shut
 
-   The order is the argument. A sheet that opens on every color in a
-   stylesheet teaches that the stylesheet is the theme; one that opens on the
-   page color and a button teaches what the site looks like. 06 and 07 are
-   real and closed, because the moment they are open they are the loudest
-   thing on the page.
+   05 and 06 are real and closed, because the moment they are open they are
+   the loudest thing on the page.
 
    These are the page's own sections (DocSpec.sheet), not examples under a
    "Live preview". A palette is not a component: it has no controls and no
    states, and nothing on it is live.
 
-   Nothing below is specific to one site. Hand it a SiteTheme and it draws
-   that site; a role the data does not have is a section that is not there.
+   Nothing below is specific to one theme. Hand it a SiteTheme and it draws
+   that one; a role the data does not have is a section that is not there.
    ======================================================================== */
 
 const list = (items: string[]) =>
@@ -103,82 +97,63 @@ export function defineThemePage(theme: SiteTheme): DocSpec {
       ],
     },
 
-    /* Not a `preview`. There is nothing here to change the controls of: this
-       is what a website looks like, set down, and each group of values is a
-       section in its own right. The boards are drawn bare for the same reason
-       — a stage with a theme switch and a device toggle around a list of
-       another site's colors offers to do things that would make it wrong. */
+    /* Not a `preview`. There is nothing here to change the controls of: each
+       group of values is a section in its own right. The boards are drawn
+       bare for the same reason — a stage with a theme switch and a device
+       toggle around a list of colors offers to do things that would make it
+       wrong. */
     sheet: [
-      {
-        id: 'overview',
-        title: 'Theme overview',
-        description: `${theme.credit} What follows is a screen of the interface drawn from its own tokens, and under it the handful of values that screen is made of.`,
-        render: (
-          <div className="flex w-full flex-col gap-4">
-            <ThemeOverview theme={theme} cls={cls} />
-            <a
-              href={theme.source}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-1 self-start text-caption text-[var(--ds-accent-text)] underline decoration-[var(--ds-accent-border)] underline-offset-2 hover:decoration-current"
-            >
-              See the original at {theme.source.replace(/^https?:\/\//, '')}
-              <ExternalLink size={12} aria-hidden />
-            </a>
-          </div>
-        ),
-      },
       {
         id: 'surfaces',
         title: 'Surfaces and elevation',
-        description: `${observed.length} surfaces were seen in use, from the page up${
-          inferred.length ? `; ${inferred.length} more are the next steps of the same ramp` : ''
-        }. A level is where a component was found, not where its gray sorts — which is why the dialog and the menu are not on the rungs you would guess. Hover and selected are underneath, on their own, because neither is a level.`,
+        description: `${observed.length} surfaces are in use, from the page up${
+          inferred.length ? `; ${inferred.length} more continue the same ramp` : ''
+        }. A level is where a component sits, not where its gray sorts — which is why the dialog and the menu are not on the rungs you would guess. Hover and selected are underneath, on their own, because neither is a level.`,
         render: <ElevationSection theme={theme} />,
       },
       {
         id: 'core',
         title: 'Core palette',
         description:
-          'What goes on those surfaces, in three groups: the text, the lines, and the handful of colors that mean something. Each has our name for the role, the site’s name for the value, and what it is for. Surfaces are not repeated here.',
+          'What goes on those surfaces, in three groups: the text, the lines, and the handful of colors that mean something. Each has its role name, the token behind it, and what it is for. Surfaces are not repeated here.',
         render: <CoreSection theme={theme} />,
       },
       {
         id: 'elements',
         title: 'Interface elements',
         description:
-          'The standard controls, assembled from the two sections above and nothing else. This is the check on them: if a button built from these roles does not look like the site’s button, a role is wrong.',
+          'The standard controls — buttons, fields, navigation rows, a menu and a dialog — assembled from the two sections above and nothing else.',
         render: <ElementsSection theme={theme} />,
       },
       {
         id: 'contrast',
         title: 'Contrast',
         description:
-          'Each text color against each surface it is actually set on, and each button label against its own fill. A theme has already chosen its surfaces, so these are the only ratios a reader will ever meet.',
+          'Each text color against each surface it is set on, and each button label against its own fill. The theme has already chosen its surfaces, so these are the only ratios a reader will ever meet.',
         render: <ContrastSection theme={theme} />,
       },
       {
         id: 'decorative',
         title: 'Decorative colors and special effects',
-        description: `Shut by default. ${decorativeCount} treatments the interface uses now and then — a promotional button, an indicator, glass over artwork — grouped by the job each does. They are recorded so they can be reproduced, and kept out of the way so they are not mistaken for the theme.`,
+        description: `Shut by default. ${decorativeCount} treatments used now and then — a promotional button, an indicator, glass over artwork — grouped by the job each does. They are kept out of the way so they are not mistaken for the theme.`,
         render: <DecorativeSection theme={theme} />,
       },
       {
         id: 'raw',
         title: 'Raw tokens',
-        description: `Shut by default. The ${rawRamps} ramps in ${theme.site}’s stylesheet. ${chromaticRamps} of them are hues, and the sections above take a status color from ${
+        description: `Shut by default. The ${rawRamps} ramps the roles above are drawn from. ${chromaticRamps} of them are hues, and the sections above take a status color from ${
           new Set(theme.semantic.map((s) => s.ref?.replace(/-\d+$/, ''))).size
-        } of those. The rest of what is here is the difference between a stylesheet and a theme.`,
+        } of those. The rest are here for reference.`,
         render: <RawSection theme={theme} />,
       },
     ],
 
     do: [
       {
-        title: 'Give the filled button the color the site gives it',
-        why: `${theme.site}’s primary button is ${
+        title: 'Fill the primary button with the primary fill',
+        why: `The primary button is ${
           primary?.fill ? describe(primary.fill.hex, primary.fill.alpha) : 'unfilled'
-        } with ${primary?.ink.toUpperCase()} on it. That is the brand in this interface — the thing the eye is sent to — whatever else the stylesheet has a ramp for.`,
+        } with ${primary?.ink.toUpperCase()} on it. It is the one thing on a screen the eye is sent to, whatever else there is a ramp for.`,
         render: <PrimarySpecimen theme={theme} />,
       },
       {
@@ -187,17 +162,17 @@ export function defineThemePage(theme: SiteTheme): DocSpec {
         render: <StateSpecimen theme={theme} />,
       },
       {
-        title: 'Read the role off a component before you read the stylesheet',
-        why: `Every value on this sheet names what it was read from. ${list(
+        title: 'Put a component on the level it belongs to',
+        why: `${list(
           observed.map((l) => `E${l.level} is ${l.components.slice(0, 2).join(' and ').toLowerCase()}`),
-        )}. A token’s name tells you what someone intended; a component tells you what shipped.`,
+        )}. Choose the level by what the component is, not by which gray looks right beside it.`,
       },
     ],
 
     dont: [
       {
         title: 'Do not promote a color because it has a ramp',
-        why: `${chromaticRamps} hue ramps are in the stylesheet, and ${cls.chromatic.length} of ${cls.roles} interface roles carry a hue. A ramp is inventory. The theme is what the roles are painted with.`,
+        why: `${chromaticRamps} hue ramps are in the raw tokens, and ${cls.chromatic.length} of ${cls.roles} interface roles carry a hue. A ramp is inventory. The theme is what the roles are painted with.`,
         render: brand ? <PrimarySpecimen theme={theme} accent={brand.css} /> : undefined,
       },
       {
@@ -206,8 +181,8 @@ export function defineThemePage(theme: SiteTheme): DocSpec {
         render: <StateSpecimen theme={theme} wrong />,
       },
       {
-        title: 'Do not count artwork, and do not count the section at the bottom',
-        why: 'A cover, a hero photograph and an avatar are content: they change with what is on the screen and say nothing about the product. The promotional treatments are the product, used on purpose and rarely. Neither belongs in an answer to "what color is this site".',
+        title: 'Do not bring decorative color into the chrome',
+        why: 'The treatments in the collapsed section are for one button and a few badges. On a surface, a border or body text they stop being an accent, and the interface stops being this theme.',
       },
     ],
 
@@ -243,11 +218,6 @@ export function defineThemePage(theme: SiteTheme): DocSpec {
       ],
       aria: [
         {
-          attr: 'role="img"',
-          on: 'The overview specimen',
-          note: 'It is a picture of an interface, not an interface. One label describes it, and the fake navigation inside it is hidden from the accessibility tree.',
-        },
-        {
           attr: '<details> / <summary>',
           on: 'Decorative and Raw tokens',
           note: 'Native disclosure: announced as collapsed or expanded without any ARIA of ours, and operable before a script has run.',
@@ -259,7 +229,7 @@ export function defineThemePage(theme: SiteTheme): DocSpec {
         },
       ],
       focus:
-        'Copyable values take a ring in their own text color, offset outward, because they sit on the site’s surfaces rather than ours and our ring color was not chosen for them.',
+        'Copyable values take a ring in their own text color, offset outward, because they sit on the theme’s surfaces rather than ours and our ring color was not chosen for them.',
       screenReader: [
         'Observed and Inferred are words as well as a filled and a hollow dot, so the distinction is read and survives grayscale.',
         'Every state on this sheet is described by what changes — a layer, a label, an outline — because "selected" announced by color alone is selected for nobody who cannot see it.',
@@ -283,22 +253,12 @@ export function defineThemePage(theme: SiteTheme): DocSpec {
         `The page is ${page?.hex.toUpperCase()}, not black, and the text is ${
           body?.token.hex.toUpperCase() ?? 'near-white'
         }, not white. Most of what makes a neutral interface look like a particular neutral interface is in those two choices.`,
-        theme.type
-          ? `Type is part of the identity and is not on this sheet: the interface is set in ${theme.type.ui}${
-              theme.type.display ? `, with ${theme.type.display} for display headings` : ''
-            }. The specimens here use our own faces.`
-          : 'Type is part of the identity and is not on this sheet. The specimens here use our own faces.',
-        'If a value you need is not a role, it is in Raw tokens — but ask first whether the thing you are building is something the site itself builds. If it is not, there is no role for it because nobody needed one.',
+        'If a value you need is not a role, it is in Raw tokens. Give it a role before using it, so it is written once and can be changed in one place.',
       ],
       mistakes: [
-        'Reading a theme off its stylesheet. The stylesheet is the superset: every color anyone needed once. Start from a rendered page and use the stylesheet to name what you found.',
-        'Sorting surfaces by lightness and calling the result elevation. Where a component sits is a decision the site made, and it does not always follow the grays.',
-        'Treating an inferred row as the site’s decision. It is ours, it is marked, and it is the first thing to check against the product before relying on it.',
-      ],
-      realWorld: [
-        `${theme.credit} Pages read: ${list(theme.pages)}. Anything behind a sign-in was not seen.`,
-        'A theme sheet is a dated observation. Sites change their grays more often than their logos; re-read before building anything that has to match.',
-        'This records how the interface is styled so that the patterns can be studied. It is not a license to reproduce a product’s identity, its artwork or its typefaces.',
+        'Reaching into Raw tokens for a color a role already covers. A ramp step used directly is a value nobody can re-theme.',
+        'Sorting surfaces by lightness and calling the result elevation. Where a component sits is a decision, and it does not always follow the grays.',
+        'Treating an inferred row as settled. It is marked because its role is a reading rather than something measured in use; check it before relying on it.',
       ],
     },
   })

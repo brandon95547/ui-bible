@@ -2,17 +2,14 @@ import * as React from 'react'
 import { Check, ChevronRight } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import { useCopy } from '@/lib/hooks'
-import { Badge } from '@/ui/Display'
 import { contrast, withAlpha } from './palette'
 import {
   buttonContrast,
-  classLabel,
   contrastRows,
   describe,
   handles,
   over,
   paint,
-  type ThemeClass,
   type ThemeHandles,
 } from './theme-system'
 import type {
@@ -32,9 +29,9 @@ import type {
    our system does not exist, and if it leaked in, every site would come out
    looking a little like us.
 
-   The order is the order a developer needs it in. What it looks like; what to
-   stand things on; what to write and rule with; what a button is. Everything
-   else the stylesheet contains is at the bottom, shut.
+   The order is the order a developer needs it in. What to stand things on;
+   what to write and rule with; what a button is. Everything else is at the
+   bottom, shut.
 
    Nothing here knows which site it is drawing. Roles are looked up by key, and
    a role the site does not have is simply not drawn.
@@ -50,22 +47,11 @@ import type {
  * a documentation column between a sidebar and a table of contents, so the
  * window being 1400px wide says nothing about whether three columns fit.
  */
-function Board({
-  theme,
-  children,
-  className,
-  flush,
-}: {
-  theme: SiteTheme
-  children: React.ReactNode
-  className?: string
-  /** No padding — for a specimen that runs to the board's edge. */
-  flush?: boolean
-}) {
+function Board({ theme, children, className }: { theme: SiteTheme; children: React.ReactNode; className?: string }) {
   const h = handles(theme)
   return (
     <div
-      className={cn('@container w-full overflow-hidden rounded-[var(--radius-lg)]', !flush && 'p-4 sm:p-5', className)}
+      className={cn('@container w-full overflow-hidden rounded-[var(--radius-lg)] p-4 sm:p-5', className)}
       style={{ background: h.page, color: h.ink, border: `1px solid ${h.border('border-default')}` }}
     >
       {children}
@@ -184,262 +170,21 @@ function ButtonSample({
   )
 }
 
-/* ---- 00 · the overview --------------------------------------------------- */
-
 /**
- * The first thing on the page, and the point of it: a screen of the site,
- * drawn from the tokens below and nothing else. If this does not look like the
- * website, the tokens are wrong — which is a better test than any table.
- *
- * Artwork is drawn as blank tiles on purpose. On a media product the covers
- * are most of the color on the screen and none of the theme.
+ * What the two marks mean, said once, above the first rows that carry them.
  */
-function Specimen({ theme, h }: { theme: SiteTheme; h: ThemeHandles }) {
-  const sp = theme.specimen
-  const primary = h.button('button-primary')
-  const secondary = h.button('button-secondary')
-  const selected = h.state('state-selected')
-  const hairline = h.border('border-subtle')
-
+function EvidenceLegend({ color }: { color: string }) {
   return (
-    <div
-      role="img"
-      aria-label={`A screen of ${theme.site}’s interface, drawn from the tokens on this page`}
-      className="grid @xl:grid-cols-[10.5rem_minmax(0,1fr)]"
-    >
-      {/* navigation */}
-      <div
-        aria-hidden
-        className="hidden flex-col gap-1 p-3 @xl:flex"
-        style={{ borderRight: `1px solid ${h.border('border-default')}` }}
-      >
-        <span className="px-3 pb-3 pt-1 text-label font-semibold uppercase tracking-[0.18em]">{theme.site}</span>
-        {sp.nav.map((item, i) => {
-          const current = i === sp.current
-          return (
-            <span
-              key={item}
-              className="flex h-9 items-center gap-2.5 rounded-full px-3 text-label"
-              style={{
-                color: current ? h.ink : h.muted,
-                background: current && selected ? paint(selected.hex, selected.alpha) : 'transparent',
-              }}
-            >
-              <span className="h-3.5 w-3.5 rounded-[4px]" style={{ boxShadow: 'inset 0 0 0 1.5px currentColor' }} />
-              {item}
-            </span>
-          )
-        })}
-        {primary && (
-          <ButtonSample button={primary} className="mt-1 w-full">
-            {sp.action}
-          </ButtonSample>
-        )}
-      </div>
-
-      {/* content */}
-      <div aria-hidden className="flex min-w-0 flex-col">
-        <div className="flex flex-col gap-4 p-4">
-          <span
-            className="flex h-10 items-center truncate rounded-full px-4 text-body-sm"
-            style={{
-              background: h.surface(1),
-              color: withAlpha(h.fg('fg-secondary'), theme.metrics?.placeholderAlpha ?? 0.6),
-            }}
-          >
-            {sp.search}
-          </span>
-          <div className="flex items-center justify-between gap-3">
-            <span className="text-h4">{sp.heading}</span>
-            {secondary && (
-              <ButtonSample button={secondary} className="h-7 px-3 text-label-sm">
-                {sp.more}
-              </ButtonSample>
-            )}
-          </div>
-          <div className="grid grid-cols-3 gap-3">
-            {sp.cards.map((card) => (
-              <span key={card.title} className="flex min-w-0 flex-col gap-1.5">
-                <span
-                  className="aspect-[4/3] w-full rounded-[var(--radius-md)]"
-                  style={{
-                    background: `linear-gradient(135deg, ${h.surface(2)}, ${h.surface(1)})`,
-                    boxShadow: `inset 0 0 0 1px ${hairline}`,
-                  }}
-                />
-                <span className="truncate text-label">{card.title}</span>
-                <span className="truncate text-caption" style={{ color: h.muted }}>
-                  {card.meta}
-                </span>
-              </span>
-            ))}
-          </div>
-        </div>
-        {/* the bar that stays put */}
-        <div
-          className="mt-auto flex h-12 items-center justify-center gap-4 px-4"
-          style={{ background: h.surface(1), borderTop: `1px solid ${hairline}`, color: h.muted }}
-        >
-          <span className="h-0 w-0 border-y-[5px] border-r-[8px] border-y-transparent" style={{ borderRightColor: 'currentColor' }} />
-          <span className="h-0 w-0 border-y-[7px] border-l-[11px] border-y-transparent" style={{ borderLeftColor: h.ink }} />
-          <span className="h-0 w-0 border-y-[5px] border-l-[8px] border-y-transparent" style={{ borderLeftColor: 'currentColor' }} />
-          <span className="ml-2 hidden h-0.5 w-40 rounded-full @xl:block" style={{ background: hairline }} />
-        </div>
-      </div>
-    </div>
-  )
-}
-
-/** One cell of the identity strip: a role, drawn, with its value under it. */
-function Identity({
-  label,
-  muted,
-  children,
-  value,
-}: {
-  label: string
-  muted: string
-  children: React.ReactNode
-  value: React.ReactNode
-}) {
-  return (
-    <div className="flex min-w-0 flex-col gap-2">
-      <Eyebrow color={muted}>{label}</Eyebrow>
-      <div className="flex min-h-9 items-center gap-2">{children}</div>
-      <div className="flex flex-wrap gap-x-2 gap-y-0.5 font-mono text-caption" style={{ color: muted }}>
-        {value}
-      </div>
-    </div>
-  )
-}
-
-export function ThemeOverview({ theme, cls }: { theme: SiteTheme; cls: ThemeClass }) {
-  const h = handles(theme)
-  const levels = h.observed
-  const primary = h.button('button-primary')
-  const secondary = h.button('button-secondary')
-  const edge = h.border('border-default')
-
-  return (
-    <div className="flex w-full flex-col gap-4">
-      {/* what kind of interface this is, and how that was decided */}
-      <div className="flex flex-col gap-1.5">
-        <div className="flex flex-wrap items-center gap-2">
-          {classLabel(cls)
-            .split(' · ')
-            .map((word) => (
-              <Badge key={word} tone="neutral">
-                {word}
-              </Badge>
-            ))}
-          <span className="text-caption text-[var(--ds-fg-muted)]">
-            {theme.site} · read {theme.captured}
-          </span>
-        </div>
-        <p className="max-w-[70ch] text-body-sm text-[var(--ds-fg-muted)]">
-          {cls.reason} Artwork, status colors and promotional treatments are not counted.
-        </p>
-      </div>
-
-      <Board theme={theme} flush>
-        <Specimen theme={theme} h={h} />
-        <div
-          className="grid grid-cols-2 gap-x-5 gap-y-5 p-4 @xl:grid-cols-3 @xl:p-5 @5xl:grid-cols-6"
-          style={{ borderTop: `1px solid ${edge}` }}
-        >
-          <Identity label="Background" muted={h.muted} value={<span>{h.page.toUpperCase()}</span>}>
-            <span className="h-9 w-full rounded-[var(--radius-sm)]" style={{ background: h.page, boxShadow: `inset 0 0 0 1px ${edge}` }} />
-          </Identity>
-
-          <Identity
-            label="Surfaces"
-            muted={h.muted}
-            value={levels.slice(1).map((l) => <span key={l.key}>{l.hex.toUpperCase()}</span>)}
-          >
-            {levels.slice(1).map((l) => (
-              <span
-                key={l.key}
-                className="h-9 flex-1 rounded-[var(--radius-sm)]"
-                style={{ background: l.hex, boxShadow: `inset 0 0 0 1px ${h.border('border-subtle')}` }}
-              />
-            ))}
-          </Identity>
-
-          <Identity
-            label="Text"
-            muted={h.muted}
-            value={theme.foregrounds.map((t) => <span key={t.key}>{t.hex.toUpperCase()}</span>)}
-          >
-            {theme.foregrounds.map((t) => (
-              <span key={t.key} className="text-h4" style={{ color: t.hex }} title={`${t.label} · ${t.hex}`}>
-                Aa
-              </span>
-            ))}
-          </Identity>
-
-          <Identity
-            label="Borders"
-            muted={h.muted}
-            value={theme.borders
-              .filter((b) => b.key !== 'border-focus')
-              .map((b) => <span key={b.key}>{b.alpha !== undefined ? `${Math.round(b.alpha * 100)}%` : b.hex.toUpperCase()}</span>)}
-          >
-            {theme.borders
-              .filter((b) => b.key !== 'border-focus')
-              .map((b) => (
-                <span
-                  key={b.key}
-                  className="h-9 flex-1 rounded-[var(--radius-sm)]"
-                  style={{ border: `1px solid ${paint(b.hex, b.alpha)}` }}
-                  title={`${b.label} · ${describe(b.hex, b.alpha)}`}
-                />
-              ))}
-          </Identity>
-
-          {primary && (
-            <Identity
-              label="Primary button"
-              muted={h.muted}
-              value={
-                <>
-                  <span>{primary.fill ? `${describe(primary.fill.hex, primary.fill.alpha)} fill` : 'No fill'}</span>
-                  <span>{primary.ink.toUpperCase()} label</span>
-                </>
-              }
-            >
-              <ButtonSample button={primary}>{theme.specimen.action}</ButtonSample>
-            </Identity>
-          )}
-
-          {secondary && (
-            <Identity
-              label="Secondary button"
-              muted={h.muted}
-              value={
-                <>
-                  <span>{secondary.fill ? `${describe(secondary.fill.hex, secondary.fill.alpha)} fill` : 'No fill'}</span>
-                  {secondary.border && <span>{describe(secondary.border.hex, secondary.border.alpha)} edge</span>}
-                </>
-              }
-            >
-              <ButtonSample button={secondary}>{theme.specimen.more}</ButtonSample>
-            </Identity>
-          )}
-        </div>
-      </Board>
-
-      <p className="flex flex-wrap items-center gap-x-4 gap-y-1 text-caption text-[var(--ds-fg-muted)]">
-        <span>Every row below says which it is:</span>
-        <span className="inline-flex items-center gap-1.5">
-          <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-current" />
-          Observed — read off a rendered component, or the rule that paints one.
-        </span>
-        <span className="inline-flex items-center gap-1.5">
-          <span aria-hidden className="h-1.5 w-1.5 rounded-full ring-1 ring-inset ring-current" />
-          Inferred — a real value whose role is our reading.
-        </span>
-      </p>
-    </div>
+    <p className="flex flex-wrap items-center gap-x-4 gap-y-1 text-caption" style={{ color }}>
+      <span className="inline-flex items-center gap-1.5">
+        <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-current" />
+        Observed — the value was measured in use.
+      </span>
+      <span className="inline-flex items-center gap-1.5">
+        <span aria-hidden className="h-1.5 w-1.5 rounded-full ring-1 ring-inset ring-current" />
+        Inferred — a real value whose role is a reading.
+      </span>
+    </p>
   )
 }
 
@@ -614,6 +359,7 @@ export function ElevationSection({ theme }: { theme: SiteTheme }) {
   return (
     <Board theme={theme}>
       <div className="flex flex-col gap-7">
+        <EvidenceLegend color={h.muted} />
         <div className="grid gap-6 @4xl:grid-cols-[minmax(0,1fr)_17rem]">
           <Ladder theme={theme} h={h} />
           <Nest theme={theme} h={h} />
@@ -942,7 +688,7 @@ export function ElementsSection({ theme }: { theme: SiteTheme }) {
           <Group title="Corners" h={h}>
             <div className="flex flex-wrap gap-x-6 gap-y-2">
               {theme.shapes.map((s) => (
-                <span key={s.label} className="flex items-baseline gap-2" title={s.basis}>
+                <span key={s.label} className="flex items-baseline gap-2">
                   <span className="text-label">{s.label}</span>
                   <span className="font-mono text-caption" style={{ color: h.fg('fg-secondary') }}>
                     {s.value}
@@ -1206,8 +952,8 @@ export function RawSection({ theme }: { theme: SiteTheme }) {
     <Disclosure summary="Raw tokens" hint={`${ramps.length + (alpha?.length ?? 0)} ramps · ${steps} values`}>
       <div className="flex flex-col gap-6">
         <p className="max-w-[70ch] text-body-sm text-[var(--ds-fg-muted)]">
-          {theme.site}’s ramps as its stylesheet has them. Click a step to copy it. This is reference, not
-          guidance: a color being here says only that it exists.
+          Every ramp behind the roles above. Click a step to copy it. This is reference, not guidance: a
+          color being here says only that it exists.
         </p>
         <div className="grid gap-x-8 gap-y-4 @2xl:grid-cols-2">
           {ramps.map((r) => (
@@ -1223,11 +969,9 @@ export function RawSection({ theme }: { theme: SiteTheme }) {
         )}
         {palette && (
           <div className="flex flex-col gap-2">
-            <span className="text-label text-[var(--ds-fg)]">The twenty-swatch reading</span>
+            <span className="text-label text-[var(--ds-fg)]">The {palette.colors.length} swatches</span>
             <p className="max-w-[70ch] text-caption text-[var(--ds-fg-muted)]">
-              An earlier pass set this stylesheet in the shape of a palette: {palette.colors.length} swatches,
-              hues in pairs. It is kept because the values are right. It is down here because the picture was
-              wrong — these are colors the stylesheet offers, not colors the interface is made of.
+              The same ramps as a swatch grid, hues in pairs, as the other palettes in this section are set.
             </p>
             <div className="grid gap-x-4 gap-y-1.5" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(11rem, 1fr))' }}>
               {palette.colors.map((c) => (
@@ -1259,7 +1003,7 @@ export function PrimarySpecimen({ theme, accent }: { theme: SiteTheme; accent?: 
         button={primary}
         style={accent ? { background: accent, color: contrast(accent, '#ffffff') >= 4.5 ? '#ffffff' : h.page } : undefined}
       >
-        {theme.specimen.action}
+        {primary.label}
       </ButtonSample>
     </span>
   )
