@@ -793,9 +793,11 @@ const MEDIA: NavPage[] = [
    palette pages do not each repeat it.
 
    Fourteen are Flat UI Colors 2's. Sonora is the first from anywhere else, and
-   one page is not a group: the section stays flat until a second COLLECTION
-   arrives. When Material, IBM or Tailwind's ramps do, this becomes `groups`
-   with one per source — the same shape Components already uses.
+   it is a theme sheet rather than a palette: what a website looks like, read
+   off its interface, instead of twenty swatches to be converted. One page is
+   not a group, so the section stays flat until a second COLLECTION — or a
+   second website — arrives. Then this becomes `groups`, one per kind, the
+   same shape Components already uses.
    ======================================================================== */
 
 const COLOR: NavPage[] = [
@@ -907,9 +909,12 @@ const COLOR: NavPage[] = [
   {
     id: 'sonora',
     title: 'Sonora Palette',
-    blurb: 'Eight saturated hues in pairs over warm cream and near-black, drawn for a dark product. After Suno.',
-    keywords: ['suno', 'strawberry', 'dumbo', 'aura', 'dark product', 'music'],
-    swatches: ['#fd429c', '#ff6a00', '#f5d907', '#02d95c', '#8b6efe', '#f7f4ef'],
+    blurb:
+      'Suno’s interface as it is: three near-blacks, cream text and one cream button. A theme sheet, not a swatch grid.',
+    keywords: ['suno', 'theme', 'monochrome', 'elevation', 'surfaces', 'dumbo', 'dark product', 'music'],
+    // The interface, not the stylesheet: the three surfaces, then the three
+    // text steps. No hue is here because none is in the chrome.
+    swatches: ['#101012', '#1c1c1f', '#252529', '#6a6a72', '#a3a3a3', '#f7f4ef'],
   },
 ]
 

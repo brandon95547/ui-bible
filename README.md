@@ -64,7 +64,7 @@ Five sections. Only **Components** is subdivided, and only one level deep.
 | --------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Foundations** | Tokens, color, typography, spacing, grid, radius, elevation, icons, motion, animation, breakpoints, accessibility, dark theme, light theme    |
 | **Components**  | 65 components in seven groups — see below                                                                                                     |
-| **Color**       | Palettes we did not draw — Flat UI Colors 2's fourteen and Sonora — plus the page on converting one into something shippable                   |
+| **Color**       | Color we did not draw — Flat UI Colors 2's fourteen palettes, the Sonora theme sheet, and the page on converting a palette into something shippable |
 | **Patterns**    | Dashboards, desktop, mobile, and the empty / error / loading states                                                                            |
 | **Principles**  | The UX laws every rule in here derives from                                                                                                    |
 
@@ -104,13 +104,38 @@ Run against Flat UI v1 the derivation reproduces the hand-made poster it was mod
 exactly — all six roles, both members of every pair. That is the check that the rules
 encode taste rather than merely being consistent.
 
-Fourteen of the fifteen are one collection. The fifteenth, **Sonora**, is the palette
-of Suno's interface, read out of its stylesheet and set in the same twenty-swatch shape:
-eight hues, each as the step Suno's dark theme binds an accent to with the step below it,
-plus four neutrals. Its data lives in `src/docs/data/sonora-colors.ts`, with the rule the
-twenty were chosen by. A palette from outside Flat UI Colors 2 carries an `origin` — its
-page id, its custom-property namespace and one sentence of credit — and the page builder
-needs nothing else.
+Fourteen of the fifteen are one collection. The fifteenth, **Sonora**, is a different
+kind of page, because it answers a different question. A palette page asks what could be
+made of twenty swatches; Sonora asks what a website — Suno's — actually looks like, and it
+is a **theme sheet**, built by `defineThemePage` from a `SiteTheme` rather than by
+`definePalettePage` from a `Palette`.
+
+The distinction exists because the first version of that page got it wrong. Run through
+the palette derivation, Suno's stylesheet produced a rainbow with hot pink as "primary" —
+an accurate picture of what the stylesheet offers and a misleading one of the product,
+which is black, gray and cream. A stylesheet is the superset: every color anyone needed
+once. So a theme sheet is organized by job instead of by hue, in the order someone
+rebuilding the interface needs it:
+
+1. **Overview** — a screen of the site drawn from its tokens, and a classification
+   (dark or light, monochrome or colorful) computed from the interface roles: surfaces,
+   text, borders and button fills. Status colors, promotional treatments and artwork are
+   not counted, and neither is the stylesheet.
+2. **Surfaces and elevation** — the ladder, E0 up, with what was found on each rung.
+   Levels are assigned by where components sit, not by sorting grays; hover and selected
+   are kept apart from it, because they are layers and not levels.
+3. **Core palette** — foregrounds, borders and status colors. Surfaces are not repeated.
+4. **Interface elements** and **Contrast** — the controls built from 2 and 3, and text
+   measured on the surfaces it is actually set on.
+5. **Decorative** and **Raw tokens** — real, complete, and collapsed by default.
+
+Every row says whether it was **observed** (read off a rendered component, or the rule
+that paints one) or **inferred** (a real value whose role is our reading), and a role a
+site does not have is a row that is not there. Nothing in the builder is specific to Suno:
+the next website is a new file beside `src/docs/data/sonora-theme.ts`, and the header of
+`site-theme.ts` says what to read and in what order. The twenty swatches of the earlier
+reading are still in `sonora-colors.ts`, still in the comparison on **Using a Palette**,
+and shown on the sheet under Raw tokens.
 
 The section is flat while there is one collection: a single page is not a group. A second
 collection (Material, IBM, Tailwind) turns it into `groups`, one per source — the shape
