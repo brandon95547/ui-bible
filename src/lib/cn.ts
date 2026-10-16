@@ -12,6 +12,7 @@ const twMerge = extendTailwindMerge({
         {
           text: [
             'display',
+            'title-serif',
             'h1',
             'h2',
             'h3',
@@ -25,9 +26,15 @@ const twMerge = extendTailwindMerge({
             // inherited 16px instead of 15px.
             'ui',
             'body-sm',
+            // The same, again, for these four: `text-label-lg` read as a color
+            // and took the label color off every large Button, which then
+            // inherited its parent's — light text on the light primary fill.
+            'label-lg',
             'label',
             'label-sm',
+            'label-xs',
             'caption',
+            'badge',
             'overline',
             'code',
           ],

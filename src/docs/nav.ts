@@ -811,13 +811,13 @@ const COLOR: NavPage[] = [
 /* ===========================================================================
    DESIGN SHEETS
    A finished product set down on one page: its palette, its surfaces from the
-   page up, its type, and the components and dialogs its screens share — drawn
-   by that product's own stylesheet rather than redrawn in ours.
+   page up, its type, and the components and dialogs its screens share.
 
-   Each sheet is an edition. Its files are a frozen copy under
-   public/design-sheets/<id>/, replaced by a new copy rather than edited, so a
-   sheet shows what shipped when it was published. Flat while it has one page,
-   the same rule as Color.
+   A sheet is this system's own components, re-themed with the product's values
+   (src/docs/data/<id>-sheet.ts) and drawn by DesignSheet.tsx — so it shows what
+   the product does with the Bible, not a picture of it. Each is an edition:
+   the values are what shipped when it was published. Flat while it has one
+   page, the same rule as Color.
    ======================================================================== */
 
 const DESIGN_SHEETS: NavPage[] = [
