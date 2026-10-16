@@ -809,6 +809,34 @@ const COLOR: NavPage[] = [
 ]
 
 /* ===========================================================================
+   DESIGN SHEETS
+   A finished product set down on one page: its palette, its surfaces from the
+   page up, its type, and the components and dialogs its screens share — drawn
+   by that product's own stylesheet rather than redrawn in ours.
+
+   Each sheet is an edition. Its files are a frozen copy under
+   public/design-sheets/<id>/, replaced by a new copy rather than edited, so a
+   sheet shows what shipped when it was published. Flat while it has one page,
+   the same rule as Color.
+   ======================================================================== */
+
+const DESIGN_SHEETS: NavPage[] = [
+  {
+    id: 'phansora',
+    title: 'Phansora',
+    blurb:
+      'First edition. The Phansora dashboard: a short palette, its elevation from the page up, and every shared component and dialog.',
+    keywords: [
+      'design sheet', 'style guide', 'phansora', 'dashboard', 'palette', 'elevation',
+      'surfaces', 'dialogs', 'components', 'premium border', 'first edition',
+    ],
+    // Its core: the page, card and raised surfaces, then primary, secondary and
+    // the brand violet.
+    swatches: ['#101012', '#1c1c1f', '#252529', '#e5e4e3', '#4fbf9f', '#8b6eeb'],
+  },
+]
+
+/* ===========================================================================
    PATTERNS & PRINCIPLES
    ======================================================================== */
 
@@ -995,6 +1023,13 @@ export const NAV: NavSection[] = [
     description: 'Color we did not draw: the Sonora theme sheet.',
     overview: true,
     pages: COLOR,
+  },
+  {
+    id: 'design-sheets',
+    title: 'Design Sheets',
+    icon: 'SwatchBook',
+    description: 'A finished product on one page: palette, surfaces, type, and the components it shares.',
+    pages: DESIGN_SHEETS,
   },
   {
     id: 'patterns',

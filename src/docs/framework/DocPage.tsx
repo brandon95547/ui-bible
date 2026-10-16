@@ -387,54 +387,59 @@ export function DocPage({
           )}
         </div>
 
-        {/* ---- ON THIS PAGE ------------------------------------------------ */}
-        <aside className="hidden w-52 shrink-0 xl:block">
-          {/* 10.5rem used to be the height of the pinned header this had to
-              clear. With that gone it only has the app bar above it, so it
-              rides near the top of the column instead of a third of the way
-              down it. */}
-          <nav aria-label="On this page" className="sticky top-8 flex flex-col gap-2">
-            <h2 className="px-2 text-overline uppercase text-[var(--ds-fg-muted)]">On this page</h2>
-            <ul className="flex flex-col gap-px border-l border-[var(--ds-border-subtle)]">
-              {sections.map((s) => {
-                const active = activeSection === s.id
-                return (
-                  <li key={s.id}>
-                    <a
-                      href={sectionHref(s.id)}
-                      onClick={() => requestAnimationFrame(() => scrollToSection(s.id))}
-                      className={cn(
-                        'relative flex items-baseline gap-2 py-1.5 pr-2 text-caption transition-colors',
-                        // A child starts where its parent's title starts — past
-                        // the number column — so the indent reads as belonging
-                        // rather than as a smaller margin.
-                        !s.depth && 'pl-3',
-                        s.depth === 1 && 'pl-8',
-                        s.depth === 2 && 'pl-11',
-                        active
-                          ? 'text-[var(--ds-fg)]'
-                          : 'text-[var(--ds-fg-muted)] hover:text-[var(--ds-fg-secondary)]',
-                      )}
-                    >
-                      {active && (
-                        <span
-                          aria-hidden
-                          className="absolute -left-px top-1/2 h-4 w-[2px] -translate-y-1/2 rounded-full bg-[var(--ds-accent)]"
-                        />
-                      )}
-                      {!s.depth && (
-                        <span className="font-mono text-[10px] tabular-nums text-[var(--ds-fg-disabled)]">
-                          {String(num(s.id)).padStart(2, '0')}
-                        </span>
-                      )}
-                      {s.title}
-                    </a>
-                  </li>
-                )
-              })}
-            </ul>
-          </nav>
-        </aside>
+        {/* ---- ON THIS PAGE ------------------------------------------------
+            Not for a page of one section: a contents list of one entry says
+            nothing, and its column is width the page needs — a design sheet
+            is the whole page in a single section. */}
+        {sections.length > 1 && (
+          <aside className="hidden w-52 shrink-0 xl:block">
+            {/* 10.5rem used to be the height of the pinned header this had to
+                clear. With that gone it only has the app bar above it, so it
+                rides near the top of the column instead of a third of the way
+                down it. */}
+            <nav aria-label="On this page" className="sticky top-8 flex flex-col gap-2">
+              <h2 className="px-2 text-overline uppercase text-[var(--ds-fg-muted)]">On this page</h2>
+              <ul className="flex flex-col gap-px border-l border-[var(--ds-border-subtle)]">
+                {sections.map((s) => {
+                  const active = activeSection === s.id
+                  return (
+                    <li key={s.id}>
+                      <a
+                        href={sectionHref(s.id)}
+                        onClick={() => requestAnimationFrame(() => scrollToSection(s.id))}
+                        className={cn(
+                          'relative flex items-baseline gap-2 py-1.5 pr-2 text-caption transition-colors',
+                          // A child starts where its parent's title starts — past
+                          // the number column — so the indent reads as belonging
+                          // rather than as a smaller margin.
+                          !s.depth && 'pl-3',
+                          s.depth === 1 && 'pl-8',
+                          s.depth === 2 && 'pl-11',
+                          active
+                            ? 'text-[var(--ds-fg)]'
+                            : 'text-[var(--ds-fg-muted)] hover:text-[var(--ds-fg-secondary)]',
+                        )}
+                      >
+                        {active && (
+                          <span
+                            aria-hidden
+                            className="absolute -left-px top-1/2 h-4 w-[2px] -translate-y-1/2 rounded-full bg-[var(--ds-accent)]"
+                          />
+                        )}
+                        {!s.depth && (
+                          <span className="font-mono text-[10px] tabular-nums text-[var(--ds-fg-disabled)]">
+                            {String(num(s.id)).padStart(2, '0')}
+                          </span>
+                        )}
+                        {s.title}
+                      </a>
+                    </li>
+                  )
+                })}
+              </ul>
+            </nav>
+          </aside>
+        )}
       </div>
     </article>
   )

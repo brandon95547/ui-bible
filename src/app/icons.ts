@@ -17,6 +17,7 @@ import {
   Ruler,
   SquareStack,
   Star,
+  SwatchBook,
   TextCursorInput,
   type LucideIcon,
 } from 'lucide-react'
@@ -45,6 +46,7 @@ export const ICONS: Record<string, LucideIcon> = {
   Ruler,
   SquareStack,
   Star,
+  SwatchBook,
   TextCursorInput,
 }
 
