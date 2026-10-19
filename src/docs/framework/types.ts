@@ -164,6 +164,13 @@ export interface DocSpec {
    * rendered before Do. A page has these or a `preview`, not both.
    */
   sheet?: { id: string; title: string; description?: string; render: ReactNode }[]
+  /**
+   * A design sheet drawn as one board: its own masthead (which carries the
+   * page's h1), then numbered cards several across. It takes the full width
+   * of the page and has no "On this page" — the numbered cards are their own
+   * map. Called with the page's navigation, so a sheet can link to its sibling.
+   */
+  board?: (ctx: { onNavigate: (id: string) => void }) => ReactNode
   anatomy?: AnatomySpec
   /**
    * Renders the complete theme palette — every primitive ramp and every

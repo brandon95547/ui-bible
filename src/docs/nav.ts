@@ -810,29 +810,42 @@ const COLOR: NavPage[] = [
 
 /* ===========================================================================
    DESIGN SHEETS
-   A finished product set down on one page: its palette, its surfaces from the
-   page up, its type, and the components and dialogs its screens share.
+   A finished product set down on one board: its palette, type and buttons,
+   its forms and navigation, its surfaces from the page up, and the components
+   and dialogs its screens share — numbered cards, several across.
 
    A sheet is this system's own components, re-themed with the product's values
    (src/docs/data/<id>-sheet.ts) and drawn by DesignSheet.tsx — so it shows what
    the product does with the Bible, not a picture of it. Each is an edition:
-   the values are what shipped when it was published. Flat while it has one
-   page, the same rule as Color.
+   the values are what shipped when it was published. A product with more than
+   one face has a sheet for each, linked by the pill in their mastheads.
    ======================================================================== */
 
 const DESIGN_SHEETS: NavPage[] = [
   {
     id: 'phansora',
-    title: 'Phansora',
+    title: 'Phansora Dashboard',
     blurb:
-      'First edition. The Phansora dashboard: a short palette, its elevation from the page up, and every shared component and dialog.',
+      'Second edition. The Phansora dashboard on one board: a monochrome palette with one brand hue, every button state, and the shared components and dialogs.',
     keywords: [
       'design sheet', 'style guide', 'phansora', 'dashboard', 'palette', 'elevation',
-      'surfaces', 'dialogs', 'components', 'premium border', 'first edition',
+      'surfaces', 'dialogs', 'components', 'premium border', 'second edition',
     ],
     // Its core: the page, card and raised surfaces, then primary, secondary and
     // the brand violet.
     swatches: ['#101012', '#1c1c1f', '#252529', '#e5e4e3', '#4fbf9f', '#8b6eeb'],
+  },
+  {
+    id: 'phansora-website',
+    title: 'Phansora Website',
+    blurb:
+      'Second edition. The Phansora public site on one board: brand blue, gold and cream on navy, its three grounds, and the blocks its pages are built from.',
+    keywords: [
+      'design sheet', 'style guide', 'phansora', 'website', 'marketing site', 'landing page', 'grounds',
+      'backdrops', 'navy', 'gold', 'second edition',
+    ],
+    // The navy page, card and field, then primary, gold and the cream type.
+    swatches: ['#050b1a', '#121826', '#191f2e', '#4b4ef0', '#e3bf6e', '#f4f0e8'],
   },
 ]
 

@@ -65,7 +65,7 @@ Six sections. Only **Components** is subdivided, and only one level deep.
 | **Foundations** | Tokens, color, typography, spacing, grid, radius, elevation, icons, motion, animation, breakpoints, accessibility, dark theme, light theme    |
 | **Components**  | 65 components in seven groups — see below                                                                                                     |
 | **Color**       | Color we did not draw — the Sonora theme sheet                                                                                                |
-| **Design Sheets** | A finished product on one page — Phansora, first edition                                                                                    |
+| **Design Sheets** | A finished product on one board — Phansora, second edition: the dashboard and the website                                                  |
 | **Patterns**    | Dashboards, desktop, mobile, and the empty / error / loading states                                                                            |
 | **Principles**  | The UX laws every rule in here derives from                                                                                                    |
 

@@ -50,6 +50,10 @@ export function DocPage({
   next,
 }: DocPageProps) {
   const { meta } = spec
+  // A board is a poster, not a column of prose: it takes the page's full width,
+  // carries its own h1 in its masthead, and is its own table of contents.
+  const board = spec.board
+  const container = board ? 'max-w-[100rem]' : 'max-w-[64rem] xl:max-w-[76rem]'
 
   // The tree in nav.ts is the single source of truth for where a page lives,
   // so a page moving between groups needs one edit, not two that can disagree.
@@ -115,7 +119,7 @@ export function DocPage({
       <header className="-mx-6 border-b border-[var(--ds-border-subtle)] px-6 pb-4 pt-5 sm:-mx-10 sm:px-10">
         {/* Must track the body container below (including its xl step) or the
             breadcrumb and h1 sit inset from the prose they introduce. */}
-        <div className="mx-auto flex max-w-[64rem] flex-col gap-2.5 xl:max-w-[76rem]">
+        <div className={cn('mx-auto flex flex-col gap-2.5', container)}>
           <div className="flex items-center justify-between gap-4">
             <Breadcrumbs
               items={[
@@ -139,15 +143,17 @@ export function DocPage({
               <Star size={15} fill={isFavorite ? 'currentColor' : 'none'} />
             </button>
           </div>
-          <div className="flex flex-wrap items-center gap-3">
-            <h1 className="text-h1 text-[var(--ds-fg)]">{meta.title}</h1>
-            {meta.status && meta.status !== 'stable' && (
-              <Badge tone={meta.status === 'deprecated' ? 'danger' : 'warning'} size="sm">
-                {meta.status}
-              </Badge>
-            )}
-          </div>
-          <p className="max-w-[68ch] text-body-lg text-[var(--ds-fg-muted)]">{meta.tagline}</p>
+          {!board && (
+            <div className="flex flex-wrap items-center gap-3">
+              <h1 className="text-h1 text-[var(--ds-fg)]">{meta.title}</h1>
+              {meta.status && meta.status !== 'stable' && (
+                <Badge tone={meta.status === 'deprecated' ? 'danger' : 'warning'} size="sm">
+                  {meta.status}
+                </Badge>
+              )}
+            </div>
+          )}
+          {!board && <p className="max-w-[68ch] text-body-lg text-[var(--ds-fg-muted)]">{meta.tagline}</p>}
           {aliases.length > 0 && (
             // Stated up front, so someone who arrived looking for "modal"
             // learns the name we use before reading a single guideline. Muted,
@@ -164,8 +170,11 @@ export function DocPage({
       </header>
 
       {/* ---- BODY + TOC --------------------------------------------------- */}
-      <div className="mx-auto flex max-w-[64rem] gap-10 pb-24 pt-10 xl:max-w-[76rem]">
+      <div className={cn('mx-auto flex gap-10 pb-24', board ? 'pt-6' : 'pt-10', container)}>
         <div className="flex min-w-0 flex-1 flex-col gap-14">
+          {/* BOARD — a design sheet drawn as one poster. See DocSpec.board. */}
+          {board?.({ onNavigate })}
+
           {/* 1 — LIVE PREVIEW */}
           {spec.preview && (
             <Section
@@ -388,7 +397,7 @@ export function DocPage({
         </div>
 
         {/* ---- ON THIS PAGE ------------------------------------------------ */}
-        <aside className="hidden w-52 shrink-0 xl:block">
+        <aside className={cn('hidden w-52 shrink-0', !board && 'xl:block')}>
           {/* 10.5rem used to be the height of the pinned header this had to
               clear. With that gone it only has the app bar above it, so it
               rides near the top of the column instead of a third of the way
